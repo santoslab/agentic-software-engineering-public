@@ -1,0 +1,30 @@
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.venv/
+venv/
+
+# JavaScript / TypeScript
+node_modules/
+dist/
+
+# Generated slide output
+**/slides/*.html
+**/slides/*.pdf
+**/slides/.marp-cache/
+
+# Local editor and knowledge-base state
+.obsidian/
+**/.obsidian/
+.vscode/
+.idea/
+

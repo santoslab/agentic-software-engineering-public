@@ -1,0 +1,79 @@
+{
+  "description": "Shared differential-test fixtures for the tic-tac-toe engine. Baseline rules: 9x9 board, win length 5, X moves first, players alternate on every ACCEPTED move. See README.md for the loader contract.",
+  "board_size": 9,
+  "win_length": 5,
+  "games": [
+    {
+      "name": "x-wins-row",
+      "moves": [[1,1],[2,1],[1,2],[2,2],[1,3],[2,3],[1,4],[2,4],[1,5]],
+      "expected_winner": "X"
+    },
+    {
+      "name": "x-wins-column",
+      "moves": [[1,1],[1,2],[2,1],[2,2],[3,1],[3,2],[4,1],[4,2],[5,1]],
+      "expected_winner": "X"
+    },
+    {
+      "name": "x-wins-diagonal-down-right",
+      "moves": [[1,1],[1,2],[2,2],[1,3],[3,3],[1,4],[4,4],[1,5],[5,5]],
+      "expected_winner": "X"
+    },
+    {
+      "name": "x-wins-diagonal-down-left",
+      "moves": [[1,5],[9,1],[2,4],[9,2],[3,3],[9,3],[4,2],[9,4],[5,1]],
+      "expected_winner": "X"
+    },
+    {
+      "name": "o-wins-row",
+      "moves": [[1,1],[5,5],[1,2],[5,6],[1,3],[5,7],[1,4],[5,8],[9,9],[5,9]],
+      "expected_winner": "O"
+    },
+    {
+      "name": "x-wins-row-overline",
+      "moves": [[1,1],[3,1],[1,2],[3,2],[1,3],[3,3],[1,4],[3,4],[1,6],[3,6],[1,5]],
+      "expected_winner": "X"
+    },
+    {
+      "name": "x-wins-diagonal-into-bottom-right-corner",
+      "moves": [[5,5],[1,1],[6,6],[1,2],[7,7],[1,3],[8,8],[1,4],[9,9]],
+      "expected_winner": "X"
+    },
+    {
+      "name": "x-wins-vertical-on-last-column",
+      "moves": [[3,9],[3,1],[4,9],[4,1],[5,9],[5,1],[6,9],[6,1],[7,9]],
+      "expected_winner": "X"
+    },
+    {
+      "name": "no-winner-mid-game",
+      "moves": [[5,5],[4,4],[5,6],[4,5],[5,7]],
+      "expected_winner": null
+    },
+    {
+      "name": "four-in-a-row-is-not-a-win",
+      "moves": [[1,1],[2,1],[1,2],[2,2],[1,3],[2,3],[1,4],[2,4]],
+      "expected_winner": null
+    }
+  ],
+  "rejections": [
+    {
+      "name": "occupied-cell",
+      "setup_moves": [[5,5]],
+      "attempt": [5,5]
+    },
+    {
+      "name": "row-out-of-range-high",
+      "setup_moves": [],
+      "attempt": [10,3]
+    },
+    {
+      "name": "row-out-of-range-low",
+      "setup_moves": [],
+      "attempt": [0,1]
+    },
+    {
+      "name": "column-out-of-range-high",
+      "setup_moves": [],
+      "attempt": [4,10]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    B["Brief\n(human checkpoint)"] --> G[Gather]
+    G --> D[Develop]
+    D --> V{"Verify\n(mechanical gates)"}
+    V -- "red" --> D
+    V -- "green" --> R["Report\n(human checkpoint)"]
+    R --> B2([next milestone])
+
+    style B fill:#310066,color:#ffffff,stroke:#310066
+    style R fill:#310066,color:#ffffff,stroke:#310066
+    style B2 fill:#ffffff

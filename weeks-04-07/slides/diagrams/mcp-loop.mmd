@@ -1,0 +1,14 @@
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#beaefc", "primaryTextColor": "#310066", "primaryBorderColor": "#310066", "lineColor": "#310066", "edgeLabelBackground": "#ffffff", "clusterBkg": "#f4f1fa", "clusterBorder": "#310066", "fontSize": "16px"}, "themeCSS": "* { font-family: Helvetica, Arial, sans-serif !important; }"}}%%
+flowchart LR
+    U["User"] --> H
+    subgraph H["Host - Claude Code"]
+        M["Model<br/>(the loop from L05)"]
+        T["Tool table<br/>Read, Bash, ...<br/><b>+ your tools</b>"]
+        M <--> T
+    end
+    T -- "stdio<br/>(subprocess)" --> S
+    subgraph S["Your MCP server"]
+        F1["get_leaderboard()"]
+        F2["get_player_stats(name)"]
+    end
+    S --> DB[("Stage B<br/>SQLite")]

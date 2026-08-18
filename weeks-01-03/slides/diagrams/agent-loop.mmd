@@ -1,0 +1,24 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    T([User task]) --> M[messages list]
+    M --> C["model call\nsystem + messages + tools"]
+    C -- "stop_reason:\ntool_use" --> E["harness executes\nthe tool"]
+    E --> R["append tool_result\nto messages"]
+    R --> M
+    C -- "no tool call" --> D([done: final answer])
+
+    style C fill:#310066,color:#ffffff,stroke:#310066
+    style D fill:#ffffff
+    style T fill:#ffffff

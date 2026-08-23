@@ -1,17 +1,37 @@
 import os
 import time
-
+from pathlib import Path
 import requests
 
-MODEL = "mimo-v2.5-free"
-ZEN_CHAT_URL = "https://opencode.ai/zen/v1/chat/completions"
+## ----- Configure Models ---------
+
+from dotenv import load_dotenv
+
+# Load a project-level .env file if one exists. By default, load_dotenv does not
+# replace a value already supplied by the user's environment.
+load_dotenv(Path(__file__).with_name(".env"))
+
+API_KEY = os.getenv("OPENCODE_API_KEY")
+
+if API_KEY:
+    # OpenCode Go subscription
+    MODEL = "mimo-v2.5"
+    ZEN_CHAT_URL = "https://opencode.ai/zen/go/v1/chat/completions"
+else:
+    # Keyless free fallback
+    MODEL = "mimo-v2.5-free"
+    ZEN_CHAT_URL = "https://opencode.ai/zen/v1/chat/completions"
 
 HEADERS = {"Content-Type": "application/json"}
-if os.environ.get("OPENCODE_API_KEY"):
-    HEADERS["Authorization"] = f"Bearer {os.environ['OPENCODE_API_KEY']}"
+if API_KEY:
+    HEADERS["Authorization"] = f"Bearer {API_KEY}"
+
+
+## --------- System Prompt ----------
 
 SYSTEM = "You are a helpful assistant."
 
+## ------ model call -------
 
 def call_zen(messages: list) -> dict:
     resp = requests.post(
@@ -27,6 +47,7 @@ def call_zen(messages: list) -> dict:
         raise RuntimeError(f"Zen returned no choices: {payload}")
     return payload["choices"][0]["message"]
 
+#------- Harness Opening Message -----------
 
 def print_intro():
     print("Welcome to a toy chat bot!")
@@ -35,7 +56,10 @@ def print_intro():
     print("\n Type 'EXIT' to exit the program\n\n")
 
 
+#------ Harness entry point -------
+
 if __name__ == "__main__":
+     # Include the system prompt as the first item in the messages list data structure
     messages = [{"role": "system", "content": SYSTEM}]
     print_intro()
 

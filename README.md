@@ -5,10 +5,7 @@ agents through specifications, repeatable workflows, review, and verification.
 
 ## Status
 
-This repository is a curated snapshot of course development through weeks 1–7,
-exported from planning commit `43876fb` on 2026-08-18. The course is still being
-developed: published materials may change, and files that explicitly identify
-themselves as drafts are not yet ready to assign without instructor review.
+The course is still being developed: published materials may change, and files that explicitly identify themselves as drafts are not yet ready to assign without instructor review.
 
 ## Start here
 

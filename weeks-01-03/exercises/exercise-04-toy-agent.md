@@ -1,11 +1,12 @@
-
-# Not quite node yet, just a draft
-
 # Exercise 4 — Build a Toy Coding Agent
+
+Note: *Do this exercise without any assistance from Claude or any other coding agent*.  
+If you don't do this exercise manually, you won't learn the concepts.
 
 > **Assigned:** Lecture 05 · **Due:** start of week 4 · **Effort:** 3–4 hours
 >
-> **Requires:** Python 3.11+ and the `requests` package. — see "Model access" below.
+> **Requires:** Python 3.11+ and the `requests` package (see Files setup)
+
 >
 > **Starter code:** [`exercise-04-starter/`](./exercise-04-starter/) — a bare chat bot
 > (`toy_agent.py`) that Part 1 walks you through turning into an agent, plus the
@@ -20,8 +21,7 @@ That is, your toy example will help you understand each of the core features in 
 You'll also be able to understand, even with your simple toy agent, how coding agents
 enforce basic safety features. 
 
-Note that part of the exercise is to reflect on your observations of how your agent behaves and to note
-"interesting things" that you observed.  So be thinking about this as you work.
+Note that part of the exercise is to reflect on your observations of how your agent behaves and to note "interesting things" that you observed.  So be thinking about this as you work.
 
 ## Overview of Different Parts
 
@@ -30,7 +30,7 @@ that implements a chat bot and turn it into a simple coding agent.
 - Part 2: You'll apply your agent to some very simple development "micro-tasks"
 - Part 3: You'll write up a summary of your experiences in the exercise 
 
-## Model access (read first)
+## Model access setup
 
 Here is some technical background on the backend models that we will use.
 You don't need to understand the details of all of this, but you need to be 
@@ -39,36 +39,68 @@ Bottom line: for this assignmnet, if you just start with the code we give you
 and don't make any adjustments on your own, you don't have to worry about the 
 issues below.
 
-Your toy agent will use a free model on **OpenCode Zen** (<https://opencode.ai/docs/zen>),
-an OpenAI-compatible endpoint at `https://opencode.ai/zen/v1/chat/completions`.
+Your toy agent will by default use a free model on **OpenCode Zen** (<https://opencode.ai/docs/zen>), an OpenAI-compatible endpoint at `https://opencode.ai/zen/v1/chat/completions`.
 
-- **No key required.**  You won't need an authorization key to use OpenCode Zen, 
-  and trying to use one (even a "placeholder" key) will actually cause problems.
-  If you just use the code as we have supplied, everything will work fine.
-  The free tier accepts a request with no `Authorization` header at
-  all. Counter-intuitively, sending a *placeholder* key is worse than sending none — a
-  fake value earns a `401 Invalid API key`. If you happen to already have a key, 
-  only then should you a header with the real key.
-  Moreover, if you use a key, read it from an environment variable. **Never commit a key.**
-- **The free lineup rotates**, roughly monthly. List the current one with:
-  ```
-  curl -s https://opencode.ai/zen/v1/models | python -m json.tool
-  ```
-  Known-good at the time of writing of this assignment are: 
-  `mimo-v2.5-free`, `north-mini-code-free`,
-  `ling-3.0-flash-free`, `nemotron-3-ultra-free`, `laguna-s-2.1-free`.
+- **No key required (at first).**  To initially run the starter code, you won't need an authorization key to use OpenCode Zen.  However, we found that in building the model
+solution, we eventually needed to have a subscription from the [OpenCode Go](https://opencode.ai/go) plan.  
+
+- **Adding an API key in an environment variable**  If the code at the top of the toy agent finds that the environment variable `OPENCODE_API_KEY`, it will set the agent/model interactions up to use non-free models.  So if you get an Open Code Go subscription, follow the instructions to get an API key, then set the environment variable `OPENCODE_API_KEY` appropriately for your shell (e.g., in your `.bashrc`) 
+- follow the [hints given here](./exercise-04-starter/OPENCODE_GO_API_KEY_SETUP.md) 
+
 - **Avoid the DeepSeek-family *thinking* models** (e.g. `big-pickle`,
   `deepseek-v4-flash-free`) for this exercise. They require each assistant message's
   `reasoning_content` field to be echoed back verbatim, and will 400 if you rebuild a
   "clean" message dict.
+
 - **Free tiers are best-effort infrastructure.** Some routes fail a large fraction of
   calls with a 5xx, and in an agentic loop a *single* failure kills the whole run. If a
   run dies, switch models before you start debugging your payload.
-- **Caps in code, not intentions:** nothing here bills you, so there's no spend to cap —
-  but a runaway loop still costs wall-clock time and produces an unreadable log. Set a
-  hard iteration limit (e.g., 25 loop turns). If your agent is still going after 25
-  turns, stop and ask what's looping. On a paid API this same limit is what stands
-  between a bug and a bill.
+
+- **Caps in code:** to avoid a situation where a bug in the harness uses up your
+  token budget, part of the exercise will including coding a bound on the number of 
+  calls to the mode for each user interaction (e.g., 25 loop turns). 
+
+
+## Files set up and Python environment set up
+
+Copy the `exercise-04-starter` folder from the course material repo into your student
+repo, e.g., `exercises/exercise-04` (removing the `-starter`).  
+
+In your terminal window, `cd` to the `exercise-04` folder.
+
+We will nee the `requests` package.  You can install it globally as shown below..
+```
+pip install requests
+```
+BUT it is is best practice to use a python "virtual environment" that installs the package locally for your project (instead of installing it system wide).  If you pursue that route, do
+the following.
+
+```
+python -m venv .venv       # create the virtual environment in .venv (add to .gitignore)
+source .venv/bin/activate  # activate the virtual environment
+python install requests    # install the requests package locally
+pip freeze > required-packages.txt  # record the required packages 
+```
+
+As noted in the comment above, make sure you something like `.venv` to your .gitignore for your solution repo.  When others use your code (e.g., in a check-out of your repo), the local environment can be set up as follows...
+
+```
+python -m venv .venv
+source .venv/bin/activate
+pip install -r required-packages.txt
+```
+
+If you close the terminal or otherwise leave the virtual environment, you will need to activate it again in your `exercise-04` directory as follows...
+
+
+```
+source .venv/bin/activate
+```
+
+Now check to see if the initial version of the toy agent runs..
+```
+python toy_agent.py
+```
 
 ## Format of Messages between Harness and Model
 
@@ -78,19 +110,16 @@ toy agent) and a model.  This exercise uses an older API format from OpenAI call
 that the format used by Claude or the most recent Open AI models.
 
 The starter files for the exercise provide a summary of the message formats in the file
-`message-format-hints.md`.
+[`exercise-04-starter/message-format-hints.md`](./exercise-04-starter/message-format-hints.md).
 
 ## Safety rules (graded elements, not suggestions)
 
-Here are some safety rules that you need to enforce as you build your agent.
+Here are some safety rules that you need to enforce as you build your agent (we help you do these things by giving clear instructions in the exercise description).
 
 1. **Jail all file operations** to a scratch directory: resolve every path and verify
    it's under the sandbox root *before* touching the filesystem (the provided code will give
    you some direction about how to do that).
-2. If you implement `run_command`: **hard allowlist** (e.g., `["python", "pytest"]`,
-   exact-match on the executable), no shell interpolation of model output — pass an
-   argument list, never a string through a shell.
-3. Hard iteration limit on the loop (no unbounded autonomy) -- we'll also show you
+2. Hard iteration limit on the loop (no unbounded autonomy) -- we'll also show you
    how to do that.
 
 ## Task
@@ -103,8 +132,7 @@ that POST your messages to a model and print the reply. It has no tools, no loop
 safety properties. You will add those, one step at a time, until it is an agent of
 roughly 200 lines.
 
-The starter carries **no comments** on purpose. The explanation of each piece lives in
-the step below that gives it to you — read the step, then write the code.
+Here is a summary of the steps that you will follow.
 
 | # | Step | Who writes it |
 |---|------|---------------|
@@ -128,12 +156,10 @@ and the evidence that the jail holds.
 #### Step 1 — Run the chat bot you were given
 
 ```
-pip install requests
 python toy_agent.py
 ```
 
-Talk to it. Confirm you get replies before you change anything — if the route is having a
-bad day (see *Model access* above), you want to know that now and not after five edits.
+Talk to it. Confirm you get replies before you change anything.
 
 One thing to notice while you chat: `messages` is the *entire* state of the program, and
 the whole list is re-sent on every call. Nothing is remembered on the server. Each turn
@@ -142,9 +168,9 @@ Part 3.
 
 #### Step 2 — Write the system prompt
 
-**First, experiment with different styles.** Sometimes it can be difficult to see how
-the system prompt effects the model's output. Try adding lines or phrases that are
-stylistic and fun instead of strictly productive. Here are some ideas to start:
+**First, experiment with different styles system prompt styles.**  Change the system 
+prompt by changing the string assigned to the python `SYSTEM` variable.
+Sometimes it can be difficult to see how the system prompt effects the model's output. Try adding lines or phrases that are stylistic and fun instead of strictly productive. Here are some ideas to start:
 
 - End all of your responses with 'Go Cats!'
 - Always output in Rhymed Couplets
@@ -153,6 +179,7 @@ stylistic and fun instead of strictly productive. Here are some ideas to start:
 
 **Now write the real one.** Now write a real system prompt that determines
 how you want the agent to behave (you can adapt this as you continue the exercise).
+For example, start with the string below and replace the `...` with something meaningful.
 At minimum it should establish who the agent is, that it only ever touches its
 working directory, that it reads a file before editing it, that it keeps calling tools
 until the task is done, and what it should say when it stops.
@@ -532,25 +559,6 @@ Once you have completed the addition of the `write_file` tool, test it by..
   - requesting that a new file with some simple content be created.
 
 
-##### - (Optional) Run Command tool
-
-Optional fourth tool, `run_command`, which lets the agent run its own tests. If you add
-it, safety rule 2 applies and is graded:
-
-```python
-ALLOWED_COMMANDS = {"python", "pytest"}       # exact match on the executable
-
-def run_command(command: list[str]) -> str:   # a LIST, never a string
-    if command[0] not in ALLOWED_COMMANDS:
-        return f"ERROR: command not allowed: {command[0]} - allowed: {sorted(ALLOWED_COMMANDS)}"
-    ...                                       # subprocess.run(command, cwd=SANDBOX_DIR,
-                                              # capture_output=True, text=True, timeout=...)
-```
-
-[TODO: What does this mean?]
-Never join the model's arguments into a string and hand it to a shell. `subprocess.run`
-with a list and the default `shell=False` is the whole defense.
-
 #### Step 9 — Add a "Verbose" mode
 
 Towards the top of your file, e.g., after the `import requests` define a constant `VERBOSE` to 
@@ -594,17 +602,41 @@ You will can add your own personal notes or observations to the log.
 Add these log files as `micro-task-A-log.txt` and `micro-task-B-log.txt` to your
 exercise solution folder.
 
-- **Micro-task A (green-field):** "Create `fizzbuzz.py` with a `fizzbuzz(n)` function and a `test_fizzbuzz.py` with at least 4 pytest cases, then run the tests." (If you
-  skipped `run_command`, have the agent write both files and run pytest yourself —
-  note this in the log.)
-- **Micro-task B (bug fix):** **copy** `exercise-04-starter/micro-task-b-seed/` (three
-  files: `cart.py`, `discount.py`, `test_checkout.py`) into your `sandbox/`, then:
-  "The tests in this project fail. Find the bug and fix it — change the code, not the
-  tests." The bug is a single inverted comparison in the discount calculation, and it
-  breaks both tests; `pytest sandbox` should show two failures before you start.
+- **Micro-task A (green-field):** With an empty sandbox, give the agent this prompt: 
 
-Copy, don't move — keep the pristine seed where your agent can't reach it. You will want
-to reset and re-run, and a flaky free route makes that likelier than you'd think.
+```
+Create `fizzbuzz.py` with a `fizzbuzz(n)` function that implements 
+the classic fizzbuzz behavior.  Write a `test_fizzbuzz.py` with at least 4 pytest cases
+```
+
+Record the output in your log.
+
+In a terminal window opened in the `sandbox` folder, run `pytest` on the text file.
+
+```
+pytest test_fizzbuzz.py
+```
+Record the command given above and the output of the test run in your log.
+
+
+- **Micro-task B (bug fix):** **copy** `exercise-04-starter/micro-task-b-seed/` (three
+files: `cart.py`, `discount.py`, `test_checkout.py`) into a clean `sandbox/`.
+  
+This code base has a bug caused by a single inverted comparison in the 
+discount calculation, and it breaks both tests; 
+  
+Run `pytest sandbox` to see two failures before you start, and record the output 
+indicating the failing tests in your log.
+
+Start your agent and give it the following prompt:
+```
+The tests in this project fail. Find the bug and fix it — change the code, not the
+tests.
+```
+You should see the agent read the files, discover the bug, and write to files to fix the bug.  Record this output in your log.
+
+Exit your agent and run `pytest sandbox` to show the test pass.  Record your test command and the output in your log.
+
 
 ### Part 3 — reflection (half a page)
 
@@ -625,7 +657,6 @@ Repo or zip: agent source · both session logs · the (agent-fixed) micro-task B
 
 - [ ] ≥3 tools with schemas; loop terminates on its own AND via the turn cap (steps 4–8)
 - [ ] Path jailing demonstrably present (point to the lines in your source) (step 3)
-- [ ] If `run_command` exists: allowlist + no shell-string execution (step 8)
 - [ ] Micro-task A log shows multi-turn tool use ending in success (`micro-task-A-log.txt`)
 - [ ] Micro-task B log shows the bug found and fixed in code (tests untouched) (`micro-task-B-log.txt`)
 - [ ] Reflection file completed (`reflections.md`)

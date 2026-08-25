@@ -15,36 +15,58 @@ building real software — first a small game built several different ways, then
 coding and you doing the things that still matter: eliciting requirements, planning development, 
 writing specifications, managing what the agent knows, and verifying what it produces.
 
-The course materials grew out of a set of real experiments: the same projects you will
-build were built several times over, with different levels of discipline, and the
-transcripts, specifications, cost logs, and retrospectives from those experiments are
-your case studies. When we claim that a technique works, we will generally show you the
+Many of the course materials grew out of a set of real experiments that the SAnToS lab
+has carried out with our students: you are going to build some of these same projects 
+(but with several important designed variations), with different levels of discipline.
+The transcripts, specifications, cost logs, and retrospectives from the original SAnToS 
+experiments will form some of the key case studies for the course.
+
+When we claim that a technique works, we will generally show you the
 session where it worked — and often the earlier session where its absence hurt.
 
 The shape of the semester:
 
-- **Weeks 1–3 (now):** foundations. How LLMs work, how an agent is built out of one,
+- **Weeks 1–3 (now):** Foundations of LLMs and agents.  
+  How LLMs work, how an agent is built out of one,
   how to drive Claude Code deliberately, and why specifications and verification
   dominate cleverness. Four small exercises, including building your own working agent
   in about 200 lines of Python.
-- **Weeks 4–6:** Project 1, a complete small build (tic-tac-toe scale) done with full
-  discipline.
-- **Weeks 7–10:** Project 2, a medium application; new tools (hooks, subagents) arrive
-  as the project demands them.
-- **Weeks 11–14:** Project 3, a large full-stack application with milestone gating.
+- **Weeks 4–7:** Foundations of Agentic Software Engineering.  We will receive basic
+concepts from traditional software engineering, and explain how these concepts get re-oriented 
+  for building software with agents.  We'll also introduce new concepts and methods that we'll
+  need for doing effective software engineering with agents.  A key feature of this section will be Project 1, a complete small game, worked several times, built using the newly introduced agentic 
+  software engineering principles.
+- **Weeks 8–10:** Core competencies for mature agentic developers (e.g., hooks, sub-agents).  You'll
+  now work in teams and apply what you have learned to Project 2, a larger multi-layered application.
+- **Weeks 11–14:** Advanced techniques and concepts necessary for long, autonomous, agent runs 
+  (agent loops, agent workflow design (graphs), issue tracking and context management for large applications).You'll continue to apply these to Projects 1 and 2.
 - **Week 15:** retrospectives and presentations.
 
 Running underneath all of it is **Project 0**: a personal knowledge base on agentic
 software engineering that you design in week 2, seed in week 3, and grow all semester.
 More on that when we reach Lecture 4.
 
-There are no exams. Weeks 1–3 exercises are completion-based; the projects carry the
-grade. You will need a Claude Pro subscription by the start of week 2.
+There are no exams. Weeks 1–3 exercises are completion-based; the projects make up
+the bulk of the grade.  You will need a Claude Pro subscription by the start of week 2.
 
-In class we watch a three-minute clip of Claude Code adding a feature to a small
-command-line game: one English prompt, then the agent reads the code, proposes a plan,
-edits three files, runs the test suite, and reports back. Hold on to whatever reaction
-you have to that clip. The next three weeks explain every second of it.
+**Assessments and Evaluation Methods**
+
+Weighting of graded course activities:
+Individual exercises and Project 0 - 30%
+Individual project (Project 1) - 30%
+Team project (Project 2) - 40%
+
+**Grading Scale**
+A: 90-100%
+B: 80-89%
+C: 70-79%
+D: 60-69%
+F: below 60%
+
+
+**Motivation**
+
+In class we watch a short demo of a toy coding agent that you will build by the end of week 3.
 
 ## 2. Tokens and next-token prediction
 
@@ -360,22 +382,23 @@ Three consequences structure the rest of this course:
 
 ## Before next lecture
 
-- **Required:** Karpathy, *[1hr Talk] [Intro to Large Language Models](https://youtu.be/zjkBMFhNj_g?si=FV-E7B71kxWJnzmL)* (YouTube). This is the designated gap-filler; if you have ML background, skim at 2×.
-- **Recommended for a deeper dive (optional):** 3Blue1Brown, *Transformers, the tech behind LLMs* and the attention chapter that follows it.
-- **Gap-fillers (optional):** Karpathy, *Deep Dive into LLMs like ChatGPT*; Vaswani et
-  al., *Attention Is All You Need* (skim §1–2); Ouyang et al. 2022 (InstructGPT).
+- **Required:** Karpathy, *[1hr Talk] [Intro to Large Language Models](https://youtu.be/zjkBMFhNj_g?si=FV-E7B71kxWJnzmL)* (YouTube). This is the designated gap-filler; if you have ML background, skim at 1.5×.
+- **Recommended for a deeper dive (optional):** 3Blue1Brown, [Transformers, the tech behind LLMs](https://www.3blue1brown.com/lessons/gpt/) and [Attention in transformers, step-by-step](https://www.3blue1brown.com/lessons/attention).
+- **Even Deeper Dive (optional):** Karpathy, [*Deep Dive into LLMs like ChatGPT*](https://youtu.be/7xTGNNLPyMI?si=VS2cE8wXmLODPsaG); The original paper on attention/transformers by Vaswani et al., [*Attention Is All You Need*](https://arxiv.org/abs/1706.03762) (skim §1–2);  A key paper on Training language models to follow instructions with human feedback (RLHF) - InstructGPT - [Training language models to follow instructions with human feedback](https://arxiv.org/abs/2203.02155)
 - **Logistics:** have your Claude Pro subscription active before week 2 — Exercise 2
   depends on it.
 
 
+## Learning objectives
 
-In simplistic terms, an LLM is a function.  What are its inputs and outputs?
+After this lecture, students can:
 
-Parameters / weights
+1. Explain tokenization and next-token prediction, and why code tokenizes differently
+   than prose.
+2. Distinguish pretraining, instruction tuning, and RLHF at a conceptual level (what
+   each stage achieves in terms of better performance from the model).
+3. Define "context window" and explain why the prompt is the *entire* program state of
+   a stateless model.
+4. State three engineering consequences of the above: hallucination, nondeterminism,
+   and the verification burden.
 
-Training
- - Pre-training and the concept of back-propagation (adjusting weights based on training samples)
- - Instruction tuning (SFT)
- - RLHF (Reinforcement Learning with Human Feedback)
-
-What was important about "transformer" (in the paper "Attention is all you need").  It allows training to proceed in parallel, enabling training to be run with GPUs.

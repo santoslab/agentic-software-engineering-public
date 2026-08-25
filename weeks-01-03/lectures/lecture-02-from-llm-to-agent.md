@@ -77,7 +77,7 @@ After this lecture, students can:
 
 - Readings (for L03):
   - [required] The Carbon Layer - YouTube Channel - *[Harness Engineering Masterclass: Technical Deep Dive on how to build Agentic Systems](https://youtu.be/mQfTdNVCOB0?si=zZmykXWn-mVEo3Pk)* — up to timestamp 14:00 is good enough for preparing for L03.  This is Week 1-3 core reference (our toy agent will address the first several "primitives" (building blocks) for a coding agent that are introduced in the video. 
-  - [required] Anthropic API docs, [*Tool use* overview](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview) (skim to recognize the shapes;
+  - [optional -- see how Claude handles tool calls] Anthropic API docs, [*Tool use* overview](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview) (skim to recognize the shapes;
     depth comes with Ex. 4).
   - [recommended] Yao et al., *ReAct* (skim §1–3).
 - Exercise: **Ex. 1 — transcript critique**

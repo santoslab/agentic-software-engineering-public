@@ -63,6 +63,8 @@ Every agentic behavior you'll see this semester — planning, editing files, run
 
 ## The semester at a glance
 
+Codex: replace the content of this slide with the lecture notes "The shape of the semester" timeline contents.
+
 | Weeks | Unit | Scale |
 |-------|------|-------|
 | 1–3 | Foundations *(you are here)* | exercises + a toy agent |
@@ -79,20 +81,19 @@ Running underneath: **Project 0** — a personal knowledge base you design in we
 
 - 2 × 75 minutes per week — **no exams**
 - Weeks 1–3: four completion-based exercises
-- Projects carry the grade
+- Projects form the bulk of the grade
 - **Claude Pro subscription needed by week 2**
 - All handouts distributed as PDFs; starter repo link on the course page
+
+Codex: Insert slide showing the allocation percentages of the grade (exercises, projects, etc.) and the grading scale.  See the source material in lecture notes.
 
 ---
 
 <!-- _class: standout -->
 
-## Demo: three minutes of week 12
+## Demo: A ToY Agent That You Will Build
 
-Claude Code adds a feature to a small game —
-prompt, plan, edits, tests.
-
-<!-- 10–15 min. Play the pre-recorded clip at 1.5x. Frame: "hold your reaction — the next three weeks explain every second of this." -->
+Demo of the toy agent written in python
 
 ---
 
@@ -120,13 +121,19 @@ Text is split by a fixed **tokenizer** into subword units:
 
 ## Demo: the tokenizer playground
 
+Example Tokenizer: https://huggingface.co/spaces/Xenova/the-tokenizer-playground
+
 One English sentence. Then one Python function from a real game.
 
 *Which costs more tokens per line of meaning?*
 
 ---
 
+Codex: Update the slides below to use the examples given in the lecture notes.
+
 ## Generation is autoregressive
+
+**Autoregressive** - a machine learning tool that predicts the next value in a sequence by using past values from that same sequence
 
 ```
 predict one token  →  append it  →  predict again  →  …
@@ -134,7 +141,7 @@ predict one token  →  append it  →  predict again  →  …
 
 - No plan exists anywhere — only *"given everything so far, what comes next?"*
 - Repeated thousands of times per response
-- Coherence is a **learned property**, not a mechanism
+- Coherence is a **learned property** (trained into the model via weights), not a mechanism of the model operations themselves
 
 ---
 

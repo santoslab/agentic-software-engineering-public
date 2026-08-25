@@ -12,7 +12,7 @@ After this lecture, students can:
 1. Explain tokenization and next-token prediction, and why code tokenizes differently
    than prose.
 2. Distinguish pretraining, instruction tuning, and RLHF at a conceptual level (what
-   each stage buys, no math).
+   each stage achieves in terms of better performance from the model).
 3. Define "context window" and explain why the prompt is the *entire* program state of
    a stateless model.
 4. State three engineering consequences of the above: hallucination, nondeterminism,
@@ -53,16 +53,6 @@ before the semester starts so week-2 logistics don't slip.
 
 [Tokenizer to use for demo](https://huggingface.co/spaces/Xenova/the-tokenizer-playground)
 
-### Demo 2 — Hook clip: Claude Code on 3×3
-
-- **Artifacts:** [the bundled tic-tac-toe starter](../student-repo/tictactoe-starter/)
-  (any small feature; e.g., improve the board rendering).
-- **Setup:** pre-record the 3-minute clip; do NOT do this live in lecture 1 (permission
-  prompts and setup friction eat time before students have any model to hang them on).
-- **Script:** play clip at 1.5×; narrate: prompt → plan → edits → tests run.
-- **Expected outcome:** curiosity, not comprehension — comprehension is L02–L05's job.
-- **Fallback:** none needed (it's a recording).
-
 ## Discussion prompts
 
 1. If the model is stateless, where does a 2-hour coding session's "memory" live?
@@ -71,13 +61,9 @@ before the semester starts so week-2 logistics don't slip.
 
 ## Assigned after class
 
-- Readings (for L02):
-  - [required] Karpathy, *Intro to Large Language Models* (YouTube, ~1 h) — the
-    designated gap-filler; tell students with ML background they may skim.
-  - [recommended] 3Blue1Brown, *But what is a GPT?* and *Attention in Transformers*
-    (YouTube) — for the visually inclined.
-  - [gap-filler] Karpathy, *Deep Dive into LLMs like ChatGPT*; Vaswani et al.,
-    *Attention Is All You Need* (skim §1–2); Ouyang et al. 2022 (InstructGPT) for RLHF.
+- **Required:** Karpathy, *[1hr Talk] [Intro to Large Language Models](https://youtu.be/zjkBMFhNj_g?si=FV-E7B71kxWJnzmL)* (YouTube). This is the designated gap-filler; if you have ML background, skim at 1.5×.
+- **Recommended for a deeper dive (optional):** 3Blue1Brown, [Transformers, the tech behind LLMs](https://www.3blue1brown.com/lessons/gpt/) and [Attention in transformers, step-by-step](https://www.3blue1brown.com/lessons/attention).
+- **Even Deeper Dive (optional):** Karpathy, [*Deep Dive into LLMs like ChatGPT*](https://youtu.be/7xTGNNLPyMI?si=VS2cE8wXmLODPsaG); The original paper on attention/transformers by Vaswani et al., [*Attention Is All You Need*](https://arxiv.org/abs/1706.03762) (skim §1–2);  A key paper on Training language models to follow instructions with human feedback (RLHF) - InstructGPT - [Training language models to follow instructions with human feedback](https://arxiv.org/abs/2203.02155)
 - Exercise: none yet (Ex. 1 launches at L02).
 - Logistics: reminder — Claude Pro subscription active before week 2.
 

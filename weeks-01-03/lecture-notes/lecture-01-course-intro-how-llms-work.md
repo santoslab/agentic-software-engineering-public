@@ -66,7 +66,11 @@ F: below 60%
 
 **Motivation**
 
-In class we watch a short demo of a toy coding agent that you will build by the end of week 3.
+In class we watch a short demo of a toy coding agent that you will build by the end of
+week 3. As it runs, follow the loop rather than the surface polish: a task goes to the
+model, the model requests a tool, the Python harness executes that request, and the
+result becomes input to the next model call. By the end of the foundations unit, you
+will implement that loop yourself in about 200 lines of Python.
 
 ## 2. Tokens and next-token prediction
 
@@ -327,6 +331,12 @@ Two engineering facts fall out of this pipeline:
   the single most important fact about LLMs for a software engineer, and it is why
   verification is a pillar of this course rather than a nicety.
 
+  For a concrete coding example, ask the model to read `settings.json`. It might
+  produce `json.loads_file("settings.json")`: a beautifully plausible standard-library
+  call that does not exist. Python instead provides `json.load(file_object)` and
+  `json.loads(text)`. Documentation, execution, static checks, or tests expose the
+  difference; plausibility alone does not.
+
 ## 5. Context windows and statelessness
 
 Here is the fact this whole lecture has been building toward.
@@ -335,6 +345,18 @@ Here is the fact this whole lecture has been building toward.
 distribution out. When you have a two-hour "conversation" with an assistant, the
 system behind it is *replaying the entire conversation* — every message, both sides —
 into the model on every single call. The model isn't remembering; it is re-reading.
+
+Make that replay concrete. Call 1 might contain only the system instructions and the
+developer's task. After the model requests a file and the harness reads it, call 2
+contains the system instructions, the original task, the assistant's tool request,
+and the tool result. If the model then proposes an edit, call 3 sends that entire list
+again plus the proposal and any new feedback. The model begins each call with no
+hidden session state; the growing messages list creates the appearance of memory.
+
+Replay also preserves mistakes. If an early message incorrectly says that a project
+uses `unittest` when it actually uses `pytest`, that statement returns on every later
+call until the harness or developer corrects, summarizes, or discards it. Conversation
+history is program state, and humans and harnesses are responsible for its accuracy.
 
 The **context window** is the maximum number of tokens a single call can carry —
 hundreds of thousands of tokens on current frontier models, which sounds infinite and
@@ -371,6 +393,14 @@ Three consequences structure the rest of this course:
    and skeptical reading catch. Verification is Lecture 6 and, honestly, the theme of
    the whole semester.
 
+Apply all three consequences to one small coding task: *apply a 10% discount when a
+subtotal is strictly greater than $100*. First, provide the relevant context — the
+implementation, tests, and pricing rules. Second, specify the boundary explicitly:
+`$100.00` is not discounted, while `$100.01` is. Third, verify representative and
+boundary cases (`$99.99`, `$100.00`, `$100.01`), rounding behavior, and the full test
+suite. The agent may type most of the implementation, but the developer still owns
+the state, the decision, and the evidence.
+
 ## Questions to think about
 
 1. If the model is stateless, where does a two-hour coding session's "memory" live —
@@ -401,4 +431,3 @@ After this lecture, students can:
    a stateless model.
 4. State three engineering consequences of the above: hallucination, nondeterminism,
    and the verification burden.
-

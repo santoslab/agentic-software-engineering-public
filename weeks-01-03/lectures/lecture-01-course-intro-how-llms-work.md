@@ -52,6 +52,65 @@ before the semester starts so week-2 logistics don't slip.
 - **Fallback:** static screenshots of both tokenizations.
 
 [Tokenizer to use for demo](https://huggingface.co/spaces/Xenova/the-tokenizer-playground)
+[Backup tokenizer](https://www.danieldemmel.me/tokenizer)
+
+[OpenAI explanization of tokenizer](https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them)
+
+Tokenizer demo content
+```
+The agent reads the file.
+```
+
+Longer or less common words are broken into multiple tokens.
+
+```
+tokenization
+```
+check_winner
+```
+
+```python
+def check_winner(self):
+    for row in self.board:
+```
+
+
+
+
+
+### Demo 2 - Toy Agent
+
+**Part 1: Demo the starter file - just a chat bot**
+
+First start by demo-ing the starter file for the toy agent (which is actually just a chat bot).
+ - Introduce your self by saying something like "Hi my name is John."
+ - Ask the chat bot to list the files in the sandbox folder.  It should respond by indicating that it can't read the files in the sandbox folder.
+
+Illustrate the notion of changing the system prompt.
+```
+SYSTEM = "You are a helpful assistant. Your favorite animal is a wildcat. End every response to me with the sentence 'Go Wildcats!'"
+```
+
+Now talk with the agent and, e.g., see that every response ends in "Go Wildcats!".  Also, ask the agent what it's favorite animal.
+
+**Part 2: Demo the model solution**
+
+Show the code of the completed model solution toy agent, 
+ - emphasize again that it short 
+ - show the definitions of tools - list, read, write
+ - briefly discuss the meta data for tools
+ - show the different system prompt
+
+Run the toy agent
+ - Show the contents of the sandbox folder in vsCode or the file system
+ - Ask it to list the files in the sandbox folder
+ - Ask it to display the contents of the definitions.txt file
+ - Ask it to add a definition to the definitions.txt file
+     agent = model + harnass + ui
+ - Show the contents of the file in vsCode to confirm that things have been added
+
+
+
 
 ## Discussion prompts
 
@@ -77,3 +136,12 @@ before the semester starts so week-2 logistics don't slip.
   diagram; every equation added here is a minute stolen from statelessness.
 - **Variants:** if the room has laptops, students can tokenize their own snippets during
   Demo 1 (adds ~5 min; take it from the 30–45 block).
+
+## Potential Improvements and Enhancements to the Lecture
+
+- There are not enough intuitive graphical introduction of concepts (formal the notion of mapping a token to a meaning vector based on illustration from the 3blue1brown material would be a good and straight-forward addition).
+- The concept of how an LLM works seems to have gaps.  For example, the presentation focuses on an LLM as predicating a next token (i.e., only a single token).  But what really seems to happen when you make the interface call to the model is that it generates a stream of tokens to return (i.e., when you call it, it *repeatedly* uses the next token prediction approach to generate tokens until it predicts that the most likely next token is some sort of "stop" token)
+- screen shots for the tokenizer examples could be good
+- the notion of "harness" needs to be defined. And the distinction between harness vs model noted.
+
+

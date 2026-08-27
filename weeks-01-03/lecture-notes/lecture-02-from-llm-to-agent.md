@@ -2,28 +2,27 @@
 
 > Agentic Software Engineering · Week 1, second meeting
 >
-> **The one idea:** an agent is an LLM in a while-loop with tools — nothing more
-> mystical than that. The difference between ChatGPT and Claude Code is the harness,
-> not the model.
+> **The one idea:** an agent is an LLM in a while-loop with tools.  The difference between 
+> a Chat Bot and a Coding Agent is the harness, not the model.  You will demonstrate 
+> that yourself in Exercise 4 when you convert a toy chat bot into a toy coding agent.
 
-## 1. Answering last lecture's cliffhanger
+## 1. Connecting to the previous lecture
 
-Last time we established that the model is stateless and asked where a two-hour
-session's memory lives. The answer: in a **messages list** — an ordinary array,
+Last time we established that an LLM is *stateless* -- it just takes in a string and outputs a string.  Given this, if we have a two-hour long chat session with a chat bot, where does bot's memory live?  The answer: in a **messages list** — an ordinary array,
 maintained by ordinary software, replayed into the model on every call. That software
-is the **harness**, and the taxonomy of AI tools you already use is really a taxonomy
-of harnesses around the same kind of model:
+is the **harness**.  We can get different types of behavior from a model by changing the harness.  
 
 - **A chat app** (ChatGPT, Claude.ai) maintains the messages list and displays the
   replies. The model *answers*.
 - **A completion tool** (Copilot's original mode) stuffs surrounding code into the
   context and asks for the next few tokens. The model *completes*.
 - **An agent** (Claude Code, Codex CLI, and the toy you will build in week 3) gives
-  the model *tools* — read this file, run this command — executes what the model
-  requests, feeds results back, and repeats. The model *acts*.
+  the model *tools* (e.g., for reading/writing files) and *user messages*, the model
+  produces response messages and *sends tool requests*  (e.g., read this file, run this command), the harness executes the commands, and sends the results back to the model.
+  Together, the harness and the model become an *actor*.
 
-Same predictor underneath all three. What changes is what the surrounding software
-lets the predictions *do*.
+Same LLM-concept (just a predictor, a generator of plausible output text in response to input text) is used in all three. What changes is what the surrounding software (the harness)
+-- the harness changes what the predictor can effectively do.
 
 ## 2. The agent loop
 
@@ -34,15 +33,18 @@ nearly verbatim in Exercise 4:
 ```python
 messages = [{"role": "user", "content": task}]
 while True:
+    # send to the model a string combining the system prompt, message history,
+    #  ..and list of availabel tools
     response = model(system=SYSTEM_PROMPT, messages=messages, tools=TOOLS)
+    # add the model's reponse to the message history
     messages.append(assistant_message(response))
     if response.stop_reason != "tool_use":
         break                                  # the model is done acting
+    # carry out all tool calls that the model requests  
     results = [execute(call) for call in response.tool_calls]
+    #  add the tool call results to the message history
     messages.append(tool_results(results))     # results go back INTO the context
 ```
-
-Read it slowly; every phrase earns its keep this semester.
 
 **Message roles.** The conversation is a typed list. A **system** message carries
 standing instructions (more below). **User** messages carry your requests — and, by
@@ -92,9 +94,15 @@ strings flail; agents with informative ones self-correct.
 
 ## 3. Tool calling, mechanically
 
-Strip away the mystique: a **tool** is three pieces of data. A name, an English
-description, and a JSON schema for its parameters. Here is a real one, in the shape
-the Anthropic Messages API expects:
+How do we tell the model about available tools?  We give it some meta-data (in JSON format).There are various protocols for telling models about tools, but they all have 
+the following commonalities.  Each tool is described by 
+ - a unique name
+ - a description, which the model gets as part of its text/context input to help it 
+   understand the situations in which the tool could be applied
+ - information about how the model should format the parameters when requesting 
+   a tool use.  
+
+Here is the meta-data for an example tool, using the Anthropic Messages API format:
 
 ```json
 {
@@ -110,8 +118,9 @@ the Anthropic Messages API expects:
 }
 ```
 
-When the model decides to use it, the assistant message that comes back contains a
-structured block instead of (or alongside) prose:
+When the model decides it wants the tool to be called, in addition to any conventional text response that it sends the user, it also sends back a JSON formatted data requesting the tool call.   For example, the JSON below indicates that the message being exchanged between the model and the harness is coming from the model (the `assistant`).  The message has two parts:
+ - the `text` part is a "conventional" text message back to the user
+ - the `tool_use` part is the request for the tool call, formatted according to tool schemas like the one above.
 
 ```json
 {
@@ -124,7 +133,8 @@ structured block instead of (or alongside) prose:
 }
 ```
 
-And the harness — *your code, not the model* — executes the read and sends back:
+And the harness — *your code, not the model* — executes the read and sends back the following. This time, the `role` indicates that this is a message originating with the user (actually, the harness in this case).  The type of the message is a `tool_result` -- that 
+output that a tool produced.
 
 ```json
 {
@@ -136,10 +146,14 @@ And the harness — *your code, not the model* — executes the read and sends b
 }
 ```
 
-Three observations, each of which will matter to you personally within two weeks:
+Here are some key points:
 
-1. **The model never executes anything.** It emits a *request*, shaped by a schema.
-   The harness decides whether and how to honor it. Every safety property an agent has
+1. **The model never executes anything.** It emits a *request* for a tool use, 
+   shaped by a tool use schema.
+   The harness decides whether and how to honor it.  For example, based on the 
+   configured security settings for the harness, the harness may decide not to execute 
+   the tool call because it is an access a file that the user hasn't granted permission to.
+   In general, every safety property an agent has
    — permission prompts, sandboxes, allowlists — lives on the harness side of that
    line. When Claude Code asks "may I run `pytest`?", that is the harness talking.
 2. **The tool description is prompt text.** The model chooses tools by *reading their
@@ -158,8 +172,9 @@ coding assistant operating in a repository"), an inventory of behavioral rules (
 before editing; prefer small diffs; ask before destructive operations), conventions
 for output, and safety boundaries.
 
-Its power is hard to overstate. The *same weights* behave like a cautious code
-reviewer, a chatty tutor, or a terse batch tool depending on this one block of text —
+Its power is hard to overstate. The *same model* and *same weights* 
+behave like a cautious code reviewer, a chatty tutor, or a terse batch tool 
+depending on this one block of text —
 same model, different soul. Give the identical request — *"add save/load to this
 game"* — to the same model under two different system prompts:
 

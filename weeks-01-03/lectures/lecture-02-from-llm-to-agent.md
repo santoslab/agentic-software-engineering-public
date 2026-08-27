@@ -39,19 +39,7 @@ After this lecture, students can:
 
 ## Demos
 
-### Demo 1 — Raw tool-use JSON walkthrough
-
-- **Artifacts:** one prepared request/response pair (from a scripted call with a
-  `read_file` tool), pretty-printed in an editor.
-- **Setup:** generate and save the JSON beforehand; syntax-highlighted, font large.
-- **Script:** (1) request: system + messages + tools; (2) response: `stop_reason:
-  "tool_use"` and the structured call; (3) the follow-up request with the `tool_result`
-  appended — count the messages growing.
-- **Expected outcome:** students see there is no magic channel — everything is text in,
-  structured text out.
-- **Fallback:** it's static content; no failure mode beyond projector gremlins.
-
-### Demo 2 — Toy agent live run
+### Demo 1 — Toy agent live run with VERBOSE mode to see the tool calls
 
 - **Artifacts:** instructor's ~200-line Python toy agent (same one specified in
   `../exercises/exercise-04-toy-agent.md`); a scratch directory with a trivial task
@@ -65,6 +53,11 @@ After this lecture, students can:
   object.
 - **Fallback:** recorded run (record it when rehearsing); static transcript of the
   session as a second-level fallback.
+
+## Exercise Prep 
+
+
+
 
 ## Discussion prompts
 

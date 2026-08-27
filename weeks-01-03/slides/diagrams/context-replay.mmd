@@ -1,0 +1,38 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "17px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    subgraph CALL1["Call 1"]
+        direction TB
+        C1["Input<br/>system + task"] --> M1["LLM<br/>no session memory"]
+    end
+
+    subgraph CALL2["Call 2"]
+        direction TB
+        C2["Input<br/>system + task<br/>+ tool request + result"] --> M2["Same LLM<br/>no session memory"]
+    end
+
+    subgraph CALL3["Call 3"]
+        direction TB
+        C3["Input<br/>all prior messages<br/>+ new feedback"] --> M3["Same LLM<br/>no session memory"]
+    end
+
+    M1 -- "append request + result" --> C2
+    M2 -- "append feedback" --> C3
+
+    style M1 fill:#310066,color:#ffffff,stroke:#310066
+    style M2 fill:#310066,color:#ffffff,stroke:#310066
+    style M3 fill:#310066,color:#ffffff,stroke:#310066
+    style CALL1 fill:#ffffff,stroke:#beaefc
+    style CALL2 fill:#ffffff,stroke:#beaefc
+    style CALL3 fill:#ffffff,stroke:#beaefc

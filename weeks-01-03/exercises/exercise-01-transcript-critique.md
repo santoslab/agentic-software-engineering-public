@@ -17,17 +17,24 @@ rework, loop structure) that the rest of the course assumes.
 The transcripts come from the instructor's experiments building tic-tac-toe variants
 with Claude Code. You get:
 
-- **Handout A:** the complete 3×3 project transcript — 7 sessions, from project
-  initialization through test development.
-- **Handout B:** excerpts from two later experiments scaling the game to a 9×9 board
-  with a 5-in-a-row win condition (plus the final 9×9 SPECS input-handling section for
-  question 4):
+- **Handout A** ([Markdown](../student-repo/handouts/handout-A-tictactoe-transcript.md) ·
+  [PDF](../student-repo/handouts/handout-A-tictactoe-transcript.pdf)): the complete
+  3×3 project transcript — 7 sessions, from project initialization through test
+  development.
+- **Handout B** ([Markdown](../student-repo/handouts/handout-B-9by9-excerpts.md) ·
+  [PDF](../student-repo/handouts/handout-B-9by9-excerpts.pdf)): excerpts from two
+  later experiments scaling the game to a 9×9 board with a 5-in-a-row win condition
+  (plus the final 9×9 SPECS input-handling section for question 4):
   - **B1 (Attempt 1):** the session that scales the game by delivering all
     requirements in a single prose paragraph, with documentation revised in passing.
   - **B2 (Attempt 2):** the do-over — the session that declares the existing spec
     "sub-par" and rebuilds it by having the agent interview the developer *before any
     code*, and the later session where an implementation-independent Concept of
     Operations is built the same way.
+- **Prompting cheat sheet**
+  ([Markdown](../student-repo/handouts/prompt-cheat-sheet.md) ·
+  [PDF](../student-repo/handouts/prompt-cheat-sheet.pdf)): the five principles used
+  for the prompt rewrite in question 2.
 
 ## Task
 

@@ -39,17 +39,21 @@ Week 1 · Meeting 2 of 2
 
 ## The one idea
 
-An agent is **an LLM in a while-loop with tools** — nothing more mystical than that.
+An agent is **an LLM in a while-loop with tools**.
 
-The difference between ChatGPT and Claude Code is the **harness**, not the model.
+The difference between a **chat bot** and a **coding agent** is the harness, not the model.
+
+In Exercise 4, you will prove it by turning a toy chat bot into a toy coding agent.
 
 <!-- 0–10 min: answer L1's cliffhanger, then the taxonomy. -->
 
 ---
 
-## Answering last lecture's cliffhanger
+## Connecting to the previous lecture
 
-Where does a two-hour session's "memory" live?
+An LLM is stateless: it takes input and produces output.
+
+So where does a two-hour chat session's "memory" live?
 
 **In a messages list** — an ordinary array, maintained by ordinary software, replayed into the model on every call.
 
@@ -59,7 +63,7 @@ Where does a two-hour session's "memory" live?
 | Completion tool (Copilot) | **complete** |
 | Agent (Claude Code, your toy) | **act** |
 
-Same predictor underneath all three.
+Same kind of predictor underneath all three. The harness changes what its predictions can effectively do.
 
 ---
 
@@ -74,11 +78,15 @@ Same predictor underneath all three.
 ```python
 messages = [{"role": "user", "content": task}]
 while True:
+    # Send standing instructions, history, and available tools.
     response = model(system=SYSTEM_PROMPT, messages=messages, tools=TOOLS)
+    # Preserve the model's reply, including any tool requests.
     messages.append(assistant_message(response))
     if response.stop_reason != "tool_use":
         break                                  # the model is done acting
+    # The harness executes every requested tool call.
     results = [execute(call) for call in response.tool_calls]
+    # Results become context for the next model call.
     messages.append(tool_results(results))     # results go back INTO context
 ```
 
@@ -134,6 +142,8 @@ assistant:  "No game.py here; the logic must be in discount.py."
 
 ## A tool is three pieces of data
 
+Across tool-calling protocols: a unique name, an English description the model reads, and a parameter schema.
+
 ```json
 {
   "name": "read_file",
@@ -150,13 +160,11 @@ assistant:  "No game.py here; the logic must be in discount.py."
 }
 ```
 
-A name, an English description, a JSON schema. That's all.
-
 <!-- 25–40 min block. -->
 
 ---
 
-## The model emits a request…
+## The model sends a tool request…
 
 ```json
 {
@@ -169,7 +177,9 @@ A name, an English description, a JSON schema. That's all.
 }
 ```
 
-…and **the harness** — your code, not the model — executes it:
+The assistant message can contain conventional text **and** a structured `tool_use` request.
+
+Then **the harness** — your code, not the model — executes it and returns a user-role `tool_result`:
 
 ```json
 {"role": "user", "content": [
@@ -181,7 +191,7 @@ A name, an English description, a JSON schema. That's all.
 
 ## Three observations that will matter to you personally
 
-1. **The model never executes anything.** It emits a request; the harness decides. Every safety property lives on the harness side.
+1. **The model never executes anything.** It requests an action; the harness decides whether and how to honor it. Permission prompts, sandboxes, and allowlists live on the harness side.
 2. **The tool description is prompt text.** The model chooses tools by reading English. Misleading description, misleading tool use.
 3. **The `id` matters.** Each `tool_result` answers a specific `tool_use` by id — pair them, don't zip them.
 
@@ -196,6 +206,8 @@ A name, an English description, a JSON schema. That's all.
 ## Same model, different soul
 
 The system prompt rides at the front of **every call**: identity, rules, conventions, boundaries.
+
+The same model, with the same weights, can become a different tool:
 
 Same request — *"add save/load to this game"* — two system prompts:
 
@@ -286,7 +298,7 @@ No installs. Due before Lecture 4.
 
 ## Before next lecture
 
-- **Required:** Anthropic, *Building Effective Agents*
+- **Required:** [Carbon Layer, *Harness Engineering Masterclass*](https://youtu.be/mQfTdNVCOB0?si=zZmykXWn-mVEo3Pk) through 14:00
 - **Required:** Anthropic API docs, *Tool use* (skim; depth comes with Ex. 4)
 - **Recommended:** Yao et al., *ReAct*, §1–3
 - **Logistics:** Claude Code installed and authenticated before Lecture 3

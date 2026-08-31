@@ -176,7 +176,7 @@ Cheap words before expensive edits; both cheaper than rework.
 | Command | What it does |
 |---------|--------------|
 | `/context` | what's in the window, and how full |
-| `/cost` | what this session has spent |
+| `/usage` | spend **and** how much of your plan you've used |
 | `/compact` | summarize to reclaim space (**lossy**) |
 | `/clear` | wipe; CLAUDE.md re-injected |
 
@@ -192,6 +192,24 @@ Nine files re-sent every turn — most no longer needed. *(illustrative)*
 
 ---
 
+## Two habits, and which model
+
+- **`/clear` between unrelated tasks** — clearing is free; carrying a finished
+  exploration is not. Every request re-sends the whole conversation.
+- **Don't park a session** — come back cold and the first message re-processes
+  everything.
+
+**Sonnet** is your default and the right tool here.
+
+| Message | What to do |
+|---------|------------|
+| "hit your **session**/**weekly** limit" | shared across all models — switching won't help; wait |
+| "hit your **Sonnet** limit" | `/model haiku` keeps you working |
+
+<!-- 45–52 min, second half. The habits protect the plan-wide window; model choice does not. Don't let them think Haiku is a budgeting strategy. -->
+
+---
+
 <!-- _class: standout -->
 
 ## Demo 3: "fix the AI, it plays bad"
@@ -199,7 +217,7 @@ Nine files re-sent every turn — most no longer needed. *(illustrative)*
 A deliberately vague prompt. A confident, plausible change.
 Was it what anyone wanted?
 
-<!-- 52–63 min flex block: this demo (no laptops) OR micro-lab (laptops; install instructions must have shipped with L02). One sentence of specificity transforms the outcome — cold open for L04. -->
+<!-- 52–63 min. Run the failure demo; the micro-lab variant is off this term. One sentence of specificity transforms the outcome. Frame it as harness-independent — the same prompt fails the same way everywhere. Thursday is discussion + model comparison in OpenCode, not a re-run of this prompt. -->
 
 ---
 
@@ -243,8 +261,8 @@ Due before Lecture 5.
 
 ## Before next lecture
 
-- **Required:** the *Prompting Cheat Sheet* handout — L4 walks it; arrive having read it
-- **Required:** *Claude Code Best Practices* (code.claude.com/docs/en/best-practices)
+- **Required:** finish the *Harness Engineering Masterclass* — you watched to 14:00;
+  Thursday is other harnesses
 - **Recommended:** Claude Code docs — permissions, memory, plan mode (links in `technical-concepts.md`)
 - **Exercise 1 due before next lecture** · Exercise 2 now open
 

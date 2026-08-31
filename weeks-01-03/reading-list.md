@@ -4,7 +4,7 @@ Tags: **[required]** — assigned before a lecture, assumed in class · **[recom
 — strengthens the lecture · **[gap-filler]** — for students with thin ML background;
 skimmable by the ML-literate.
 
-URLs verified 2026-07-14 except where flagged.
+URLs verified 2026-07-14, except the Week 2 additions of 2026-08-31.
 
 ## For Lecture 02 (assigned at L01)
 
@@ -25,22 +25,29 @@ URLs verified 2026-07-14 except where flagged.
 
 ## For Lecture 03 (assigned at L02)
 
-- **[required]** Anthropic, *Building Effective Agents* (Dec 2024) —
-  <https://www.anthropic.com/research/building-effective-agents>. The unit's core
-  essay: workflows vs agents; simplest-thing-that-works.
-- **[required]** Anthropic API docs, *Tool use* — skim now, depth at L05.
+- **[required]** The Carbon Layer, *Harness Engineering Masterclass: Technical Deep
+  Dive on how to build Agentic Systems* — <https://youtu.be/mQfTdNVCOB0>, to 14:00.
+  The unit's core reference on what a harness is and what primitives it supplies.
+- **[recommended]** Anthropic, *Building Effective Agents* (Dec 2024) —
+  <https://www.anthropic.com/research/building-effective-agents>. Workflows vs
+  agents; simplest-thing-that-works.
+- **[optional]** Anthropic API docs, *Tool use* — skim now, depth at L05.
 - **[recommended]** Yao et al., *ReAct: Synergizing Reasoning and Acting in Language
   Models* (ICLR 2023) — <https://arxiv.org/abs/2210.03629>. §1–3.
 
 ## For Lecture 04 (assigned at L03)
 
-- **[required]** [`prompt-cheat-sheet.md`](../prompt-cheat-sheet.md) — the L04 handout;
-  read before class.
-- **[required]** *Claude Code Best Practices* —
-  <https://code.claude.com/docs/en/best-practices> (the old
-  anthropic.com/engineering URL 308-redirects here).
+Lecture 04 is an open discussion with live demos of other LLMs and harnesses — no
+lecture notes or slides. The prompting and spec-driven material that previously sat
+here is deferred to a later meeting, and its readings move with it. Come with
+questions; the video below is the shared vocabulary for the conversation.
+
+- **[required]** The Carbon Layer, *Harness Engineering Masterclass* —
+  <https://youtu.be/mQfTdNVCOB0>, the remainder past the 14:00 mark assigned for L03.
+  The primitives it names are the rows of Thursday's comparison.
 - **[recommended]** Claude Code docs: permission modes, memory/CLAUDE.md, plan mode —
   use the curated links in [`technical-concepts.md`](../technical-concepts.md) §1–5.
+  Worth having in mind as the column you already know.
 
 ## For Lecture 05 (assigned at L04)
 

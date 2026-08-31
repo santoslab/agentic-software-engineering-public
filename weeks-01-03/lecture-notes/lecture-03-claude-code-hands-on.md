@@ -94,7 +94,7 @@ Two pieces of context plumbing you will use constantly:
   you the bill.
 - **`/command`** invokes a *skill*: a reusable prompt stored as a file. This is worth
   seeing once to be permanently demystified. The course repo's `grill-me` skill —
-  which you will use for real in Project 0 — is thirteen lines, and its entire body
+  which you will meet again later in the course — is twelve lines, and its entire body
   is adapted from [Matt Pocock's public skills repository](https://github.com/mattpocock/skills):
 
 > Interview me relentlessly about every aspect of this plan until we reach a shared
@@ -107,9 +107,9 @@ Two pieces of context plumbing you will use constantly:
   > For each question, provide your recommended answer.
 
   That's it. A slash command is a prompt file. An entire elicitation methodology fits
-  in a paragraph, versioned in the repo, identical every time it's invoked. When
-  Lecture 4 leans hard on `/grill-me`, remember there is no machinery behind it —
-  just these words, injected on demand.
+  in a paragraph, versioned in the repo, identical every time it's invoked. Whenever you
+  lean on a slash command later in the course, remember there is no machinery behind it
+  — just words in a file, injected on demand.
 
 ## 5. Plan mode: cheap words before expensive edits
 
@@ -158,7 +158,8 @@ You now know the context window is finite, replayed, and billed. Claude Code giv
 you four controls; learn them this week, understand them deeply in Lecture 6:
 
 - **`/context`** — what is currently in the window, and how full it is.
-- **`/cost`** — what this session has spent so far.
+- **`/usage`** — what this session has spent, plus how much of your plan
+  allowance you have used and what is eating it. (`/cost` still works as an alias.)
 - **`/compact`** — summarize the conversation to reclaim space (lossy — a summary
   replaces the verbatim history).
 - **`/clear`** — wipe the conversation and start fresh (CLAUDE.md is re-injected;
@@ -184,6 +185,31 @@ to "forget" things it knew an hour ago, check `/context` before you blame the mo
 You will be running Exercise 2 sessions this week; glance at `/context` occasionally
 just to build the habit of knowing what your agent is carrying.
 
+Two habits, starting this week, because they cost you nothing and buy back most of
+your plan allowance:
+
+- **`/clear` between unrelated tasks.** Clearing is free. Carrying an exploration you
+  finished an hour ago is not — every request re-sends the whole conversation, so a
+  one-line question in a session you have had open all afternoon still draws usage for
+  everything in it.
+- **Don't leave a session parked.** Come back after a long enough break and the first
+  message re-processes your entire context from cold. Finish the task, then clear.
+
+### Which model, and what happens when you run out
+
+Your Pro plan defaults to **Sonnet**, and Sonnet is the right tool for this course —
+it is what Claude Code recommends for everyday coding work, and nothing we assign
+needs more. Don't go shopping for a bigger model; there isn't one on this plan.
+
+Understand how the limits actually work, because the intuitive move is the wrong one.
+There are two different messages you can hit. "You've hit your **session** limit" or
+"your **weekly** limit" is a plan-wide window **shared across every model** — you
+cannot switch to a cheaper model to get back in; you wait for the reset. But "You've
+hit your **Sonnet** limit" is per model family, and there `/model haiku` genuinely
+keeps you working. So: run on Sonnet, and treat Haiku as the escape hatch for that
+second case, not as a budgeting strategy for the first. The way you protect the
+plan-wide window is the two habits above, not model choice.
+
 ## 7. What we are deliberately NOT teaching yet
 
 Claude Code has more machinery: sandboxes, hooks (run a command on events), subagents
@@ -204,7 +230,10 @@ it plays bad."* The agent — obligingly, plausibly — guesses at what "bad" me
 produces a confident change that may or may not be what anyone wanted. One sentence of
 specificity ("the AI should block an opponent's immediate win; add that as a new
 strategy, keep random_move as the fallback") transforms the outcome. Hold that
-contrast; Lecture 4 is entirely about it.
+contrast: the failure is not Claude's alone. Thursday takes that up directly, as a
+discussion of other LLMs and harnesses. If you want to form your own view rather than
+take ours, **OpenCode**'s free tier costs nothing and lets you try several models — a
+suggestion, not an assignment. (It has a daily request cap, so pace yourself.)
 
 
 **Exercise 2** launches today: on an unfamiliar open-source codebase (announced with
@@ -216,17 +245,17 @@ Project 1. Due before Lecture 5.
 
 ## Questions to think about
 
-1. What belongs in CLAUDE.md vs. in the prompt vs. in a spec file? (Lecture 4 gives
-   this a principled answer; sketch your own first.)
+1. What belongs in CLAUDE.md vs. in the prompt vs. in a spec file? (We give this a
+   principled answer later in the unit; sketch your own first.)
 2. Which permission would you *never* auto-accept, even in week 15? Why that one?
 3. `/init` read every line of the code and still missed things. What *category* of
    knowledge did it miss, and why can't any amount of code-reading recover it?
 
 ## Before next lecture
 
-- **Required:** the course *Prompting Cheat Sheet* (in your handouts) — Lecture 4
-  walks it principle by principle; arrive having read it.
-- **Required:** *Claude Code Best Practices* (code.claude.com/docs/en/best-practices).
+- **Required:** finish The Carbon Layer, *Harness Engineering Masterclass* — you
+  watched to 14:00 for today; watch the rest. Thursday is about harnesses other than
+  Claude Code, and this is the vocabulary for it.
 - **Recommended:** Claude Code docs on permission modes, memory/CLAUDE.md, and plan
   mode — the curated links are in the course's `technical-concepts.md`.
 - **Exercise 1** is due before next lecture. **Exercise 2** is now open.

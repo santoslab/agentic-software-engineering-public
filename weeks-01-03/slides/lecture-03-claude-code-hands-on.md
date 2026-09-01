@@ -217,7 +217,7 @@ Nine files re-sent every turn — most no longer needed. *(illustrative)*
 A deliberately vague prompt. A confident, plausible change.
 Was it what anyone wanted?
 
-<!-- 52–63 min. Run the failure demo; the micro-lab variant is off this term. One sentence of specificity transforms the outcome. Frame it as harness-independent — the same prompt fails the same way everywhere. Thursday is discussion + model comparison in OpenCode, not a re-run of this prompt. -->
+<!-- 52–63 min. Run the failure demo; the micro-lab variant is off this term. One sentence of specificity transforms the outcome. Read `git diff computer_ai.py` aloud BEFORE judging: the code is usually competent, and either random_move survives intact or it is quietly redefined/aliased/delegated — and the agent's summary does not say which. Be ready for both. Frame it as harness-independent — every agent decides something you did not ask for. Thursday is discussion + model comparison in OpenCode, not a re-run of this prompt. -->
 
 ---
 

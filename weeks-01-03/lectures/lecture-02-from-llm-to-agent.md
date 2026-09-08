@@ -54,10 +54,10 @@ After this lecture, students can:
 - **Fallback:** recorded run (record it when rehearsing); static transcript of the
   session as a second-level fallback.
 
-## Exercise Prep 
+## Exercise Prep - Claude Session Transcripts Review
 
-
-
+- Walk through portions of provided transcripts to explain the nature
+  of what is requested for the first homework / exercise
 
 ## Discussion prompts
 

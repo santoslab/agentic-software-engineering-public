@@ -76,8 +76,16 @@ Lecture 6.)
 
 **Errors are just results.** If a tool fails — file not found, command rejected — the
 error text goes back into the context like any other result, and the model reads it
-and adjusts. A well-built agent *recovers* from tool errors for the same reason it can
-do anything else: the failure became part of the prompt. Concretely:
+and adjusts. In other words, the text you choose to include in the
+error text is not a neutral log or debugging remark; it is
+a control input -- it influences upcoming behaviors of the model and
+impacts its ability to recover.   Typically, you need to abstract the
+low-level (potentially voluminous) technical output of the failed tool
+call into a crisp and informative diagnosis that enables the model to
+be decisions about how to recover.
+
+A well-built agent *recovers* from tool errors for the same reason it can
+do anything else: the failure message became part of the prompt. Concretely:
 
 ```
 assistant:  [tool_use: read_file("game.py")]

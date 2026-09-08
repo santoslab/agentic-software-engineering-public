@@ -14,19 +14,52 @@ code in this exercise; the first agentic build is Project 1.
 
 ## Target codebase
 
-<!-- INSTRUCTOR PLACEHOLDER — pick before publishing.
-Selection criteria:
-  - ~2–10 KLOC: big enough that nobody reads it linearly, small enough for 2–3 hours
-  - unfamiliar to the class (not covered in prior courses, not famous)
-  - builds and runs tests cleanly with documented steps (students verify claims)
-  - has at least one non-obvious design decision (something /init will miss)
-  - permissive license
-Record the pinned commit hash here so all students explore identical code. -->
+**Repo:** <https://github.com/neo4j-examples/movies-javascript-bolt> at commit
+`ad0172cef320`
 
-**Repo:** `<URL>` at commit `<hash>`
+A small browser application — jQuery front end, webpack build — that talks to a Neo4j
+graph database through the official JavaScript driver: search movies by title, open a
+movie to see its cast, vote for a movie, and render a force-directed graph of the
+movie/actor network. Roughly 360 lines of source across five files.
 
-Clone it read-only. Do not read third-party write-ups about it; the point is what *you*
-and the agent can establish from the source.
+It is deliberately small. Nothing here is hard because there is a lot of it; what is
+unfamiliar is the *paradigm* — a graph database, Cypher queries embedded in
+JavaScript, driver session semantics, and a build step that injects configuration you
+will not find by reading the application code alone.
+
+Clone it read-only and pin the commit so everyone explores identical code:
+
+```
+git clone https://github.com/neo4j-examples/movies-javascript-bolt
+cd movies-javascript-bolt
+git checkout ad0172cef320
+```
+
+**Running it.** `npm ci && npm start`, then open <http://localhost:8080>. You do not
+need to install Neo4j: the build supplies default connection settings pointing at a
+public demo instance. Where those defaults live, and what happens when you override
+them, is one of the things you are here to figure out.
+
+**On tests.** Answer the question set honestly about what this repository does and
+does not verify. If you conclude something is missing, prove it — and then find out
+whether the project verifies it somewhere else. `.github/` is part of the codebase.
+
+**Keep the agent out of `package-lock.json`.** It is 8,000 lines — on the order of
+90,000 tokens, most of a context window — and it tells you nothing that
+`package.json` does not say in twenty-five. If the agent reaches for it, stop it.
+Noticing that this is a decision *you* have to make is part of the exercise.
+
+**Ground rules.** Work from the repository and the agent first — that is where the
+value is. Cite anything you use from outside the repo in `architecture.md`, like any
+other source.
+
+The agent will read the repo's own documentation and tell you what it found. Good:
+documentation states intentions, code states behaviour, and the gap between them is
+what `gotcha.md` is for.
+
+Show your route, not just your conclusions — the prompt you asked, what the agent
+claimed, the file and line you checked it against. The trail is worth more than the
+answer.
 
 ## Task
 

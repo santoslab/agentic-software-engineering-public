@@ -1,82 +1,164 @@
-# Lecture 05 — Anatomy of a Coding Agent: Building the Toy Agent
+# Lecture 05 — Anatomy of a Coding Agent: Harness Primitives
 
 > **Unit:** weeks-01-03 · **Week 3, meeting 1 of 2** · 75 minutes
 >
-> **Thesis:** In ~200 lines of Python against the raw API you can build a working
-> coding agent — after today, no part of Claude Code is magic.
+> **Thesis:** Effective coding agents depend on engineering around the model:
+> what it sees, how it acts, the boundaries on those actions, and what survives afterward.
 
 ## Learning objectives
 
 After this lecture, students can:
 
-1. Write the agent loop against the Anthropic Messages API (the Ex. 4 deliverable).
-2. Author a system prompt and JSON tool schemas for file-editing tools.
-3. Identify the security decisions a harness must make (path jailing, command
-   allowlists, spend caps) and where each lives in the code.
-4. Enumerate what Claude Code adds beyond the bare loop.
+1. Distinguish the model, runtime, and harness, and explain the first six Carbon
+   Layer primitives through Durable state.
+2. Explain why each primitive is needed and identify a corresponding Claude Code
+   feature and its manifestation, limitation, or absence in Exercise 4.
+3. Trace supplied exercise code from a model's tool request through dispatch,
+   path checking, and a result delivered to the next model call.
+4. Predict how adding each provided chunk changes the toy's behavior, and explain
+   the difference between instructions and enforcement, context and stored state.
+5. Propose where a missing capability could be added without treating those
+   extensions as new exercise requirements.
+
+## Teaching approach and sources
+
+Use the sequence **purpose → mechanism → Claude Code → toy code → limitation and
+possible extension** for each primitive. The recurring example is the discount bug
+in Exercise 4's three-file checkout project. This is a conceptual example throughout
+this lecture; the live-demo scenario has not yet been selected.
+
+Students are learning to understand and assemble supplied code incrementally, not
+to invent the toy agent without help. Quote and explain any code already provided
+in the exercise, including the complete Step 3 sandbox helper. Ask students to
+predict the effect of an addition, inspect the lines, then explain the resulting
+behavior. Preserve the indicated student-authored work for the exercise.
+
+The architectural sequence comes from The Carbon Layer's
+[*Harness Engineering Masterclass*](https://www.youtube.com/watch?v=mQfTdNVCOB0),
+[local summary](../../carbon-layer/harness-architecture-primitives.md), and
+[transcript](../../carbon-layer/harness-engineering-masterclass-transcript.md).
+Teach it as a useful vocabulary whose responsibilities overlap. Stop at Durable
+state; later primitives shown dimmed in the source images are outside this lecture.
+The `carbon-layer/ch-*.md` materials describe a different, more extensive agent;
+do not attribute those capabilities to the assigned toy.
 
 ## Before class
 
-- [required] Anthropic API docs: Messages API + Tool use (in depth)
-- [required] Thorsten Ball, *How to Build an Agent*
-- [recommended] *Building Effective Agents*, "agents" section (re-read)
+- **Required:** Carbon Layer video from the beginning through the Durable state
+  discussion (approximately 0:00–16:00), or the corresponding local transcript.
+- **Required:** Skim [Exercise 4](../exercises/exercise-04-toy-agent.md), especially
+  Steps 3–6, and its [message-format guide](../exercises/exercise-04-starter/message-format-hints.md).
+- **Recommended:** Thorsten Ball, [How to Build an Agent](https://ampcode.com/how-to-build-an-agent),
+  as a complementary implementation narrative.
 - Ex. 2 due today.
 
 ## Topic outline
 
-| Time | Topic | Content |
-|------|-------|---------|
-| 0–5 | Motivation | Ball's subtitle says it: "the emperor has no clothes." Everything from weeks 1–2 — loop, roles, tools, system prompt — in one file you can read in a sitting. Today: walk it; this week: build it. |
-| 5–20 | Walkthrough 1: the conversation | Anatomy of a call: `model`, `system`, `messages`, `max_tokens`. The messages list is the **only** state (L01's statelessness, now in code — point at the line where it's re-sent whole). System prompt authoring for the toy: identity, working-directory rule, "prefer reading before editing," output discipline. |
-| 20–40 | Walkthrough 2: tools & dispatch | Schemas for `read_file`, `list_dir`, `write_file`/`edit_file`; optional `run_command` with a hard allowlist. The dispatch loop: `stop_reason == "tool_use"` → execute → append `tool_result` → re-call. Tool errors go back as results — feedback, not crashes. Security beat: **you are now the permission system from L03** — path jailing (resolve + prefix-check against the scratch dir), allowlist rationale, why `max_tokens` and model choice are your spend cap. |
-| 40–57 | Live run | The toy agent on a seeded task: "fix the failing test in this 3-file mini-project" (same mini-project that ships with Ex. 4). Verbose mode prints each request/response. Narrate the iterations; savor the moment it hits a tool error and recovers. If time: second run with a deliberately worse system prompt — behavior visibly degrades (L02's "same model, different soul," now reproducible). |
-| 57–67 | Toy vs Claude Code | What the toy lacks: permission UI, context compaction, CLAUDE.md injection, plan mode, subagents, a battle-tested system prompt, sandboxing. Each maps to something students have already used in Ex. 2 — the harness reframed as legible engineering, not secret sauce. |
-| 67–75 | Ex. 4 launch | Spec walkthrough; the pseudocode skeleton (structure, not solution); shared API-key logistics and spend rules (Haiku for iteration, `max_tokens` cap, expected total < a few dollars); safety rules are graded elements, not suggestions. What "done" looks like: both micro-tasks completed with session logs. |
+| Time | Topic | Teaching content and code anchors |
+|---|---|---|
+| 0–8 | Model, runtime, harness | Source images 02–04; distinguish model input/output from the repeated tool loop and the supporting harness. Introduce the discount task and the predict/add/observe/explain method. The exercise uses Chat Completions through OpenCode Zen. |
+| 8–14 | Instructions | Image 05 and transition image 06. Explain why standing guidance matters. Claude: `CLAUDE.md` and project rules. Toy: Step 2 `SYSTEM` and the starter's initial system message. Changing guidance changes model input, not tool authority. Extension: load an instruction file. |
+| 14–21 | Context delivery | Image 07. Claude: explicit file references, reads, search, command output. Toy: Step 4 `read_file`, Step 6 result append, Step 8 discovery. Trace disk → return value → message → next request. Test output must be supplied by the student. Extension: explicit file references or focused search. |
+| 21–29 | Context management | Images 08–09. Claude: `/context`, `/compact`, automatic compaction. Toy: growing `messages`, repeated payload. Explain relevance and lossy summaries; distinguish turn limits from context limits. Extension: prepare context before `call_zen`, retaining valid tool exchanges. Leave detailed cost analysis to L06. |
+| 29–39 | Tool interfaces | Image 11. Claude: file tools, Bash, brief MCP placement. Toy: Step 5 schema and two registries; Step 6 call/dispatch/result cycle; Step 9 verbose output. Trace the `file_name` argument and matching `tool_call_id`. Explain intermediate unbounded loop versus Step 7's required cap. |
+| 39–47 | Execution environments | Image 13. Claude: working directory, permissions, configured Bash sandbox. Toy: supplied Step 3 helper and its callers in Steps 4/8. Explain resolve, containment, rejection, error feedback. A worktree or path helper is not process isolation. Extension: boundaries for a future test-running tool. |
+| 47–55 | Durable state | Image 15. Claude: saved sessions/resume, persistent notes, plans and Git changes. Toy: files and manually copied logs survive; `messages` starts over. Extension: session save/load and task summary, with an explicit interruption boundary. Connect storage, retrieval, and active context. |
+| 55–70 | Claude Code demonstrations | Reserved for the next demo-design discussion. Use the observation prompts below; no scenario or live script is committed yet. |
+| 70–75 | Synthesis and Ex. 4 handoff | Diagnose a harness failure, then explain exercise expectations, manual test execution, logs, and reflection. Future extensions are discussion material, not extra deliverables. |
 
-## Demos
+## Demo block — reserved for separate design
 
-### Demo 1 — Toy agent end-to-end (the lecture's spine)
+**Status:** the lecture content and a 15-minute slot are ready; demo selection and
+scripting are intentionally deferred to the next instructor discussion. Do not
+present the former toy-agent end-to-end script as an approved demo.
 
-- **Artifacts:** instructor's toy agent (~200 lines, same structure as the Ex. 4
-  skeleton); seeded 3-file mini-project with one failing test (the same one shipped in
-  the exercise); verbose flag on.
-- **Setup:** API key exported; scratch dir reset to the seeded state; rehearsed the
-  morning of; terminal font large; the agent source open in a second pane.
-- **Script:** (1) 60 seconds on the source: point at the loop, the dispatch, the
-  jail check; (2) run the fix-the-test task; (3) narrate each iteration against the
-  L02 diagram; (4) show the passing test; (5) optional degraded-system-prompt rerun.
-- **Expected outcome:** the class watches ~200 lines do recognizably Claude-Code-like
-  work.
-- **Fallback (mandatory to prepare):** full recorded run from rehearsal, plus the
-  printed session log as a static walkthrough.
+The eventual Claude Code demonstration should let students connect visible behavior
+to the content already introduced. These are observation prompts, not a script:
 
-## Discussion prompts
+- Which standing instructions and project facts are available for this task?
+- What evidence entered context, and what was retained or summarized?
+- Which tool request actually performed an action, and what result came back?
+- What enforces the execution boundary?
+- What persists, and how does a later interaction obtain it?
 
-1. Which single tool would you add next, and what's the worst thing it could do?
-2. Where in the loop would you insert a human checkpoint, and what would it cost you?
-3. Your toy re-sends the whole conversation every call — what does that predict about
-   long sessions? (Sets up L06.)
+Once the scenario is selected, prepare a rehearsal record and static fallback,
+check the installed Claude Code commands/settings, and keep the total demo time at
+15 minutes. Do not depend on a model making a particular mistake or choosing an
+exact tool sequence for a teaching point to work.
 
-## Assigned after class
+## Comprehension checks and instructor answers
 
-- Readings (for L06):
-  - [required] Anthropic engineering blog, *Effective context engineering for AI
-    agents*.
-  - [required] [Agentic Development Principles](../student-repo/handouts/handout-agentic-principles.md).
-  - [required] [NautilusTRX pass retrospectives](../student-repo/handouts/handout-nautilustrx-retrospectives.md)
-    (~10 min).
-- Exercise: **Ex. 4 — toy agent**
-  (`../exercises/exercise-04-toy-agent.md`), due start of week 4.
-- Reminder: Project 0 kickoff due end of week 3.
+Use the first three within their primitive blocks; return to the restart question
+at the end. The student-facing notes collect all four for review.
 
-## Instructor notes
+| Prompt | Expected reasoning |
+|---|---|
+| The agent proposes a generic fix without reading the checkout files. What is missing? | Context delivery: the relevant code and tests have not entered a request. Reading or explicitly supplying them grounds the task. Instructions can encourage this, but do not contain the missing facts. |
+| A huge obsolete log is resent every call. Does `MAX_TURNS = 25` solve it? | Context management is needed. The cap limits calls within one interaction, not bytes/tokens in a result or history over multiple interactions. |
+| Reading `../../secrets.txt` returns a rejection. Which parts of the harness did this? | `resolve_in_sandbox` rejects the resolved path before file I/O; dispatch catches the exception and appends an error tool result. The next call delivers the error to the model. |
+| The toy edits a file, exits, and restarts. What survives? | The file and any manually saved logs survive. Conversation history does not. The initial system prompt is loaded again; the agent needs new reads or a future session loader to recover task context. |
 
-- **Cut if running long:** the degraded-system-prompt rerun inside Demo 1, then
-  compress "Toy vs Claude Code" (57–67) — the exercise reflection asks the same
-  question, so it self-heals.
-- **Risks:** highest-stakes live demo of the unit. Rehearse same-day; record the
-  rehearsal. Have the seeded mini-project under version control so reset is one
-  command. If the model one-shots the fix without exploring, rerun with the harder
-  seeded variant (keep two seeds prepared).
-- **Variants:** with laptops and time, minutes 40–57 can become "predict the next tool
-  call" — pause before each iteration and poll the room.
+## Instructor accuracy notes
+
+- **Use the actual exercise protocol.** `tool_calls`, JSON-encoded arguments,
+  `role: "tool"`, and `tool_call_id`; no Anthropic `stop_reason` or `tool_use` code
+  in the toy walkthrough. Excerpts may omit comments or wrap lines, but retain
+  the supplied semantics and names.
+- **Distinguish stages.** A schema advertises a tool; a local dictionary dispatches
+  it; appending its result informs the next model call. The Step 6 `while True`
+  code is an intermediate stage, and Step 7's turn cap is required in the exercise.
+- **Describe the logs accurately.** Verbose mode prints tool calls, arguments, and
+  results, not every API request or all internal model reasoning. Recovery from a
+  readable error is possible, not guaranteed.
+- **Explain the path code literally.** The sandbox is anchored next to the script,
+  not the shell's current directory. `is_relative_to` tests path containment rather
+  than a string prefix. A Windows-style absolute path is not a portable rejection
+  test on macOS/Linux; use traversal or a native absolute path when explaining it.
+  The helper is limited application-level enforcement, not an OS sandbox.
+- **Keep three distinctions visible.** Instructions versus enforcement; context
+  delivery versus selecting current context; durable storage versus automatic
+  retrieval. Compaction is lossy. Prompt caching reduces repeated processing work
+  but is not context filtering. A saved claim is not proof that it is true.
+- **Use current Claude documentation.** [Instructions/memory](https://code.claude.com/docs/en/memory),
+  [file references](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories),
+  [tools/context/sessions](https://code.claude.com/docs/en/how-claude-code-works), and
+  [sandboxing](https://code.claude.com/docs/en/sandboxing), checked September 8, 2026.
+  Recheck the installed interface when rehearsing the eventual demo.
+- **If running long:** shorten discussion of extension designs and compress the
+  recap. Preserve the request/result trace, sandbox explanation, and restart
+  distinction. The notes provide detail for students to revisit.
+
+## Exercise handoff and next lecture
+
+Assign [Exercise 4](../exercises/exercise-04-toy-agent.md), due at the start of week 4.
+Students work manually under its no-coding-agent-assistance instruction, with the
+provided code as their starting point. They complete the indicated portions,
+exercise the path boundary and turn cap, run both micro-tasks with verbose logs,
+run `pytest` themselves, and write the reflection. Refer students to the current
+starter/setup instructions for model access; do not promise a shared Anthropic
+key, a particular free model, or a fixed total price.
+
+Lecture 6 develops context economics, compaction tradeoffs, memory, and verification
+in greater depth. Before that class:
+
+- **Required:** [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents).
+- **Required:** [Agentic Development Principles](../student-repo/handouts/handout-agentic-principles.md).
+- **Required:** [NautilusTRX pass retrospectives](../student-repo/handouts/handout-nautilustrx-retrospectives.md).
+- Reminder: Project 0 kickoff is due at the end of week 3.
+
+## Companion artifacts and rendering
+
+- [Full lecture notes](../lecture-notes/lecture-05-anatomy-of-a-coding-agent.md).
+- [Marp slide source](../slides/lecture-05-anatomy-of-a-coding-agent.md).
+
+The deck uses all eleven supplied PNGs from `carbon-layer/`, with source credits
+and timestamped links. They retain their third-party provenance as described in
+[LICENSING.md](../../LICENSING.md). Source paths are relative; keep the repository
+layout intact when presenting the generated HTML. PDF embeds the images.
+
+Render only this lecture from the repository root:
+
+```sh
+npx -y @marp-team/marp-cli@latest --allow-local-files weeks-01-03/slides/lecture-05-anatomy-of-a-coding-agent.md -o weeks-01-03/slides/lecture-05-anatomy-of-a-coding-agent.pdf
+npx -y @marp-team/marp-cli@latest --allow-local-files weeks-01-03/slides/lecture-05-anatomy-of-a-coding-agent.md -o weeks-01-03/slides/lecture-05-anatomy-of-a-coding-agent.html
+```

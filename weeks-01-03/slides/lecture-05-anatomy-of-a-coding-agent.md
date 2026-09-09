@@ -75,7 +75,7 @@ Students run the tests themselves.
 
 ![A model receives input and produces output](../../carbon-layer/02-model-inputs-outputs.png)
 
-<!-- A model knows training patterns and supplied input; the current repository is not automatically inside that input. Missing information can lead to guesses, or the model can ask for it. Tool requests are structured outputs; the model does not execute functions. -->
+<!-- The harness assembles effective input from instructions, history, files, and tool metadata. A model knows training patterns and supplied input; the current repository is not automatically inside that input. Missing information can lead to guesses, or the model can ask for it. Tool requests are structured outputs; the model does not execute functions. -->
 
 ---
 
@@ -85,7 +85,7 @@ Students run the tests themselves.
 
 ![The runtime repeats observation decision and action](../../carbon-layer/03-ReAct-pattern.png)
 
-<!-- Connect to prior lectures: current context, model response, tool request, execution, observation, another model call. This is a conceptual ReAct loop; visible tool logs are not the model's complete internal reasoning. -->
+<!-- Recall Yao et al.'s ReAct paper from the earlier suggested reading (see ../reading-list.md). The harness assembles input and executes requests. Connect to prior lectures: current context, model response, tool request, execution, observation, another model call. This is a conceptual ReAct loop; visible tool logs are not the model's complete internal reasoning. -->
 
 ---
 
@@ -110,9 +110,9 @@ Students run the tests themselves.
 | Execution environments | Where can that operation act? |
 | Durable state | What survives beyond current attention? |
 
-A working vocabulary from The Carbon Layer; responsibilities overlap.
+The Carbon Layer vocabulary has a [staged Python implementation](https://github.com/thecarbonlayer/carbon).
 
-<!-- Explain the lecture's recurring structure: purpose, Claude Code, toy code, limitation, possible extension. Later dimmed primitives in the source images are outside today's scope. -->
+<!-- The field has no generally accepted taxonomy; this is the course's chosen vocabulary. The Carbon implementation is additional reference, not the assigned toy. Explain the lecture's recurring structure: purpose, Claude Code, toy code, limitation, possible extension. Later dimmed primitives in the source images are outside today's scope. -->
 
 ---
 
@@ -126,11 +126,28 @@ A working vocabulary from The Carbon Layer; responsibilities overlap.
 
 ---
 
+## Instructions: establish recurring expectations
+
+**Purpose:** supply standing guidance and project knowledge
+so the developer does not repeat them for every task.
+
+Examples: project architecture, technologies and tools,
+test-documentation conventions, and how to summarize results.
+
+In Claude Code, system instructions and project guidance
+such as `CLAUDE.md` serve this purpose.
+
+Instructions guide choices; permissions and sandboxing enforce limits.
+
+<!-- Begin with why this primitive is needed. Follow the revised notes' general operating guidance rather than describing instructions as the particular bug-fix task. -->
+
+---
+
 ## Instructions: Claude Code and the toy
 
-**Claude Code:** `CLAUDE.md` and applicable project rules.
+**Claude Code:** system instructions, `CLAUDE.md`, and project rules.
 
-**Toy, Step 2:** supplied prompt skeleton; you complete the guidance.
+**Toy, Step 2:** supplied skeleton for general operating guidance.
 
 ```python
 SYSTEM = """You are ...
@@ -141,31 +158,31 @@ Follow these rules while working.
 """
 ```
 
-The starter includes it in every request's conversation:
+The starter includes it in the conversation sent to the model:
 
 ```python
 messages = [{"role": "system", "content": SYSTEM}]
 ```
 
-<!-- Source: exercise Step 2 and starter. Claude reference: https://code.claude.com/docs/en/memory . The harness loads applicable guidance; it is not enforced configuration. Claude Code does not automatically load AGENTS.md by name without an import or other setup. -->
+<!-- Source: exercise Step 2 and starter. Claude reference: https://code.claude.com/docs/en/memory . Distinguish the harness's system instructions from user-visible project instructions. Claude Code does not automatically load AGENTS.md by name without an import or other setup. -->
 
 ---
 
-## Instructions change guidance, not authority
+## Instructions guide recurring behavior
 
 Before: a generic assistant prompt.
-After: task-specific expectations, such as reading before editing.
+After: general operating guidance, such as reading before editing.
 
-An instruction can influence the next tool choice.
-It cannot create a tool or enforce a filesystem boundary.
+These expectations apply across tasks; the current user prompt
+supplies the particular task.
 
 **Toy limit:** no automatic project-instruction loading.
-**Possible extension:** read an instruction file at startup.
+**Possible extension:** load an `AGENTS.md` from the sandbox at startup.
 
 **Predict:** does a pirate-style system prompt change which files
 Python can access?
 
-<!-- Answer: no. The stylistic experiment changes model input. Behavior is probabilistic; a single comparison need not show a difference. The extension is a discussion idea, not added assignment work. -->
+<!-- Answer: no. Instructions influence choices, while permissions and sandboxing enforce authority. One run need not show a behavioral difference. The extension is a discussion idea, not added assignment work. -->
 
 ---
 
@@ -179,6 +196,21 @@ Python can access?
 
 ---
 
+## Context delivery: bring task material into the input
+
+**Purpose:** assemble relevant input from sources beyond standing
+instructions and the text the developer types.
+
+Before tools, how could the model inspect a file?
+The developer could paste it—or ask the harness to include it.
+
+**Developer push:** `@file` selects content for the harness to inject.
+**Model pull:** later, the model can request a file-reading tool.
+
+<!-- Brief transition into the 14–21 minute context-delivery block. The same information may arrive through either route, but who initiates delivery differs. This is a conceptual build-up, not the order of steps in Exercise 4. -->
+
+---
+
 <!-- _class: source -->
 <!-- _paginate: false -->
 <!-- _footer: 'Source: The Carbon Layer · [Harness Engineering Masterclass, 6:15](https://youtu.be/mQfTdNVCOB0?t=375)' -->
@@ -189,65 +221,40 @@ Python can access?
 
 ---
 
-## A Python function can obtain the file
+## Context delivery: include the file contents
 
-**Provided in Step 4:**
+**Purpose:** give the model relevant material without requiring
+the developer to paste it or the model to request a tool.
 
-```python
-def read_file(file_name: str) -> str:
-    path = resolve_in_sandbox(file_name)
-    if not path.is_file():
-        return f"ERROR: file not found: {file_name}"
-    return path.read_text()
+In Claude Code:
+
+```text
+Explain @discount.py alongside @test_checkout.py
 ```
 
-Check the path, check that a file exists, return text or an error.
+The harness expands the references and inserts the file contents.
+This works like an **include**, chosen by the developer.
 
-This code obtains information locally.
-How does that information reach the next model call?
+A plain filename mentions a file; `@filename` requests its inclusion.
 
-<!-- The sandbox helper is supplied in Step 3 and explained later in this lecture. Defining this function alone does not make model-directed reading work: declaration and dispatch are still needed. -->
+<!-- First course slide after Carbon image 07 begins with purpose. Source: https://code.claude.com/docs/en/common-workflows#reference-files-and-directories . File inclusion does not require a model-selected tool call. A directory reference supplies a listing, not every file's contents. -->
 
 ---
 
-## Delivery finishes when the result enters context
+## Delivery policy belongs to the harness
 
-**Provided in Step 6** (line-wrapped):
+For an include mechanism, the harness must decide:
 
-```python
-messages.append({
-    "role": "tool",
-    "tool_call_id": tc["id"],
-    "content": str(result),
-})
-```
+- Which marker syntax identifies a reference?
+- How are injected contents labeled?
+- Where do they appear relative to the question?
+- How much content may be included?
 
-File on disk → Python result → message → next model call.
+**Toy limit:** no special `@file` handling.
+**Possible extension:** expand references before calling the model,
+check their paths, and label and bound the inserted content.
 
-Step 8's `list_files` lets the model discover names before reading.
-
-**Predict:** if the tool reads a file but we omit this append,
-does the model receive the contents?
-
-<!-- Answer: no. Both request and response are needed in the next API payload. Merely printing a tool result in the terminal is not delivery to the model. We will return to the call ID under tool interfaces. -->
-
----
-
-## Context delivery: Claude Code and the toy
-
-**Claude Code:** explicit references such as
-`Explain @discount.py alongside @test_checkout.py`,
-plus file reads, searches, and command output.
-
-**Toy:** user messages and returned file contents/listings.
-Students run `pytest`; its output is not automatically supplied.
-
-**Toy limit:** no special `@file` expansion or repository search.
-**Possible extension:** expand checked file references or add search.
-
-More available context creates a new question: **what matters now?**
-
-<!-- Claude source: https://code.claude.com/docs/en/common-workflows#reference-files-and-directories . A directory reference gives a listing, not all contents. Check understanding: a generic fix without project reads points to missing context delivery. A future test tool could deliver failure output, but execution needs additional boundaries. -->
+<!-- This section follows the revised notes: developer-controlled injection is the example before tools are introduced. The toy still receives typed user messages; it simply lacks an include mechanism. Search or test-running tools are further extensions considered later. -->
 
 ---
 
@@ -261,6 +268,23 @@ More available context creates a new question: **what matters now?**
 
 ---
 
+## Context management: handle a finite window
+
+**Purpose:** keep useful context available as the conversation grows,
+without filling the model's input with obsolete or irrelevant material.
+
+When the window fills, possible responses include:
+
+- **Clear:** start again and supply the necessary context.
+- **Summarize:** retain a shorter account, with possible information loss.
+
+What must the summary preserve?
+What should be excluded even before the window is full?
+
+<!-- Purpose first after Carbon image 08. Follow the notes' capacity problem before the selection mechanisms in image 09. Preserve the current goal, constraints, evidence, and unresolved questions. Compaction can lose details; source files may need to be reread. -->
+
+---
+
 <!-- _class: source -->
 <!-- _paginate: false -->
 <!-- _footer: 'Source: The Carbon Layer · [Harness Engineering Masterclass, 8:14](https://youtu.be/mQfTdNVCOB0?t=494)' -->
@@ -271,41 +295,41 @@ More available context creates a new question: **what matters now?**
 
 ---
 
-## The toy keeps accumulating context
+## Context management: select what matters now
 
-**Step 5 request payload fragment:**
+**Purpose:** keep the current request useful by selecting, limiting,
+or summarizing context while preserving the task and instructions.
+
+**Toy, Step 5 payload fragment:**
 
 ```python
 json={"model": MODEL, "messages": messages, "tools": tools},
 ```
 
-Step 6 appends responses and tool results to `messages`.
-Every new request sends the growing history and tool schemas.
-
-A useful source read and a huge unrelated log both get appended.
-An old file result remains an old snapshot after an edit.
+Step 6 appends responses and results; every call resends the history.
+Useful source reads and huge unrelated logs accumulate alike.
 
 **Step 7's turn cap limits calls, not context size.**
 
-<!-- MAX_TURNS applies within one user interaction. One result can already be huge; history persists across interactions. It is not a complete spend cap either. Ask whether 25 calls solves a huge obsolete log: no. -->
+<!-- First course slide after Carbon image 09 restates purpose before implementation. A prior file result remains an old snapshot after edits. MAX_TURNS applies within one user interaction; neither result size nor accumulated history is bounded. It is not a complete spend cap. -->
 
 ---
 
 ## Context management: Claude Code and the toy
 
-**Claude Code:** `/context` shows usage; `/compact` and automatic
-compaction make room by reducing conversation detail.
+**Claude Code:** `/context` reports usage; `/compact` and automatic
+compaction reduce conversation detail to make room.
 
-**Tradeoff:** a shorter summary can lose something needed later.
+**Tradeoff:** a shorter summary can omit information needed later.
 
 **Toy limit:** no compaction or context budget.
-**Possible extension, before `call_zen`:** preserve the task and rules,
-bound large outputs, summarize older completed exchanges.
+**Possible extension:** a compact command or automatic preparation
+before `call_zen`, preserving the task, rules, and unresolved questions.
 
-Keep tool requests and their required results together.
-Caching can reduce processing costs; it does not filter context.
+Keep tool requests and required results together.
+Caching reduces repeated processing; it does not filter context.
 
-<!-- Source: https://code.claude.com/docs/en/how-claude-code-works#the-context-window . Explicitly flag the extension as unimplemented. Do not imply deleting arbitrary old messages is safe. Lecture 6 returns to costs and compaction tradeoffs. -->
+<!-- Source: https://code.claude.com/docs/en/how-claude-code-works#the-context-window . Mark the extension as absent from the toy. Arbitrary message deletion can leave an invalid exchange. Lecture 6 returns to costs and compaction tradeoffs. -->
 
 ---
 
@@ -316,6 +340,22 @@ Caching can reduce processing costs; it does not filter context.
 ![Tools give the model structured ways to request action](../../carbon-layer/11-tool-interface.png)
 
 <!-- 29–39 min: tools. Useful context enables a decision, but writing I fixed it does not edit a file. We need a declared operation, local implementation, dispatch, and feedback. -->
+
+---
+
+## Tool interfaces: turn decisions into operations
+
+**Purpose:** let the model request actions and learn from their results.
+
+Instructions and included files support a conversation.
+Saying “change the discount calculation” does not edit the file.
+
+A tool pairs a **function** with a **schema** describing its name,
+purpose, and parameters.
+
+Model requests → harness executes → result enters context → repeat.
+
+<!-- Purpose first after Carbon image 11. This closes the loop that makes the system act. The conceptual progression includes @path injection; the assigned toy lacks that mechanism. Its file-reading tools belong in this section. -->
 
 ---
 
@@ -341,9 +381,9 @@ READ_FILE_SCHEMA = {
 }
 ```
 
-The description guides selection; the parameters describe arguments.
+The name identifies the function; the schema describes its JSON arguments.
 
-<!-- Provided schema, reformatted. The model receives metadata, not the Python function. A better description could explain relative paths and when to read; schema metadata does not replace runtime checks. -->
+<!-- Provided schema, reformatted. The model receives metadata, not the Python function. The model formats argument JSON from the schema; the harness parses it into Python parameters. Schema metadata does not replace runtime checks. -->
 
 ---
 
@@ -352,19 +392,19 @@ The description guides selection; the parameters describe arguments.
 **Provided in Step 5:**
 
 ```python
-TOOLS_SCHEMA = [READ_FILE_SCHEMA]
 TOOLS_DICTIONARY = {"read_file": read_file}
+TOOLS_SCHEMA = [READ_FILE_SCHEMA]
 ```
 
-| Structure | Where it goes | What it does |
-|---|---|---|
-| `TOOLS_SCHEMA` | API request | Advertises tools to the model |
-| `TOOLS_DICTIONARY` | Stays in Python | Maps a requested name to a function |
+| Structure | What it tells its recipient |
+|---|---|
+| `TOOLS_SCHEMA` → model | Tool names, purposes, and argument format |
+| `TOOLS_DICTIONARY` → harness | Which Python function a tool name identifies |
 
-Before dispatch exists, the model can request a read,
-but the program does not execute it or return its result.
+The model returns JSON arguments.
+The harness parses them, calls the function, and returns its result.
 
-<!-- The model does not see our dictionary of function objects. Adding only one registration is incomplete. Step 5's empty printed reply may actually be a tool request in another field. -->
+<!-- Match the revised explanation: the string read_file identifies the callable read_file. Only the metadata travels to the model; function objects stay in the harness. Step 5 alone can advertise a tool but cannot execute the request until dispatch is added. -->
 
 ---
 
@@ -436,15 +476,32 @@ Step 9's verbose mode shows tool names, arguments, and results.
 **Claude Code:** file/search tools, Bash, and connected MCP tools.
 
 **Toy:** `read_file`, `list_files`, and `write_file` (or `edit_file`).
-Adding the latter tools enables discovery and actual edits.
+Adding these tools enables discovery and actual edits.
 
-**Toy limit:** no command runner or MCP connection.
-**Possible extension:** add a declaration and implementation,
-return useful results, and define the new operation's boundaries.
+**Toy limit:** no Bash runner or MCP connection.
+**Possible extension:** add these interfaces with registered
+implementations and useful results.
 
-A valid tool request still leaves a question: **where may it act?**
+Actions also introduce a new responsibility: **guardrails**.
 
-<!-- Sources: https://code.claude.com/docs/en/how-claude-code-works#tools and https://code.claude.com/docs/en/mcp . MCP is an interface mechanism, not automatic authority. Students run pytest themselves in the base exercise. -->
+<!-- Sources: https://code.claude.com/docs/en/how-claude-code-works#tools and https://code.claude.com/docs/en/mcp . Students run pytest themselves; its output does not automatically enter the toy's context. MCP is an interface mechanism, not permission to perform every available action. -->
+
+---
+
+## Tool actions need harness guardrails
+
+An **approval gate** can require confirmation before an action runs.
+If required approval is absent, the gate rejects the call: **fail closed**.
+
+A **sandbox** limits the resources an executing tool can affect.
+Shell execution needs an environment with enforced boundaries.
+
+**Toy:** path rejection and a turn cap, but no interactive approval
+gate, Bash tool, or OS sandbox.
+
+Next: how the execution environment enforces those boundaries.
+
+<!-- Reflect the new guardrail discussion in the notes without attributing an approval gate to the toy. Policies may prohibit an action outright; approval is not a universal override. A path helper or working directory alone does not isolate Bash from the host. -->
 
 ---
 
@@ -455,6 +512,22 @@ A valid tool request still leaves a question: **where may it act?**
 ![Execution environments bound what actions can affect](../../carbon-layer/13-execution-environment.png)
 
 <!-- 39–47 min: execution environments. A syntactically valid write request could target the wrong file. The execution layer must enforce scope even if instructions are ignored. -->
+
+---
+
+## Execution environments: enforce action boundaries
+
+**Purpose:** decide where tools run and what they can read, change,
+or contact—even when the model requests the wrong action.
+
+A valid `write_file` request could still name an outside file.
+
+Permission controls decide whether a call may proceed.
+An execution sandbox constrains what a running operation can affect.
+
+The toy illustrates one part: checked paths under `sandbox/`.
+
+<!-- Purpose first after Carbon image 13, before the supplied helper. Distinguish project working directory, permission gate, and runtime confinement. A directory name by itself does not enforce a boundary. -->
 
 ---
 
@@ -496,14 +569,14 @@ Step 6 catches the exception and delivers an error result.
 
 **Predict:** what is constrained if we define the helper but never call it?
 
-<!-- Answer: nothing about file access. Adding Step 3 creates the directory but the check must be on every tool path. Windows C:/... is generally relative on macOS/Linux; do not use it as a portable absolute-path example. Valid containment does not guarantee file existence or successful I/O. -->
+<!-- Answer: nothing about file access. Adding Step 3 creates the directory but the check must be on every tool path. Valid containment does not guarantee file existence or successful I/O. -->
 
 ---
 
 ## Execution environments: Claude Code and the toy
 
-**Claude Code:** working directory, permission decisions, and a
-configured Bash sandbox that restricts filesystem/network access.
+**Claude Code:** the directory where you launch it, permission
+decisions, and a configured Bash sandbox for filesystem/network limits.
 
 **Toy: partial.** The helper checks its filesystem-tool arguments.
 It does not isolate Python or constrain arbitrary child processes.
@@ -511,10 +584,9 @@ It does not isolate Python or constrain arbitrary child processes.
 **Possible extension:** a test runner needs process, filesystem,
 network, credential, timeout, and approval boundaries.
 
-Even `pytest` executes project code.
-A worktree separates files; it is not an OS sandbox.
+What happens to completed and unfinished work if the agent stops?
 
-<!-- Source: https://code.claude.com/docs/en/sandboxing . Distinguish permissions before a tool call from OS restrictions while sandboxed Bash and its children run. The toy helper is not hardened against concurrent path changes. A command allowlist alone does not constrain everything an allowed program can do. -->
+<!-- Source: https://code.claude.com/docs/en/sandboxing . Even pytest executes project code. A worktree separates working files without providing OS isolation. The helper is not hardened against concurrent path changes. Use interruption to motivate durable state. -->
 
 ---
 
@@ -525,6 +597,23 @@ A worktree separates files; it is not an OS sandbox.
 ![Durable state preserves progress beyond current attention](../../carbon-layer/15-durable-state.png)
 
 <!-- 47–55 min: durable state. An execution environment is a place to work, but tasks can stop and resume. Distinguish artifacts and progress records from a current prompt. This is the final primitive today. -->
+
+---
+
+## Durable state: preserve work for continuation
+
+**Purpose:** keep completed work, evidence, and unfinished steps
+available outside the model's current context.
+
+An edit may be complete even though testing is still pending.
+
+Durable state supports:
+
+- Restarting the same agent after an interruption.
+- Handing work to another agent.
+- Continuing with a different model.
+
+<!-- Purpose first after Carbon image 15. Examples include files, plans, diffs, logs, session records, and memory notes. The next worker needs both artifacts and an account of what was done and remains uncertain. Stored claims are not automatically verified facts. -->
 
 ---
 
@@ -567,18 +656,18 @@ inspect actual files before repeating the operation.
 
 ## Stored, retrieved, and in context are different
 
-A saved plan can participate in three responsibilities:
+A plan can support a resumed session or a handoff:
 
 | Responsibility | What happens to the plan |
 |---|---|
-| Durable state | Keeps the plan outside the running conversation |
-| Context delivery | Reads it into a later request |
-| Context management | Selects the parts needed for the current task |
+| Durable state | Keeps the goal, changes, evidence, and next steps |
+| Context delivery | Includes it in the next agent's input, e.g. `@plan.md` |
+| Context management | Selects the parts relevant to the current task |
 
 Saving the next step does not schedule or execute that step.
 That leads to **orchestration**, beyond today's scope.
 
-<!-- Ask the restart question: a fix remains on disk, but neither the reason nor test status is automatically recovered. Students should name the missing state and the mechanism to deliver it. -->
+<!-- Durable state supports the same agent restarting, a handoff to another agent, or continuation with a different model. A saved artifact still has to be delivered; raw provider-specific message histories need not be portable. Do not expand into orchestration or subagent mechanics here. -->
 
 ---
 
@@ -587,10 +676,11 @@ That leads to **orchestration**, beyond today's scope.
 ## Claude Code: observe the harness
 
 Which instructions and facts were supplied?
+What did the developer include, and what did the model request?
 What context was retained or summarized?
 Which tool acted, and what came back?
 What enforced its boundary?
-What progress will survive?
+What progress survives for a restart or handoff?
 
 <!-- 55–70 min: 15-minute demo block reserved. Scenario and script are intentionally deferred to the next instructor discussion. These are observation prompts, not an approved live sequence. Later prepare a rehearsal record and static fallback. -->
 
@@ -600,10 +690,10 @@ What progress will survive?
 
 | What you observe | Where to investigate |
 |---|---|
-| Generic fix; no project files read | Context delivery |
+| Generic fix; no project files in context | Context delivery |
 | A huge obsolete log in every request | Context management |
 | Outside path rejected before a read | Execution boundary and error feedback |
-| Files survive, but the task history is gone | Durable state and retrieval |
+| Files survive; continuation or handoff lacks task history | Durable state and retrieval |
 
 Ask **which harness responsibility was missing or inadequate**,
 alongside questions about model capability.
@@ -624,25 +714,18 @@ Reflect on two Claude Code capabilities the toy lacks,
 and point to where each could be added.
 
 Extensions from this lecture are discussion ideas, not extra work.
-**Due: start of week 4.**
 
 <!-- Launch the unchanged exercise. The required turn cap and path boundary remain graded. Refer to current starter/setup for model access; no shared Anthropic key or price promise. -->
 
 ---
 
-## Before Lecture 6
+## Next lecture
 
-[Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+Context costs, compaction tradeoffs, memory, and verification.
 
-[Agentic Development Principles](../student-repo/handouts/handout-agentic-principles.md)
+**Project 0 will be given at the end of the next lecture.**
 
-[NautilusTRX pass retrospectives](../student-repo/handouts/handout-nautilustrx-retrospectives.md)
-
-Project 0 kickoff: end of this week.
-
-Next: context costs, compaction tradeoffs, memory, and verification.
-
-<!-- Reading reminder; finish within the 70–75 minute close. -->
+<!-- Match the revised lecture notes. No additional pre-class readings or end-of-week Project 0 deadline are assigned here. -->
 
 ---
 
@@ -653,6 +736,8 @@ Next: context costs, compaction tradeoffs, memory, and verification.
 The Carbon Layer, [Harness Engineering Masterclass](https://www.youtube.com/watch?v=mQfTdNVCOB0),
 opening through Durable state (approximately 0:00–16:00).
 The eleven source images retain their third-party provenance.
+[Carbon's staged Python implementation](https://github.com/thecarbonlayer/carbon)
+offers a more extensive tour of the primitives.
 
 [Local primitive summary](../../carbon-layer/harness-architecture-primitives.md) ·
 [Transcript](../../carbon-layer/harness-engineering-masterclass-transcript.md) ·

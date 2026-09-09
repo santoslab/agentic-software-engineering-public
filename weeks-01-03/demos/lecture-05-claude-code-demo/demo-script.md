@@ -60,11 +60,12 @@ the source of truth for what the class will see.
    Segment 0:
 
    ```sh
-   python3 -m pytest -q     # expect: 2 failed
+   pytest -q     # expect: 2 failed
    ```
 
-   (pytest must be installed: `python3 -m pip install pytest`, or use a
-   virtual environment.)
+   (The `pytest` command must be on your PATH: `pipx install pytest`,
+   `pip install pytest` inside a virtual environment, or your platform's
+   package manager.)
 
 4. **Claude Code ready, default permission mode.** Logged in, and *not* in
    an auto-accepting mode — the permission prompts are teaching material.
@@ -84,7 +85,7 @@ the source of truth for what the class will see.
 
 ## Segment 0 — framing (with lecture §1, ~1 min)
 
-**Do (shell):** show the project — `ls`, then `python3 -m pytest -q`.
+**Do (shell):** show the project — `ls`, then `pytest -q`.
 
 **Expected:** three small Python files plus the three Markdown files; two
 test failures.
@@ -347,7 +348,7 @@ listed, durable artifacts.)
 quoted per the memory note; `NOTES.md` updated to its final state.
 **[fallback capture]**
 
-**Do (shell, after `/exit`):** confirm independently — `python3 -m pytest -q`
+**Do (shell, after `/exit`):** confirm independently — `pytest -q`
 and `git diff`.
 
 **Observe & say:** replay the lecture's what-survives table against what just

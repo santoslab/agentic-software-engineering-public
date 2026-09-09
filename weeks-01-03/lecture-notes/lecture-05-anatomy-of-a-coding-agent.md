@@ -5,13 +5,28 @@
 > **The one idea:** effective coding agents depend on engineering around the model:
 > what it sees, how it acts, the boundaries on those actions, and what survives afterward.
 
+## Lecture Purpose
+
+We've had two weeks of introductory material:
+ - How an LLM works, how to turn an LLM into a ChatBot, how to turn a ChatBot into a coding agent.  In this, we discussed that a "harness" is the code that surrounds an LLM to turn it into either a ChatBot or a coding agent.  For a coding agent, one important role of the harness was to actually implement tool calls that an LLM requests for carrying out tasks on your code base.
+ - basics of Claude Code
+
+This lecture "circles back around" and moves the introductory material onto a more rigorous footing by introducing architectural building blocks for coding agent implementations (our source material uses the term "primitives" instead of building blocks -- we will use these terms interchangeably in this lecture).  These building blocks represent concepts that a coding agent harness needs to implement.  
+
+Identifying distinct harness resposibilities as building blocks is a good pedagoical tool -- it is enables us to understand (and even build) a harness in bite-sized chunks.  It also clarifies for us the distinct roles that are played by the code that you may see in a harness. 
+
+We'll introduce these building blocks and tie the lectures from the last two weeks together by discussing how the concepts are realized in both the toy coding agent and in Claude Code.
+
 ## 1. A model, a runtime, and a harness
 
-Suppose you ask an LLM to fix a failing test in your codebase that calculates discounts on shopping prices.  The LLM know Python and common
-discount calculations, but it does not know the contents of your
-`discount.py`. Someone must supply that information. If it proposes an edit, someone
-must perform it. If you close the agent (e.g., Claude) halfway through, something must preserve
-the work. These responsibilities belong to the system around the model called the "harness".
+Let's recall the distinction between the model (LLM) and the coding agent harness.
+
+Suppose you ask an LLM to fix a failing test in your codebase that calculates discounts on shopping prices
+(this is a scenario that you will address with your toy agent in Exercise 04).  
+Recall that the model just takes as input a text string and produces an output text string.
+
+The model knows Python and common discount calculations (because that was part of its general training), 
+but it does not know the contents of *your* `discount.py`. Someone must supply that information. If it proposes an edit, someone must perform it. If you close the agent (e.g., Claude) halfway through, something must preserve the work. These responsibilities belong to the system around the model called the "harness".
 
 This lecture follows the first six primitives in The Carbon Layer's
 [*Harness Engineering Masterclass*](https://www.youtube.com/watch?v=mQfTdNVCOB0),
@@ -19,7 +34,7 @@ through **Durable state**. The [local summary of primitives (harness building bl
 and [transcript](../../carbon-layer/harness-engineering-masterclass-transcript.md)
 provide the source material for this lecture.   Note: because the area of harness engineering is so new, there is not a generally accepted approach for categorizing harness features.  However, 
 the categorization providing by the Carbon Layer material is the best that we have seen.
-It also have the advantage that it is backed up by a complete implementation of a harness in Python (step-by-step, matching the introduction of the primitives in the YouTube video) on [github](https://github.com/thecarbonlayer/carbon).
+It also has the advantage that it is backed up by a complete implementation of a harness in Python (step-by-step, matching the introduction of the primitives in the YouTube video) on [github](https://github.com/thecarbonlayer/carbon).
 
  ![A model receives input and produces output.](../../carbon-layer/02-model-inputs-outputs.png)
 
@@ -35,6 +50,10 @@ good harness design gives it ways to obtain evidence or ask for clarification.
 ![The agent runtime repeats observation, decision, and action.](../../carbon-layer/03-ReAct-pattern.png)
 
 *Source: The Carbon Layer, [2:39](https://youtu.be/mQfTdNVCOB0?t=159).*
+
+There is a special part of the harness that The Carbon Layer refers to as "the runtime".
+In essense, the runtime is the part of the harness that manages the tools calls and the reporting 
+of the tool call results back to the model.
 
 The runtime repeats a cycle: give the model the current context, receive a decision,
 execute any permitted tool requests, and return observations for another decision.
@@ -77,10 +96,10 @@ discount bug while preserving the tests. Because the toy agent only supports lim
 
 *Source: The Carbon Layer, [3:45](https://youtu.be/mQfTdNVCOB0?t=225).*
 
+**Primitive Definition**  Context supplied to the model that indicates (a) general goals and character for the agent -- who the agent is, what work it does, its tone, constraints, and coding rules, and (b) project-specific information and guidelines.  This is context that the model needs to know on every turn to be effective, but we don't want the developer to have to manually enter each time.   So the harness provides a way of setting instructions for the agent and for allowing the developer to set their own instructions (globally, and/or per-project).   The instructions include the system prompt (which the developer can't see or modify) as well as files like `CLAUDE.md` which the developer can write to add their own global and per-project instructions.  "Instructions" establish recurring expectations so the user does not need to restate them every turn.  
+
 **Why we need this primitive.** A request to fix a bug leaves many choices open:
 what the architecture of the project looks like, the primary technologies and tools used in the project, preferences for documenting tests and summarizing test results, etc. 
-Context content which the Carbon Layer calls "Instructions" establish recurring 
-expectations so the user does not need to restate them every turn.  
 
 **In Claude Code.** In Claude Code, Claude's "system prompt" (which we cannot see directly) are "Instructions" in the Carbon Layer Categorization.   The most visible notion of "Instructions" are Claude's `CLAUDE.me` files, which provide project guideance.  
 Project guidance can live in `CLAUDE.md` and rules under
@@ -136,6 +155,7 @@ The model needs the actual requirements and code: **context delivery**.
 
 *Source: The Carbon Layer, [6:15](https://youtu.be/mQfTdNVCOB0?t=375).*
 
+**Primitive Definition.** 
 This primitive is a bit harder to understand.  The general idea is that a harness has the task of assembling the input to the model from a variety of sources.  That is to say, "Context delivery" answers how information reaches the model.   But we can't really understand the intracies of all that this might involve until later.  The concept that we use to illustrate this at present is a bit subtle because what it accomplishes is closely related to a `Read file` tool call -- which is addressed in a later primitive.  The idea that we use to illustrate this concept here is that we can, as we are prompting or giving instructions, force the contents of a file into the context.  In Claude Code, this is done with the `@` mechanism (e.g., `@filename.ext`).  This is technically not a tool call.  It's more like an "include" that the harnass processes on our behalf to insert the contents of `filename.ext` into the context.  Thus, the harness is "delivering context", not just from our prompt or from the "Instructions" (system prompt, `CLAUDE.md`) but from another mechanism, controlled by us.  That pushes the content of `filename.ext` into the context.  Later on we will see that of course we can mention mention `filename.ext` as we discuss with Claude, and it will likely initially a tool call to read the file.  The distincition is subtle, with the `@` mechanism, we are forcing (pushing) the content into the context based on a decision we make.  With the tool call, the model is "pulling" the content into the context based on a decision it makes.
 
 **Why we need this primitive.** Imagine, that we have not added the concept of tool calls yet.  That means that the only material that gets delivered in the context comes from the "Instructions" or what we type in the conversation.  Before this primitive, if we want the model to understand the contents of a particular file, we would have to type or paste the contents of the file into the dialog.  With this example of "Context Delivery", we are providing extra ways for developer to build appropriate context via an "include" mechanism.

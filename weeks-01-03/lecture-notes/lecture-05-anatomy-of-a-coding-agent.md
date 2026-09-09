@@ -7,27 +7,27 @@
 
 ## 1. A model, a runtime, and a harness
 
-Suppose you ask an LLM to fix a failing test in your codebase.  The LLM know Python and common
-discount calculations, but it does not thereby know the contents of your
+Suppose you ask an LLM to fix a failing test in your codebase that calculates discounts on shopping prices.  The LLM know Python and common
+discount calculations, but it does not know the contents of your
 `discount.py`. Someone must supply that information. If it proposes an edit, someone
-must perform it. If you close the program halfway through, something must preserve
-the work. These responsibilities belong to the system around the model.
+must perform it. If you close the agent (e.g., Claude) halfway through, something must preserve
+the work. These responsibilities belong to the system around the model called the "harness".
 
 This lecture follows the first six primitives in The Carbon Layer's
 [*Harness Engineering Masterclass*](https://www.youtube.com/watch?v=mQfTdNVCOB0),
-through **Durable state**. The [local summary](../../carbon-layer/harness-architecture-primitives.md)
+through **Durable state**. The [local summary of primitives (harness building blocks)](../../carbon-layer/harness-architecture-primitives.md)
 and [transcript](../../carbon-layer/harness-engineering-masterclass-transcript.md)
-provide the source material. This is a practitioner's architectural vocabulary,
-not a universally agreed standard. The responsibilities overlap; a file-reading
-tool is both an action interface and a way to deliver context.
+provide the source material for this lecture.   Note: because the area of harness engineering is so new, there is not a generally accepted approach for categorizing harness features.  However, 
+the categorization providing by the Carbon Layer material is the best that we have seen.
+It also have the advantage that it is backed up by a complete implementation of a harness in Python (step-by-step, matching the introduction of the primitives in the YouTube video) on [github](https://github.com/thecarbonlayer/carbon).
 
-![A model receives input and produces output.](../../carbon-layer/02-model-inputs-outputs.png)
+ ![A model receives input and produces output.](../../carbon-layer/02-model-inputs-outputs.png)
 
 *Source: The Carbon Layer, [1:01](https://youtu.be/mQfTdNVCOB0?t=61).*
 
 The model operates on the input supplied to a call, using what it learned during
 training. That input can include instructions, conversation history, file contents,
-and tool descriptions. The output can contain ordinary text or structured requests
+and tool descriptions.  Putting together that input in an effective way is the job of the harness.Once the model does its work, the output can contain ordinary text or structured requests
 for tools. The model does not directly execute the Python functions or shell
 commands that those requests name. Missing project information can lead it to guess;
 good harness design gives it ways to obtain evidence or ask for clarification.
@@ -38,6 +38,8 @@ good harness design gives it ways to obtain evidence or ask for clarification.
 
 The runtime repeats a cycle: give the model the current context, receive a decision,
 execute any permitted tool requests, and return observations for another decision.
+Part of your suggested reading in previous lectures included the paper by Yao et al. that 
+first proposed this approach and named this cycle (*ReAct*).  
 The ReAct pattern gives us a name for this interleaving of reasoning and action.
 The visible record contains requests and results; it is not a complete account of
 the model's internal reasoning.
@@ -66,9 +68,8 @@ Completions** message format. Claude Code illustrates the same architectural ide
 but its implementation and API details differ. In particular, the toy uses
 `tool_calls` and `role: "tool"` messages, not Anthropic's `tool_use` blocks.
 
-The recurring example is Exercise 4's three-file checkout project: `cart.py`,
-`discount.py`, and `test_checkout.py`. Students ask the agent to find and fix the
-discount bug while preserving the tests. Students run `pytest` themselves.
+The example that we use throughout this lecture is Exercise 4's three-file "micro task" checkout project: `cart.py`, `discount.py`, and `test_checkout.py`. Students ask the agent to find and fix the
+discount bug while preserving the tests. Because the toy agent only supports limited tool use concepts, students run `pytest` themselves (manually).
 
 ## 2. Instructions — establish how the agent should work
 
@@ -77,19 +78,19 @@ discount bug while preserving the tests. Students run `pytest` themselves.
 *Source: The Carbon Layer, [3:45](https://youtu.be/mQfTdNVCOB0?t=225).*
 
 **Why we need this primitive.** A request to fix a bug leaves many choices open:
-whether to inspect existing code first, how much to change, and what to report at
-the end. Instructions establish recurring expectations so the user does not need
-to restate them every turn. For the checkout task, reading before editing helps
-avoid replacing existing behavior with a guessed implementation.
+what the architecture of the project looks like, the primary technologies and tools used in the project, preferences for documenting tests and summarizing test results, etc. 
+Context content which the Carbon Layer calls "Instructions" establish recurring 
+expectations so the user does not need to restate them every turn.  
 
-**In Claude Code.** Project guidance can live in `CLAUDE.md` and rules under
+**In Claude Code.** In Claude Code, Claude's "system prompt" (which we cannot see directly) are "Instructions" in the Carbon Layer Categorization.   The most visible notion of "Instructions" are Claude's `CLAUDE.me` files, which provide project guideance.  
+Project guidance can live in `CLAUDE.md` and rules under
 `.claude/rules/`. Claude Code loads applicable guidance into context. These files
 can specify conventions and test commands, but their text is guidance rather than
-an access-control mechanism. Other harnesses use names such as `AGENTS.md`; Claude
-Code does not automatically treat that name as `CLAUDE.md` without an import or
-other setup. See [Claude Code's memory and instructions documentation](https://code.claude.com/docs/en/memory).
+an access-control mechanism (i.e., if you want to make sure that Claude Code doesn't look at other projects, or doesn't use certain tools, you need to use Claude Code's permissions and sandboxing features). Other harnesses use names such as `AGENTS.md`; Claude
+Code does not automatically treat `AGENTS.md` as `CLAUDE.md` without an import or
+other setup. Take time to look through [Claude Code's memory and instructions documentation](https://code.claude.com/docs/en/memory).
 
-**In the toy: present, with simpler loading.** Step 2 provides this prompt skeleton:
+**In the toy: "Instructions" are present, with dramatically simplified.** Step 2 provides this prompt skeleton:
 
 ```python
 SYSTEM = """You are ...
@@ -112,15 +113,15 @@ conversation. It does not change which Python functions exist or which paths the
 can access. The exercise's stylistic experiments make this distinction easy to
 observe: a pirate voice changes responses, not filesystem permissions.
 
-**Before → after.** The generic assistant receives task-specific operating guidance.
-Ask students to identify an instruction whose effect they could observe in a log.
+**Before → after.** The generic assistant receives general purpose (not task-specific) operating guidance. Ask students to identify an instruction whose effect they could observe in a log.
 One run may not exhibit a behavioral difference; instructions influence a model's
 choices rather than guaranteeing a particular tool sequence.
 
 **Limit and possible extension.** The toy does not discover or automatically load
 repository instruction files. A future version could read a project instruction
-file at startup and incorporate it into the initial context. That would move
-repeated guidance out of a hardcoded Python string.
+file (e.g., an `AGENTS.md` in the sandbox) at startup and incorporate it into the initial context. 
+
+The following motivates the need for our next harness primitive.
 
 ![Instructions cannot discover the project facts they refer to.](../../carbon-layer/06-context-delivery.png)
 
@@ -135,10 +136,9 @@ The model needs the actual requirements and code: **context delivery**.
 
 *Source: The Carbon Layer, [6:15](https://youtu.be/mQfTdNVCOB0?t=375).*
 
-**Why we need this primitive.** The checkout bug is a problem in particular files.
-The model needs the tests, the discount implementation, and enough of the caller
-to understand their relationship. A filename alone is a reference, not the contents
-of the file. Delivery turns available information into model input.
+This primitive is a bit harder to understand.  The general idea is that a harness has the task of assembling the input to the model from a variety of sources.  That is to say, "Context delivery" answers how information reaches the model.   But we can't really understand the intracies of all that this might involve until later.  The concept that we use to illustrate this at present is a bit subtle because what it accomplishes is closely related to a `Read file` tool call -- which is addressed in a later primitive.  The idea that we use to illustrate this concept here is that we can, as we are prompting or giving instructions, force the contents of a file into the context.  In Claude Code, this is done with the `@` mechanism (e.g., `@filename.ext`).  This is technically not a tool call.  It's more like an "include" that the harnass processes on our behalf to insert the contents of `filename.ext` into the context.  Thus, the harness is "delivering context", not just from our prompt or from the "Instructions" (system prompt, `CLAUDE.md`) but from another mechanism, controlled by us.  That pushes the content of `filename.ext` into the context.  Later on we will see that of course we can mention mention `filename.ext` as we discuss with Claude, and it will likely initially a tool call to read the file.  The distincition is subtle, with the `@` mechanism, we are forcing (pushing) the content into the context based on a decision we make.  With the tool call, the model is "pulling" the content into the context based on a decision it makes.
+
+**Why we need this primitive.** Imagine, that we have not added the concept of tool calls yet.  That means that the only material that gets delivered in the context comes from the "Instructions" or what we type in the conversation.  Before this primitive, if we want the model to understand the contents of a particular file, we would have to type or paste the contents of the file into the dialog.  With this example of "Context Delivery", we are providing extra ways for developer to build appropriate context via an "include" mechanism.
 
 **In Claude Code.** A prompt can explicitly include a file with an `@` reference,
 such as `Explain @discount.py alongside @test_checkout.py`. The harness can also
@@ -146,43 +146,9 @@ deliver information through file-reading and search tools, or command output.
 Referencing a directory supplies a listing, not every file's contents. See
 [file and directory references](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories).
 
-**In the toy: present through user input and tool results.** Step 4 supplies the
-file-reading function:
+**Why this is a primitive**
+The harness must define a delivery policy: which marker syntax counts as a reference, how injected blocks are labeled, where they appear relative to the question, and how large they may be. The `@` syntax is a convention selected by Claude Code.
 
-```python
-def read_file(file_name: str) -> str:
-    path = resolve_in_sandbox(file_name)
-    if not path.is_file():
-        return f"ERROR: file not found: {file_name}"
-    return path.read_text()
-```
-
-This function first obtains an allowed path, checks that it names a file, and
-returns either its text or an explicit error. Returning text from Python is only
-part of delivery. Step 6 puts the result into the conversation sent on the next call:
-
-```python
-messages.append({
-    "role": "tool",
-    "tool_call_id": tc["id"],
-    "content": str(result),
-})
-```
-
-The full route is **file on disk → Python return value → tool-result message → next
-model call**. If we execute the function but omit the append, the model does not
-receive what it read. Step 8's `list_files` adds discovery: the model can obtain
-names before choosing which file to read.
-
-**Before → after.** Initially, asking about `test_file.txt` supplies only its name.
-Once the function, declaration, and loop are connected, its contents can enter
-context. This is why Step 4 alone does not finish the behavior: the later wiring
-matters too.
-
-For micro-task B, a student runs `pytest sandbox` before and after the agent's work.
-The base toy has no command-running tool. Terminal output does not automatically
-enter its messages; a student would have to provide it to the model. The agent can
-read test source and change code without having executed those tests.
 
 **Limit and possible extension.** The toy has no special `@file` handling or repository
 search. Future delivery could expand explicit file references after applying the
@@ -190,8 +156,7 @@ same path checks, or add a focused search tool. A bounded test-running tool coul
 return failures directly, but executing code introduces the environment concerns
 in section 6.
 
-Delivery answers how information reaches the model. With a large repository or a
-long session, we also need to choose how much information belongs there now.
+"Context Delivery" answers how information reaches the model.  Our next primitive is motivated by the fact that, with a large repository or a long session, we also need to choose how much information (and what information) belongs in the context at the present time.
 
 ## 4. Context management — keep the current input useful
 
@@ -199,9 +164,9 @@ long session, we also need to choose how much information belongs there now.
 
 *Source: The Carbon Layer, [7:02](https://youtu.be/mQfTdNVCOB0?t=422).*
 
-**Why we need this primitive.** Reading an entire large log to find one failure
-spends context on irrelevant lines. Keeping an earlier, incorrect hypothesis in
-every request can also distract the model from newer evidence. Even material that
+**Why we need this primitive.** The model's context window is finite, so at some point (especially for a large project) it is going to fill up.  What should we do at that point?  Possible answers might include: clear the entire context, replace current full context with a summary (but then what determines would we keep in the summary?).   Even when we don't have a full context file, there are other issues that impact performance and cost.  Reading an entire session context to find 
+one failure spends context on irrelevant lines. Keeping an earlier, incorrect hypothesis in
+every model request can also distract the model from newer evidence. Even material that
 fits within the context window is not necessarily useful for the next decision.
 
 ![Context management selects, ranks, compresses, and assembles input.](../../carbon-layer/09-context-management-02.png)
@@ -238,17 +203,15 @@ the file on disk changes.
 
 **Before → after.** Compare a request before reading `discount.py` with one after
 reading it. The extra result helps. Now imagine reading a huge unrelated log: the
-same append mechanism admits that too. The mechanism delivers context without
-judging its value.
+same append mechanism admits that too. Our appoach to accumulating context in the toy agent
+delivers context without judging its value.
 
 Step 7's `MAX_TURNS` counts model calls during one user interaction. It prevents
 an endless tool loop but does not bound the size of a single response from a file
 tool, nor the history accumulated over multiple user interactions. It is also not
 a complete monetary budget: cost depends on the model and the tokens processed.
 
-**Limit and possible extension.** Insert a context-preparation step before
-`call_zen`: preserve standing instructions and the current task, limit large tool
-outputs with explicit truncation notices, and summarize older completed exchanges.
+**Limit and possible extension.** Include a command similar to `\compact` or a more automated context-preparation step before `call_zen`: preserve standing instructions and the current task, limit large tool outputs with explicit truncation notices, and summarize older completed exchanges.
 Keep a tool request and its required results together; arbitrary message deletion
 can leave an invalid conversation. Summaries should preserve unresolved questions
 and point back to files that can be reread. This is an extension idea, not additional
@@ -263,11 +226,16 @@ needs a structured way to request an action: a **tool interface**.
 
 *Source: The Carbon Layer, [10:46](https://youtu.be/mQfTdNVCOB0?t=646).*
 
-**Why we need this primitive.** Printing “I changed the discount calculation” does
-not edit a file. A tool interface names an operation, describes when and how to
+**Why we need this primitive.** 
+Up to this point in our addition of primitives, the agent can hold a conversation, obey an instruction layer, and answer questions about files the harness injects with `@path` — but everything it produces is still prose. The primitive of "Tool Interfaces" closes the loop that makes it an agent: the model returns structured tool calls, the harness executes them, appends each result to the conversation, and calls the model again until it produces a final answer.   With the addition of the tool call primitive, we improve the agent from a "talker" to a "do-er".
+
+To express this in terms of our toy agent's micro tasks, having the model reply “Change the discount calculation” does not edit a file. A tool interface names an operation, describes when and how to
 use it, and specifies its arguments. The runtime interprets the model's request,
 calls an implementation, and delivers the result. These are separate events that
 we can inspect when something fails.
+
+With this primitive, we need to start considering what are referred to as "harness guardrails" -- which are things that we build into the harness to control unwanted actions by the model.  In particular, the first types of guardrails that we need to address are: an approval gate that fails closed for boundary-crossing tools (i.e., disallow tool calls that violate our permissions unless their use is explicitly confirmed by the user), and developing a minimal sandbox (general area of your file system that agents are allowed to touch) so `bash` never runs on your host shell.
+
 
 **In Claude Code.** Built-in tools support file operations, search, and shell
 execution. An edit tool changes a file; Bash can run a test command and return
@@ -276,7 +244,11 @@ interface mechanism, not a grant of unlimited authority. See
 [Claude Code's tools](https://code.claude.com/docs/en/how-claude-code-works#tools)
 and [MCP connections](https://code.claude.com/docs/en/mcp).
 
-**In the toy: present.** Step 5 supplies the declaration below. This is Python
+It is important to remember that, in the world of harness engineering,  a "tool" is a function plus a schema — e.g., a plain Python callable function paired with a JSON-schema contract that names it, describes it, and types its parameters. The tool specifications live in a registry.  Every registered tool is presented to the model in a protocol the model is trained on and obeys.
+The harness uses the registry to carry out the following jobs: call the specific tool function for each a tool call request coming from the model (which parsing the JSON tool arguments written by the model into parameters than can be passed to the tool function), and return the string that is output by the tool back into the context.
+
+**In the toy agent: presenting the available tools to the model.** 
+Step 5 in the toy agent exercise supplies the declaration below. This is Python
 data describing the tool in the format sent to the API:
 
 ```python
@@ -299,23 +271,18 @@ READ_FILE_SCHEMA = {
 }
 ```
 
-The name identifies the operation; the description helps the model decide to use
-it; `parameters` describes an object containing a required string `file_name`.
-The description can be improved to explain relative paths and reading before
-editing. That text influences tool selection. The Python implementation still has
-to check what it actually receives; a schema is not filesystem enforcement.
+The name identifies the tool call function; the description helps the model decide when to use 
+it; `parameters` describes the nature of the parameters that need to get sent with the tool call.
+The model will use this schema to produce JSON-formatted paramters, which the harnass will parse and turn into actual parameters for a tool call function.
 
-Two registrations connect the model's view to the runtime's view:
+The following shows how the tool registry in our toy agent works if we only have a "read file" tool.  
 
 ```python
 TOOLS_DICTIONARY = {"read_file": read_file}
 TOOLS_SCHEMA = [READ_FILE_SCHEMA]
 ```
 
-`TOOLS_SCHEMA` travels to the model as data. `TOOLS_DICTIONARY` stays in the Python
-process and maps the returned name to a callable function. Supplying only the
-schema lets the model request an operation that the dispatcher cannot find.
-Supplying only the dictionary does not advertise that capability to the model.
+Note that the `TOOLS_SCHEMA` is sent to the model as data -- it tells the model what tools are available, what the identifier is for each tool (e.g., "read_file"), what each tool does, and how to format a call to a tool as JSON.   `TOOLS_DICTIONARY` stays in our harness.  It tells the harness what tool function to call (e.g., the Python function named `read_file`) when presented with the string identifier for the tool (e.g., `"read_file"`) that came from the model.
 
 ### Follow one request all the way around the loop
 
@@ -388,10 +355,7 @@ executes the request and returns the observation. Step 8 adds `list_files` and
 prints tool names, arguments, and results so students can inspect this transition.
 It does not print every API payload or expose all internal reasoning.
 
-**Limit and possible extension.** The base toy has filesystem tools, not Bash or MCP.
-A new tool needs both a declaration and a registered implementation, useful results,
-and boundaries appropriate to its effects. Even a perfectly formed request raises
-the question: **where, and with what authority, will it execute?**
+**Limit and possible extension.** The base toy has filesystem tools, not Bash or MCP.  Adding these would be an interesting addition.
 
 ## 6. Execution environments — enforce the boundaries of action
 
@@ -404,16 +368,17 @@ outside the exercise project. The harness must decide where tools run and what
 they may read, write, or contact. This is different from asking the model to be
 careful: restrictions must hold even when it requests the wrong thing.
 
-**In Claude Code.** The working directory establishes project context. Permission
+**In Claude Code.** The working directory (the file you launch Claude Code in) 
+establishes project context. Permission
 controls determine whether a tool call is allowed or needs approval. When configured,
 the sandboxed Bash tool applies operating-system restrictions to filesystem and
 network access for commands and child processes. Permissions and sandboxing serve
-different roles; putting code in a Git worktree separates working files but does
+different roles.  In advanced use of agents, 
+putting code in a Git worktree separates working files but does
 not itself restrict a process's access to the rest of the machine. See
 [sandboxing and permissions](https://code.claude.com/docs/en/sandboxing#how-sandboxing-relates-to-permissions-and-permission-modes).
 
-**In the toy: partial, through application-level path checks.** Step 3 supplies this
-complete helper and setup, shown without its comments:
+**In the toy: partial, through application-level path checks.** Step 3 in the toy agent exercise supplies this complete helper and setup, shown without its comments:
 
 ```python
 from pathlib import Path
@@ -428,28 +393,25 @@ def resolve_in_sandbox(file_name: str) -> Path:
     return resolved
 ```
 
-Read it in order. `__file__` names the agent script, so the sandbox is next to that
-script, even when you launch Python from another directory. `mkdir` creates the
+Read it in order. The `__file__` is a special Python identifier for the currently running file
+and `.resolve` turns that into a proper path.  The code says that a simple notion of sandbox
+(a directory named "sandbox" that is a sub-directory of the running python agent) will be used to bound the execution of tool calls.  `mkdir` creates the
 directory if necessary. Joining the root and the requested name constructs a
 candidate path; it does not by itself confine access. `resolve()` normalizes the
 path, including `..` and existing symlinks. `is_relative_to` checks path containment,
 not whether two strings happen to start alike. A path outside the sandbox causes a
 `ValueError`; an allowed path is returned to the caller.
 
-Step 4 uses the helper before reading, and Step 8's write skeleton uses it before
+Step 4 of the exercise uses the helper before reading, and Step 8's write skeleton uses it before
 writing. The dispatcher turns a rejected path into an error result. The restriction
 is enforced by Python even if the model asks to ignore its instructions.
 
 **Before → after.** Adding Step 3 creates the sandbox and defines a check, but a
-helper that nobody calls constrains nothing. Once every file operation goes through
-it, a request for `../../secrets.txt` is rejected before file I/O. A request for
+helper that nobody calls constrains nothing.   To fix this, we code every file operation 
+to go through `resolve_in_sandbox` function.  For example, a request 
+for `../../secrets.txt` is rejected before file I/O. A request for
 `discount.py` resolves inside the sandbox and may proceed. A permitted path can
 still fail for ordinary reasons, such as a missing file.
-
-One platform detail matters when observing the exercise: `C:/Windows/Temp/pwned.txt`
-is an absolute path on Windows, but generally a relative name on macOS/Linux.
-Do not interpret it as a portable rejection test. Parent traversal and a native
-absolute path outside the sandbox illustrate containment on the current platform.
 
 **Limit and possible extension.** This helper checks the paths passed to these
 filesystem functions. It does not isolate the Python process, restrict network
@@ -460,8 +422,7 @@ executes project code. A future version would need restricted process execution,
 filesystem/network policy, controlled credentials, timeouts, and appropriate
 approval decisions. A command allowlist alone does not supply all of that.
 
-The environment provides a place to work. It does not by itself preserve enough
-information to continue an interrupted task: that calls for **durable state**.
+To motive our next primitive, what happens if our agent gets interrupted?  Our instructions and other information does not record what the agent got accomplished (and perhaps what is yet to be done).  we would like the ability to continue an interrupted task: that calls for **durable state**.
 
 ## 7. Durable state — preserve progress beyond current attention
 
@@ -476,6 +437,8 @@ conversation can survive process exit and be inspected by another person or agen
 Examples include source files, plans, diffs, test logs, saved sessions, and memory
 notes. Persistence does not make a claim correct: a note saying “tests passed” is
 only as good as the evidence behind it.
+
+There is a subtle point in the description above that will only grow in importance as agentic software engineering improves over time:  We not only need durable state to enable the *same* agent to restart properly if interrupted, we need durable state to enable one agent to hand off to another (or when switching between different models in the same agent).
 
 **In Claude Code.** Conversation history is saved locally and can be reopened with
 `claude --continue` or `claude --resume`. This differs from starting a fresh session.
@@ -565,10 +528,7 @@ not extra implementation requirements.
 
 ## Before next lecture
 
-- [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents).
-- [Agentic Development Principles](../student-repo/handouts/handout-agentic-principles.md).
-- [NautilusTRX pass retrospectives](../student-repo/handouts/handout-nautilustrx-retrospectives.md).
-- Project 0 kickoff is due at the end of this week.
+- Project 0 will be given at the end of the next lecture.
 
 ## Sources and attribution
 
@@ -579,9 +539,8 @@ to the relevant moment above. These are third-party source images, not newly
 authored course diagrams; see the repository's [licensing notes](../../LICENSING.md).
 The later, dimmed primitives visible in the images are outside this lecture.
 
-The local `ch-*.md` files discuss a separate, more extensive staged implementation.
-They are not the implementation assigned in Exercise 4. Our toy-agent capability
-claims and code excerpts are grounded in the exercise and its starter.
+The local `ch-*.md` files discuss a separate, more extensive staged implementation of a Python coding agent.  They are not the implementation assigned in Exercise 4. Our toy-agent capability
+claims and code excerpts are grounded in the exercise and its starter.  The Carbon Layer materials provide an excellent and more in-depth tour of the anatomy of a coding agent.
 
 Claude Code examples use the official documentation linked in each section,
 checked September 8, 2026. Product commands and configuration can change; the

@@ -48,9 +48,6 @@ do not attribute those capabilities to the assigned toy.
   discussion (approximately 0:00–16:00), or the corresponding local transcript.
 - **Required:** Skim [Exercise 4](../exercises/exercise-04-toy-agent.md), especially
   Steps 3–6, and its [message-format guide](../exercises/exercise-04-starter/message-format-hints.md).
-- **Recommended:** Thorsten Ball, [How to Build an Agent](https://ampcode.com/how-to-build-an-agent),
-  as a complementary implementation narrative.
-- Ex. 2 due today.
 
 ## Topic outline
 
@@ -130,7 +127,7 @@ at the end. The student-facing notes collect all four for review.
 
 ## Exercise handoff and next lecture
 
-Assign [Exercise 4](../exercises/exercise-04-toy-agent.md), due at the start of week 4.
+Assign [Exercise 4](../exercises/exercise-04-toy-agent.md).
 Students work manually under its no-coding-agent-assistance instruction, with the
 provided code as their starting point. They complete the indicated portions,
 exercise the path boundary and turn cap, run both micro-tasks with verbose logs,

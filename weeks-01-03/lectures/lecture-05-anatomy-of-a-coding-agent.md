@@ -25,8 +25,9 @@ After this lecture, students can:
 
 Use the sequence **purpose → mechanism → Claude Code → toy code → limitation and
 possible extension** for each primitive. The recurring example is the discount bug
-in Exercise 4's three-file checkout project. This is a conceptual example throughout
-this lecture; the live-demo scenario has not yet been selected.
+in Exercise 4's three-file checkout project. The live demo works the same scenario
+in Claude Code; see the [demo script](../demos/lecture-05-claude-code-demo/demo-script.md)
+and Demo 1 below.
 
 After each primitive's Carbon Layer graphic, begin the next course slide with a
 visible summary of the primitive's purpose before introducing product features or
@@ -70,17 +71,41 @@ dimmed in the source images are outside this lecture.
 | 29–39 | Tool interfaces | Image 11, then purpose: move from prose to operations by closing the request/execute/result loop. A tool pairs a function with a schema. Explain the two registries, JSON arguments, Python dispatch, result delivery, and IDs using Steps 5–6; Step 9 makes calls visible. Introduce guardrails: approval gates that fail closed and bounded execution. Toy lacks Bash, MCP, and interactive approval; Step 7 adds the required turn cap. |
 | 39–47 | Execution environments | Image 13, then purpose: enforce what a tool may affect even when the model requests the wrong action. Claude: launch directory, permissions, configured Bash sandbox. Toy: supplied Step 3 helper and its callers in Steps 4/8; explain `__file__`, path resolution, containment, and error feedback. Distinguish a path helper or worktree from process isolation. Motivate durable state through interruption. |
 | 47–55 | Durable state | Image 15, then purpose: preserve work for restart, handoff to another agent, or a change of model. Claude: saved sessions/resume, persistent notes, plans and Git changes. Toy: files and manually copied logs survive; `messages` starts over. Extension: session save/load and a task summary with evidence and unfinished work, with an explicit interruption boundary. Connect storage, retrieval, and active context. |
-| 55–70 | Claude Code demonstrations | Reserved for the next demo-design discussion. Use the observation prompts below; no scenario or live script is committed yet. |
+| 55–70 | Claude Code demonstrations | Run Demo 1's segments consecutively here, or interleave each segment at the end of its primitive's block and reclaim this slot for discussion. Use the observation prompts below while students watch. |
 | 70–75 | Synthesis and Ex. 4 handoff | Diagnose a harness failure, then explain exercise expectations, manual test execution, logs, and reflection. Future extensions are discussion material, not extra deliverables. |
 
-## Demo block — reserved for separate design
+## Demos
 
-**Status:** the lecture content and a 15-minute slot are ready; demo selection and
-scripting are intentionally deferred to the next instructor discussion. Do not
-present the former toy-agent end-to-end script as an approved demo.
+### Demo 1 — Claude Code on the checkout micro-task (segmented)
 
-The eventual Claude Code demonstration should let students connect visible behavior
-to the content already introduced. These are observation prompts, not a script:
+- **Artifacts:** [`demos/lecture-05-claude-code-demo/`](../demos/lecture-05-claude-code-demo/) —
+  `starter/` (the Exercise 4 Micro-task B seed files plus `CLAUDE.md`,
+  `testing-guidelines.md`, and an empty `NOTES.md`),
+  `outside-the-project/fake-api-keys.txt`, a representative `completed/` state,
+  and the full [instructor script](../demos/lecture-05-claude-code-demo/demo-script.md).
+- **Setup (before class):** follow the script's checklist — copy the demo folder
+  outside the course repository (parent-directory `CLAUDE.md` files would leak
+  into context), `git init` the starter, confirm `pytest -q` shows two failures,
+  default permission mode, two terminals, and one full rehearsal with screenshots
+  captured at the script's marked fallback points.
+- **Script:** eight short segments in `demo-script.md`, one per primitive plus
+  framing and wrap: instructions (`CLAUDE.md`, `/memory`, the `STATUS:` header,
+  a `#` memory note), context delivery (model pull via a Read call vs developer
+  push via `@file`), context management (`/context`, `/compact`, `/clear`), tool
+  interfaces (the bug-fix task with JSON tool reports checked against the Ctrl+O
+  transcript), execution environments (a denied out-of-project read), and durable
+  state (exit mid-task, fresh-session handoff from `NOTES.md`, `claude --resume`,
+  tests run on resume). Segments interleave at the end of each primitive's
+  lecture block, or run consecutively in the 55–70 slot.
+- **Expected outcome:** two failing tests become two passing tests over the
+  session, and each primitive produces one piece of visible evidence (the
+  script's Segment 7 table lists them). No beat depends on a specific model
+  mistake or exact tool sequence; each has an "if it goes differently" note.
+- **Fallback:** the rehearsal screenshots/recording captured at the script's
+  **[fallback capture]** points; the `completed/` folder stands in for the end
+  state if the live run must be abandoned.
+
+While students watch, use these observation prompts:
 
 - Which standing instructions and project facts are available for this task?
 - What evidence did the developer push into context, what did the model request,
@@ -88,11 +113,6 @@ to the content already introduced. These are observation prompts, not a script:
 - Which tool request actually performed an action, and what result came back?
 - What enforces the execution boundary?
 - What persists, and how does a resumed session or another agent obtain it?
-
-Once the scenario is selected, prepare a rehearsal record and static fallback,
-check the installed Claude Code commands/settings, and keep the total demo time at
-15 minutes. Do not depend on a model making a particular mistake or choosing an
-exact tool sequence for a teaching point to work.
 
 ## Comprehension checks and instructor answers
 
@@ -143,7 +163,7 @@ question at the end. The student-facing notes collect the core scenarios for rev
   [file references](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories),
   [tools/context/sessions](https://code.claude.com/docs/en/how-claude-code-works), and
   [sandboxing](https://code.claude.com/docs/en/sandboxing), checked September 8, 2026.
-  Recheck the installed interface when rehearsing the eventual demo.
+  Recheck the installed interface when rehearsing the demo.
 - **If running long:** shorten discussion of extension designs and compress the
   recap. Preserve the request/result trace, sandbox explanation, and restart
   distinction. The notes provide detail for students to revisit.
@@ -165,6 +185,7 @@ in greater depth. **Project 0 will be given at the end of the next lecture.**
 
 - [Full lecture notes](../lecture-notes/lecture-05-anatomy-of-a-coding-agent.md).
 - [Marp slide source](../slides/lecture-05-anatomy-of-a-coding-agent.md).
+- [Demo assets and script](../demos/lecture-05-claude-code-demo/demo-script.md).
 
 The deck uses all eleven supplied PNGs from `carbon-layer/`, with source credits
 and timestamped links. They retain their third-party provenance as described in

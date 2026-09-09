@@ -514,10 +514,14 @@ Layer calls that next responsibility **orchestration**, beyond today's scope.
 
 ## 8. Connect the primitives and begin Exercise 4
 
-The class reserves 15 minutes for Claude Code demonstrations. The scenario and
-script will be developed separately. While watching, identify the evidence for
-each responsibility: the instructions supplied, the information delivered, the
-context retained, the tool action, its execution boundary, and any saved progress.
+The class includes short Claude Code demonstrations, interleaved with the
+sections above. The demo works this lecture's checkout micro-task with Claude
+Code, and its project files and full script are in
+[`demos/lecture-05-claude-code-demo/`](../demos/lecture-05-claude-code-demo/demo-script.md),
+so you can recreate the demo yourself after class. While watching, identify the
+evidence for each responsibility: the instructions supplied, the information
+delivered, the context retained, the tool action, its execution boundary, and
+any saved progress.
 
 Use these questions to check your understanding:
 

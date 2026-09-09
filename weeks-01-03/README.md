@@ -44,6 +44,8 @@ doesn't).
 - `slides/lecture-01…06-*.md` — Marp slide decks (`slides/build.sh` renders PDF +
   presentable HTML; diagrams kept as Mermaid sources in `slides/diagrams/`)
 - `exercises/` — the three exercise specs + Project 0 kickoff spec
+- `demos/` — in-class demo assets; `demos/lecture-05-claude-code-demo/` holds the
+  Lecture 05 Claude Code demo (starter project, instructor script, completed state)
 - `reading-list.md` — consolidated annotated readings, tagged
   [required] / [recommended] / [gap-filler]
 - `student-repo/` — student handouts, examples, templates, and starter code

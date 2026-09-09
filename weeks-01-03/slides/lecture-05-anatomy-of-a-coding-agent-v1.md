@@ -939,7 +939,11 @@ the instructions supplied · the information delivered
 the context retained · the tool action and its result
 the boundary that constrained it · the progress that was saved
 
-<!-- 55–70 min: 15 minutes reserved for Claude Code demonstrations. The scenario and script are developed separately; prepare a fallback recording or screenshots before class. -->
+The demo works this lecture's checkout micro-task. Its project files
+and script are in the repository under `demos/lecture-05-claude-code-demo/`
+— recreate it yourself after class.
+
+<!-- Demo segments follow demos/lecture-05-claude-code-demo/demo-script.md: run them interleaved after each primitive's block, or consecutively at 55–70 min. Rehearse beforehand and capture the fallback screenshots at the script's marked points. -->
 
 ---
 
@@ -987,28 +991,19 @@ next lecture.
 
 ## Sources and attribution
 
-The primitive sequence and the reproduced slide images are from
-The Carbon Layer,
-[*Harness Engineering Masterclass*](https://www.youtube.com/watch?v=mQfTdNVCOB0);
-each image slide links to the relevant moment. These are third-party
-source images, not newly authored course diagrams; see the repository's
-[licensing notes](../../LICENSING.md). The later, dimmed primitives
-visible in the images are outside this lecture.
+The primitive sequence and the reproduced slide images are from The Carbon Layer's
+[*Harness Engineering Masterclass*](https://www.youtube.com/watch?v=mQfTdNVCOB0); each image slide links to the relevant moment.
+They are third-party images, not newly authored course diagrams — see the repository's
+[licensing notes](../../LICENSING.md). The dimmed later primitives in the images are outside this lecture.
 
-[Local primitive summary](../../carbon-layer/harness-architecture-primitives.md) ·
-[Transcript](../../carbon-layer/harness-engineering-masterclass-transcript.md) ·
-[Lecture notes](../lecture-notes/lecture-05-anatomy-of-a-coding-agent.md) ·
-[Exercise 4](../exercises/exercise-04-toy-agent.md)
+[Local primitive summary](../../carbon-layer/harness-architecture-primitives.md) · [Transcript](../../carbon-layer/harness-engineering-masterclass-transcript.md) ·
+[Lecture notes](../lecture-notes/lecture-05-anatomy-of-a-coding-agent.md) · [Exercise 4](../exercises/exercise-04-toy-agent.md) · [Demo](../demos/lecture-05-claude-code-demo/demo-script.md)
 
-The local `ch-*.md` files describe a separate, more extensive staged
-implementation; they are not the toy assigned in Exercise 4. Toy-agent
-code excerpts are from the exercise and its starter, with comments
-omitted and lines wrapped for presentation.
+The local `ch-*.md` files describe a separate, more extensive staged implementation;
+they are not the toy assigned in Exercise 4. Code excerpts are from the exercise and
+its starter, with comments omitted and lines wrapped for presentation.
 
-Claude Code references: [memory and instructions](https://code.claude.com/docs/en/memory),
-[file references](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories),
-[tools, context, and sessions](https://code.claude.com/docs/en/how-claude-code-works),
-[sandboxing](https://code.claude.com/docs/en/sandboxing),
-[MCP](https://code.claude.com/docs/en/mcp) — checked September 8, 2026.
-Product commands and configuration can change; the architectural
-responsibilities provide the stable comparison.
+Claude Code references: [memory and instructions](https://code.claude.com/docs/en/memory), [file references](https://code.claude.com/docs/en/common-workflows#reference-files-and-directories),
+[tools, context, and sessions](https://code.claude.com/docs/en/how-claude-code-works), [sandboxing](https://code.claude.com/docs/en/sandboxing), [MCP](https://code.claude.com/docs/en/mcp) — checked September 8, 2026.
+Product commands and configuration can change; the architectural responsibilities
+provide the stable comparison.

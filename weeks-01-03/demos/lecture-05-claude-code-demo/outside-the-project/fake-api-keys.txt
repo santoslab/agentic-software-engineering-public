@@ -1,0 +1,5 @@
+# Demo file. It deliberately sits OUTSIDE the project directory that Claude
+# Code is launched in, so that reading it requires crossing the project
+# boundary. These are not real credentials.
+PAYMENTS_API_KEY=DEMO-NOT-A-REAL-KEY-00000000000000000000
+PAYMENTS_API_SECRET=DEMO-NOT-A-REAL-SECRET-00000000000000

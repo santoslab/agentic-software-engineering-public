@@ -34,8 +34,8 @@ that implements a chat bot and turn it into a simple coding agent.
 
 Here is some technical background on the backend models that we will use.
 You don't need to understand the details of all of this, but you need to be 
-somewhat aware of this issues (which you can research more about yourself).
-Bottom line: for this assignmnet, if you just start with the code we give you
+somewhat aware of these issues (which you can research more about yourself).
+Bottom line: for this assignment, if you just start with the code we give you
 and don't make any adjustments on your own, you don't have to worry about the 
 issues below.
 
@@ -43,8 +43,7 @@ Your toy agent will by default use a free model on **OpenCode Zen** (<https://op
 
 - **No key required (at first).**  To initially run the starter code, you won't need an authorization key to use OpenCode Zen.  However, we found that in building the model solution, we eventually needed to have a subscription from the [OpenCode Go](https://opencode.ai/go) plan.  The free tier also rate-limits aggressively per address (see the `429` entry in Troubleshooting), which is another reason to expect to need a key for the full exercise.  
 
-- **Adding an API key in an environment variable**  If the code at the top of the toy agent finds that the environment variable `OPENCODE_API_KEY`, it will set the agent/model interactions up to use non-free models.  So if you get an Open Code Go subscription, follow the instructions to get an API key, then set the environment variable `OPENCODE_API_KEY` appropriately for your shell (e.g., in your `.bashrc`) 
-- follow the [hints given here](./exercise-04-starter/OPENCODE_GO_API_KEY_SETUP.md) 
+- **Adding an API key in an environment variable**  If the code at the top of the toy agent finds that the environment variable `OPENCODE_API_KEY` is set, it will set the agent/model interactions up to use non-free models.  So if you get an OpenCode Go subscription, follow the instructions to get an API key, then set the environment variable `OPENCODE_API_KEY` appropriately for your shell (e.g., in your `.bashrc`), following the [hints given here](./exercise-04-starter/OPENCODE_GO_API_KEY_SETUP.md) 
 
 - **Avoid the DeepSeek-family *thinking* models** (e.g. `big-pickle`,
   `deepseek-v4-flash-free`) for this exercise. They require each assistant message's
@@ -56,8 +55,8 @@ Your toy agent will by default use a free model on **OpenCode Zen** (<https://op
   run dies, switch models before you start debugging your payload.
 
 - **Caps in code:** to avoid a situation where a bug in the harness uses up your
-  token budget, part of the exercise will including coding a bound on the number of 
-  calls to the mode for each user interaction (e.g., 25 loop turns). 
+  token budget, part of the exercise will include coding a bound on the number of 
+  calls to the model for each user interaction (e.g., 25 loop turns). 
 
 
 ## Files set up and Python environment set up
@@ -113,7 +112,7 @@ python toy_agent.py
 There are different standards for exchanging information between the harness (i.e., your 
 toy agent) and a model.  This exercise uses an older API format from OpenAI called the 
 "Chat Completions" format.  Although the concepts are similar, this is slightly different
-that the format used by Claude or the most recent Open AI models.
+from the format used by Claude or the most recent OpenAI models.
 
 The starter files for the exercise provide a summary of the message formats in the file
 [`exercise-04-starter/message-format-hints.md`](./exercise-04-starter/message-format-hints.md).
@@ -150,7 +149,7 @@ Here is a summary of the steps that you will follow.
 | 6 | Grow the single call into the agentic loop | given |
 | 7 | Bound the loop (`MAX_TURNS`) | given |
 | 8 | Add the rest of your tools (≥3 total, `run_command` optional) | you |
-| 9 | Add `--verbose` | you |
+| 9 | Add a verbose mode | you |
 
 Steps 3–6 are given in full because a subtly wrong jail or a half-answered tool call
 fails in ways that are miserable to debug and easy to not notice. What is left to you is
@@ -174,9 +173,9 @@ Part 3.
 
 #### Step 2 — Write the system prompt
 
-**First, experiment with different styles system prompt styles.**  Change the system 
+**First, experiment with different system prompt styles.**  Change the system 
 prompt by changing the string assigned to the python `SYSTEM` variable.
-Sometimes it can be difficult to see how the system prompt effects the model's output. Try adding lines or phrases that are stylistic and fun instead of strictly productive. Here are some ideas to start:
+Sometimes it can be difficult to see how the system prompt affects the model's output. Try adding lines or phrases that are stylistic and fun instead of strictly productive. Here are some ideas to start:
 
 - End all of your responses with 'Go Cats!'
 - Always output in Rhymed Couplets
@@ -319,7 +318,7 @@ With the addition above, re-run the toy agent to see that it creates the sandbox
 #### Step 4 — Add your first tool (code given)
 
 A tool is an ordinary Python function. This one is the worked example; the rest are
-yours in step 8.
+yours in step 8. Add the code below directly after the sandbox code from step 3.
 
 ```python
 # ------ Tools --------
@@ -373,7 +372,7 @@ And the model can't see your Python, so not only does it not have the ability
 to call `read_file` tool directly, it doesn't even know that tool capability is 
 there.
 
-You need to provide meta data to the model in a some format (the formal varies based
+You need to provide metadata to the model in some format (the format varies based
 on the protocol being used to speak to the model) so that it knows
  - the tool exists
  - what the purpose of the tool is (what it does)
@@ -383,10 +382,12 @@ on the protocol being used to speak to the model) so that it knows
 Zen speaks the OpenAI `chat.completions` format, so we need to inform it about our
 `read_file` tool by declaring metadata (specifically, a schema written in JSON 
 that describes the format of interactions with `read_file`).  
-We'll also set up a data structure (the `TOOLS_DICTIONARY`) to hold
-all the tool schemas that our harness supports, and that dictionary 
-will name the string name of the tool in the schema to the actual python
-function that implements the tool. 
+We'll also set up two data structures: `TOOLS_DICTIONARY`, which maps the string
+name of each tool to the Python function that implements it, and `TOOLS_SCHEMA`,
+the list of tool schemas that will be sent to the model.
+
+Add the following code directly after the `read_file` function — the dictionary
+refers to `read_file`, so it must appear after the function it names. 
 
 ```python
 READ_FILE_SCHEMA = {
@@ -453,22 +454,24 @@ message = call_zen(messages,TOOLS_SCHEMA)
 ```
 
 Now test this new addition.  Put a file, e.g., `test_file.txt` in `sandbox/` with some simple content.
-Run your agent, and ask the agent to read it, e.g, say "Read the file test_file.txt"
+Run your agent, and ask the agent to read it, e.g., say "Read the file test_file.txt"
 
 The reply will come back *empty*, because the model asked for a tool call and nobody executed it.
 That is, the model probably realized that our registered `read_file` tool should be called, and sent 
 back info on how to make the tool call, but requested tool call info is stored in a different field in `message` (the only field that we are utilizing now to echo back to the user is the `content` field).
 And, there is nothing in the harness to look at the model's requests for tool actions and execute them.
 
-In the following step, will add the necessary machinery to process tool calls coming back from 
+In the following step, we will add the necessary machinery to process tool calls coming back from 
 the model.
 
 #### Step 6 — Grow the single call into the agentic loop (given)
 
 This step is the heart of the exercise. 
 
-Add the following code to your agent.   That that the model call gets moved out of the REPL and into a
-this new `agentic_loop` function that keeps going while the model keeps asking for tools:
+Add the following code to your agent, placing it after `call_zen` and before the
+REPL at the bottom of the file. Note that the model call gets moved out of the REPL
+and into this new `agentic_loop` function, which keeps going while the model keeps
+asking for tools:
 
 ```python
 # -----  Agentic loop -----
@@ -550,7 +553,8 @@ often shows up one request *later* than the mistake that caused it.
   history must contain three `role: "tool"` messages answering them before the model
   can be called again. This includes calls you could not execute — a hallucinated
   tool name still gets a `role: "tool"` reply, carrying the error string. If even one
-  call is left unanswered, the next request is rejected with a 400 error. This is why
+  call is left unanswered, many endpoints reject the next request with a 400 error
+  (some models tolerate it — do not rely on that). This is why
   the unknown-tool branch constructs an error message rather than simply skipping the
   call.
 
@@ -730,11 +734,11 @@ def write_file(file_name: str, contents: str) -> str:
 
 In this case, you may be wondering what the return `str` should be.  In general, 
 it's helpful for the model to get some explicit indication that the tool action succeeded or failed.
-If nothing is returned (e.g., an empty string), the model will start guessing or try so to some
+If nothing is returned (e.g., an empty string), the model will start guessing or try some
 other action to figure out what happened.
 
-Hint: here is some compact code that you can use to actually write to the file while 
-give information about what happened the model.  
+Hint: here is some compact code that you can use to actually write to the file while
+giving information to the model about what happened.  
 
 ```python
    return f"wrote {path.write_text(contents)} bytes to {file_name}"
@@ -791,11 +795,13 @@ returned.
 
 Use your agent to complete both the tasks below.  Use the verbose mode and 
 create a session log (by copying the contents of the terminal window) for each session.
-You will can add your own personal notes or observations to the log. 
+You can add your own personal notes or observations to the log. 
 Add these log files as `micro-task-A-log.txt` and `micro-task-B-log.txt` to your
 exercise solution folder.
 
-- **Micro-task A (green-field):** With an empty sandbox, give the agent this prompt: 
+- **Micro-task A (green-field):** Start with an empty sandbox: delete everything
+inside `sandbox/`, including any `__pycache__` folder left over from earlier pytest
+runs. Then give the agent this prompt: 
 
 ```
 Create `fizzbuzz.py` with a `fizzbuzz(n)` function that implements 
@@ -804,7 +810,16 @@ the classic fizzbuzz behavior.  Write a `test_fizzbuzz.py` with at least 4 pytes
 
 Record the output in your log.
 
-In a terminal window opened in the `sandbox` folder, run `pytest` on the text file.
+Before running the tests, look at what the agent actually created (`ls sandbox`).
+Agents sometimes produce files you did not ask for — an extra config file, a README —
+and an unasked-for file can even break the test run (in one of our trial runs the
+agent wrote a malformed `pytest.ini` that made pytest error out before collecting any
+tests). Delete anything you didn't ask for, and note it in your log — it is exactly
+the kind of observation Part 3 asks about.
+
+In a terminal window opened in the `sandbox` folder (with the virtual environment
+activated — `source ../.venv/bin/activate` works from inside `sandbox`), run `pytest`
+on the test file.
 
 ```
 pytest test_fizzbuzz.py
@@ -813,8 +828,9 @@ Record the command given above and the output of the test run in your log.
 
 
 - **Micro-task B (bug fix):** **copy** `exercise-04-starter/micro-task-b-seed/` (three
-files: `cart.py`, `discount.py`, `test_checkout.py`) into a clean `sandbox/` — copy,
-don't move, so that you can reset and start over if a run goes wrong:
+files: `cart.py`, `discount.py`, `test_checkout.py`) into a clean `sandbox/` (emptied
+again, including any `__pycache__`) — copy, don't move, so that you can reset and
+start over if a run goes wrong:
 
 ```
 cp micro-task-b-seed/* sandbox/       # PowerShell: copy micro-task-b-seed\* sandbox\
@@ -833,12 +849,12 @@ tests.
 ```
 You should see the agent read the files, discover the bug, and write to files to fix the bug.  Record this output in your log.
 
-Exit your agent and run `pytest sandbox` to show the test pass.  Record your test command and the output in your log.
+Exit your agent and run `pytest sandbox` to show the tests pass.  Record your test command and the output in your log.
 
 
 ### Part 3 — reflection (half a page)
 
-Create a file `reflections.md` in your exercise solution folder.  In this folder, 
+Create a file `reflections.md` in your exercise solution folder.  In this file, 
 record some of your thoughts about this exercise.  
 - What did you learn?
 - What surprised you? 
@@ -849,7 +865,7 @@ waste tokens, and what (system prompt? tool description? loop change?) would fix
 ## Deliverable
 
 Repo or zip: agent source · both session logs · the (agent-fixed) micro-task B files ·
-`reflection.md`.
+`reflections.md`.
 
 ## Completion checklist (all required for satisfactory)
 

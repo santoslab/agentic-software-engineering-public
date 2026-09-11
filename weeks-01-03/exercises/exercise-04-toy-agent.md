@@ -3,7 +3,7 @@
 Note: *Do this exercise without any assistance from Claude or any other coding agent*.  
 If you don't do this exercise manually, you won't learn the concepts.
 
-> **Assigned:** Lecture 05 · **Due:** start of week 4 · **Effort:** 3–4 hours
+> **Effort:** 3–4 hours
 >
 > **Requires:** Python 3.11+ and the `requests` package (see Files setup)
 
@@ -15,7 +15,7 @@ If you don't do this exercise manually, you won't learn the concepts.
 ## Goal
 
 Demystify the harness by building one: a working coding agent in roughly 200 lines of
-Python against a hosted LLM API. When you're done, you will be able understand most
+Python using a hosted LLM API. When you're done, you will be able understand most
 Claude Code features as "what I did in my toy implementation, but with more engineering".
 That is, your toy example will help you understand each of the core features in Claude Code.
 You'll also be able to understand, even with your simple toy agent, how coding agents
@@ -41,8 +41,7 @@ issues below.
 
 Your toy agent will by default use a free model on **OpenCode Zen** (<https://opencode.ai/docs/zen>), an OpenAI-compatible endpoint at `https://opencode.ai/zen/v1/chat/completions`.
 
-- **No key required (at first).**  To initially run the starter code, you won't need an authorization key to use OpenCode Zen.  However, we found that in building the model
-solution, we eventually needed to have a subscription from the [OpenCode Go](https://opencode.ai/go) plan.  
+- **No key required (at first).**  To initially run the starter code, you won't need an authorization key to use OpenCode Zen.  However, we found that in building the model solution, we eventually needed to have a subscription from the [OpenCode Go](https://opencode.ai/go) plan.  
 
 - **Adding an API key in an environment variable**  If the code at the top of the toy agent finds that the environment variable `OPENCODE_API_KEY`, it will set the agent/model interactions up to use non-free models.  So if you get an Open Code Go subscription, follow the instructions to get an API key, then set the environment variable `OPENCODE_API_KEY` appropriately for your shell (e.g., in your `.bashrc`) 
 - follow the [hints given here](./exercise-04-starter/OPENCODE_GO_API_KEY_SETUP.md) 
@@ -142,7 +141,7 @@ Here is a summary of the steps that you will follow.
 | 4 | Add your first tool | given |
 | 5 | Declare the tool to the model | given |
 | 6 | Grow the single call into the agentic loop | given |
-| 7 | Bound the loop (`MAX_TURNS`) | you (**graded**) |
+| 7 | Bound the loop (`MAX_TURNS`) | given |
 | 8 | Add the rest of your tools (≥3 total, `run_command` optional) | you |
 | 9 | Add `--verbose` | you |
 
@@ -181,8 +180,8 @@ Sometimes it can be difficult to see how the system prompt effects the model's o
 how you want the agent to behave (you can adapt this as you continue the exercise).
 For example, start with the string below and replace the `...` with something meaningful.
 At minimum it should establish who the agent is, that it only ever touches its
-working directory, that it reads a file before editing it, that it keeps calling tools
-until the task is done, and what it should say when it stops.
+working directory (the sandbox directory), that it reads a file before editing it, 
+that it keeps calling tools until the task is done, and what it should say when it stops.
 
 ```python
 SYSTEM = """You are ...
@@ -227,28 +226,86 @@ def resolve_in_sandbox(file_name: str) -> Path:
     return resolved
 ```
 
-[TODO: Clarify and expand this explanation.  First explain the Python code.
-Then, expand the three bulleted below (that give the implications of the code)
-and explain things more simply and in greater detail.]
+**What the Python code does**
 
-Three things this code is doing, none of them obvious:
+`pathlib` is Python's standard library for working with filesystem paths as objects
+rather than strings. Two of its features are used here: the `/` operator joins path
+components (`SANDBOX_DIR / "notes.txt"`), and `.resolve()` converts a path to its
+canonical absolute form — it makes the path absolute, collapses any `.` and `..`
+components, and follows symbolic links.
 
-- **It anchors to the file, not the working directory.** A CWD-relative sandbox plus
-  `mkdir(parents=True)` fails *silently*: run the script from the wrong place and it
-  quietly creates a second, empty sandbox there instead of erroring.
-- **It resolves first and prefix-checks second.** A raw join confines nothing —
-  `SANDBOX_DIR / "../../x"` walks straight out, and on Windows an absolute component
-  like `"C:/Windows/Temp/x"` discards `SANDBOX_DIR` entirely. Resolving before checking
-  is what makes both fail closed.
-- **It raises, and that's fine.** The `ValueError` needs no handler of its own; step 6's
-  blanket `except` turns it into a string the model reads and recovers from.
+The two setup lines create the sandbox directory:
 
-When we add the capability for our agent to use tools to interact with the file system,
-we will want to always uses the helper function above to make sure that *every* such 
-uses the helper function above to enforce that all reads/writes only happen within the 
-sandbox.  We are in some sense "jailing" the agent.  However, a jail with a single unguarded
-path is not a jail — we need to make sure that every file system tool call is confined to the jail.
-That is what the concluding exercise checklist means by "demonstrably present."
+- `__file__` is the path of the Python file that is currently running — in this
+  program, `toy_agent.py` itself. So `Path(__file__).resolve().parent` is the absolute
+  path of the directory containing `toy_agent.py`, and appending `/ "sandbox"` names a
+  `sandbox` subdirectory next to the script.
+- `SANDBOX_DIR.mkdir(parents=True, exist_ok=True)` creates that directory on disk.
+  `exist_ok=True` means it is not an error if the directory already exists, so
+  re-running the agent works. `parents=True` would also create any missing intermediate
+  directories (not needed here, but harmless).
+
+`resolve_in_sandbox(file_name)` is the function that every filesystem tool will call
+before touching a path. It performs three steps:
+
+1. **Join.** `SANDBOX_DIR / file_name` appends the model-supplied file name to the
+   sandbox path. One `pathlib` rule matters here: if `file_name` is itself an absolute
+   path (`/etc/passwd`, or `C:/Windows/Temp/x` on Windows), the `/` operator discards
+   the left-hand side entirely and the result is just `file_name`. So the join by
+   itself guarantees nothing about where the path points.
+2. **Normalize.** `.resolve()` turns the joined path into canonical absolute form. This
+   is the step where `sandbox/../../secrets.txt` stops *looking like* a path under
+   `sandbox/` and becomes what it actually is: a path two levels above it.
+3. **Check.** `resolved.is_relative_to(SANDBOX_DIR)` returns `True` only if the
+   canonical path is `SANDBOX_DIR` itself or lies somewhere beneath it. If the check
+   fails, the function raises a `ValueError` instead of returning, so the caller never
+   receives an out-of-sandbox path.
+
+**Why the code is written this way**
+
+Three design decisions in this code each close a specific hole. None of them is
+obvious from reading the code once.
+
+- **The sandbox location is anchored to the script file, not the current working
+  directory.** Suppose we had written `SANDBOX_DIR = Path("sandbox").resolve()`
+  instead. That path is relative to wherever you happen to run `python` from. Launch
+  the agent from some other directory and `mkdir` silently creates a second, empty
+  `sandbox/` there — no error is raised, the agent appears to work, but it is reading
+  and writing files in the wrong place, and the test files you put in the real sandbox
+  "don't exist" as far as the model can tell. Anchoring to `__file__` makes the sandbox
+  location a fixed property of the code rather than of how the program was launched,
+  so this failure cannot occur.
+
+- **The path is normalized before it is checked.** Consider what happens without
+  `.resolve()`. The name `../../secrets.txt` joined onto the sandbox produces a path
+  that *textually* begins with `SANDBOX_DIR` but *actually* points two directories
+  above it — a prefix check on the unresolved path would incorrectly pass it. And, as
+  noted above, an absolute `file_name` makes the join discard `SANDBOX_DIR` entirely,
+  so there would not even be a prefix to check. Resolving first puts every path into a
+  canonical form in which the containment check gives the correct answer. (Resolution
+  also follows symlinks, so a link inside the sandbox pointing outside is caught as
+  well.) A check structured this way is said to *fail closed*: any path that cannot be
+  positively confirmed to be inside the sandbox is rejected.
+
+- **A violation raises an exception rather than returning an error value.**
+  `resolve_in_sandbox` does not print a warning or return `None`; it raises
+  `ValueError`. This has two consequences. First, a tool author cannot forget to check
+  a return code — a bad path never produces a usable `Path` object at all. Second, no
+  dedicated error handling is needed: the tool-dispatch code you will add in step 6
+  wraps every tool call in a `try/except` that converts any exception into an error
+  string, so a jail violation comes back to the model as
+  `ERROR: read_file failed: ValueError: path escapes the sandbox: ...`. The model
+  reads that message, understands the request was refused, and continues; the program
+  does not crash.
+
+When we add filesystem tools starting in the next step, every one of them must obtain
+its path from `resolve_in_sandbox` — never directly from the string the model supplied.
+Note that the restriction only holds if *every* tool does this: if even one tool
+bypasses the helper, the model can route any path it wants through that tool, and the
+sandbox no longer confines anything. That is what the concluding exercise checklist
+means by the path jailing being "demonstrably present" — you should be able to point
+at each tool in your source and show that its first path operation goes through this
+function.
 
 With the addition above, re-run the toy agent to see that it creates the sandbox subdirectory.
 
@@ -339,11 +396,27 @@ TOOLS_DICTIONARY = {"read_file": read_file}     # name -> function, for the loop
 TOOLS_SCHEMA = [READ_FILE_SCHEMA]               # what actually gets sent to the model
 ```
 
-[TODO: The following paragraph is unclear.  Explain it better.  What are the "two halves"?]
-Two registries, because the two halves travel separately: the schema list goes over the
-wire, the dictionary stays home and executes. Every tool you add in step 8 goes in
-**both** — forgetting the second is the most common way a new tool silently never gets
-called.
+**Why two registries?** A tool has two halves that live in different places:
+
+- The **schema** (`READ_FILE_SCHEMA`) is the half the *model* sees. It travels over
+  the network: every call to the model will include the `TOOLS_SCHEMA` list in the
+  request body, and that list is the model's only knowledge that the tool exists. The
+  model never sees your Python code.
+- The **function** (`read_file`) is the half the *harness* executes. It never leaves
+  your program: when the model's reply requests a tool by name, the loop you will
+  write in step 6 looks that name up in `TOOLS_DICTIONARY` and calls the Python
+  function it maps to.
+
+Because the two halves are stored separately, every tool you add in step 8 must be
+registered in **both** places — and forgetting one produces two different failure
+modes:
+
+- **Forget the schema entry** and the model never learns the tool exists, so it never
+  asks for it. Nothing errors; the function is simply dead code. Because this failure
+  is completely silent, it is the most common way a new tool never gets called.
+- **Forget the dictionary entry** and the model *will* ask for the tool (it saw the
+  schema), but the loop finds no function to run and answers with the `unknown tool`
+  error string instead. This failure is at least visible in the conversation.
 
 Recognize something important: the `description` field is **prompt text, not documentation** — 
 it provides info to enable the model to decide which tool to reach for. 
@@ -435,20 +508,46 @@ of the agentic loop defined above.
         agentic_loop(messages)
 ```
 
-Here are four key rules about using the model API that that we need to be careful about.
-These are reflected in the code above.  If we didn't following these rules, we would end
-up with a bug somewhere.
+The code above is careful to follow four rules about the chat-completions API. Each
+rule, if broken, produces a bug — and usually a confusing one, because the failure
+often shows up one request *later* than the mistake that caused it.
 
-[TODO: explain these bullet points in greater detail and use simple and direct language.]
-- **Append the response dict unmodified.** Don't rebuild a "clean" message — thinking
-  models require their `reasoning_content` echoed back verbatim and will 400 if it's gone.
-- **Nothing in the dispatch block may raise.** Bad JSON, wrong keyword arguments, a jail
-  violation, a hallucinated tool name — each becomes a string the model can read and act
-  on. An exception escaping here kills the session.
-- **Every `tool_call` gets answered** — including calls to tool names you don't
-  recognize. A dangling call in the history 400s the next request.
-- **Pair results by `tool_call_id`, never by index.** A model may request several tools
-  in one turn, and the results are matched by id.
+- **Append the model's response to the history exactly as it was received.** The loop
+  does `messages.append(message)` with the dict just as the API returned it. It might
+  be tempting to build a tidier dict containing only the fields you care about
+  (`role`, `content`, `tool_calls`). Don't. The response can carry fields you did not
+  expect, and some models require them back: thinking models, for example, include a
+  `reasoning_content` field and reject the next request with a 400 error if that field
+  is missing from the history. Remember that the entire message list is re-sent on
+  every call, so whatever you append now is exactly what the server sees later.
+
+- **No exception may escape the tool-dispatch block.** Many things can go wrong while
+  executing a tool call: the model may send arguments that are not valid JSON
+  (`json.loads` raises), it may pass a wrong or missing keyword argument (the function
+  call raises `TypeError`), the path may violate the sandbox (`resolve_in_sandbox`
+  raises `ValueError`), or the model may name a tool that does not exist. The code
+  turns every one of these into an error *string* and keeps going — the
+  `try/except Exception` converts any raised exception into an `ERROR: ...` message,
+  and the unknown-tool case is caught by the `if` before the call is even attempted.
+  The reason: an error string appended to the history is information the model can
+  read and react to on its next turn (fix the arguments, choose a different tool). An
+  uncaught exception, by contrast, terminates the whole program mid-task.
+
+- **Every requested tool call must receive a reply.** The API keeps strict
+  bookkeeping: if an assistant message contains three entries in `tool_calls`, the
+  history must contain three `role: "tool"` messages answering them before the model
+  can be called again. This includes calls you could not execute — a hallucinated
+  tool name still gets a `role: "tool"` reply, carrying the error string. If even one
+  call is left unanswered, the next request is rejected with a 400 error. This is why
+  the unknown-tool branch constructs an error message rather than simply skipping the
+  call.
+
+- **Replies are matched to requests by `tool_call_id`, not by position.** A model may
+  request several tool calls in a single message. Each request carries a unique `id`,
+  and each reply must carry that same value in its `tool_call_id` field — that is how
+  the server pairs results with requests. Never assume "the first reply answers the
+  first call"; copy the id from the specific tool call you are answering, as the loop
+  does with `tc["id"]`.
 
 The agent loop exits when the model returns a message with no `tool_calls` — that is the model
 deciding it's finished.  Note: sometimes the model might not do this, and we'll need to guard
@@ -467,23 +566,89 @@ how it responds.  Think about how it knows how to answer these questions.
 
 #### Step 7 — Bound the loop (graded)
 
-`while True` is unbounded autonomy.  We need some way of stopping the interactions
-with the model if it is going crazy with repeated tool calls.
+`while True` is unbounded autonomy: as long as the model keeps requesting tools, your
+harness keeps calling the model. Usually the model stops on its own, but "usually"
+should not be the only protection — a confused model can keep requesting tool calls
+indefinitely, and every extra iteration is another API call, re-sending the
+ever-growing history, billed against your token budget. We will cap the number of
+model calls a single user request is allowed to consume.
 
-Introduce a python "constant" `MAX_TURNS` and give it a value (25 is plenty).
+This takes four small edits to the loop you built in step 6.
 
-Now, in the agent loop, add a counter variable to count the number of times that
-we have called the model (i.e., the number of "turns").  
+1. **Introduce the constant.** Just above `agentic_loop`, define the cap:
 
-[TODO: Need to specify exactly where this occurs.  I'm thinking this should 
-occur at the `break` used in the loop -- not at the loop condition.]
-Replace it with a counted loop capped at
-`MAX_TURNS` (25 is plenty), and **print something when the cap is hit** — a silent stop
-looks exactly like a finished task, and you will misread your own logs otherwise.
+   ```python
+   # Cap on the number of model calls made for a single user request.
+   MAX_TURNS = 25
+   ```
 
-[TODO: Is there any way to test the effectivess of this new feature?  If not, we should
-clarify that for the students and comment on how one might want to improve the infrastructure
-in the future to allow for the concept to be tested.]
+2. **Count model calls in the loop condition.** Initialize a counter before the loop,
+   replace `while True` with a condition on the counter, and increment the counter at
+   the top of the loop body, so each pass through the loop counts one model call:
+
+   ```python
+   def agentic_loop(messages: list) -> None:
+       turns = 0
+       while turns < MAX_TURNS:
+           turns += 1
+           message = call_zen(messages, TOOLS_SCHEMA)
+           ...
+   ```
+
+3. **Change the `break` to `return`.** The existing `break` — taken when the model
+   returns no tool calls — is the model deciding it is finished. That is the normal
+   exit, and we want it to leave the function entirely:
+
+   ```python
+           if not tool_calls:
+               return  # the model decided it is finished -- the normal exit
+   ```
+
+4. **Print a warning after the loop.** Because the normal exit is now a `return`, the
+   only way execution can reach a statement *after* the `while` loop is for the loop
+   condition to fail — that is, the cap was hit. So place the warning there (indented
+   at function level, outside the loop):
+
+   ```python
+       print(f"\n[toy-agent] Stopped: hit the MAX_TURNS = {MAX_TURNS} cap for this request. "
+             "The task may be unfinished.")
+   ```
+
+   Do not skip the print. A silent stop looks exactly like a finished task, and you
+   will misread your own session logs in Part 2.
+
+Two remarks on the design. First, putting the cap in the loop *condition* (rather than
+an `if ... break` somewhere in the body) makes the bound visible in the structure of
+the code: you can point at `while turns < MAX_TURNS` and see that the loop terminates.
+Second, note what the cap counts: model calls, not tool calls. A single model call may
+request several tools, and all of them still execute; what the cap bounds is the
+number of round trips to the model, which is what actually costs tokens.
+
+**Testing the cap.** You cannot make a live model run away on demand, so how do you
+know this works? Test the mechanism by lowering the cap: temporarily set
+`MAX_TURNS = 2` and give the agent a task that needs more than two model calls, for
+example:
+
+```
+One at a time: create test1.txt containing "one", read it back, then create
+test2.txt containing "two", read it back. Use exactly one tool call per step.
+```
+
+You should see the agent complete about two steps and then print the cap warning
+instead of finishing. Restore `MAX_TURNS = 25` afterward, and delete any test files it
+left in the sandbox.
+
+Be clear about what this test does and does not establish. It shows the counting and
+the stop work. It does *not* exercise the scenario the cap exists for — a model stuck
+requesting tools forever — because a real model cannot be made to misbehave on cue. An
+automated test of that scenario would replace the model with a fake: a substitute for
+`call_zen` that always returns a tool call, so that the loop could never exit
+naturally. Our code has no place to plug such a fake in, because `agentic_loop` calls
+`call_zen` directly. Making the model-call function a *parameter* of the loop, so a
+test can pass in a fake, is precisely how production harnesses make their loops
+testable. You are not asked to do that here, but it is worth recognizing as a
+limitation of the current design — and it is the kind of observation that belongs in
+your Part 3 reflection.
 
 #### Step 8 — Add the rest of your tools
 
@@ -520,9 +685,23 @@ sorted list of file names in the sandbox directory.
 
 Now test this new tool addition by running the agent and asking it to list the files in the sandbox directory (see if it can list your `test_file.txt` file).
 
-[TODO: what does this mean??]
-Once it exists, go back to `read_file` and fold it into that error string, as step 4
-described.
+Now that `list_files` exists, make the improvement that step 4 promised: upgrade the
+error message in `read_file`. Replace its file-not-found return with
+
+```python
+        return f"ERROR: file not found: {file_name} - directory contains: {list_files()}"
+```
+
+Notice that the tool functions are ordinary Python functions, so one tool can simply
+call another — here `read_file`'s error path reuses `list_files` to tell the model
+what *does* exist. A model that asks for a file that isn't there now learns the
+actual sandbox contents in the same tool result, and can correct itself on the next
+request instead of guessing at file names.
+
+Test it: ask the agent to read a file that does not exist (say, `missing.txt`) and
+watch how it responds. It will typically report that the file is absent and name the
+files that are actually there — evidence that it read and used your improved error
+string.
 
 ##### - Write File tool
 

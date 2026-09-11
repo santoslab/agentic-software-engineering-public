@@ -45,7 +45,7 @@ def call_zen(messages: list) -> dict:
         ZEN_CHAT_URL,
         headers=HEADERS,
         json={"model": MODEL, "messages": messages},
-        timeout=60,
+        timeout=300,   # thinking models can deliberate for minutes on a hard request
     )
     resp.raise_for_status()
 

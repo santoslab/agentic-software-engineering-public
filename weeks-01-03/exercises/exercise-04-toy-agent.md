@@ -41,7 +41,7 @@ issues below.
 
 Your toy agent will by default use a free model on **OpenCode Zen** (<https://opencode.ai/docs/zen>), an OpenAI-compatible endpoint at `https://opencode.ai/zen/v1/chat/completions`.
 
-- **No key required (at first).**  To initially run the starter code, you won't need an authorization key to use OpenCode Zen.  However, we found that in building the model solution, we eventually needed to have a subscription from the [OpenCode Go](https://opencode.ai/go) plan.  
+- **No key required (at first).**  To initially run the starter code, you won't need an authorization key to use OpenCode Zen.  However, we found that in building the model solution, we eventually needed to have a subscription from the [OpenCode Go](https://opencode.ai/go) plan.  The free tier also rate-limits aggressively per address (see the `429` entry in Troubleshooting), which is another reason to expect to need a key for the full exercise.  
 
 - **Adding an API key in an environment variable**  If the code at the top of the toy agent finds that the environment variable `OPENCODE_API_KEY`, it will set the agent/model interactions up to use non-free models.  So if you get an Open Code Go subscription, follow the instructions to get an API key, then set the environment variable `OPENCODE_API_KEY` appropriately for your shell (e.g., in your `.bashrc`) 
 - follow the [hints given here](./exercise-04-starter/OPENCODE_GO_API_KEY_SETUP.md) 
@@ -354,10 +354,15 @@ That is the difference between the model recovering in one turn and guessing at
 filenames for three. Write every error string as though a colleague has to act on it
 with no other context — because that is exactly the situation the model is in.
 
-Once your agent has tools and a loop, prove it holds: ask it, in plain English, to read
-`../../secrets.txt` and to write `C:/Windows/Temp/pwned.txt`. Both must come back as the
+Once your agent has tools and a loop — that is, after step 8, when it can also write —
+prove the jail holds: ask it, in plain English, to read `../../secrets.txt` and to
+write to an absolute path outside the sandbox: `/tmp/pwned.txt` on macOS/Linux,
+`C:/Windows/Temp/pwned.txt` on Windows. Both requests must come back as the
 `path escapes the sandbox` error, and the model should shrug and carry on rather than
-the program crashing. Keep that exchange in a verbose log — it's the easiest way to
+the program crashing. Use the example that matches your operating system: a Windows
+drive path is not an absolute path on macOS/Linux — there it simply joins onto the
+sandbox as an oddly named subdirectory, so it produces a different error and proves
+nothing about the jail. Keep that exchange in a verbose log — it's the easiest way to
 satisfy the checklist.
 
 
@@ -633,17 +638,19 @@ number of round trips to the model, which is what actually costs tokens.
 
 **Testing the cap.** You cannot make a live model run away on demand, so how do you
 know this works? Test the mechanism by lowering the cap: temporarily set
-`MAX_TURNS = 2` and give the agent a task that needs more than two model calls, for
-example:
+`MAX_TURNS = 2` and give the agent a task that needs more than two model calls. At
+this point your agent's only tool is `read_file` (writing arrives in step 8), so use
+a reading task: put a second file next to `test_file.txt` (say `notes.txt`, with any
+short content) and ask:
 
 ```
-One at a time: create test1.txt containing "one", read it back, then create
-test2.txt containing "two", read it back. Use exactly one tool call per step.
+One at a time: read test_file.txt, then read notes.txt, then tell me what
+they have in common. Use exactly one tool call per turn.
 ```
 
-You should see the agent complete about two steps and then print the cap warning
-instead of finishing. Restore `MAX_TURNS = 25` afterward, and delete any test files it
-left in the sandbox.
+Each read costs one model call, so the agent spends its two allowed calls on the two
+reads and the cap fires before it can deliver the comparison. You should see the cap
+warning print instead of an answer. Restore `MAX_TURNS = 25` afterward.
 
 Be clear about what this test does and does not establish. It shows the counting and
 the stop work. It does *not* exercise the scenario the cap exists for — a model stuck
@@ -866,6 +873,15 @@ Repo or zip: agent source · both session logs · the (agent-fixed) micro-task B
   models.
 - **`401 Invalid API key` when you don't have one:** you're sending a placeholder. Omit
   the `Authorization` header entirely.
+- **`429 Too Many Requests`:** the keyless free route rate-limits aggressively per
+  address — a handful of quick runs (or a whole class on one campus network) can
+  trigger it, and the throttle can persist for a while. Wait, or switch to an API
+  key; the Go route has much higher limits.
+- **`requests.exceptions.ReadTimeout` kills the session:** the model exceeded the
+  `timeout=` value in `call_zen` before finishing its reply. Thinking models can
+  deliberate for several minutes on a request that conflicts with their instructions —
+  the step 4 jail probes are exactly that kind of request. Raise the timeout
+  (300 seconds is generous) and rerun; this is slowness, not failure.
 - **Model loops on a failing tool:** your error strings may be uninformative — return
   what a colleague would need ("file not found: X; sandbox contains: [...]").
 - **Model "edits" files that don't exist:** strengthen "read before edit" in the system

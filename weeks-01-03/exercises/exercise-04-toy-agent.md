@@ -5,7 +5,7 @@ If you don't do this exercise manually, you won't learn the concepts.
 
 > **Effort:** 3–4 hours
 >
-> **Requires:** Python 3.11+ and the `requests` package (see Files setup)
+> **Requires:** Python 3.11+ and the `requests`, `python-dotenv`, and `pytest` packages (see Files setup)
 
 >
 > **Starter code:** [`exercise-04-starter/`](./exercise-04-starter/) — a bare chat bot
@@ -67,21 +67,28 @@ repo, e.g., `exercises/exercise-04` (removing the `-starter`).
 
 In your terminal window, `cd` to the `exercise-04` folder.
 
-We will nee the `requests` package.  You can install it globally as shown below..
+We need three Python packages beyond the standard library:
+
+- `requests` — makes the HTTP calls to the model endpoint
+- `python-dotenv` — reads an optional `.env` file holding your API key (the starter
+  imports it, so it must be installed even if you never create a `.env`)
+- `pytest` — runs the tests in the Part 2 micro-tasks
+
+You can install them globally as shown below..
 ```
-pip install requests
+pip install requests python-dotenv pytest
 ```
-BUT it is is best practice to use a python "virtual environment" that installs the package locally for your project (instead of installing it system wide).  If you pursue that route, do
+BUT it is best practice to use a python "virtual environment" that installs the packages locally for your project (instead of installing them system wide).  If you pursue that route, do
 the following.
 
 ```
-python -m venv .venv       # create the virtual environment in .venv (add to .gitignore)
-source .venv/bin/activate  # activate the virtual environment
-python install requests    # install the requests package locally
-pip freeze > required-packages.txt  # record the required packages 
+python -m venv .venv                        # create the virtual environment in .venv
+source .venv/bin/activate                   # activate the virtual environment
+pip install requests python-dotenv pytest   # install the needed packages locally
+pip freeze > required-packages.txt          # record the required packages
 ```
 
-As noted in the comment above, make sure you something like `.venv` to your .gitignore for your solution repo.  When others use your code (e.g., in a check-out of your repo), the local environment can be set up as follows...
+Make sure `.venv` is listed in your solution repo's `.gitignore` (the starter folder ships a `.gitignore` that already covers this).  When others use your code (e.g., in a check-out of your repo), the local environment can be set up as follows...
 
 ```
 python -m venv .venv
@@ -126,7 +133,7 @@ Here are some safety rules that you need to enforce as you build your agent (we 
 ### Part 1 — chat bot to agent, in nine steps
 
 You are given a **chat bot**, not an agent:
-[`exercise-04-starter/toy_agent.py`](./exercise-04-starter/toy_agent.py) is ~50 lines
+[`exercise-04-starter/toy_agent.py`](./exercise-04-starter/toy_agent.py) is ~90 lines
 that POST your messages to a model and print the reply. It has no tools, no loop, and no
 safety properties. You will add those, one step at a time, until it is an agent of
 roughly 200 lines.
@@ -799,7 +806,12 @@ Record the command given above and the output of the test run in your log.
 
 
 - **Micro-task B (bug fix):** **copy** `exercise-04-starter/micro-task-b-seed/` (three
-files: `cart.py`, `discount.py`, `test_checkout.py`) into a clean `sandbox/`.
+files: `cart.py`, `discount.py`, `test_checkout.py`) into a clean `sandbox/` — copy,
+don't move, so that you can reset and start over if a run goes wrong:
+
+```
+cp micro-task-b-seed/* sandbox/       # PowerShell: copy micro-task-b-seed\* sandbox\
+```
   
 This code base has a bug caused by a single inverted comparison in the 
 discount calculation, and it breaks both tests; 

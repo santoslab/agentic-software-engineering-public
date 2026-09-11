@@ -53,6 +53,7 @@ both options in this guide and retains the keyless free service as a fallback:
 ```python
 import os
 import time
+import uuid
 from pathlib import Path
 
 import requests
@@ -73,10 +74,24 @@ else:
     MODEL = "mimo-v2.5-free"
     ZEN_CHAT_URL = "https://opencode.ai/zen/v1/chat/completions"
 
-HEADERS = {"Content-Type": "application/json"}
+# OpenCode requires clients to identify themselves with a real User-Agent
+# and to send a stable per-conversation session id (used for routing and
+# prompt caching) -- see https://opencode.ai/docs/go .  Requests without
+# the session id are rejected with a 400 error on both endpoints.
+HEADERS = {"Content-Type": "application/json",
+           "User-Agent": "toy-agent/1.0",
+           "x-opencode-session": str(uuid.uuid4())}
 if API_KEY:
     HEADERS["Authorization"] = f"Bearer {API_KEY}"
 ```
+
+Note the two extra headers. As of September 2026, both the keyed Go endpoint and
+the keyless free endpoint reject requests that do not carry an
+`x-opencode-session` header, with `400 Bad Request` (`MissingSessionID`). The
+value should be a session identifier that stays the same for all requests in one
+conversation — generating one `uuid.uuid4()` when the program starts is exactly
+that. OpenCode also asks that clients identify themselves with a descriptive
+`User-Agent` (such as `toy-agent/1.0`) rather than the default HTTP-library name.
 
 For a raw HTTP request such as this one, the Go model is named `mimo-v2.5`.
 Do not put the OpenCode client prefix `opencode-go/` in the JSON request's

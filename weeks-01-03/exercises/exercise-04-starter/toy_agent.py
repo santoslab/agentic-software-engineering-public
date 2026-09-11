@@ -1,5 +1,6 @@
 import os
 import time
+import uuid
 from pathlib import Path
 import requests
 
@@ -22,7 +23,13 @@ else:
     MODEL = "mimo-v2.5-free"
     ZEN_CHAT_URL = "https://opencode.ai/zen/v1/chat/completions"
 
-HEADERS = {"Content-Type": "application/json"}
+# OpenCode requires clients to identify themselves with a real User-Agent
+# and to send a stable per-conversation session id (used for routing and
+# prompt caching) -- see https://opencode.ai/docs/go .  Requests without
+# the session id are rejected with a 400 error on both endpoints.
+HEADERS = {"Content-Type": "application/json",
+           "User-Agent": "toy-agent/1.0",
+           "x-opencode-session": str(uuid.uuid4())}
 if API_KEY:
     HEADERS["Authorization"] = f"Bearer {API_KEY}"
 

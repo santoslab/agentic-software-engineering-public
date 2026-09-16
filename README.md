@@ -12,6 +12,9 @@ The course is still being developed: published materials may change, and files t
 - [Course overview](course-overview.md) — purpose, semester arc, and learning outcomes
 - [Weeks 1–3: Foundations](weeks-01-03/README.md) — LLMs, agent architecture,
   prompting, context, and verification
+- [Software engineering for agentic development](module-software-engineering/README.md)
+  — classical software-engineering concepts applied to agent-based development
+  (skeleton; content in development)
 - [Weeks 4–7: The Growing Tic-Tac-Toe](weeks-04-07/README.md) — a staged project in
   specification-driven agentic development
 - [Technical concepts](technical-concepts.md) — topic index and further reading

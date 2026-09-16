@@ -11,7 +11,7 @@ Public materials for a graduate course on agentic software engineering. It is al
 **Build all slide decks for a unit** (renders Mermaid diagrams, then every `lecture-*.md` to PDF + standalone HTML; needs Node, PDF export needs Chrome):
 
 ```sh
-weeks-01-03/slides/build.sh   # or weeks-04-07/slides/build.sh (identical scripts)
+weeks-01-03/slides/build.sh   # or weeks-04-07/slides/build.sh, module-software-engineering/slides/build.sh (identical scripts)
 ```
 
 **Build one deck / one diagram:**
@@ -42,15 +42,15 @@ pytest tests/test_game.py::test_name   # single test
 
 ## Structure: three parallel artifacts per lecture
 
-Each unit (`weeks-01-03/`, `weeks-04-07/`) keeps **three versions of every lecture**, and edits to lecture content usually need to be reflected across all three:
+Each unit (`weeks-01-03/`, `module-software-engineering/`, `weeks-04-07/`) keeps **three versions of every lecture**, and edits to lecture content usually need to be reflected across all three. `module-software-engineering/` sits between the other two in the course sequence, is not tied to calendar weeks, and names its outline folder `lectures-instructor-notes/` instead of `lectures/`:
 
-- `lectures/lecture-NN-*.md` — instructor outline: timings, demo scripts with fallbacks, cut-if-long notes. Format is defined by `templates/lecture-outline-template.md` (75-minute blocks, student-testable objectives, required-elements structure).
+- `lectures/lecture-NN-*.md` (`lectures-instructor-notes/` in `module-software-engineering/`) — instructor outline: timings, demo scripts with fallbacks, cut-if-long notes. Format is defined by `templates/lecture-outline-template.md` (75-minute blocks, student-testable objectives, required-elements structure).
 - `lecture-notes/lecture-NN-*.md` — full prose, student-facing and self-contained; distributed per lecture, pandoc-convertible to PDF.
 - `slides/lecture-NN-*.md` — Marp decks. Speaker notes are HTML comments (presenter view via P in the HTML output). Each deck carries a shared inline style block (purple theme, `lead`/`source`/`code-dense`/`references` section classes) in its front matter — copy it from an existing deck when creating a new one.
 
 Diagrams live as Mermaid sources in `slides/diagrams/*.mmd` (the editable source of truth, agent-maintainable); slides embed the pre-rendered `.svg`. Slide `.pdf`/`.html` output and `.svg` files are gitignored build artifacts — never commit them.
 
-Each unit README (`weeks-01-03/README.md`, `weeks-04-07/README.md`) is the map: the lecture arc, which exercise each lecture launches, and what is ready vs. draft. Files that identify themselves as drafts need instructor review before being assigned.
+Each unit README (`weeks-01-03/README.md`, `module-software-engineering/README.md`, `weeks-04-07/README.md`) is the map: the lecture arc, which exercise each lecture launches, and what is ready vs. draft. Files that identify themselves as drafts need instructor review before being assigned.
 
 ## Other top-level pieces
 

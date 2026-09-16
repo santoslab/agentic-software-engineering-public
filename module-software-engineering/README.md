@@ -1,7 +1,8 @@
 # Software Engineering for Agentic Development
 
 **Status:** skeleton. The folder layout, build tooling, and conventions are in place.
-Lecture content, exercises, demos, and readings have not been written yet.
+One demo is in place (`demos/note-specs/`). Lecture content, exercises, and readings
+have not been written yet.
 
 **Position in the course:** a three-week module that follows
 [`weeks-01-03/`](../weeks-01-03/README.md) (foundations) and precedes
@@ -59,7 +60,8 @@ spec ends with a required-elements checklist, as in the other units.
 - `slides/lecture-NN-*.md` — Marp slide decks (`slides/build.sh` renders PDF and
   standalone HTML; diagrams kept as Mermaid sources in `slides/diagrams/`)
 - `exercises/` — exercise specs
-- `demos/` — in-class demo assets
+- `demos/` — in-class demo assets; `demos/note-specs/` is a specification-driven
+  development demo on an agent-maintained note set
 - `reading-list.md` — annotated readings, tagged
   [required] / [recommended] / [gap-filler]
 - `student-materials/` — handouts and small example artifacts shipped with exercises

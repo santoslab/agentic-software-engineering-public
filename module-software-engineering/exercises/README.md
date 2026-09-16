@@ -9,5 +9,3 @@ This folder holds the exercise specs for the module.
   `## Completion checklist` of `- [ ]` items. Grading is completion-based:
   satisfactory means every checklist item is present and honestly reported.
 - Reference example: `../../weeks-01-03/exercises/exercise-02-codebase-comprehension.md`.
-
-No exercises have been written yet.

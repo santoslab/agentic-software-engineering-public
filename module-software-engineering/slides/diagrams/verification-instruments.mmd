@@ -1,0 +1,24 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "17px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart TB
+    S["Specification S<br/>note-format-spec.md"] --> H & A & C
+    R["Realization R<br/>a note"] --> H & A & C
+    H["Person<br/>decides every clause, including judgment<br/>minutes per check; attention-dependent"]
+    A["Agent<br/>mechanical rules and judgment clauses<br/>tokens per check; may vary run to run"]
+    C["Program: check_notes.py<br/>mechanical rules only<br/>free, instant, deterministic; exit 0 / 1 / 2"]
+    H --> F["Findings that cite the same rule IDs"]
+    A --> F
+    C --> F
+
+    style F fill:#310066,color:#ffffff,stroke:#310066

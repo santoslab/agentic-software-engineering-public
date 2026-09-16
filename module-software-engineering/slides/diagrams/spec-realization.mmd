@@ -1,0 +1,32 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "17px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    I([Developer intent]) --> S["Specification S<br/>states the required properties;<br/>omits everything else"]
+    S -. "conformance:<br/>R satisfies every<br/>property S states" .-> R["Realization R<br/>built to satisfy S"]
+    S --> V["Verification<br/>checks whether<br/>conformance holds"]
+    R --> V
+    V --> O["Result: holds, or findings<br/>that cite rule IDs"]
+
+    I2([Intent: readable,<br/>indexable study notes]) --> S2["note-format-spec.md<br/>rules R1–R6"]
+    S2 -. "each note satisfies R1–R6" .-> R2["notes/royce-1970-waterfall-paper.md<br/>(later: check_notes.py too)"]
+    S2 --> V2["a person, an agent,<br/>or check_notes.py"]
+    R2 --> V2
+    V2 --> O2["'R2: created date<br/>is not ISO-8601'"]
+
+    style V fill:#310066,color:#ffffff,stroke:#310066
+    style V2 fill:#310066,color:#ffffff,stroke:#310066
+    style I fill:#ffffff
+    style I2 fill:#ffffff
+    style O fill:#ffffff
+    style O2 fill:#ffffff

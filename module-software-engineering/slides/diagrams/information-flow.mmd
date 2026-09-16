@@ -1,0 +1,25 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "17px",
+    "clusterBkg": "#f4f1fa",
+    "clusterBorder": "#310066"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    I2([Intent]) --> S2["Specification<br/>0.1 → 1.0.0 → 2.0.0"]
+    S2 --> R2["Notes<br/>(realizations)"]
+    S2 --> C2["check_notes.py<br/>(another realization)"]
+    R2 -. "planning and repair surface gaps<br/>→ amendments (scope, R3, R7)" .-> S2
+    C2 -. "checkability tightens S<br/>(two scalar fields)" .-> S2
+    I2 -- "new requirement (R8) →<br/>spec, checker, notes, index<br/>change in one commit" --> S2
+
+    style I2 fill:#ffffff
+    style S2 fill:#310066,color:#ffffff,stroke:#310066

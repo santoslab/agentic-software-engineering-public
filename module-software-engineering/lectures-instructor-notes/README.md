@@ -9,5 +9,3 @@ setup and fallbacks, discussion prompts, and cut-if-long notes. It plays the rol
   `**Unit:** module-software-engineering` in the header line.
 - Each outline has a matching student lecture-notes file in `../lecture-notes/` and a
   slide deck in `../slides/`.
-
-No lectures have been written yet.

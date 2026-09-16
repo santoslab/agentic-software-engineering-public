@@ -1,8 +1,9 @@
 # Software Engineering for Agentic Development
 
-**Status:** skeleton. The folder layout, build tooling, and conventions are in place.
-One demo is in place (`demos/note-specs/`). Lecture content, exercises, and readings
-have not been written yet.
+**Status:** in development. Lecture 01 (instructor outline, lecture notes, slide
+deck, diagrams), Exercise 1, and the prompt-template handout are drafted and need
+instructor review before use. The note-set demo that Lecture 01 runs is in place.
+Lectures 02 through 06 are not yet written.
 
 **Position in the course:** a three-week module that follows
 [`weeks-01-03/`](../weeks-01-03/README.md) (foundations) and precedes
@@ -18,9 +19,11 @@ artifacts it must produce, and how its output is checked.
 
 ## Candidate topics
 
-The topics below come from the course overview's learning outcomes. They have not yet
-been organized into lectures; the lecture arc will be settled during content
-development.
+The topics below come from the course overview's learning outcomes. Lecture 01
+covers the first of them. Lecture 02 is planned to treat the concept of operations
+and the operations document as further expressions of intent, and to begin building
+specifications with the agent. The remaining topics have not yet been assigned to
+lectures.
 
 - Specification and realization: what a specification abstracts away, what it means
   for a realization to conform, and how conformance is assessed
@@ -36,13 +39,14 @@ development.
 
 | Lecture | Title | Core question | Launches |
 |---------|-------|---------------|----------|
-| 01–06 | to be filled in | | |
+| [01](lectures-instructor-notes/lecture-01-specifications-realizations-and-conformance.md) | Specifications, Realizations, and Conformance | What holds a specification and its realization together, and how do you check? | [Ex. 1](exercises/exercise-01-conformance-three-ways.md) |
+| 02–06 | to be filled in | | |
 
 ## Exercises
 
 | # | File | Assigned | Due | Effort | Needs |
 |---|------|----------|-----|--------|-------|
-| — | to be filled in | | | | |
+| Ex. 1 | [exercise-01-conformance-three-ways.md](exercises/exercise-01-conformance-three-ways.md) | L01 | before L03 | 2–3 h | Claude Code, Python 3.11+, git |
 
 Exercises in this module are intended to be small, completion-based demonstrations of
 individual concepts (the course overview lists specification versus implementation,
@@ -60,14 +64,15 @@ spec ends with a required-elements checklist, as in the other units.
 - `slides/lecture-NN-*.md` — Marp slide decks (`slides/build.sh` renders PDF and
   standalone HTML; diagrams kept as Mermaid sources in `slides/diagrams/`)
 - `exercises/` — exercise specs
-- `demos/` — in-class demo assets; `demos/note-specs/` is a specification-driven
-  development demo on an agent-maintained note set
+- `demos/` — in-class demo assets; `demos/lecture-01-note-specs-demo/` is the
+  note-set demo that Lecture 01 runs (two draft specifications, an agent that
+  realizes them, three conformance-checking instruments)
 - `reading-list.md` — annotated readings, tagged
   [required] / [recommended] / [gap-filler]
-- `student-materials/` — handouts and small example artifacts shipped with exercises
+- `student-materials/` — handouts and small example artifacts shipped with
+  exercises; currently the specification-driven planning prompt template
 
-Each subfolder currently holds a README stating its purpose and file conventions.
-Delete or rewrite those READMEs as real content arrives.
+Each subfolder holds a README stating its purpose and file conventions.
 
 ## Standing references (live outside this module)
 

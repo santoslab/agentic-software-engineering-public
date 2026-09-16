@@ -7,5 +7,3 @@ diagrams. `slides/build.sh` renders each one to an `.svg` that the decks embed; 
 Copy the `%%{init: ...}%%` block from
 `../../../weeks-01-03/slides/diagrams/agent-loop.mmd` so new diagrams use the shared
 palette (`#beaefc` fill, `#310066` text, borders, and lines).
-
-No diagrams have been written yet.

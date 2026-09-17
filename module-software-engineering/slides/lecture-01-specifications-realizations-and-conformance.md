@@ -43,15 +43,28 @@ A specification and a realization are two artifacts. **Conformance** is a relati
 
 When the check fails, you change one side or the other, re-check, and record which side moved and why.
 
-<!-- 0–4 min. Demo Segment 0 runs here: ls the repo (two specs, CLAUDE.md, no notes); the one-way description of spec-driven development and its weakness; promise evidence for five claims. Hook: at least one thing in these drafts is wrong. -->
+<!-- 0–4 min. Demo Segment 0 runs here: ls the repo (two specs, CLAUDE.md, no notes); the one-way description of spec-driven development and why it does not work in practice; promise evidence for five claims. Hook: at least one thing in these drafts is wrong. -->
 
 ---
 
-## The example: a note set under two specifications
+## Example: a set of agent-maintained notes
 
-At t=0: a ConOps (one user, one agent, three operations), a format specification, a `CLAUDE.md` of eight working rules, and no notes.
+A folder of study notes: one Markdown file per article you read. Two questions arise:
 
-| Rule | Requirement (v0.1, condensed) |
+- How should a note be formatted? Is there a standard to follow?
+- What are the steps for adding or removing a note?
+
+The answers are written in files that are not notes but **specifications**: a **format specification** (rules every note follows) and a **concept of operations** (what the system is for; the operations a user applies to the note set).
+
+At t=0 the repository holds those two specifications, a `CLAUDE.md` of eight working rules for the agent, and no notes. It is a simplified version of the Project 0 PKB.
+
+<!-- 4–12 min. This block replaces Segment 1's tour. One user, no sharing; the agent performs the structural operations (add blank, add with content, remove); every note is expected to conform at all times. -->
+
+---
+
+## The format specification, version 0.1
+
+| Rule | Requirement (condensed) |
 |---|---|
 | R1 | YAML front-matter block; the opening `---` is line 1 |
 | R2 | exactly two fields: `title`, `created` (ISO-8601) |
@@ -60,16 +73,18 @@ At t=0: a ConOps (one user, one agent, three operations), a format specification
 | R5 | no skipped heading levels |
 | R6 | `index.md` links every note exactly once; every link resolves |
 
-<!-- 4–12 min. This block replaces Segment 1's tour. Keep the format spec on screen while defining the terms. Note the RFC 2119 keywords, the numbered rules, and "Version: 0.1 (draft)". Show CLAUDE.md rules 2 and 4 and say when each will matter. -->
+RFC 2119 keywords, and numbered rules so that any conformance report can cite them.
+
+<!-- Keep this on screen while defining the terms. Note "Version: 0.1 (draft)". Show CLAUDE.md rules 2 and 4 and say when each will matter. -->
 
 ---
 
 ## Four terms
 
-- **Specification (S)** — states, above the level of the artifact it governs, what the developer intends; fixes some properties and omits the rest
-- **Realization (R)** — an artifact built to satisfy S; *implementation* when R is code; a note or a script can also be one
-- **Conformance** — the relation that holds when R satisfies every property S states
-- **Verification** — the activity of *trying* to confirm that R conforms to S
+- **Specification (S)** — states, above the level of the artifact it governs, what the developer intends; fixes what matters when building the system and leaves the rest free
+- **Realization (R)** — an artifact built to satisfy S; *implementation* when R is code; a note or a document can also be one
+- **Conformance** — the relation that holds when R satisfies every property stated in S
+- **Verification** — the activity of *trying* to confirm that R conforms to S; we want it to be trustworthy, so we need to know how it can go wrong
 
 The participants (S, R) · the desired relation (conformance) · the act of checking it (verification)
 
@@ -79,9 +94,7 @@ The participants (S, R) · the desired relation (conformance) · the act of chec
 
 ![w:1000 center](diagrams/spec-realization.svg)
 
-Every file in `notes/` realizes the format specification. So will `check_notes.py`.
-
-<!-- One S, many R: two conformant notes differ in everything S does not state. Lecture 02 takes this up. -->
+Every file in `notes/` realizes the format specification. One S has many R: every conformant note is a distinct realization of the same rules.
 
 ---
 
@@ -99,9 +112,36 @@ Planning is where we find it.
 
 ![w:1000 center](diagrams/conformance-repair.svg)
 
-Segment 2 changed **S**: a scope statement (`index.md` is not a note), R3 (the H1 equals `title`; the field is authoritative), a new R7 (filename = slug of title). Version 0.1 → 1.0.0, with a changelog entry. A person decided each one.
+A failed check reports a fact about the pair (S, R). It does not say which side is wrong: R may break a rule, or S may state the developer's intent incorrectly.
 
-<!-- 24–30 min. Segment 3 compressed: cat note-set-operations.md after the scaffold; three specifications now govern the repository, each abstracting something different. 30–36 min, Segment 4 live: add blank; add with content (paste no-silver-bullet-content.md); the add/remove pair only if ahead. ls notes/; git log. R6 held through every operation. -->
+<!-- 24–30 min. The temptation is to treat S as the ideal truth because the developer wrote it. S can be missing a rule, or two of its rules can conflict. -->
+
+---
+
+## Is the specification right?
+
+Two ways to look for defects in S:
+
+- build realistic examples that exercise every rule
+- analyze S for incompleteness and logical inconsistency
+
+A person, an agent, or a tool can do either. It is hard: only the developer knows the intent, and people tire. In practice it is a brainstorming activity over scenarios and possible realizations.
+
+Because S drives the development and summarizes intent, every change to S is recorded: a version number and a changelog entry with the rationale.
+
+---
+
+## Segment 2 changed S
+
+| Defect found in planning | Amendment |
+|---|---|
+| Is `index.md` a note? It cannot satisfy R1 or R2 | scope statement: `index.md` is not a note; R6 alone governs it |
+| No rule says the H1 must equal `title` | R3 extended: they are equal; the field is authoritative |
+| No rule derives a filename from a title | new R7: filename = slug of the title |
+
+Version 0.1 → 1.0.0; the agent wrote the changelog entry. A person decided each amendment; the agent proposed and waited (`CLAUDE.md` rules 2 and 4). Later a coordinating agent may share this role; for now the human developer is the authority.
+
+<!-- Segment 3 compressed: cat note-set-operations.md after the scaffold; three specifications now govern the repository, each abstracting something different. 30–36 min, Segment 4 live: add blank; add with content (paste no-silver-bullet-content.md); the add/remove pair only if ahead. ls notes/; git log. R6 held through every operation. -->
 
 ---
 
@@ -128,7 +168,7 @@ The passing re-check is the completion condition. Segment 2 moved S with R still
 
 ---
 
-## Three instruments for the same check
+## Three ways to check the same note
 
 | | Person | Agent | Program (`check_notes.py`) |
 |---|---|---|---|
@@ -138,13 +178,13 @@ The passing re-check is the completion condition. Segment 2 moved S with R still
 | Judgment clauses | yes | yes | **no** |
 | Usable as a gate | no | with effort | yes: exit 0 / 1 / 2 |
 
-All three cite the same rule IDs. That is why the rules are numbered.
+Each is a *checker*. Rule IDs make them comparable: all three cite R2–R5 on the same note. A program decides what it can and marks the rest for a person or agent.
 
-<!-- 46–56 min. Segment 6 from rehearsal captures: the checker's --all run; the sabotage (created: Sept 2026) and exit 1; the restore and exit 0. Then the six failure modes on the next slides. -->
+<!-- 46–56 min. Segment 6 from rehearsal captures: the checker's --all run; the sabotage (created: Sept 2026) and exit 1; the restore and exit 0. Then the six failure modes. -->
 
 ---
 
-## Instruments
+## Checkers: person, agent, program
 
 ![w:860 center](diagrams/verification-instruments.svg)
 
@@ -155,29 +195,31 @@ The operations document records which rules the script decides and which clauses
 ## Six ways a verification result can be wrong
 
 1. Checked against the wrong **version** of S (checker at 1.0.0, spec at 2.0.0: a false pass)
-2. The checker is itself a **realization** of S, and can fail conformance
+2. The checker **misinterprets or mis-implements** the check; it is itself a realization of S
 3. Checked from **memory** rather than from the document (working rule 1)
-4. **Coverage**: a pass says nothing about clauses the instrument does not decide
-5. **Attention**: the person is the instrument for everything no process checks
+4. **Coverage**: a pass says nothing about clauses the checker does not decide
+5. **Attention**: the person is the checker for everything no process checks
 6. A **defective S**: before the amendments, no `index.md` could conform
 
-A result is evidence with a scope: the instrument, the spec version, the clauses checked.
+A result is evidence with a scope: the checker, the spec version, the clauses checked.
 
 <!-- 56–62 min. Segment 7 from captures: R8 and the amended R6; version 2.0.0; the migration commit; summaries written by the agent; the ops document's table now splits R8. A 1.0.0 checker would have passed the old notes: failure mode 1. -->
 
 ---
 
-## Five claims, and the evidence from the demo
+## Five claims about specifications
 
-<style scoped>table { font-size: 23px; }</style>
+<style scoped>table { font-size: 22px; }</style>
 
-| Claim | Evidence |
+One-way spec-driven development (write S, hand it to an agent, receive R) does not work in practice.
+
+| Claim | Evidence from the demo |
 |---|---|
-| A continuously maintained document of intent | 0.1 → 1.0.0 → 2.0.0 under git, with changelogs and deferred questions |
-| An abstraction of the realization | R1–R8 describe every conformant note and no particular one |
+| A continuously maintained document of intent | intent changes or was wrong, so its evolution is managed: 0.1 → 1.0.0 → 2.0.0, changelogs, deferred questions |
+| An abstraction of the realization | R1–R8 describe every conformant note and none in particular: a readable summary of the system |
 | Conformance: an invariant while both sides change | a check after every operation; S moved (Segments 2, 7); R moved (Segment 5) |
-| Several specifications, mutually consistent | ConOps, format spec, operations document; the `index.md` gap was fixed in two |
-| Information flows both ways | planning produced R7 and the R3 amendment; checkability tightened R2; one requirement changed four artifacts |
+| Typically several specifications, mutually consistent | ConOps, format spec, operations document; the `index.md` gap was fixed in two |
+| Information flows both ways | planning added R7 and updated R3; the checker program tightened R2; one requirement changed four artifacts |
 
 <!-- 62–68 min. -->
 
@@ -185,24 +227,22 @@ A result is evidence with a scope: the instrument, the spec version, the clauses
 
 ## Not one-way
 
-The one-way description: intent → specification → realization, and nothing flows back. What the demo showed:
-
 ![w:900 center](diagrams/information-flow.svg)
 
-Royce (1970), the subject of the demo's first note, made the same argument about single-pass development.
+Planning, checking, and a new requirement each sent information back into the specification.
 
 ---
 
-## A planning prompt in six moves
+## A planning prompt in six parts
 
 1. **Read** the named specification files in full
 2. **State the target**: which artifacts, which operations, documented where
-3. **Find gaps before planning**: number every ambiguity, omission, and inconsistency (within a document, between documents, between a document and executing it); stop and ask
+3. **Find gaps in the specs before planning**: a numbered list of every ambiguity, omission, and inconsistency (within a document, between documents, between a document and executing it); the agent stops and asks you to resolve them
 4. **Amend with approval**: amendments as a numbered list; wait
-5. **Plan**; wait
-6. **Realize with a gate**: check affected artifacts against S and report, citing rule IDs, before declaring a step done
+5. **Plan**: once the specs are debugged, ask for a plan; review and approve it
+6. **Realize with a verification gate**: after each change, check the affected artifacts against S and report, citing rule IDs; work continues only if the check passes
 
-Full text and a filled example: `student-materials/spec-driven-planning-prompt-template.md`
+Part 3 saves time and tokens: a few hundred tokens of questions for defects found before any artifact exists.
 
 <!-- 68–72 min. -->
 
@@ -223,7 +263,7 @@ The demo's `CLAUDE.md` has eight rules and does not change during the demo. Toda
 
 ## Exercise 1, and Project 0
 
-**Exercise 1** — run Segments 2–5 yourself; write one note carelessly; check it with all three instruments; report the findings by instrument, one disagreement or coverage gap, and which side should have moved. Due before Lecture 03. Deliberately small.
+**Exercise 1** — run Segments 2–5 yourself; write one note carelessly; check it with all three checkers; report the findings by checker, one disagreement or coverage gap, and which side should have moved. Due before Lecture 03. Deliberately small.
 
 **Project 0** — the same structure at your scale: your PKB specification is these three documents grown up; its conformance checklist is R1–R8 grown up; the stretch-goal validator is `check_notes.py` grown up.
 
@@ -231,9 +271,9 @@ The demo's `CLAUDE.md` has eight rules and does not change during the demo. Toda
 
 ## Questions to think about
 
-1. Name a property that specification 2.0.0 leaves unconstrained. Should it stay that way? If not, write the rule and name the instrument.
+1. Name a property that specification 2.0.0 leaves unconstrained. Should it stay that way? If not, write the rule and name the checker.
 2. For the R3 finding, defend moving S instead of R. What would it cost?
-3. A compiler's type checker is an algorithmic instrument. Which failure modes apply, and who verifies that verifier?
+3. A compiler's type checker is an algorithmic checker. Which failure modes apply, and who verifies that verifier?
 
 ---
 

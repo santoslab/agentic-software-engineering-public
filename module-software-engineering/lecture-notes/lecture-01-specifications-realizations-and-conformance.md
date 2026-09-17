@@ -99,6 +99,57 @@ the arrangement, once in the abstract and once for the demo's files.
 Note that one specification can have many realizations.  For example, every conformant 
 note is a distinct realization of the same S. 
 
+## Evaluating Specifications
+
+Even though specifications vary widely in their character, there are some general "quality properties" 
+that specifications should possess...
+
+**Unambiguous**: We want to be able to check if a realization conforms to a specification.
+We need a "yes" or "no" answer.  This implies that every property in our specification 
+is stated in such a way that we can determine if a realization satisfies or fails the property.
+
+**Internally consistent**:  The specification does have any rules that conflict with each other.
+In very bad cases, we can situations that, due to conflicting rules, there are no realizations
+that can conform to the specifications.
+
+**Externally consistent and aligned**:  We may have multiple types of specifications for a
+system.  Even when the specification forms are different, the vocabulary and terminology used across
+the specifications should be consistent.  To help with this, we often have a glossary to define 
+terms that appear through our specifications, documentation, and implementations.  Building on 
+"internal consistency" above, there should not be situations where two different specifications
+have confliciting properties or implications about the system.
+
+**Completeness**:  Specifications are meant to be abstractions -- they are intended to 
+omit some details.  So "complete" does not mean "we have addressed everything".  Rather, 
+the intuition is that, for the chosen level of abstraction, we have not omitted addressing things.
+For example, if our system has three forms of output, and our specifications only give contraints 
+for two forms of output, and our specifications are likely incomplete.
+
+**Tracebility**:  As we develope our system and produce reports, we will want to refer back to 
+specific clauses or properties stated in the specification.  For this reason, it is important to 
+uniquely identify specification properties so that we can associate (trace) system implementation 
+features that address the properties or error reports that report on property violations.
+
+## Ask the Agent to Help you Evaluate the Quality of the Specification
+
+When starting with a specification or updating a specification, we need to assess the quality.
+We can ask the agent to help with that.
+
+For example, we might start with a prompt that includes a request to review the specifications.
+
+> Read note-set-conops.md and note-format-spec.md carefully. I want to set
+> up this note set so it fully realizes the ConOps: create the notes
+> directory and the index, and document each agent operation — add blank
+> note, add note with initial content, remove note, check conformance —
+> with preconditions and postconditions in a new file
+> note-set-operations.md. **Before proposing a plan, list every place where
+> the two specifications are ambiguous, incomplete, or inconsistent with
+> each other — anything that would force you to guess during
+> implementation. Number the issues and ask me to resolve them before you
+> plan.**
+
+
+
 ## When conformance fails: change S or change R
 
 When we first consider the idea of specifications, we are tempted to think that
@@ -359,8 +410,10 @@ Item 3 is very important to avoid wasting time and tokens.  a few hundred
 tokens of questions in exchange for defects found before any artifact exists. In
 the demo it found the three seeded gaps and usually finds more.
 
-Some of these demands belong in `CLAUDE.md` rather than in every prompt, because
-they apply to every operation: read the specifications first; never modify a
+Some of these five principles belong in `CLAUDE.md` rather than in every prompt.
+So when you are using spec files in development, you typically want to consider
+if they should be addressed in the general development guidelines of your `CLAUDE.md` file
+because they apply to every operation: read the specifications first; never modify a
 specification without approval; report violations before repairing; quote the
 violated rule; end each operation with a named commit. The demo's `CLAUDE.md` is
 eight such rules, and it does not change during the demo.

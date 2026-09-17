@@ -100,9 +100,12 @@ Every file in `notes/` realizes the format specification. One S has many R: ever
 
 <!-- _class: standout -->
 
-## These drafts contain at least one defect.
+## Beginning a Specification-Driven Project
 
-Planning is where we find it.
+- In this lecture, we start with draft specifications (in future lectures, we illustrate an alternate approach in which we work with an agent to develop the specification)
+- In either case, before we begin implementing a system to fulfill the specifications, we need to systematically review our specifications.
+
+
 
 <!-- 12–24 min. Demo Segment 2: plan mode; the gap-finding prompt; the agent's numbered issue list; resolve with the three scripted decisions; amendments as a numbered list; approve; git diff HEAD~1 -- note-format-spec.md; git log. Seeded gaps, for your eyes: A (is index.md a note? it cannot satisfy R1/R2), B (H1 vs title), D (no filename rule). -->
 

@@ -51,19 +51,25 @@ never strands a teaching point.
   `completed/`: the working rules never change during the demo, which is
   itself worth a sentence in class.
 
-Three deliberate gaps are seeded in the starter specs; Segment 2 exists to
-let the agent find them. For your eyes (do not reveal before Segment 2):
+Three deliberate gaps are seeded in the starter specs; In Segment 2, 
+before we start an implementation, we will ask the agent to help us 
+find any gaps (quality problems) in the spec.   Be aware
+of the gaps below, but when running the demo, do not reveal these to the 
+students before Segment 2:
 
-- **Gap A (between the specs):** the format spec's preamble says "every
+- **Gap A (between the specs):** The following is an example of *ambiguity*.
+  The format spec's preamble says "every
   markdown file in the note set MUST satisfy the rules below," and the
   ConOps says `index.md` is a markdown file in the repo — but `index.md`
   has no front-matter and cannot satisfy R1/R2. Neither document says
   whether the index is a note.
-- **Gap B (inside the format spec):** R2 requires a front-matter `title`
+- **Gap B (inside the format spec):** The following is an example of *incompleteness*.
+  R2 requires a front-matter `title`
   and R3 requires an H1, but no rule says they must agree.
-- **Gap D (spec vs. execution):** O1 and O2 supply only a *title*, and no
+- **Gap D (spec vs. execution):** The following is problem with consistency 
+  between two different forms of specifications.  O1 and O2 supply only a *title*, and no
   rule anywhere derives a *filename* from it. The agent literally cannot
-  execute "add blank note" without inventing a convention.
+  execute "add blank note" without inventing a convention.  
 
 (The date format is deliberately *not* a gap — R2 pins ISO-8601 from v0.1 —
 so that in Segment 5 an original rule and a refinement-added clause each
@@ -111,29 +117,12 @@ catch a violation on the same note.)
 7. Rehearse the full run once. Capture screenshots at every
    `[fallback capture]` marker. Then reset for class by repeating step 1.
 
-## Segment 0 — Framing: the invariant, not the waterfall (~4 min)
-
-No agent yet.
-
-**Do (shell):** `ls ~/note-set-demo` — two specifications and a CLAUDE.md.
-No implementation.
-
-**Say:** the critique — spec-driven development pitched as "finish the spec,
-an agent derives the implementation" is waterfall reborn: one-way flow from
-intent to spec to code. Today's counter-picture is the S/R essay made
-executable: a specification S and a realization R connected by a conformance
-relation, and the relation is maintained as an *invariant while both ends
-move*. State the five claims above; promise the class one piece of evidence
-for each within the hour.
-
-**Say (setting the hook):** "These specs are drafts, and at least one thing
-in them is wrong. We will not find it by staring at them."
-
 ## Segment 1 — Tour of the drafts (~7 min)
 
 **Do (shell):** `cat note-set-conops.md`.
 
-**Say:** this is ConOps altitude (lecture 04): a non-programmer could read
+**Say:** this is an example of a high-level "Concept of Operations" (ConOps)
+document: a non-programmer could read
 it and confirm "yes, that's the tool I want." Walk O1–O3 and their
 pre/postconditions — contracts on *operations*, not code. Point at
 `Version: 0.1 (draft)`: specifications carry versions, like code.
@@ -156,11 +145,14 @@ forty"). Do **not** reveal the seeded gaps.
 
 `[fallback capture]` — both specs on screen.
 
-## Segment 2 — Planning: the specs push back (~13 min) — the centerpiece
+## Segment 2 — Analyzing the Specifications and Planning (~13 min) 
 
 **Do:** in Claude Code, switch to **plan mode** (Shift+Tab cycles modes; UI
 varies by version — say so). Plan mode means read-only: the agent can
 explore and propose, not touch.
+
+**Say:** We start by telling the agent about the specs, and requesting that the
+agents help us analyze them (we might eventually want to turn this into a skill).
 
 **Do:** prompt:
 
@@ -198,6 +190,7 @@ as your answers; do not improvise under time pressure):
 If the agent surfaces *more* issues than the seeded three (likely, and
 welcome): resolve each in one sentence, or say "defer it — record it under a
 'Deferred questions' heading in note-set-operations.md when you write it."
+
 **Say:** a living spec has a place for known unknowns.
 
 **Do:** prompt:
@@ -214,8 +207,8 @@ changelog entries, and commit.
 **Do (shell):** `git diff HEAD~1 -- note-format-spec.md`, then
 `git log --oneline`.
 
-**Observe & say:** information just flowed *backwards* — from implementation
-planning into the specifications, before a single artifact exists. The spec
+**Observe & say:**  Our specifications can be wrong.  We need to become
+conformable with reading and critiquing them.  In this case, the spec
 did not survive contact with planning, and that is the method working, not
 failing (claims 1 and 5). The changelog entry is the evidence: "surfaced
 during implementation planning." Also name what just happened to claim 4:
@@ -230,7 +223,7 @@ misbehaves or the version's UI differs, run the same prompt in normal mode
 with "Do not create or modify any files until I approve a plan" appended —
 the pedagogy (planning surfaces spec defects) is mode-independent.
 
-## Segment 3 — Scaffold: a third specification appears (~7 min)
+## Segment 3 — Scaffold: Deriving a Lower-Level Specifications from the ConOps (~7 min)
 
 **Do:** prompt:
 
@@ -262,7 +255,7 @@ document the agent just wrote is now *binding on the agent that wrote it*.
 **If it goes differently:** if the agent seeds an example note anyway, have
 it removed via O3 — an unplanned early demo of remove, at zero cost.
 
-## Segment 4 — Operations: the invariant in motion (~8 min)
+## Segment 4 — Operations and Seeing the Specifications as Invariants
 
 **Do:** prompt:
 

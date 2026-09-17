@@ -33,9 +33,9 @@ Assigned before the module's first meeting (see `../reading-list.md`):
 
 | Time | Topic | Content |
 |------|-------|---------|
-| 0–4 | Framing (demo Segment 0) | `ls` the repo: two specifications, a `CLAUDE.md`, no notes. The one-way description of spec-driven development and why it has single-pass development's weakness. State the five claims; promise one piece of evidence for each. Hook: "at least one thing in these drafts is wrong; we will not find it by staring at them." |
-| 4–12 | Four terms (replaces Segment 1's tour) | With `note-format-spec.md` on screen: specification, realization, conformance, verification, defined as in the notes and instantiated on R1–R6. Diagram 1. Note the RFC 2119 keywords, the numbered rules, and `Version: 0.1 (draft)`. Show `CLAUDE.md` rules 2 and 4 and say when each will matter. One S, many R, in one sentence. |
-| 12–24 | Planning: the specs push back (demo Segment 2) | Plan mode; the gap-finding prompt; the agent's numbered issue list; resolve with the three scripted decisions; amendments as a numbered list; approve; `git diff HEAD~1 -- note-format-spec.md`; `git log --oneline`. Say: information flowed from planning into S before any artifact existed. |
+| 0–4 | Framing (no demo yet) | `ls` the demo repo: two specifications, a `CLAUDE.md`, no notes. The one-way description of spec-driven development and why it does not work in practice. State the five claims; promise one piece of evidence for each. |
+| 4–12 | Four terms and spec quality (replaces Segment 1's tour) | With `note-format-spec.md` on screen: specification, realization, conformance, verification, defined as in the notes and instantiated on R1–R6. Diagram 1. Note the RFC 2119 keywords, the numbered rules, and `Version: 0.1 (draft)`. Show `CLAUDE.md` rules 2 and 4 and say when each will matter. One S, many R, in one sentence. The five quality properties (unambiguous, internally consistent, externally consistent, complete, traceable); the R-numbers are traceability in practice. |
+| 12–24 | Analyzing the specifications and planning (demo Segment 2) | Start with draft specs; before implementing, review them systematically, here by asking the agent. Plan mode; the review-and-plan prompt; the agent's numbered issue list; resolve with the three scripted decisions; amendments as a numbered list; approve; `git diff HEAD~1 -- note-format-spec.md`; `git log --oneline`. Say: information flowed from planning into S before any artifact existed. |
 | 24–30 | Change S or change R (demo Segment 3, compressed) | Diagram 2. A failed check is a fact about the pair; S itself can be wrong (a missing rule, conflicting rules). Two ways to look for defects in S: examples that exercise every rule; analysis for incompleteness and inconsistency. Segment 2 was the S-side move: scope, R3, R7, 0.1 → 1.0.0, changelog with rationale. Who decided: a person, on record; a coordinating agent may share this later. Then `cat note-set-operations.md` after the scaffold: three specifications now govern the repository, each abstracting something different. |
 | 30–36 | Operations (demo Segment 4) | Add blank note; add note with content (paste `sample-inputs/no-silver-bullet-content.md`); if ahead, add then remove "Design by Contract". `ls notes/`, `git log --oneline`. R6 held through every operation: conformance as an invariant, not a milestone. |
 | 36–46 | The verification gate (demo Segment 5) | Paste the nonconformant Royce note; "check and report before fixing"; four findings citing R2, R3, R4, R5; repair; re-check passes. The R-side move. The R3 finding exists only because of Segment 2. The passing re-check is the completion condition. |
@@ -59,7 +59,7 @@ Blocks sum to 72 minutes; 3 minutes slack.
   editor; Claude Code started in the repo; one rehearsal with screenshots at every
   `[fallback capture]` marker. Segments 6 and 7 are shown from those captures in
   this lecture, so their rehearsal captures are required, not optional.
-- **Script:** Segment 0 in the 0–4 block; Segment 1's tour folded into the 4–12
+- **Script:** no demo in the 0–4 block; Segment 1's tour folded into the 4–12
   block; Segment 2 in 12–24; Segment 3 compressed to a `cat` of the operations
   document in 24–30; Segment 4 in 30–36; Segment 5 in 36–46; Segments 6 and 7 from
   captures in 46–62; Segment 8's table in 62–68.

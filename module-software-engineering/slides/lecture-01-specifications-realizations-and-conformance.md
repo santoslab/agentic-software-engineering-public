@@ -43,7 +43,7 @@ A specification and a realization are two artifacts. **Conformance** is a relati
 
 When the check fails, you change one side or the other, re-check, and record which side moved and why.
 
-<!-- 0–4 min. Demo Segment 0 runs here: ls the repo (two specs, CLAUDE.md, no notes); the one-way description of spec-driven development and why it does not work in practice; promise evidence for five claims. Hook: at least one thing in these drafts is wrong. -->
+<!-- 0–4 min. No demo yet. ls the demo repo (two specs, CLAUDE.md, no notes); the one-way description of spec-driven development and why it does not work in practice; promise evidence for five claims. -->
 
 ---
 
@@ -98,6 +98,18 @@ Every file in `notes/` realizes the format specification. One S has many R: ever
 
 ---
 
+## Evaluating a specification: quality properties
+
+- **Unambiguous** — every property yields a yes-or-no answer for a given realization
+- **Internally consistent** — no two rules conflict; in the worst case no realization could conform
+- **Externally consistent and aligned** — the same vocabulary across all of a system's specifications (a glossary helps); no conflicting implications between them
+- **Complete** — for the chosen level of abstraction, nothing is left unaddressed: three output forms with rules for two is incomplete
+- **Traceable** — properties carry unique identifiers, so implementation features and violation reports can cite them
+
+<!-- Still in the 4–12 block. The format spec's R-numbers are the traceability property in practice; R6 vs the ConOps' index.md is the external-consistency failure the demo will find. -->
+
+---
+
 <!-- _class: standout -->
 
 ## Beginning a Specification-Driven Project
@@ -105,9 +117,19 @@ Every file in `notes/` realizes the format specification. One S has many R: ever
 - In this lecture, we start with draft specifications (in future lectures, we illustrate an alternate approach in which we work with an agent to develop the specification)
 - In either case, before we begin implementing a system to fulfill the specifications, we need to systematically review our specifications.
 
+<!-- 12–24 min begins. The review can be done by a person, by an agent, or by a tool; today we ask the agent. -->
 
+---
 
-<!-- 12–24 min. Demo Segment 2: plan mode; the gap-finding prompt; the agent's numbered issue list; resolve with the three scripted decisions; amendments as a numbered list; approve; git diff HEAD~1 -- note-format-spec.md; git log. Seeded gaps, for your eyes: A (is index.md a note? it cannot satisfy R1/R2), B (H1 vs title), D (no filename rule). -->
+## Ask the agent to evaluate the specification
+
+The demo's first prompt, in plan mode:
+
+> Read note-set-conops.md and note-format-spec.md carefully. I want to set up this note set so it fully realizes the ConOps: create the notes directory and the index, and document each agent operation with preconditions and postconditions in a new file note-set-operations.md. **Before proposing a plan, list every place where the two specifications are ambiguous, incomplete, or inconsistent with each other; anything that would force you to guess during implementation. Number the issues and ask me to resolve them before you plan.**
+
+The bold sentence is the review request. Later in the course it can become a skill.
+
+<!-- Demo Segment 2 (Analyzing the specifications and planning): plan mode; this prompt; the agent's numbered issue list; resolve with the three scripted decisions; amendments as a numbered list; approve; git diff HEAD~1 -- note-format-spec.md; git log. Seeded gaps, for your eyes: A ambiguity (is index.md a note? it cannot satisfy R1/R2), B incompleteness (H1 vs title), D consistency between the two specifications (no filename rule). Say: our specifications can be wrong; we need to become comfortable reading and critiquing them. -->
 
 ---
 
@@ -136,15 +158,15 @@ Because S drives the development and summarizes intent, every change to S is rec
 
 ## Segment 2 changed S
 
-| Defect found in planning | Amendment |
-|---|---|
-| Is `index.md` a note? It cannot satisfy R1 or R2 | scope statement: `index.md` is not a note; R6 alone governs it |
-| No rule says the H1 must equal `title` | R3 extended: they are equal; the field is authoritative |
-| No rule derives a filename from a title | new R7: filename = slug of the title |
+| Defect found in the review | Property | Amendment |
+|---|---|---|
+| Is `index.md` a note? It cannot satisfy R1 or R2 | ambiguity | scope statement: `index.md` is not a note; R6 alone governs it |
+| No rule says the H1 must equal `title` | incompleteness | R3 extended: they are equal; the field is authoritative |
+| O1 supplies a title; no rule derives a filename | consistency between the two specifications | new R7: filename = slug of the title |
 
 Version 0.1 → 1.0.0; the agent wrote the changelog entry. A person decided each amendment; the agent proposed and waited (`CLAUDE.md` rules 2 and 4). Later a coordinating agent may share this role; for now the human developer is the authority.
 
-<!-- Segment 3 compressed: cat note-set-operations.md after the scaffold; three specifications now govern the repository, each abstracting something different. 30–36 min, Segment 4 live: add blank; add with content (paste no-silver-bullet-content.md); the add/remove pair only if ahead. ls notes/; git log. R6 held through every operation. -->
+<!-- Segment 3 (a lower-level specification derived from the ConOps) compressed: cat note-set-operations.md after the scaffold; three specifications now govern the repository, each abstracting something different. 30–36 min, Segment 4 (the specifications as invariants) live: add blank; add with content (paste no-silver-bullet-content.md); the add/remove pair only if ahead. ls notes/; git log. R6 held through every operation. -->
 
 ---
 
@@ -260,7 +282,7 @@ Part 3 saves time and tokens: a few hundred tokens of questions for defects foun
 | what "done" means for this step | report violations before repairing; quote the rule |
 | | end each operation with a named commit |
 
-The demo's `CLAUDE.md` has eight rules and does not change during the demo. Today's specifications were human drafts; later lectures have the agent write them.
+When you use specification files in development, consider which of these belong in the general guidelines of your `CLAUDE.md`, because they apply to every operation. The demo's `CLAUDE.md` has eight such rules and does not change during the demo.
 
 ---
 

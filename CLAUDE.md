@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Public materials for a graduate course on agentic software engineering. It is almost entirely Markdown content — there is no application to build at the root. The only runnable code is the Python starter in `weeks-01-03/student-repo/tictactoe-starter/`; everything else "builds" into slide decks (Marp) or handout PDFs (Pandoc).
+Public materials for a graduate course on agentic software engineering. It is almost entirely Markdown content — there is no application to build at the root. The runnable code is the Python starter in `weeks-01-03/student-repo/tictactoe-starter/`, the reference game in `module-software-engineering/demos/lecture-03-game-demo/reference/` (99 tests under a 100% branch-coverage gate), and `check_notes.py` in the note-set demo; everything else "builds" into slide decks (Marp) or handout PDFs (Pandoc).
 
 ## Commands
 
@@ -17,11 +17,11 @@ weeks-01-03/slides/build.sh   # or weeks-04-07/slides/build.sh, module-software-
 **Build one deck / one diagram:**
 
 ```sh
-npx -y @marp-team/marp-cli@latest --allow-local-files lecture-NN-*.md -o lecture-NN-*.pdf
+npx -y @marp-team/marp-cli@latest --no-stdin --allow-local-files lecture-NN-*.md -o lecture-NN-*.pdf
 npx -y @mermaid-js/mermaid-cli -i diagrams/NAME.mmd -o diagrams/NAME.svg
 ```
 
-`--allow-local-files` is required because decks embed local `diagrams/*.svg`.
+`--allow-local-files` is required because decks embed local `diagrams/*.svg`. `--no-stdin` stops marp from waiting on stdin when there is no TTY (CI, or a shell run by a tool), where it would otherwise hang.
 
 **Rebuild a handout PDF** (handout PDFs, unlike slide output, are checked in for distribution):
 
@@ -48,7 +48,7 @@ Each unit (`weeks-01-03/`, `module-software-engineering/`, `weeks-04-07/`) keeps
 - `lecture-notes/lecture-NN-*.md` — full prose, student-facing and self-contained; distributed per lecture, pandoc-convertible to PDF.
 - `slides/lecture-NN-*.md` — Marp decks. Speaker notes are HTML comments (presenter view via P in the HTML output). Each deck carries a shared inline style block (purple theme, `lead`/`source`/`code-dense`/`references` section classes) in its front matter — copy it from an existing deck when creating a new one.
 
-Diagrams live as Mermaid sources in `slides/diagrams/*.mmd` (the editable source of truth, agent-maintainable); slides embed the pre-rendered `.svg`. Slide `.pdf`/`.html` output and `.svg` files are gitignored build artifacts — never commit them.
+Diagrams live as Mermaid sources in `slides/diagrams/*.mmd` (the editable source of truth, agent-maintainable); slides embed the pre-rendered `.svg`, which is tracked — re-render with `build.sh` and commit the `.svg` when its source changes. Slide `.pdf`/`.html` output is a gitignored build artifact — never commit it.
 
 Each unit README (`weeks-01-03/README.md`, `module-software-engineering/README.md`, `weeks-04-07/README.md`) is the map: the lecture arc, which exercise each lecture launches, and what is ready vs. draft. Files that identify themselves as drafts need instructor review before being assigned.
 

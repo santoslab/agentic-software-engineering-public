@@ -34,7 +34,7 @@ Exercises and Projects
 ### Part 2 (Weeks 4-7) - Basic Agentic Software Engineering Principles 
 
 Lecture Coverage
-  - Core concepts of traditional software engineering, and re-orienting those for agentic software development
+  - Core concepts of traditional software engineering, and re-orienting those for agentic software development (the `module-software-engineering/` unit: specifications, realizations, conformance, the concept of operations, operations under contract, specifying and verifying a game, and tests as executable specification)
   - Core agent harness competencies for agentic development, illustrated with Claude Code (agent memory, skills, hooks, model-context protocol (MCP), efficient representation of context, tradeoffs between models, basic security configurations)
   - Specification-centric development with agents
   - Patterns and Recipes for agentic software engineering

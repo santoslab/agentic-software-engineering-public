@@ -7,8 +7,9 @@ the load-bearing skills of agentic development.
 
 Weeks 1–3 exercises are deliberately about **the feel of working with an agent**:
 reading a real session, exploring an unfamiliar codebase, curating knowledge, and
-building the loop by hand. The first *coding* project with Claude (tic-tac-toe scale)
-starts in week 4.
+building the loop by hand. The software-engineering module
+([`../module-software-engineering/`](../module-software-engineering/README.md))
+follows this unit and assigns the first *coding* project with Claude, Project 1.
 
 ## The arc
 
@@ -55,3 +56,5 @@ doesn't).
 - `../prompt-cheat-sheet.md` — the five prompting principles; Lecture 04's handout
 - `../technical-concepts.md` — concept index with curated doc links; the "where is
   feature X taught" map
+- `../specification-kinds.md` — the catalog of kinds of specification the course
+  uses; the Project 0 kickoff's entry format is one of them

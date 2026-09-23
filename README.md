@@ -14,10 +14,13 @@ The course is still being developed: published materials may change, and files t
   prompting, context, and verification
 - [Software engineering for agentic development](module-software-engineering/README.md)
   — classical software-engineering concepts applied to agent-based development
-  (skeleton; content in development)
+  (Lectures 01–05 drafted with demos, exercises, and the Project 1 brief;
+  Lecture 06 in progress)
 - [Weeks 4–7: The Growing Tic-Tac-Toe](weeks-04-07/README.md) — a staged project in
   specification-driven agentic development
 - [Technical concepts](technical-concepts.md) — topic index and further reading
+- [Kinds of specification](specification-kinds.md) — the course-wide catalog of
+  specification kinds: purpose, audit, verification, and examples for each
 - [Prompting cheat sheet](prompt-cheat-sheet.md) — compact prompting principles
 
 Each unit contains instructor lecture outlines, student-facing lecture notes, Marp

@@ -154,7 +154,7 @@ Ten waves, each running a fixed cycle:
 
 ---
 
-## The lesson — and the instruments
+## The lesson — and the verifiers
 
 **Not** "autonomy bad." Pass 4's testing worked.
 What failed was *direction*: nobody confirmed the shape while it was cheap to change.

@@ -70,7 +70,7 @@ like.
    in your own words, each conforming to your spec and linked from `index.md`.
    (Examples: the agent loop; context windows and caching; spec-driven development;
    the five agentic principles; tool calling. But follow *your* interests.)
-5. **Stretch (optional, recommended):** have Claude write a conformance checker — a
+5. **Stretch (optional, recommended):** have Claude write a conformance verifier — a
    small script or a Claude Code skill that validates every note (frontmatter parses,
    `type` non-empty, reserved files well-formed, index covers all notes) — "give the
    agent tools to check itself," applied to knowledge work.
@@ -84,7 +84,7 @@ like.
 
 Repo or zip containing: the bundle (spec, scaffold, ≥5 seeded notes, `index.md`,
 `log.md`, `CLAUDE.md`), the elicitation transcript, and — if attempted — the
-conformance checker.
+conformance verifier.
 
 TODO: provide a README.md summarizing all of this
 

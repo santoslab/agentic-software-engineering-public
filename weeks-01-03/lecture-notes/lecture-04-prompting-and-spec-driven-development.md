@@ -258,7 +258,7 @@ about your KB's purpose and organization *before creating any files*; write a
 one-page spec (folder taxonomy, your `type` vocabulary, note granularity, linking
 conventions); have Claude scaffold the bundle from the spec; seed it with five notes
 from the weeks 1–3 material in your own words. The stretch goal — a conformance
-checker the agent can run — is principle 3 pointed at knowledge work.
+verifier the agent can run — is principle 3 pointed at knowledge work.
 
 The full spec is `project-0-pkb-kickoff.md`; kickoff is due at the end of week 3,
 and the PKB has checkpoints in weeks 6, 10, and 15.

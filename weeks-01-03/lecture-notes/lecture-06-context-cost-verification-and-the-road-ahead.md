@@ -111,7 +111,7 @@ a coverage gate that fails the build, a review subagent, a human checkoff betwee
 waves — and mechanical is the point: gates that depend on remembering to care get
 skipped, as pass 4 demonstrated at production prices.
 
-One more instrument for the toolbox: the Java 9×9 game from Lecture 4 enforces **100%
+One more verifier for the toolbox: the Java 9×9 game from Lecture 4 enforces **100%
 branch coverage** via its build (JaCoCo) — the build *fails* if a branch goes
 untested. That is principle 3 ("give the agent tools to check itself") hardened into
 a gate no one can forget to apply. In class we open its coverage report and its

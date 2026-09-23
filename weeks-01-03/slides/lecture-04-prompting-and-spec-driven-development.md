@@ -284,7 +284,7 @@ One required field (`type`) · reserved `index.md` + `log.md` · **broken links 
 2. **Specify** — a one-page spec: taxonomy, `type` vocabulary, granularity, linking
 3. **Scaffold** — Claude builds the bundle from your spec (plus its own CLAUDE.md)
 4. **Seed** — 5+ notes from weeks 1–3, in your own words
-5. **Stretch** — a conformance checker: principle 3, aimed at knowledge work
+5. **Stretch** — a conformance verifier: principle 3, aimed at knowledge work
 
 Due end of week 3 · checkpoints weeks 6, 10, 15
 

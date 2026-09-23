@@ -24,9 +24,10 @@ After this lecture, students can:
 
 Assigned before the module's first meeting (see `../reading-list.md`):
 
-- [required] `../demos/lecture-01-note-specs-demo/starter/note-set-conops.md` and
-  `starter/note-format-spec.md` (five minutes; the tour in class is then a reminder,
-  not a first reading)
+- [required] the Lecture 01 handout,
+  `../student-materials/handout-lecture-01-note-set-starter-specs.md` (the two
+  starter specifications and the working rules; five minutes, so the tour in class
+  is a reminder, not a first reading)
 - [recommended] RFC 2119, key words for requirement levels
 
 ## Topic outline

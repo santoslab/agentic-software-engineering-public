@@ -12,11 +12,11 @@ URLs verified 2026-09-16 unless marked ⚠ verify.
 
 ## For Lecture 01 (read before the module's first meeting)
 
-- **[required]** The two draft specifications the demo starts from:
-  [`note-set-conops.md`](demos/lecture-01-note-specs-demo/starter/note-set-conops.md)
-  and [`note-format-spec.md`](demos/lecture-01-note-specs-demo/starter/note-format-spec.md)
-  in `demos/lecture-01-note-specs-demo/starter/`. Five minutes. Class time is not
-  spent reading them.
+- **[required]** The Lecture 01 handout,
+  [`student-materials/handout-lecture-01-note-set-starter-specs.md`](student-materials/handout-lecture-01-note-set-starter-specs.md)
+  (PDF alongside it): the two draft specifications the demo starts from and the
+  agent's working rules, copied from `demos/lecture-01-note-specs-demo/starter/`.
+  Five minutes. Class time is not spent reading them.
 - **[recommended]** Bradner, *Key words for use in RFCs to Indicate Requirement
   Levels* (RFC 2119, 1997) — <https://www.rfc-editor.org/rfc/rfc2119>. The
   MUST/SHOULD/MAY vocabulary the format specification uses.

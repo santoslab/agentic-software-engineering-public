@@ -69,8 +69,10 @@ spec ends with a required-elements checklist, as in the other units.
   realizes them, three conformance-checking instruments)
 - `reading-list.md` — annotated readings, tagged
   [required] / [recommended] / [gap-filler]
-- `student-materials/` — handouts and small example artifacts shipped with
-  exercises; currently the specification-driven planning prompt template
+- `student-materials/` — handouts (Markdown sources with checked-in PDFs) and
+  small example artifacts shipped with exercises; currently the Lecture 01
+  starter-specifications handout and the specification-driven planning prompt
+  template
 
 Each subfolder holds a README stating its purpose and file conventions.
 

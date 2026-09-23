@@ -14,10 +14,10 @@
 flowchart TB
     S["Specification S<br/>note-format-spec.md"] --> H & A & C
     R["Realization R<br/>a note"] --> H & A & C
-    H["Person<br/>decides every clause, including judgment<br/>minutes per check; attention-dependent"]
-    A["Agent<br/>mechanical rules and judgment clauses<br/>tokens per check; may vary run to run"]
-    C["Program: check_notes.py<br/>mechanical rules only<br/>free, instant, deterministic; exit 0 / 1 / 2"]
-    H --> F["Findings that cite the same rule IDs"]
+    H["Human verifier<br/>decides every clause, including judgment<br/>minutes per check; attention-dependent"]
+    A["Agent verifier<br/>mechanical and judgment clauses<br/>tokens per check; may vary run to run"]
+    C["Algorithmic verifier: check_notes.py<br/>mechanical clauses only<br/>free, immediate, deterministic; exit 0 / 1 / 2"]
+    H --> F["Reports that cite the same rule identifiers (RPT-2)"]
     A --> F
     C --> F
 

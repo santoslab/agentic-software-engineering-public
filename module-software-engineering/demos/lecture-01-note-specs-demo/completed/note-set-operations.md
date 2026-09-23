@@ -1,6 +1,6 @@
 # Note Set Operations
 
-Version: 1.1
+Version: 1.2
 Status: maintained by the agent; changes are proposed to the user before
 adoption.
 
@@ -55,43 +55,31 @@ and this document must be corrected.
 ## O4 — Check conformance
 
 - **Input:** one note, several notes, or the whole set.
-- **Steps:** first run the algorithmic checker — `python3 check_notes.py
+- **Steps:** first run the algorithmic verifier — `python3 check_notes.py
   <note.md> ...` for named notes, or `python3 check_notes.py --all` for the
-  whole set including the R6 index checks. The script covers the mechanical
-  rules (table below). When the user asks for a full check, or when a
+  whole set including the R6 index checks. The script decides the mechanical
+  clauses; which clauses are mechanical and which are judgment is the VER-2
+  table in `process/verification.md`. When the user asks for a full check, or when a
   judgment clause is in question, the agent additionally reviews the
   judgment clauses. Violations are reported with rule IDs and the quoted
-  rule text; per the working rules, repairs wait for the user's go-ahead.
+  rule text; per RPT-4, repairs wait for the user's ruling.
 - **Postcondition:** a conformance report; the set itself is unchanged.
 
-## Mechanical rules vs. judgment clauses
+## Mechanical clauses and judgment clauses
 
-`check_notes.py` decides the mechanical rules deterministically and for
-free. The judgment clauses cannot be decided by the script; they remain the
-agent's (or the user's) job.
-
-| Rule / clause | `check_notes.py` | Agent or user judgment |
-| --- | --- | --- |
-| R1 front-matter block | yes | — |
-| R2 fields, including date validity | yes | — |
-| R3 H1 placement and H1 = `title` | yes | — |
-| R4 single H1 | yes | — |
-| R5 no skipped heading levels | yes | — |
-| R6 index bijection and entry form, including the summary-sentence match | yes (`--all`) | — |
-| R7 filename = slug of title | yes | — |
-| R8 first section is `## Summary`, exactly one paragraph | yes | — |
-| R8 the summary **accurately** summarizes the note (SHOULD) | no | yes |
-| O2 conformance repairs preserve the user's meaning | no | yes |
+The classification of every clause as mechanical (decided by `check_notes.py`)
+or judgment (decided by a human or agent verifier) is the VER-2 table in
+`process/verification.md`, amended whenever the specification changes.
 
 ## Deferred questions
 
-- O1 creates blank notes with a placeholder Summary sentence to satisfy
-  R8's MUST clause. Should R8 instead exempt notes that have no content
-  yet? Current practice: the placeholder names the intended topic, and the
-  Summary is rewritten when content arrives.
+Recorded in `BACKLOG.md` (DEV-6), not here.
 
 ## Changelog
 
+- **1.2** (2026-09-20) — The mechanical-vs-judgment table moved to
+  `process/verification.md` (VER-2); deferred questions moved to `BACKLOG.md`;
+  wording aligned with the process documents.
 - **1.1** (2026-09-11) — Spec v2.0.0: O1/O2 now produce a `## Summary`
   section; O4 runs `check_notes.py` first; added the mechanical-vs-judgment
   table (R8 splits across both columns).

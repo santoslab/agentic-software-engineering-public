@@ -24,7 +24,20 @@ only the index-consistency rule (R6) applies to it.
 There is one user and one agent (Claude Code). The user requests operations
 conversationally; the agent performs them and reports what changed.
 
-## 4. Agent operations
+## 4. Scenarios and agent operations
+
+### Scenarios
+
+Three sessions, as the user would describe them.
+
+- **S1 — A placeholder.** "I want a note for a paper I have not read yet, so
+  that it is in the index and I remember to come back to it. I give the agent
+  the title and nothing else."
+- **S2 — Notes from reading.** "I have just read Brooks's *No Silver Bullet*
+  and typed a page of notes with a few headings. I paste them and ask the
+  agent to add a note. Later I open the index and see the note listed."
+- **S3 — A mistake.** "That note was a mistake. I tell the agent the title and
+  ask it to get rid of it; afterwards the index should not mention it."
 
 ### O1 — Add blank note
 

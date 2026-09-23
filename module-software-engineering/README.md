@@ -1,15 +1,17 @@
 # Software Engineering for Agentic Development
 
-**Status:** in development. Lecture 01 (instructor outline, lecture notes, slide
-deck, diagrams), Exercise 1, and the prompt-template handout are drafted and need
-instructor review before use. The note-set demo that Lecture 01 runs is in place.
-Lectures 02 through 06 are not yet written.
+**Status:** in development. Lectures 01 through 05 (instructor outlines, lecture
+notes, slide decks, diagrams), the two-part note-set demo, the two-part game demo,
+the Reversi audit walkthrough, the Project 1 brief and starter, Exercises 1 and 2,
+and the handouts are drafted and need instructor review before use; the brief's
+due dates and effort estimates are not yet set. Lecture 06 has an instructor
+outline; its notes, deck, and demo server are not yet written.
 
 **Position in the course:** a three-week module that follows
-[`weeks-01-03/`](../weeks-01-03/README.md) (foundations) and precedes
-[`weeks-04-07/`](../weeks-04-07/README.md) (Project 1). Students are expected to have
-completed the foundations unit. The folder name omits a week range on purpose: the
-module is not tied to specific calendar weeks.
+[`weeks-01-03/`](../weeks-01-03/README.md) (foundations) and precedes the
+project unit. Students are expected to have completed the foundations unit. The
+folder name omits a week range on purpose: the module is not tied to specific
+calendar weeks.
 
 **Purpose:** review the software-engineering concepts that earlier courses introduce
 (specification, requirements, verification, validation, process, planning, assurance)
@@ -17,41 +19,51 @@ and show how each applies when an agent, rather than a human, produces most of t
 code. In agentic development these concepts determine what the agent is told, what
 artifacts it must produce, and how its output is checked.
 
-## Candidate topics
-
-The topics below come from the course overview's learning outcomes. Lecture 01
-covers the first of them. Lecture 02 is planned to treat the concept of operations
-and the operations document as further expressions of intent, and to begin building
-specifications with the agent. The remaining topics have not yet been assigned to
-lectures.
-
-- Specification and realization: what a specification abstracts away, what it means
-  for a realization to conform, and how conformance is assessed
-- Requirements and concept of operations
-- Verification and validation as distinct conformance questions
-- Traceability between specifications, between a specification and its realization,
-  and between artifacts and the changes that produced them
-- Development process specifications: steps, gates, handoffs, and work decomposition
-- Assurance: arguments and evidence that a specification is well-formed and that a
-  realization conforms to it
-
 ## The arc
 
 | Lecture | Title | Core question | Launches |
 |---------|-------|---------------|----------|
 | [01](lectures-instructor-notes/lecture-01-specifications-realizations-and-conformance.md) | Specifications, Realizations, and Conformance | What holds a specification and its realization together, and how do you check? | [Ex. 1](exercises/exercise-01-conformance-three-ways.md) |
-| 02–06 | to be filled in | | |
+| [02](lectures-instructor-notes/lecture-02-concept-of-operations-operations-and-the-invariant.md) | The Concept of Operations, Operations with Contracts, and the Specification as an Invariant | What is the system for, what may an agent do to it, and how is conformance kept while it changes? | [Ex. 2](exercises/exercise-02-operations-under-contract.md) |
+| [03](lectures-instructor-notes/lecture-03-specifying-a-game-one-system-several-specifications.md) | Specifying a Game: One System, Several Specifications | What kinds of specification does a program need, and how does an agent help discover them? | Ex. 3 (optional) |
+| [04](lectures-instructor-notes/lecture-04-verifying-a-game-tests-as-executable-specification.md) | Verifying a Game: Tests as Executable Specification | What does a test suite claim, and what does coverage not tell you? | — |
+| [05](lectures-instructor-notes/lecture-05-reversi-kickoff-applying-the-method.md) | Reversi Kickoff: Applying the Method | Can you run the same moves on a game you were just handed? | Project 1, Part 1 |
+| [06](lectures-instructor-notes/lecture-06-mcp-the-tool-contract-as-a-specification.md) | MCP: The Tool Contract as a Specification | What changes when the reader of a contract is a machine? | Project 1, Part 2 |
+
+Across the six lectures the module introduces most of the kinds of
+specification in the course catalog (`../specification-kinds.md`); Lecture 03's
+table is the module's view of it, and Lecture 06 adds the last kind.
+
+## The process documents
+
+From Lecture 01 on, every demo repository and every starter carries a `process/`
+folder beside its specifications. Its documents say how work proceeds with
+respect to the specifications, and their rules are numbered so that reports can
+cite them: `spec-audit.md` (AUD), `conops-audit.md` (AUDCON),
+`development-rules.md` (DEV), `verification.md` (VER), `reporting.md` (RPT), and
+a `README.md` that states the invariant they maintain. The set grows lecture by
+lecture — Lecture 01 ships three documents, Lecture 02 six — and a rule, once
+numbered, is never renumbered. `CLAUDE.md` in each repository is a short loader
+that names the governing documents and the process documents and states two
+rules.
 
 ## Exercises
 
 | # | File | Assigned | Due | Effort | Needs |
 |---|------|----------|-----|--------|-------|
 | Ex. 1 | [exercise-01-conformance-three-ways.md](exercises/exercise-01-conformance-three-ways.md) | L01 | before L03 | 2–3 h | Claude Code, Python 3.11+, git |
+| Ex. 2 | [exercise-02-operations-under-contract.md](exercises/exercise-02-operations-under-contract.md) | L02 | before L04 | 2–3 h | Claude Code, Python 3.11+, git |
+| Ex. 3 (optional) | to write | L03 | before L05 | 1–2 h | Claude Code |
 
-Exercises in this module are intended to be small, completion-based demonstrations of
-individual concepts (the course overview lists specification versus implementation,
-verification, validation, plan mode, traceability, and assurance artifacts). Each
-spec ends with a required-elements checklist, as in the other units.
+**Project 1** is assigned in this module — Part 1 at Lecture 05, Part 2 at
+Lecture 06 — by [`project-1-reversi-brief.md`](project-1-reversi-brief.md), with
+its starter in `student-materials/reversi-starter/`. It is Stage A of the project
+unit's Project 1, re-targeted to Reversi; Stages B–E of
+[`../weeks-04-07/project-1-brief.md`](../weeks-04-07/project-1-brief.md) follow
+it unchanged.
+
+Exercises in this module are small, completion-based demonstrations of individual
+concepts. Each spec ends with a required-elements checklist, as in the other units.
 
 ## Files in this module
 
@@ -64,20 +76,24 @@ spec ends with a required-elements checklist, as in the other units.
 - `slides/lecture-NN-*.md` — Marp slide decks (`slides/build.sh` renders PDF and
   standalone HTML; diagrams kept as Mermaid sources in `slides/diagrams/`)
 - `exercises/` — exercise specs
+- `project-1-reversi-brief.md` — the Project 1 brief (Parts 1 and 2)
 - `demos/` — in-class demo assets; `demos/lecture-01-note-specs-demo/` is the
-  note-set demo that Lecture 01 runs (two draft specifications, an agent that
-  realizes them, three conformance-checking instruments)
+  note-set demo that Lectures 01 and 02 run in two parts (three repository
+  states, two scripts); `demos/lecture-03-game-demo/` the game demo Lectures 03
+  and 04 run in two parts; `demos/lecture-05-reversi-audit/` the Lecture 05
+  walkthrough and its instructor key
 - `reading-list.md` — annotated readings, tagged
   [required] / [recommended] / [gap-filler]
 - `student-materials/` — handouts (Markdown sources with checked-in PDFs) and
-  small example artifacts shipped with exercises; currently the Lecture 01
-  starter-specifications handout and the specification-driven planning prompt
-  template
+  small example artifacts shipped with exercises
 
 Each subfolder holds a README stating its purpose and file conventions.
 
 ## Standing references (live outside this module)
 
+- `../specification-kinds.md` — the catalog of kinds of specification the
+  course uses: purpose, audit, verification, and examples for each; cited from
+  Lectures 01–06 and the Project 1 brief
 - `../prompt-cheat-sheet.md` — the prompting principles handout
 - `../technical-concepts.md` — concept index with curated documentation links
 - `../templates/lecture-outline-template.md` — the instructor-outline format
@@ -85,13 +101,15 @@ Each subfolder holds a README stating its purpose and file conventions.
 ## Conventions for this module
 
 - **Lecture numbering.** Lecture files are numbered within the module, `lecture-01`
-  through `lecture-06` (two meetings per week for three weeks). The global lecture
-  numbers used by `weeks-04-07/` (07 through 14) are unchanged. This avoids a
-  repository-wide renumbering now; revisit if a single global scheme is preferred.
+  through `lecture-06` (two meetings per week for three weeks).
 - **Three artifacts per lecture.** Every lecture has an instructor outline, a
   student lecture-notes file, and a slide deck, and edits to one usually need to be
   reflected in the other two.
 - **Outline header.** Instructor outlines use `**Unit:** module-software-engineering`
   in the template's header line.
+- **Terminology.** *Verification* is the activity; a *verifier* performs it —
+  human, agent, or algorithmic. *Instrument* and *checker* are not used for the
+  role. A specification is *audited* (AUD, AUDCON); a realization is *verified*
+  (VER); both produce reports in the forms of RPT.
 - **Prose style.** Use direct, technical language. State a claim and the reason for
   it. Do not use slogans or motivational phrasing.

@@ -32,8 +32,8 @@ style: |
 
 # Specifications, Realizations, and Conformance
 
-**Agentic Software Engineering — Software-Engineering Module, Lecture 1**
-Meeting 1 of 6 · runs the note-set demo · launches **Exercise 1**
+**Agentic Software Engineering — Software-Engineering Module, Lecture 01**
+Meeting 1 of 6 · runs part 1 of the note-set demo · launches **Exercise 1**
 
 ---
 
@@ -41,24 +41,24 @@ Meeting 1 of 6 · runs the note-set demo · launches **Exercise 1**
 
 A specification and a realization are two artifacts. **Conformance** is a relation between them; **verification** is the activity that checks it.
 
-When the check fails, you change one side or the other, re-check, and record which side moved and why.
+When the check fails, one side or the other is changed, the check is run again, and the decision — which side moved, and why — is recorded.
 
-<!-- 0–4 min. No demo yet. ls the demo repo (two specs, CLAUDE.md, no notes); the one-way description of spec-driven development and why it does not work in practice; promise evidence for five claims. -->
+<!-- 0–4 min. No demo yet. ls the demo repository: one specification, a CLAUDE.md, a process/ folder, no notes. -->
 
 ---
 
-## Example: a set of agent-maintained notes
+## The example: a set of study notes
 
-A folder of study notes: one Markdown file per article you read. Two questions arise:
+One markdown file per article you read. Two questions:
 
-- How should a note be formatted? Is there a standard to follow?
-- What are the steps for adding or removing a note?
+- How should a note be formatted?
+- Who checks that it is?
 
-The answers are written in files that are not notes but **specifications**: a **format specification** (rules every note follows) and a **concept of operations** (what the system is for; the operations a user applies to the note set).
+The first answer is a document that is not a note: a **specification**, `note-format-spec.md`. The second answer is this lecture.
 
-At t=0 the repository holds those two specifications, a `CLAUDE.md` of eight working rules for the agent, and no notes. It is a simplified version of the Project 0 PKB.
+At the start the repository holds the specification (version 0.1, draft), a short `CLAUDE.md`, and three process documents. No notes.
 
-<!-- 4–12 min. This block replaces Segment 1's tour. One user, no sharing; the agent performs the structural operations (add blank, add with content, remove); every note is expected to conform at all times. -->
+<!-- 0–4 min. Why the example is small: six rules on one screen; every concept can be pointed at in a file. Project 0 is the same thing at the student's scale. -->
 
 ---
 
@@ -73,20 +73,20 @@ At t=0 the repository holds those two specifications, a `CLAUDE.md` of eight wor
 | R5 | no skipped heading levels |
 | R6 | `index.md` links every note exactly once; every link resolves |
 
-RFC 2119 keywords, and numbered rules so that any conformance report can cite them.
+RFC 2119 keywords; numbered rules, so that any report can cite one.
 
-<!-- Keep this on screen while defining the terms. Note "Version: 0.1 (draft)". Show CLAUDE.md rules 2 and 4 and say when each will matter. -->
+<!-- 4–14 min. Keep this on screen while defining the four terms. Note "Version: 0.1 (draft)". -->
 
 ---
 
 ## Four terms
 
-- **Specification (S)** — states, above the level of the artifact it governs, what the developer intends; fixes what matters when building the system and leaves the rest free
+- **Specification (S)** — states, above the level of the artifact it governs, what the developer intends; fixes what matters and leaves the rest free
 - **Realization (R)** — an artifact built to satisfy S; *implementation* when R is code; a note or a document can also be one
-- **Conformance** — the relation that holds when R satisfies every property stated in S
-- **Verification** — the activity of *trying* to confirm that R conforms to S; we want it to be trustworthy, so we need to know how it can go wrong
+- **Conformance** — the relation that holds when R satisfies every property stated in S; a yes-or-no question about the pair
+- **Verification** — the activity of *trying* to confirm that R conforms to S; the result is evidence, and we need to know what it is evidence of
 
-The participants (S, R) · the desired relation (conformance) · the act of checking it (verification)
+One S, many R: every conformant note is a different realization of the same rules.
 
 ---
 
@@ -94,42 +94,71 @@ The participants (S, R) · the desired relation (conformance) · the act of chec
 
 ![w:1000 center](diagrams/spec-realization.svg)
 
-Every file in `notes/` realizes the format specification. One S has many R: every conformant note is a distinct realization of the same rules.
+---
+
+## The loader, and the process documents
+
+`CLAUDE.md` names one governing document and three process documents, and states two rules: read everything before acting; change nothing without approval.
+
+| Document | Says | Loaded |
+|---|---|---|
+| `process/spec-audit.md` (AUD) | how a specification's quality is assessed | when asked |
+| `process/reporting.md` (RPT) | the forms a report takes | always |
+| `process/verification.md` (VER) | how conformance is checked, and by what | always |
+
+![w:700 center](diagrams/process-documents.svg)
+
+<!-- 4–14 min. Rules are numbered AUD-1, RPT-2, VER-1, so that reports can cite process rules the way they cite R-numbers. -->
 
 ---
 
-## Evaluating a specification: quality properties
+## Evaluating a specification: five properties, as an audit
 
-- **Unambiguous** — every property yields a yes-or-no answer for a given realization
-- **Internally consistent** — no two rules conflict; in the worst case no realization could conform
-- **Externally consistent and aligned** — the same vocabulary across all of a system's specifications (a glossary helps); no conflicting implications between them
-- **Complete** — for the chosen level of abstraction, nothing is left unaddressed: three output forms with rules for two is incomplete
-- **Traceable** — properties carry unique identifiers, so implementation features and violation reports can cite them
+| Property | Rule | The test |
+|---|---|---|
+| Unambiguous | AUD-1 | could two careful readers decide a clause differently? |
+| Internally consistent | AUD-2 | do two clauses that constrain the same thing state their relationship? |
+| Externally consistent | AUD-3 | across documents: one vocabulary; nothing one document requires that another's artifact cannot satisfy |
+| Complete for its level | AUD-4 | the walkthrough: perform each operation on paper; what did you invent? |
+| Traceable | AUD-5 | can a report, a test, a later document cite this clause — still, after the next change? |
 
-<!-- Still in the 4–12 block. The format spec's R-numbers are the traceability property in practice; R6 vs the ConOps' index.md is the external-consistency failure the demo will find. -->
+AUD-6: search within a document, between documents, and between a document and executing it. AUD-7: the output is a numbered gap list (RPT-1); then stop and wait for rulings.
+
+<!-- 14–20 min. The properties are not advice; they are a procedure in a file, cited by number. Run when the developer asks, before any plan, after any amendment. -->
 
 ---
 
 <!-- _class: standout -->
 
-## Beginning a Specification-Driven Project
+## The audit
 
-- In this lecture, we start with draft specifications (in future lectures, we illustrate an alternate approach in which we work with an agent to develop the specification)
-- In either case, before we begin implementing a system to fulfill the specifications, we need to systematically review our specifications.
+Before anything realizes the specification, the specification is examined.
 
-<!-- 12–24 min begins. The review can be done by a person, by an agent, or by a tool; today we ask the agent. -->
+<!-- 20–34 min begins. Demo Segment 2. Plan mode. -->
 
 ---
 
-## Ask the agent to evaluate the specification
+## The audit prompt
 
-The demo's first prompt, in plan mode:
+> Read `note-format-spec.md` and the process documents. Run the audit in `process/spec-audit.md` on the specification and report per RPT-1: number every finding, place it, quote the text, categorize it, and give a recommended resolution. Include the walkthrough that AUD-4 asks for: write one conformant note on paper, step by step, and say what you had to invent. State which of the three places in AUD-6 you searched. Then stop and wait for my rulings.
 
-> Read note-set-conops.md and note-format-spec.md carefully. I want to set up this note set so it fully realizes the ConOps: create the notes directory and the index, and document each agent operation with preconditions and postconditions in a new file note-set-operations.md. **Before proposing a plan, list every place where the two specifications are ambiguous, incomplete, or inconsistent with each other; anything that would force you to guess during implementation. Number the issues and ask me to resolve them before you plan.**
+The prompt says which document and which audit. What the audit is, and what its report looks like, is in the files.
 
-The bold sentence is the review request. Later in the course it can become a skill.
+<!-- Room writes its own list for two minutes before the agent's appears; compare. Seeded findings, for your eyes: the scope sentence against R6 (index.md cannot satisfy R1); R2 against R3 (no rule that title and H1 agree); the filename the walkthrough must invent. -->
 
-<!-- Demo Segment 2 (Analyzing the specifications and planning): plan mode; this prompt; the agent's numbered issue list; resolve with the three scripted decisions; amendments as a numbered list; approve; git diff HEAD~1 -- note-format-spec.md; git log. Seeded gaps, for your eyes: A ambiguity (is index.md a note? it cannot satisfy R1/R2), B incompleteness (H1 vs title), D consistency between the two specifications (no filename rule). Say: our specifications can be wrong; we need to become comfortable reading and critiquing them. -->
+---
+
+## Three findings, three rulings
+
+| Finding | Rule | Ruling | Amendment |
+|---|---|---|---|
+| the scope sentence covers every markdown file; R6 names `index.md`, which cannot satisfy R1 | AUD-2 | `index.md` is not a note | scope statement: R1–R5 govern `notes/`; R6 alone governs the index |
+| R2 requires `title`; R3 requires an H1; nothing says they agree | AUD-2 | they are equal; the field is authoritative | R3 extended |
+| R6 links to note files; no rule says what a note's filename is | AUD-4 | derive it from the title | new R7: the slug of the title |
+
+Amendments proposed per RPT-3 — old text, new text, rationale, version, changelog — approved, applied: version 0.1 → 1.0.0. The specification moved before any realization existed.
+
+<!-- git diff HEAD~1 -- note-format-spec.md; git log --oneline. If a finding is missed: one nudge each, in the script. -->
 
 ---
 
@@ -137,36 +166,9 @@ The bold sentence is the review request. Later in the course it can become a ski
 
 ![w:1000 center](diagrams/conformance-repair.svg)
 
-A failed check reports a fact about the pair (S, R). It does not say which side is wrong: R may break a rule, or S may state the developer's intent incorrectly.
+A failed check reports a fact about the pair (S, R). It does not say which side is wrong. A person decides; the decision is recorded — in the changelog when S moves, in the commit message when R moves.
 
-<!-- 24–30 min. The temptation is to treat S as the ideal truth because the developer wrote it. S can be missing a rule, or two of its rules can conflict. -->
-
----
-
-## Is the specification right?
-
-Two ways to look for defects in S:
-
-- build realistic examples that exercise every rule
-- analyze S for incompleteness and logical inconsistency
-
-A person, an agent, or a tool can do either. It is hard: only the developer knows the intent, and people tire. In practice it is a brainstorming activity over scenarios and possible realizations.
-
-Because S drives the development and summarizes intent, every change to S is recorded: a version number and a changelog entry with the rationale.
-
----
-
-## Segment 2 changed S
-
-| Defect found in the review | Property | Amendment |
-|---|---|---|
-| Is `index.md` a note? It cannot satisfy R1 or R2 | ambiguity | scope statement: `index.md` is not a note; R6 alone governs it |
-| No rule says the H1 must equal `title` | incompleteness | R3 extended: they are equal; the field is authoritative |
-| O1 supplies a title; no rule derives a filename | consistency between the two specifications | new R7: filename = slug of the title |
-
-Version 0.1 → 1.0.0; the agent wrote the changelog entry. A person decided each amendment; the agent proposed and waited (`CLAUDE.md` rules 2 and 4). Later a coordinating agent may share this role; for now the human developer is the authority.
-
-<!-- Segment 3 (a lower-level specification derived from the ConOps) compressed: cat note-set-operations.md after the scaffold; three specifications now govern the repository, each abstracting something different. 30–36 min, Segment 4 (the specifications as invariants) live: add blank; add with content (paste no-silver-bullet-content.md); the add/remove pair only if ahead. ls notes/; git log. R6 held through every operation. -->
+<!-- 34–40 min. S can be missing a rule, or two rules can conflict, or a clause can fail to say what was meant. Two ways to find defects in S: realistic examples; analysis — which is what the audit is. -->
 
 ---
 
@@ -174,137 +176,120 @@ Version 0.1 → 1.0.0; the agent wrote the changelog entry. A person decided eac
 
 ## The verification gate
 
-A note written carelessly, in another editor, with no process watching.
+A note written carelessly, in another editor, with nothing checking it.
 
-<!-- 36–46 min. Demo Segment 5: paste the nonconformant Royce note over the blank one; "check it and report before fixing anything"; four findings; then "repair, re-check, finish per the working rules". -->
+<!-- 40–52 min. Demo Segment 3: mkdir notes; paste the careless note as notes/royce-1970-waterfall-paper.md (the filename follows R7); write index.md by hand; "check and report per RPT-2; change nothing". -->
 
 ---
 
-## Segment 5 changed R
+## A conformance report (RPT-2)
+
+**Verifier:** agent (model, date). **Specification:** `note-format-spec.md` 1.0.0. **Checked:** R1–R7. **Not checked:** none.
 
 | In the file | Rule | Repair |
 |---|---|---|
-| `created: Sept 11, 2026` | R2 | `2026-09-11` |
-| H1 `The Waterfall Paper` vs `title: Royce 1970 Waterfall Paper` | R3 (as amended) | heading rewritten; the field is authoritative |
+| `created: Sept 11, 2026` | R2 (since 0.1) | `2026-09-11` |
+| H1 `The Waterfall Paper`; `title: Royce 1970 Waterfall Paper` | R3 (amended an hour ago) | heading rewritten; the field is authoritative |
 | a second H1, `# My take` | R4 | demoted to `##` |
-| `##` followed directly by `####` | R5 | demoted to `###` |
+| `####` directly after `##` | R5 | demoted to `###` |
 
-The passing re-check is the completion condition. Segment 2 moved S with R still; Segment 5 moved R with S still. Both end in conformance.
+**Verdict:** nonconformant. Repairs proposed; none applied.
+
+<!-- The R3 finding exists only because of the audit. Against 0.1 a report would have accepted the heading, and it would have been right — for 0.1. That is why a report says which version it checked against. -->
 
 ---
 
-## Three ways to check the same note
+## Report before repair, then the gate
 
-| | Person | Agent | Program (`check_notes.py`) |
+- RPT-4: nothing changes until the report has been read and a ruling given
+- The ruling: the specification is right; the note is wrong
+- The repair; the re-check passes; the commit names the operation
+
+The passing re-check is what "done" means: the task was to make the check pass, not to edit the file.
+
+In the audit, S moved with no R present. Here, R moved with S held still. Both end with conformance re-established.
+
+---
+
+## Three kinds of verifier
+
+| | Human | Agent | Algorithmic |
 |---|---|---|---|
-| Cost per check | minutes | tokens | milliseconds |
+| Cost per check | minutes of attention | tokens | milliseconds |
 | Same result on repeat | not guaranteed | not guaranteed | yes |
-| Mechanical rules | yes | yes | yes |
-| Judgment clauses | yes | yes | **no** |
-| Usable as a gate | no | with effort | yes: exit 0 / 1 / 2 |
+| Decides mechanical clauses | yes | yes | yes |
+| Decides judgment clauses | yes | yes | **no** |
+| Composable into a gate | no | with effort | yes, via the exit code |
 
-Each is a *checker*. Rule IDs make them comparable: all three cite R2–R5 on the same note. A program decides what it can and marks the rest for a person or agent.
+VER-1. Because every rule has an identifier, the three are comparable: all three cite R2–R5 on the same note.
 
-<!-- 46–56 min. Segment 6 from rehearsal captures: the checker's --all run; the sabotage (created: Sept 2026) and exit 1; the restore and exit 0. Then the six failure modes. -->
-
----
-
-## Checkers: person, agent, program
-
-![w:860 center](diagrams/verification-instruments.svg)
-
-The operations document records which rules the script decides and which clauses remain for judgment.
+<!-- 52–64 min. Demo Segment 4: the agent writes check_notes.py (R1–R5, R7 per note; --all adds R6; exit 0/1/2; docstring states version and clauses). Run --all. Sabotage the date; exit 1; restore; exit 0. -->
 
 ---
 
-## Six ways a verification result can be wrong
+## Verifiers
 
-1. Checked against the wrong **version** of S (checker at 1.0.0, spec at 2.0.0: a false pass)
-2. The checker **misinterprets or mis-implements** the check; it is itself a realization of S
-3. Checked from **memory** rather than from the document (working rule 1)
-4. **Coverage**: a pass says nothing about clauses the checker does not decide
-5. **Attention**: the person is the checker for everything no process checks
+![w:860 center](diagrams/verifiers.svg)
+
+---
+
+## Mechanical clauses, judgment clauses — and the verifier as a realization
+
+- **VER-2.** A clause is *mechanical* when a program can decide it from the file alone, *judgment* when it needs a reader. Every clause of 1.0.0 is mechanical. A program decides what it can; the rest is named, never assumed covered.
+- `check_notes.py` is itself a realization of the specification. If it implements a rule wrongly, its results are wrong in a way its output does not show.
+- Who verifies the verifier: read it against the rules; test it on inputs with known violations; compare it with another verifier.
+
+---
+
+## Six ways a verification result can be invalid
+
+1. Checked against the wrong **version** of S — a 1.0.0 verifier on 2.0.0 notes: a false pass
+2. The verifier **mis-implements** a clause; it is a realization too
+3. Checked from **memory** rather than from the document (the loader's first rule)
+4. **Clauses not decided**: a pass says nothing about clauses the verifier does not decide
+5. **Attention**: the human is the verifier for everything no process checks
 6. A **defective S**: before the amendments, no `index.md` could conform
 
-A result is evidence with a scope: the checker, the spec version, the clauses checked.
-
-<!-- 56–62 min. Segment 7 from captures: R8 and the amended R6; version 2.0.0; the migration commit; summaries written by the agent; the ops document's table now splits R8. A 1.0.0 checker would have passed the old notes: failure mode 1. -->
+Verification is not proof. It is evidence within a scope — which verifier, which version, which clauses — and RPT-2 requires the scope to be stated.
 
 ---
 
-## Five claims about specifications
+## What the process documents did today
 
-<style scoped>table { font-size: 22px; }</style>
+| Document | Used | For |
+|---|---|---|
+| AUD | once, when asked, before anything was built | the gap list |
+| RPT | throughout | a gap list (RPT-1), two conformance reports (RPT-2), an amendment proposal (RPT-3), report-before-repair (RPT-4) |
+| VER | throughout | three kinds of verifier (VER-1); mechanical and judgment clauses (VER-2) |
 
-One-way spec-driven development (write S, hand it to an agent, receive R) does not work in practice.
+Not yet present: operations on the set, a statement of what the set is *for*, the rule that conformance is an invariant while the set changes. Lecture 02.
 
-| Claim | Evidence from the demo |
-|---|---|
-| A continuously maintained document of intent | intent changes or was wrong, so its evolution is managed: 0.1 → 1.0.0 → 2.0.0, changelogs, deferred questions |
-| An abstraction of the realization | R1–R8 describe every conformant note and none in particular: a readable summary of the system |
-| Conformance: an invariant while both sides change | a check after every operation; S moved (Segments 2, 7); R moved (Segment 5) |
-| Typically several specifications, mutually consistent | ConOps, format spec, operations document; the `index.md` gap was fixed in two |
-| Information flows both ways | planning added R7 and updated R3; the checker program tightened R2; one requirement changed four artifacts |
-
-<!-- 62–68 min. -->
-
----
-
-## Not one-way
-
-![w:900 center](diagrams/information-flow.svg)
-
-Planning, checking, and a new requirement each sent information back into the specification.
-
----
-
-## A planning prompt in six parts
-
-1. **Read** the named specification files in full
-2. **State the target**: which artifacts, which operations, documented where
-3. **Find gaps in the specs before planning**: a numbered list of every ambiguity, omission, and inconsistency (within a document, between documents, between a document and executing it); the agent stops and asks you to resolve them
-4. **Amend with approval**: amendments as a numbered list; wait
-5. **Plan**: once the specs are debugged, ask for a plan; review and approve it
-6. **Realize with a verification gate**: after each change, check the affected artifacts against S and report, citing rule IDs; work continues only if the check passes
-
-Part 3 saves time and tokens: a few hundred tokens of questions for defects found before any artifact exists.
-
-<!-- 68–72 min. -->
-
----
-
-## What goes in the prompt, what goes in `CLAUDE.md`
-
-| Per task (the prompt) | Every operation (`CLAUDE.md`) |
-|---|---|
-| which specifications, which target | read the specifications first |
-| the gap list, the amendments, the plan | never modify a specification without approval |
-| what "done" means for this step | report violations before repairing; quote the rule |
-| | end each operation with a named commit |
-
-When you use specification files in development, consider which of these belong in the general guidelines of your `CLAUDE.md`, because they apply to every operation. The demo's `CLAUDE.md` has eight such rules and does not change during the demo.
+<!-- 64–70 min. -->
 
 ---
 
 ## Exercise 1, and Project 0
 
-**Exercise 1** — run Segments 2–5 yourself; write one note carelessly; check it with all three checkers; report the findings by checker, one disagreement or coverage gap, and which side should have moved. Due before Lecture 03. Deliberately small.
+**Exercise 1** — run the audit and verification segments yourself; write one note carelessly; check it with all three kinds of verifier; report with RPT-2 scope lines; explain one disagreement; say which side should have moved and how each verifier could have been wrong. Due before Lecture 03.
 
-**Project 0** — the same structure at your scale: your PKB specification is these three documents grown up; its conformance checklist is R1–R8 grown up; the stretch-goal validator is `check_notes.py` grown up.
+**Project 0** — the same structure at your scale: your PKB specification is this specification grown up; its checklist is R1–R7 grown up; the stretch-goal validator is `check_notes.py` grown up.
+
+<!-- 70–72 min. -->
 
 ---
 
 ## Questions to think about
 
-1. Name a property that specification 2.0.0 leaves unconstrained. Should it stay that way? If not, write the rule and name the checker.
+1. Name a property that specification 1.0.0 leaves unconstrained. Should it stay that way? If not, write the rule and say which kind of verifier decides it.
 2. For the R3 finding, defend moving S instead of R. What would it cost?
-3. A compiler's type checker is an algorithmic checker. Which failure modes apply, and who verifies that verifier?
+3. A compiler's type checker is an algorithmic verifier. Which failure modes apply, and who verifies that verifier?
 
 ---
 
 ## Before next meeting
 
-- Read Royce (1970) and Meyer (1992); see `reading-list.md`
-- Exercise 1 is due before Lecture 03; Project 0 continues
+- Read Royce (1970) and Meyer (1992); see `reading-list.md`. Meyer's precondition and postcondition are the form the next lecture gives to an operation.
+- Read the Lecture 02 handout: the draft concept of operations and the three process documents Lecture 02 adds.
+- Exercise 1 is due before Lecture 03; Project 0 continues.
 
-**Next meeting:** the ConOps and the operations document as further expressions of intent; building specifications with the agent.
+**Next meeting:** what the set is for; operations with contracts; the specification as an invariant while the set changes.

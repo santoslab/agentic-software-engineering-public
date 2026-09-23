@@ -1,0 +1,24 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "17px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    L["CLAUDE.md — the loader<br/>names the documents; two rules"] --> G["note-format-spec.md<br/>the governing document"]
+    L --> A["process/spec-audit.md<br/>AUD — run when asked"]
+    L --> R["process/reporting.md<br/>RPT — always loaded"]
+    L --> V["process/verification.md<br/>VER — always loaded"]
+    A -. "gap list, RPT-1" .-> R
+    V -. "conformance report, RPT-2" .-> R
+    G -. "audited by" .-> A
+    G -. "realizations verified against it" .-> V
+
+    style L fill:#310066,color:#ffffff,stroke:#310066

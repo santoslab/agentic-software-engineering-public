@@ -1,0 +1,22 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "17px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    T["Tests<br/>tests/*.py — every test cites a clause (VER-6)"]
+    C["Code<br/>game.py, computer_ai.py, main.py"]
+    S["Specification<br/>SPECS.md — §4.1, §5.1, §7.2, and §9, the obligations"]
+    T -- "branch coverage (VER-4, VER-5)<br/>which code the tests reach<br/>reported by the gate" --> C
+    T -- "clause coverage (VER-8)<br/>which clauses some test claims<br/>reported in the completion note (RPT-5)" --> S
+    C -. "conformance (VER-1)<br/>decided by the tests only as far as they claim,<br/>and only if the claims are right" .-> S
+
+    style S fill:#310066,color:#ffffff,stroke:#310066

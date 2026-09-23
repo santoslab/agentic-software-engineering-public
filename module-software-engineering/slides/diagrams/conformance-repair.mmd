@@ -13,10 +13,10 @@
 }}%%
 flowchart LR
     V["Verify R against S<br/>(person, agent, or program)"] --> Q{Conformance<br/>holds?}
-    Q -- yes --> D(["Record the result:<br/>instrument, spec version,<br/>clauses checked"])
-    Q -- no --> W["Decide which side is wrong<br/>a person decides;<br/>the decision is a commit"]
+    Q -- yes --> D(["Record the result (RPT-2):<br/>verifier, specification version,<br/>clauses checked"])
+    Q -- no --> W["Decide which side moves<br/>a person decides;<br/>the decision is recorded"]
     W -- "R is wrong" --> RR["Repair R<br/>e.g. fix the date, the H1,<br/>the heading levels"]
-    W -- "S is wrong or silent" --> AS["Amend S<br/>propose → approve → edit →<br/>version bump → changelog"]
+    W -- "S is wrong or silent" --> AS["Amend S (RPT-3)<br/>propose → approve → edit →<br/>version bump → changelog"]
     RR --> V
     AS --> V
 

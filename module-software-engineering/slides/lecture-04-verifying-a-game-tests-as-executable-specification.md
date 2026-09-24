@@ -223,7 +223,7 @@ RPT-2's scope lines on a test run: **verifier** — the suite at a named commit,
 
 - **(a) Repair** — the flipped scan restored. No specification change; a report and a ruling precede it.
 - **(b) Conformance-preserving** — the 81-cell scan replaced by a check around the last move. Every test green; no amendment; the commit says no specified behavior changed.
-- **(c) Change of specified behavior** — a move after the game is over. The reference's `SPECS.md` 1.1.0 was silent and its engine accepted one; 1.2.0 adds the clause and records the ruling; the engine change and the test follow. Amendment, then realization.
+- **(c) Change of specified behavior** — a move after the game is over. The reference's `SPECS.md` 1.1.0 was silent, its plan inherited the silence, and its engine accepted one; 1.2.0 adds the clause and records the ruling; the engine change and the test follow. Amendment, then realization.
 
 In the demo's own repository the clause was ruled in Lecture 03. The question at `t4` is only whether a test claims it — the completion note answers.
 

@@ -196,11 +196,25 @@ four and defer the rest.
 
 ## Segment 4 — The implementation, from the tag (about 8 minutes)
 
-DEV-8 is satisfied, so DEV-9 applies. Show the prompt, not the run:
+DEV-8 is satisfied, so DEV-9 applies. Show the two prompts, not the runs. The
+first asks for the plan:
 
 > Read `SPECS.md` and the process documents. Propose a plan for the engine
 > module, the computer opponent, and the command-line interface, citing for
 > each step the clauses it realizes, and wait for my approval.
+
+The second is sent once the plan has been read and ruled on:
+
+> Approve the plan. Commit it under `plans/` as
+> `plan: engine, opponent, CLI (DEV-9)`. Then build the three modules per the
+> approved plan, report per RPT-5 with the clauses each module realizes, and
+> commit as `engine: game, opponent, and CLI per SPECS 1.0.0`.
+
+**Say (of the second prompt):** the plan is committed before the first
+implementing commit — that is what DEV-9 asks for, and it is why the plan is an
+artifact in the history rather than a message in a session. Note also what the
+second prompt does not contain: no instruction about how to build anything. The
+plan already says that, and the plan was derived from the contract.
 
 **Do:** switch to `t3-engine`. `cat plans/*.md | head -60`; `ls`;
 `python main.py` for one move each way; `git log --oneline`.
@@ -209,6 +223,14 @@ DEV-8 is satisfied, so DEV-9 applies. Show the prompt, not the run:
 specification → plan → realization. `CLAUDE.md` is two rules; the laws are in
 `process/`. Nothing has been verified yet except by running it once — that is
 Lecture 04.
+
+**If the tag is not to hand:** `reference/plans/001-engine-opponent-cli.md` is
+the same artifact from the reference repository's own history, written against
+its `SPECS.md` 1.1.0. Read its step 1 and point at the `make_move` line: it
+realizes "each rejection case §5.1 lists" and no more, and at 1.1.0 §5.1 did not
+list a move after the game is over. Today's contract does. A silence in a
+specification is inherited by the plan that cites it — which is the history
+Lecture 04 reads back.
 
 ## End of part 1
 

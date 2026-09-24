@@ -24,7 +24,7 @@ loader, and `process/` at the **L03** level — `verification.md` 1.2 (VER-1 to
 VER-4), `reporting.md` 1.2, `README.md` 1.1. No tests. Nothing in `process/` yet
 says what coverage the gate requires or how a test must be written.
 
-`reference/` is the destination, `t5`: `SPECS.md` 1.2.0, the engine, the suite
+`reference/` is the destination, `t5`: `SPECS.md` 1.2.1, the engine, the suite
 (85 unit tests plus a 14-scenario fixture loader), `fixtures/`, and the L04
 `process/`. Its history is not the live repository's history — see the
 paragraph on the after-game-over clause below.
@@ -321,13 +321,22 @@ other was not.
 
 ```sh
 grep -n 'game is over' SPECS.md
-sed -n '/^## Changelog/,$p' SPECS.md | head -4
+sed -n '/^## Changelog/,$p' SPECS.md | head -5
+grep -A2 'make_move(row, col)' plans/001-engine-opponent-cli.md
 grep -n 'winner is not None' game.py
 grep -n 'after_game_over' tests/test_game.py
 ```
 
+(The top changelog entry is `1.2.1`, a §2 housekeeping patch; the two that
+matter here are `1.2.0` and `1.1.0` below it.)
+
 **Say:** the reference's 1.1.0 was silent on a move after the game is over, and
-its engine accepted one. The 1.2.0 entry records the ruling and says the engine
+its engine accepted one. Read the plan's `make_move` step next: it realizes
+"each rejection case §5.1 lists" — faithfully, and therefore two cases, because
+that is all §5.1 listed. The plan did not introduce the gap and could not have
+closed it; a silence in a specification is inherited by every artifact derived
+from it, which is why an audit of the specification (DEV-8) comes before the
+plan and not after. The 1.2.0 entry then records the ruling and says the engine
 change follows the amendment. The history reads amendment, then realization:
 DEV-2 (c). Set beside it: the flip in Segment 3 was repaired with no change to
 the specification — DEV-2 (a); and replacing the 81-cell scan with a check

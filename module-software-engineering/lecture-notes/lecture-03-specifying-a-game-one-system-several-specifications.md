@@ -314,11 +314,29 @@ its level. DEV-8 is satisfied: every specification the plan would realize has
 been audited. We are now ready to enforce DEV-9: 
 any build is preceded by a plan, proposed in
 plan mode, approved, and committed under `plans/`, and the plan cites, for each
-step, the clauses it realizes. The prompt:
+step, the clauses it realizes. The first prompt asks for the plan and nothing
+else:
 
 > Read `SPECS.md` and the process documents. Propose a plan for the engine
 > module, the computer opponent, and the command-line interface, citing for
 > each step the clauses it realizes, and wait for my approval.
+
+The plan is read and ruled on. Only then does the second prompt ask for the
+build:
+
+> Approve the plan. Commit it under `plans/` as
+> `plan: engine, opponent, CLI (DEV-9)`. Then build the three modules per the
+> approved plan, report per RPT-5 with the clauses each module realizes, and
+> commit as `engine: game, opponent, and CLI per SPECS 1.0.0`.
+
+Two things about that second prompt. The plan is committed before the first
+implementing commit, which is what DEV-9 requires: an approved plan is an
+artifact of the repository, readable later by anyone asking why the code has the
+shape it has, not an exchange that disappears with the session. And the prompt
+says nothing about how to build anything — no module structure, no algorithm, no
+naming. It does not need to. The plan says that, and the plan cites the contract
+clause by clause; anything the prompt added here would be a fourth source of
+truth competing with three that are already written down.
 
 The plan and the build are shown from the tag; both take the agent longer than
 a lecture can wait. What the class sees is the result: three modules — an

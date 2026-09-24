@@ -101,9 +101,13 @@ Blocks sum to 72 minutes; 3 minutes slack.
 ### Demo 3 — Implementation from the tag (recorded)
 
 - **Artifacts:** `t2`, the approved plan under `plans/`, `t3`.
-- **Script:** show the DEV-9 prompt and the plan's clause citations; jump to `t3`;
-  `python main.py` for one move each way; `ls` the modules.
-- **Fallback:** none needed; this segment is never live.
+- **Script:** show both DEV-9 prompts — the one that asks for the plan, and the
+  one that approves it, commits it under `plans/`, and asks for the build — then
+  the plan's clause citations; jump to `t3`; `python main.py` for one move each
+  way; `ls` the modules.
+- **Fallback:** none needed; this segment is never live. If `t3` is not to hand,
+  `demos/lecture-03-game-demo/reference/plans/001-engine-opponent-cli.md` is the
+  same artifact from the reference's history (against its `SPECS.md` 1.1.0).
 
 ## Discussion prompts
 

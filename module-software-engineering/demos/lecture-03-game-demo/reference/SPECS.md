@@ -1,6 +1,6 @@
 # Tic-Tac-Toe (9x9, 5-in-a-row) — Project Specification
 
-Version: 1.2.0
+Version: 1.2.1
 Status: normative; maintained.
 
 ## 1. Overview
@@ -28,6 +28,8 @@ tic-tac-toe/
 │   └── test_fixtures.py   # loader for fixtures/scenarios.json (VER-7)
 ├── fixtures/
 │   └── scenarios.json     # scenario fixtures — an executable specification (VER-7)
+├── plans/             # Approved plans, each citing the clauses its steps realize (DEV-9)
+├── CONOPS.md          # What the game is for and what a player observes; this document derives from it (DEV-5)
 ├── SPECS.md           # This document — canonical contract
 ├── CLAUDE.md          # Agent orientation: the governing documents and the process
 ├── BACKLOG.md         # Deferred questions (DEV-6)
@@ -403,6 +405,7 @@ The following behavior areas must be exercised by the test suite. This is a list
 
 ## Changelog
 
+- **1.2.1** (2026-09-24) — §2: `plans/` and `CONOPS.md` listed. Both existed in the repository and are named in `CLAUDE.md` as governing documents; the file structure had not caught up. No behavior specified or unspecified by this change.
 - **1.2.0** (2026-09-22) — §5.1: `make_move` returns `False` with no state change once the game is over. Version 1.1.0 was silent on a move after the game is over; the ruling (DEV-4) is that such a move is rejected. This is a change of specified behavior (DEV-2 (c)): the clause is added here first, and the engine change and the test citing this clause follow it. §9.5: the obligation added; the loader for `fixtures/scenarios.json` added. §2: `fixtures/` and `tests/test_fixtures.py` listed.
 - **1.1.0** (2026-09-19) — §9 retitled *Verification Obligations*; §9.1–§9.4 relocated to `process/verification.md` (VER-4 through VER-6) with pointers left in place so that citations such as "SPECS §9.3" still resolve; §1 and §2 updated for `process/` and `BACKLOG.md`. Behavior unchanged.
 - **1.0.0** — The specification as received (Attempt2, 2026-05-27).

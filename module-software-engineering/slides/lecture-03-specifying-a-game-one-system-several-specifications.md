@@ -215,11 +215,13 @@ DEV-8 is satisfied. DEV-9: a plan, in plan mode, approved, committed under `plan
 
 > Read `SPECS.md` and the process documents. Propose a plan for the engine module, the computer opponent, and the command-line interface, citing for each step the clauses it realizes, and wait for my approval.
 
-Shown from `t3`: three modules — an engine with no I/O, strategies, an entry point that owns every prompt — and a history that reads specification → plan → realization. `CLAUDE.md` is still two rules.
+Then, once the plan has been read and ruled on:
 
-Nothing verified yet, except by playing one move each way.
+> Approve the plan. Commit it under `plans/` as `plan: engine, opponent, CLI (DEV-9)`. Then build the three modules per the approved plan, report per RPT-5 with the clauses each module realizes, and commit as `engine: game, opponent, and CLI per SPECS 1.0.0`.
 
-<!-- 56–64 min. cat plans/*.md | head; python main.py; git log --oneline. -->
+Shown from `t3`: three modules — an engine with no I/O, strategies, an entry point that owns every prompt — and a history that reads specification → plan → realization. `CLAUDE.md` is still two rules. Nothing verified yet, except by playing one move each way.
+
+<!-- 56–64 min. Two prompts, not one: the plan is committed before the first implementing commit (DEV-9), and the build prompt says nothing about how to build — the plan says that, and the plan cites the contract. cat plans/*.md | head; python main.py; git log --oneline. -->
 
 ---
 

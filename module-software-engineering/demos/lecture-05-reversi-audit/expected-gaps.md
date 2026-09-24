@@ -3,11 +3,11 @@
 Not student-facing. The brief's §4 (`../../project-1-reversi-brief.md`) is the
 student-facing version of this list; the sketch is
 `../../student-materials/reversi-starter/CONOPS-sketch.md`;
-`demo-script-lecture-05.md` uses rows 1, 2, 5, 6, and 7 live. Use this when
-grading Part 1: every row must be *stated* somewhere in the student's
+`demo-script-lecture-05.md` uses rows 1, 2, 5, 6, and 7 in its captures. Use this
+when grading Phase 1, steps 1 and 2: every row must be *stated* somewhere in the student's
 `CONOPS.md` or `SPECS.md`; a standard rule left implicit is a completeness
 failure. Rows marked *student's choice* accept any recorded ruling. The *Found
-by* column names the rule (AUD, AUDCON) that surfaces the gap; a Part 1 gap list
+by* column names the rule (AUD, AUDCON) that surfaces the gap; a step-1 gap list
 that cites those rules is doing the audit the process requires (DEV-8).
 
 ## Seeded in the sketch

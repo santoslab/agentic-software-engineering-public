@@ -247,11 +247,13 @@ each:
   the commit message must say that no specified behavior changed.
 - **(c) Change of specified behavior.** A move after the game is over. The
   reference implementation was built from a specification that was silent on
-  this point, and its engine accepted such a move. Its plan under `plans/`
-  shows where the silence went: the `make_move` step realizes "each rejection
-  case §5.1 lists", faithfully, and §5.1 listed two. A silence is inherited by
-  every artifact derived from the specification, which is why the audit (DEV-8)
-  precedes the plan. Its `SPECS.md` 1.2.0 adds the clause to §5.1 and records
+  this point, and its engine accepted such a move. Its plans under `plans/`
+  show where the silence went: the engine plan's `make_move` step realizes
+  "each rejection case §5.1 lists", faithfully, and §5.1 listed two; §9.5 then
+  listed three failure obligations for the tests to claim, and the test-suite
+  plan realizes those three, so no test claimed the missing clause either. A
+  silence is inherited by every artifact derived from the specification — here
+  through five of them — which is why the audit (DEV-8) precedes the plan. Its `SPECS.md` 1.2.0 adds the clause to §5.1 and records
   the ruling; the engine change and the test citing the clause follow the
   amendment. The history reads amendment, then realization. In the demo's own repository the clause was ruled in Lecture 03
   and is in `SPECS.md` 1.0.0 already, so there the question at `t4` is only

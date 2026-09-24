@@ -285,15 +285,24 @@ it realizes. Show the prompt; the run takes too long to watch:
 > Read `SPECS.md` and the process documents. Propose a plan for the test suite
 > under `tests/`, one file per source module, that claims every obligation in
 > `SPECS.md` §9: for each step, the obligations it claims and the clauses each
-> test will cite (VER-6). Wait for my approval. Then write the suite, run the
+> test will cite (VER-6). Wait for my approval. Then commit the plan under
+> `plans/` as `plan: test suite per SPECS 9 (DEV-9)`, write the suite, run the
 > gate (VER-4), and report per RPT-5, including which obligations are claimed
-> by at least one test and which are not (VER-8). Commit as
+> by at least one test and which are not (VER-8). Commit the suite as
 > `tests: suite per SPECS 9 (VER-4 green)`.
 
 **Say (of the prompt, briefly):** the prompt asks for the obligations and the
 clause citations at *planning* time, before any test is written. That is what
 makes the plan reviewable: a reader can check the plan against §9 and see
-whether anything is missing, without reading a line of test code.
+whether anything is missing, without reading a line of test code. And the plan
+is committed before the suite, as DEV-9 requires of every build — the same
+sequence the class watched for the engine in Lecture 03.
+
+**If the tag is not to hand:** `reference/plans/002-test-suite.md` is the
+equivalent artifact from the reference's history. Read its Step 1 against
+`SPECS.md` §9.5 and note that the two can be checked off against each other line
+by line, which is the property that makes a plan reviewable before any code
+exists.
 
 **Do:**
 
@@ -562,13 +571,14 @@ grep -n 'game is over' SPECS.md
 sed -n '/^## Changelog/,$p' SPECS.md | head -5
 grep -A2 'make_move(row, col)' plans/001-engine-opponent-cli.md
 grep -n 'winner is not None' game.py
+grep -A3 'on failure' plans/002-test-suite.md
 grep -n 'after_game_over' tests/test_game.py
 ```
 
 The top changelog entry is `1.2.1`, a §2 housekeeping patch that is not relevant
 here; the two entries that matter are `1.2.0` and `1.1.0` below it.
 
-**Say:** take these four artifacts in the order they were written.
+**Say:** take these five artifacts in the order they were written.
 
 The reference's `SPECS.md` 1.1.0 was silent on what happens when a move arrives
 after the game is over. It listed two reasons `make_move` returns `False` and
@@ -584,8 +594,17 @@ tests that cite the clauses the code claims to satisfy. This is the reason the
 audit (DEV-8) runs against the specification before any plan is written, and not
 after the code exists.
 
-The engine accepted the move, exactly as the plan described. The suite did not
-catch it, because no clause said otherwise and every test cites a clause.
+The engine accepted the move, exactly as the plan described.
+
+The suite could not catch it either, and the fifth command shows why. §9 is the
+section that says what the tests must claim, and at 1.1.0 its §9.5 listed three
+failure cases for `make_move` — a bad type, a coordinate out of range, an
+occupied cell. Plan 002 lists the same three, because it realizes §9.5. So the
+silence had by this point propagated through five artifacts in a row:
+specification, plan, engine, verification obligations, test plan. Not one of
+them is at fault. Each faithfully realizes the one before it, and that is
+exactly the problem — downstream fidelity cannot recover information that was
+never in the specification.
 
 Then 1.2.0 records the ruling, and the engine change and the test citing the new
 clause follow it in the history. The order is amendment first, realization
@@ -607,14 +626,23 @@ kind it was without anyone having to remember.
 
 ## Segment 5 — Fixtures, from the tag (about 10 minutes)
 
-Show the prompt; as with the suite, the run is too slow to watch:
+The loader is a build, so DEV-9 applies to it as it applied to the engine and to
+the suite. Show the prompt; as with the suite, the run is too slow to watch:
 
 > Add `fixtures/scenarios.json` and `fixtures/README.md` as given; they are not
-> to be edited (VER-7). Write `tests/test_fixtures.py`: a parametrized loader
-> that runs every game scenario and every rejection scenario against the engine
-> per the README's loader contract, citing the clauses each scenario verifies.
-> Run the gate, report per RPT-5, and commit as
+> to be edited (VER-7). Propose a plan for `tests/test_fixtures.py`: a
+> parametrized loader that runs every game scenario and every rejection scenario
+> against the engine per the README's loader contract, citing for each step the
+> clauses the scenarios verify. Wait for my approval. Then commit the plan under
+> `plans/` as `plan: fixture loader (DEV-9)`, write the loader, run the gate,
+> report per RPT-5, and commit as
 > `fixtures: scenarios.json and loader (VER-7)`.
+
+**Say (of the prompt, briefly):** two files arrive "as given" and one is built.
+That split is the whole design. `scenarios.json` and its README are a
+specification, installed and thereafter untouchable (VER-7); `test_fixtures.py`
+is a realization of them, and like every realization in this repository it gets
+a plan first.
 
 **Do:**
 

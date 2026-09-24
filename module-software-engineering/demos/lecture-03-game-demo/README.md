@@ -18,18 +18,23 @@ the build with a test suite, a coverage gate, and fixtures.
   `process/` (the L03 set), `BACKLOG.md`. No `CONOPS.md`, no `SPECS.md`, no code.
 - `reference/` — the destination, `t5`: `CONOPS.md` 1.0, `SPECS.md` 1.2.1 (§9
   holds the verification obligations; the policy is in
-  `process/verification.md`), the approved plan under `plans/`, the three
+  `process/verification.md`), the three approved plans under `plans/`, the three
   modules, 85 unit tests and a fixture loader over the 14 scenarios of
   `fixtures/scenarios.json`, the L04 `process/`, `BACKLOG.md`. The gate is green at 100% branch coverage
   (confirmed 2026-09-22 in a venv with `pytest-cov`). A live run does not
   reproduce this folder; it shows the shape of `t2` through `t5`. The
   implementation was produced from an earlier version of the specification
   that was silent on a move after the game is over — the clause Lecture 03's
-  round 2 puts into the demo's `SPECS.md` 1.0.0. `plans/001-engine-opponent-cli.md`
-  is the DEV-9 plan from that history, written against `SPECS.md` 1.1.0, and it
-  inherits the same silence: its `make_move` step realizes the rejection cases
-  §5.1 listed at 1.1.0 and no others. It is the fallback artifact for Lecture
-  03's Segment 4 when the rehearsal repository's `t3` is not to hand. The reference's 1.2.0 adds
+  round 2 puts into the demo's `SPECS.md` 1.0.0. `plans/` holds the three DEV-9
+  plans from that history: `001-engine-opponent-cli.md` and `002-test-suite.md`
+  written against `SPECS.md` 1.1.0, and `003-fixture-loader.md` against 1.2.0.
+  The first two inherit the same silence — 001's `make_move` step realizes the
+  rejection cases §5.1 listed at 1.1.0 and no others, and 002's matching step
+  realizes the three failure obligations §9.5 listed at 1.1.0 and no others —
+  which is what lets Lecture 04's Segment 4 follow one omission through five
+  artifacts. They are also the fallback artifacts for Lecture 03's Segment 4 and
+  Lecture 04's Segment 2 when the rehearsal repository's tags are not to hand.
+  The reference's 1.2.0 adds
   that clause, and the engine change and the test citing it follow the
   amendment; Lecture 04 reads that history as its DEV-2 (c) example.
 

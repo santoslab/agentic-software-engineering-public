@@ -219,9 +219,19 @@ Then, once the plan has been read and ruled on:
 
 > Approve the plan. Commit it under `plans/` as `plan: engine, opponent, CLI (DEV-9)`. Then build the three modules per the approved plan, report per RPT-5 with the clauses each module realizes, and commit as `engine: game, opponent, and CLI per SPECS 1.0.0`.
 
-Shown from `t3`: three modules — an engine with no I/O, strategies, an entry point that owns every prompt — and a history that reads specification → plan → realization. `CLAUDE.md` is still two rules. Nothing verified yet, except by playing one move each way.
+<!-- 56–60 min. Two prompts, not one. The plan is committed before the first implementing commit (DEV-9), which is why it is an artifact in the history and not a message in a session. And the second prompt says nothing about how to build — the plan says that, and the plan cites the contract. -->
 
-<!-- 56–64 min. Two prompts, not one: the plan is committed before the first implementing commit (DEV-9), and the build prompt says nothing about how to build — the plan says that, and the plan cites the contract. cat plans/*.md | head; python main.py; git log --oneline. -->
+---
+
+## The build, shown from `t3`
+
+Three modules — an engine with no I/O, strategies, an entry point that owns every prompt — and a history that reads specification → plan → realization.
+
+`CLAUDE.md` is still two rules.
+
+Nothing verified yet, except by playing one move each way.
+
+<!-- 60–64 min. cat plans/*.md | head; python main.py; git log --oneline. -->
 
 ---
 

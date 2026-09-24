@@ -229,7 +229,7 @@ In the demo's own repository the clause was ruled in Lecture 03. The question at
 
 **Important**: a general pattern. Before any change to code, ask which kind it is; the answer says what must happen first.
 
-<!-- Demo Segment 4: grep the reference's SPECS.md, changelog, game.py, tests. -->
+<!-- Demo Segment 4: grep the reference's SPECS.md, changelog, plans/001-engine-opponent-cli.md, game.py, tests. -->
 
 ---
 

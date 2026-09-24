@@ -1,0 +1,16 @@
+# The gate's configuration (VER-4, VER-5): branch coverage over every module in
+# the repository root, whatever the module split; tests and the virtual
+# environment excluded. Not edited to weaken the gate (DEV-3).
+[run]
+branch = True
+source = .
+omit =
+    tests/*
+    .venv/*
+    */site-packages/*
+
+[report]
+show_missing = True
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:

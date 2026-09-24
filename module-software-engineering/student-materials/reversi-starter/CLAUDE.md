@@ -5,8 +5,9 @@
 A command-line Reversi — an 8-by-8 board, discs of two colors, captures by
 flanking — developed by an agent that follows written specifications. At the
 start there is no code and no behavioral specification: there is a sketch of the
-concept of operations (`CONOPS-sketch.md`), and there is a process for working
-with the specifications. The first task is to turn the sketch into `CONOPS.md`;
+concept of operations (`CONOPS-sketch.md`), there is a process for working
+with the specifications, and there is the configuration of the gate that will
+hold what is built. The first task is to turn the sketch into `CONOPS.md`;
 the second is to derive `SPECS.md` from it; only then is anything built, and
 what is built is verified by a test suite and held to a coverage gate.
 
@@ -46,8 +47,12 @@ The rules in the following documents are only invoked when needed (on demand) �
 
 ## Commands
 
-- `python main.py` — run the game, once it exists.
+- `python -m venv .venv && . .venv/bin/activate && pip install -r requirements-dev.txt`
+  — set up, once.
+- `python main.py` — run the game, once it exists; if `SPECS.md` §2 names a
+  different entry point, this line follows it.
 - `pytest` — the test suite, once it exists.
 - `pytest --cov=. --cov-branch --cov-report=term-missing --cov-fail-under=100` —
   the algorithmic verifier run as the gate (VER-4); the coverage policy it
-  enforces is VER-5.
+  enforces is VER-5. Its configuration is `.coveragerc` and `pytest.ini`;
+  neither is edited to weaken the gate (DEV-3).

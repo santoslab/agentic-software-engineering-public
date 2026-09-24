@@ -5,6 +5,9 @@ system, why it exists, and how it is operated. It is written from the user's
 perspective and is independent of how the system is built. It is self-contained:
 all terms it relies on are defined within it.*
 
+Version: 1.0
+Status: normative; maintained.
+
 ---
 
 ## 1. Scope
@@ -331,3 +334,12 @@ The following capabilities are envisioned but not part of the current system:
 - **Rematch** — starting a new game in the same mode immediately after one ends.
 - **Computer opponent** — the automated participant in solo play; currently
   plays a random legal move.
+
+---
+
+## Changelog
+
+- **1.0** (2026-09-19) — Rewritten from the 0.1 sketch after the round-1 audit
+  (Lecture 03): third person, all nine sections of the skeleton filled, four
+  scenarios, glossary. A version, a status, and this changelog are required of a
+  concept of operations by AUDCON-6.

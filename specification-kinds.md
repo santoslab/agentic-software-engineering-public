@@ -543,8 +543,8 @@ completion note of RPT-5 reports it). Clauses: mixed. A pass establishes that
 every obligation has a test claiming it; it does not establish that the tests'
 expectations are right.
 
-**Examples.** Course: `SPECS.md` §9.5 of the game; the brief's step 3 of Part
-1, which asks you to write the same section for Reversi. General: a
+**Examples.** Course: `SPECS.md` §9.5 of the game; the brief's Phase 1,
+step 2, which asks you to write the same section for Reversi. General: a
 requirements-to-test traceability matrix, as certification standards for
 avionics software require.
 
@@ -597,7 +597,7 @@ promises.
 framework. The obligations they realize survive.
 
 **In the course.** Lecture 04 ("Tests as executable specifications"); the
-brief's Part 2; the project unit's Stage D; demonstrated.
+brief's Phase 1, step 4; the project unit's Stage D; demonstrated.
 
 ### Fixtures
 
@@ -635,14 +635,15 @@ contract with its users.
 (`x-wins-row-overline` is §4.1 as eleven moves; no tie scenario, on purpose);
 the shared fixtures of the project unit,
 `weeks-04-07/student-materials/fixtures/scenarios.json`; the Reversi shape in
-`project-1-reversi-brief.md` §3.1, with a pass and an early-end scenario.
+`project-1-reversi-brief.md` §3.1, with the pass and early-end scenarios its
+   §3.3 requires.
 General: the published test vectors for a cryptographic hash function, which
 every implementation in every language must reproduce.
 
 **Survives a port?** Yes, unchanged: that is what it is for.
 
 **In the course.** Lecture 04 ("Fixtures: executable specifications that
-outlive the code"); Lecture 05; the brief's Part 2; the project unit's Stage D;
+outlive the code"); Lecture 05; the brief's Phase 1, step 5; the project unit's Stage D;
 demonstrated.
 
 ## F. Structure, platform, and process
@@ -675,8 +676,8 @@ that the parts and boundaries exist as stated; it does not establish that the
 boundaries are the right ones.
 
 **Examples.** Course: `SPECS.md` §2 (the file structure) and §5.1 ("pure
-logic; no I/O") of the game; the approved plan's module list; the brief's Part
-2, "module split per your spec". General: the rule in a layered application
+logic; no I/O") of the game; the approved plan's module list; the brief's Phase 1,
+step 3, "module split per your spec". General: the rule in a layered application
 that the domain layer imports nothing from the web layer, drawn as a diagram
 and enforced by an import check.
 

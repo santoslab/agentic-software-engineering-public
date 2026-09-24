@@ -214,7 +214,7 @@ more deterministic, we pre-pick the kinds here: the loader `CLAUDE.md` names
 the eight sections of `SPECS.md`, the round-2 prompt repeats them, and our
 audit rules AUD-8 to AUD-14 check one kind each, so an omitted kind is a
 finding. The Reversi assignment pre-picks the same kinds in the same order (the
-brief's Part 1, step 2). What the agent decides is everything inside that
+brief's Phase 1, step 2). What the agent decides is everything inside that
 frame: which open decisions each kind must settle, and what it proposes for
 each.
 

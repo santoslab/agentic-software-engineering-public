@@ -714,5 +714,5 @@ answer to either half of the question.
 
 Finally, compare your suite's clause-coverage line against the obligations listed
 in `SPECS.md` §9.5, and account for any obligation your suite does not claim.
-Project 1, Part 2 asks for the same work on Reversi, against a specification you
-wrote yourself.
+Project 1's Phase 1 — steps 4 and 5 of the brief — asks for the same work on
+Reversi, against a specification you wrote yourself.

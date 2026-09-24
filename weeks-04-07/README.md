@@ -34,9 +34,10 @@ The software-engineering module
 ([`../module-software-engineering/`](../module-software-engineering/README.md))
 precedes this unit and launches the project. Its
 [`project-1-reversi-brief.md`](../module-software-engineering/project-1-reversi-brief.md)
-assigns Stage A re-targeted to Reversi — Part 1 at the module's Lecture 05, Part 2
-at its Lecture 06 — and states that Stages B–E of `project-1-brief.md` follow it
-unchanged, read with "Reversi" in place of "tic-tac-toe".
+assigns Stage A re-targeted to Reversi — as Project 1, Phase 1, launched at the
+module's Lecture 05 and due one week later — and states that Stages B–E of
+`project-1-brief.md` follow it unchanged, read with "Reversi" in place of
+"tic-tac-toe".
 
 - [`project-1-brief.md`](project-1-brief.md) — the five stages A-E with per-stage
   required-elements checklists, cross-stage process rules, and grading.

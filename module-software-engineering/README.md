@@ -5,7 +5,9 @@ notes, slide decks, diagrams), the two-part note-set demo, the two-part game dem
 the Reversi audit walkthrough, the Project 1 brief and starter, Exercises 1 and 2,
 and the handouts are drafted and need instructor review before use; the brief's
 due dates and effort estimates are not yet set. Lecture 06 has an instructor
-outline; its notes, deck, and demo server are not yet written.
+outline; its notes, deck, and demo server are not yet written. Lecture 05 is a
+walk-through of the Project 1 brief, step by step; its demo folder holds the
+script and the instructor key.
 
 **Position in the course:** a three-week module that follows
 [`weeks-01-03/`](../weeks-01-03/README.md) (foundations) and precedes the
@@ -27,8 +29,8 @@ artifacts it must produce, and how its output is checked.
 | [02](lectures-instructor-notes/lecture-02-concept-of-operations-operations-and-the-invariant.md) | The Concept of Operations, Operations with Contracts, and the Specification as an Invariant | What is the system for, what may an agent do to it, and how is conformance kept while it changes? | [Ex. 2](exercises/exercise-02-operations-under-contract.md) |
 | [03](lectures-instructor-notes/lecture-03-specifying-a-game-one-system-several-specifications.md) | Specifying a Game: One System, Several Specifications | What kinds of specification does a program need, and how does an agent help discover them? | Ex. 3 (optional) |
 | [04](lectures-instructor-notes/lecture-04-verifying-a-game-tests-as-executable-specification.md) | Verifying a Game: Tests as Executable Specification | What does a test suite claim, and what does coverage not tell you? | — |
-| [05](lectures-instructor-notes/lecture-05-reversi-kickoff-applying-the-method.md) | Reversi Kickoff: Applying the Method | Can you run the same moves on a game you were just handed? | Project 1, Part 1 |
-| [06](lectures-instructor-notes/lecture-06-mcp-the-tool-contract-as-a-specification.md) | MCP: The Tool Contract as a Specification | What changes when the reader of a contract is a machine? | Project 1, Part 2 |
+| [05](lectures-instructor-notes/lecture-05-reversi-kickoff-applying-the-method.md) | Reversi Kickoff: Applying the Method | Can you run the same moves on a game you were just handed? | Project 1, Phase 1 |
+| [06](lectures-instructor-notes/lecture-06-mcp-the-tool-contract-as-a-specification.md) | MCP: The Tool Contract as a Specification | What changes when the reader of a contract is a machine? | — (Phase 1 continues; Stage E previewed) |
 
 Across the six lectures the module introduces most of the kinds of
 specification in the course catalog (`../specification-kinds.md`); Lecture 03's
@@ -55,12 +57,13 @@ rules.
 | Ex. 2 | [exercise-02-operations-under-contract.md](exercises/exercise-02-operations-under-contract.md) | L02 | before L04 | 2–3 h | Claude Code, Python 3.11+, git |
 | Ex. 3 (optional) | to write | L03 | before L05 | 1–2 h | Claude Code |
 
-**Project 1** is assigned in this module — Part 1 at Lecture 05, Part 2 at
-Lecture 06 — by [`project-1-reversi-brief.md`](project-1-reversi-brief.md), with
-its starter in `student-materials/reversi-starter/`. It is Stage A of the project
-unit's Project 1, re-targeted to Reversi; Stages B–E of
+**Project 1** is assigned in this module — Phase 1 (specifications,
+implementation, tests) at Lecture 05, due one week later — by
+[`project-1-reversi-brief.md`](project-1-reversi-brief.md), with its starter in
+`student-materials/reversi-starter/`. It is Stage A of the project unit's
+Project 1, re-targeted to Reversi; Stages B–E of
 [`../weeks-04-07/project-1-brief.md`](../weeks-04-07/project-1-brief.md) follow
-it unchanged.
+it unchanged. Lecture 06 launches no further phase.
 
 Exercises in this module are small, completion-based demonstrations of individual
 concepts. Each spec ends with a required-elements checklist, as in the other units.
@@ -76,12 +79,13 @@ concepts. Each spec ends with a required-elements checklist, as in the other uni
 - `slides/lecture-NN-*.md` — Marp slide decks (`slides/build.sh` renders PDF and
   standalone HTML; diagrams kept as Mermaid sources in `slides/diagrams/`)
 - `exercises/` — exercise specs
-- `project-1-reversi-brief.md` — the Project 1 brief (Parts 1 and 2)
+- `project-1-reversi-brief.md` — the Project 1 brief (Phase 1: from the sketch to
+  fixtures, step by step)
 - `demos/` — in-class demo assets; `demos/lecture-01-note-specs-demo/` is the
   note-set demo that Lectures 01 and 02 run in two parts (three repository
   states, two scripts); `demos/lecture-03-game-demo/` the game demo Lectures 03
   and 04 run in two parts; `demos/lecture-05-reversi-audit/` the Lecture 05
-  walkthrough and its instructor key
+  walkthrough of the brief and its instructor key
 - `reading-list.md` — annotated readings, tagged
   [required] / [recommended] / [gap-filler]
 - `student-materials/` — handouts (Markdown sources with checked-in PDFs) and

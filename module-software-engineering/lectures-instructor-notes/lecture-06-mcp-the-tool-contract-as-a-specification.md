@@ -40,7 +40,7 @@ Assigned at Lecture 05:
 | 20–32 | The tool contract as a kind of specification | The last kind the module adds; its entry in the course catalog of specification kinds (`../../specification-kinds.md`). Derived from the interface contract (DEV-5) but obliged to say more, because the consumer cannot read the source: what an unknown `game_id` returns; that an illegal move returns a structured error and never raises; return shapes field by field. AUD-12 applied to a tool: behavior outside the precondition. Verified how: the schema, algorithmically; the behavior, by a call transcript a human or agent reads (VER-2, judgment) — a new VER binding row, not a new rule. |
 | 32–52 | Demo 1 — build, register, play, sabotage (`t6`) | `tictactoe_server.py` pre-written: `new_game`, `board`, `legal_moves`, `make_move`, `computer_move`, `status`. Live-code only `make_move`'s docstring. `mcp dev` shows what the model reads. Register. *"Start a game and play as X against the random opponent; tell me each move you make and why."* Watch the calls. Sabotage: the docstring now claims rows are 0-indexed; restart; the agent plays off by one; restore. Variant to rehearse: `board` returning only the byte-exact string versus the string plus `legal_moves`. |
 | 52–62 | Contract design | Granularity: why six narrow tools and not `run_python`. Errors as data the agent can relay. Naming: the agent chooses by name and description. State: the games live in the server for the session; every call ends in a known state. The call trace as evidence against `CONOPS.md` §5.1 (solo play to a win): validation by transcript. |
-| 62–72 | Reversi Stage E; the module closes | Same server shape over Reversi; `legal_moves` becomes *necessary* — flanking is not readable off an ASCII board; the leaderboard variant after persistence. The catalog's summary table, with every kind the module demonstrated marked. The module's arc on one slide: S and R → ConOps → several kinds → tests as executable specification → a contract read by a machine. What the port lecture does with the "survives a port?" column. |
+| 62–72 | Stage E previewed; the module closes | No project phase launches today — Phase 1 is in progress and due next week. Stage E of the project unit's brief puts this server shape over the Reversi engine Phase 1 produces; `legal_moves` becomes *necessary* — flanking is not readable off an ASCII board; the leaderboard variant after persistence. The catalog's summary table, with every kind the module demonstrated marked. The module's arc on one slide: S and R → ConOps → several kinds → tests as executable specification → a contract read by a machine. What the port lecture does with the "survives a port?" column. |
 
 Blocks sum to 72 minutes; 3 minutes slack.
 
@@ -77,9 +77,11 @@ Blocks sum to 72 minutes; 3 minutes slack.
 
 ## Assigned after class
 
-- Readings: none — finish the project.
-- Project: **Project 1, Part 2** launched today; due one week later (date per the
-  brief). Stage E's server follows the shape shown today.
+- Readings: none.
+- Project: no new phase; **finish Project 1, Phase 1** (launched at Lecture 05,
+  due one week after it, date per the brief). Stage E of
+  `../../weeks-04-07/project-1-brief.md` will follow the shape shown today, over
+  your Phase 1 engine.
 
 ## Instructor notes
 

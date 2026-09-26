@@ -404,7 +404,7 @@ verifier. The deliverable is a table of findings by verifier, one explained
 disagreement or coverage gap, and a half page on which side should have moved
 and how each verifier could have been wrong.
 
-It is deliberately small. Project 0, which you start soon, has the same
+It is deliberately small. Project 0, assigned at Lecture 02, has the same
 structure at a larger scale: your PKB specification is this specification grown
 up, its conformance checklist is R1–R7 grown up, and the stretch-goal validator
 is `check_notes.py` grown up.

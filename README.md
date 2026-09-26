@@ -14,8 +14,8 @@ The course is still being developed: published materials may change, and files t
   prompting, context, and verification
 - [Software engineering for agentic development](module-software-engineering/README.md)
   — classical software-engineering concepts applied to agent-based development
-  (Lectures 01–05 drafted with demos, exercises, and the Project 1 brief;
-  Lecture 06 in progress)
+  (Lectures 01–05 drafted with demos, exercises, and the Project 0 and Project 1
+  briefs; Lecture 06 in progress)
 - [Weeks 4–7: The Growing Tic-Tac-Toe](weeks-04-07/README.md) — a staged project in
   specification-driven agentic development
 - [Technical concepts](technical-concepts.md) — topic index and further reading
@@ -45,9 +45,11 @@ The named Tic-Tac-Toe, NautilusTRX, and lost-communities projects are historical
 course case studies. Required readings and exercises in this public edition use
 materials bundled here; the private prototype repositories are not prerequisites.
 
-The example personal knowledge base intentionally contains one unresolved
-`/concepts/tool-schemas.md` link. It demonstrates that Open Knowledge Format and
-Obsidian vault-root links may point to knowledge that has not been written yet.
+The example personal knowledge base
+(`module-software-engineering/student-materials/pkb-example/`) intentionally
+contains one unresolved `/concepts/tool-schemas.md` link. It demonstrates that
+Open Knowledge Format and Obsidian vault-root links may point to knowledge that
+has not been written yet.
 
 ## Licensing
 

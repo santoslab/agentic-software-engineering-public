@@ -2,9 +2,10 @@
 
 **Status:** in development. Lectures 01 through 05 (instructor outlines, lecture
 notes, slide decks, diagrams), the two-part note-set demo, the two-part game demo,
-the Reversi audit walkthrough, the Project 1 brief and starter, Exercises 1 and 2,
-and the handouts are drafted and need instructor review before use; the brief's
-due dates and effort estimates are not yet set. Lecture 06 has an instructor
+the Reversi audit walkthrough, the Project 0 brief with its starter and example,
+the Project 1 brief and starter, Exercises 1 and 2, and the handouts are drafted
+and need instructor review before use; the briefs' due dates and effort
+estimates are not yet set. Lecture 06 has an instructor
 outline; its notes, deck, and demo server are not yet written. Lecture 05 is a
 walk-through of the Project 1 brief, step by step; its demo folder holds the
 script and the instructor key.
@@ -26,7 +27,7 @@ artifacts it must produce, and how its output is checked.
 | Lecture | Title | Core question | Launches |
 |---------|-------|---------------|----------|
 | [01](lectures-instructor-notes/lecture-01-specifications-realizations-and-conformance.md) | Specifications, Realizations, and Conformance | What holds a specification and its realization together, and how do you check? | [Ex. 1](exercises/exercise-01-conformance-three-ways.md) |
-| [02](lectures-instructor-notes/lecture-02-concept-of-operations-operations-and-the-invariant.md) | The Concept of Operations, Operations with Contracts, and the Specification as an Invariant | What is the system for, what may an agent do to it, and how is conformance kept while it changes? | [Ex. 2](exercises/exercise-02-operations-under-contract.md) |
+| [02](lectures-instructor-notes/lecture-02-concept-of-operations-operations-and-the-invariant.md) | The Concept of Operations, Operations with Contracts, and the Specification as an Invariant | What is the system for, what may an agent do to it, and how is conformance kept while it changes? | [Ex. 2](exercises/exercise-02-operations-under-contract.md); [Project 0](project-0-pkb-brief.md) |
 | [03](lectures-instructor-notes/lecture-03-specifying-a-game-one-system-several-specifications.md) | Specifying a Game: One System, Several Specifications | What kinds of specification does a program need, and how does an agent help discover them? | Ex. 3 (optional) |
 | [04](lectures-instructor-notes/lecture-04-verifying-a-game-tests-as-executable-specification.md) | Verifying a Game: Tests as Executable Specification | What does a test suite claim, and what does coverage not tell you? | — |
 | [05](lectures-instructor-notes/lecture-05-reversi-kickoff-applying-the-method.md) | Reversi Kickoff: Applying the Method | Can you run the same moves on a game you were just handed? | Project 1, Phase 1 |
@@ -57,6 +58,15 @@ rules.
 | Ex. 2 | [exercise-02-operations-under-contract.md](exercises/exercise-02-operations-under-contract.md) | L02 | before L04 | 2–3 h | Claude Code, Python 3.11+, git |
 | Ex. 3 (optional) | to write | L03 | before L05 | 1–2 h | Claude Code |
 
+**Project 0** — the personal knowledge base — is assigned in this module at
+Lecture 02 by [`project-0-pkb-brief.md`](project-0-pkb-brief.md), with its
+starter in `student-materials/pkb-starter/` and an example bundle in
+`student-materials/pkb-example/`. It is the note set of Lectures 01 and 02 at
+the student's scale: a concept of operations, a format specification, an
+operations document, a bundle of notes, and an optional verifier, under the
+Lecture 02 process set. Its kickoff is due before Lecture 05; the project then
+continues through the semester, with checkpoints scheduled in the project unit.
+
 **Project 1** is assigned in this module — Phase 1 (specifications,
 implementation, tests) at Lecture 05, due one week later — by
 [`project-1-reversi-brief.md`](project-1-reversi-brief.md), with its starter in
@@ -79,6 +89,8 @@ concepts. Each spec ends with a required-elements checklist, as in the other uni
 - `slides/lecture-NN-*.md` — Marp slide decks (`slides/build.sh` renders PDF and
   standalone HTML; diagrams kept as Mermaid sources in `slides/diagrams/`)
 - `exercises/` — exercise specs
+- `project-0-pkb-brief.md` — the Project 0 brief (the personal knowledge base:
+  the kickoff, step by step; the OKF profile; the semester-long checkpoints)
 - `project-1-reversi-brief.md` — the Project 1 brief (Phase 1: from the sketch to
   fixtures, step by step)
 - `demos/` — in-class demo assets; `demos/lecture-01-note-specs-demo/` is the
@@ -88,8 +100,9 @@ concepts. Each spec ends with a required-elements checklist, as in the other uni
   walkthrough of the brief and its instructor key
 - `reading-list.md` — annotated readings, tagged
   [required] / [recommended] / [gap-filler]
-- `student-materials/` — handouts (Markdown sources with checked-in PDFs) and
-  small example artifacts shipped with exercises
+- `student-materials/` — handouts (Markdown sources with checked-in PDFs), the
+  Project 0 starter and example bundle, the Reversi starter, and small example
+  artifacts shipped with exercises
 
 Each subfolder holds a README stating its purpose and file conventions.
 
@@ -97,7 +110,7 @@ Each subfolder holds a README stating its purpose and file conventions.
 
 - `../specification-kinds.md` — the catalog of kinds of specification the
   course uses: purpose, audit, verification, and examples for each; cited from
-  Lectures 01–06 and the Project 1 brief
+  Lectures 01–06 and the Project 0 and Project 1 briefs
 - `../prompt-cheat-sheet.md` — the prompting principles handout
 - `../technical-concepts.md` — concept index with curated documentation links
 - `../templates/lecture-outline-template.md` — the instructor-outline format

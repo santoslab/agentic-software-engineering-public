@@ -179,7 +179,8 @@ starter/setup instructions for model access; do not promise a shared Anthropic
 key, a particular free model, or a fixed total price.
 
 Lecture 6 develops context economics, compaction tradeoffs, memory, and verification
-in greater depth. **Project 0 will be given at the end of the next lecture.**
+in greater depth. **Project 0 is assigned in the software-engineering module**
+(`../../module-software-engineering/project-0-pkb-brief.md`).
 
 ## Companion artifacts and rendering
 

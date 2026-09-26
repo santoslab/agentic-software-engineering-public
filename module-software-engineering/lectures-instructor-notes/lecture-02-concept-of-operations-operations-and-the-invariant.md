@@ -45,7 +45,7 @@ Assigned at Lecture 01:
 | 36–48 | Demo, Segment 4 — operations under the development rules, and the invariant | O2, then O1 and O3. DEV-7: every operation ends with the gate, a completion note (RPT-5), and a commit named for it. R6 held through every operation. The commit log is the realization of the process documents; reading it is how the process is audited. The judgment clause in O2, reported in the completion note. |
 | 48–60 | Demo, Segment 5 — a new requirement | Specification 2.0.0: R8, the amended R6, the migration. VER-3: after an amendment, everything it touches is re-checked against the new version; a verifier at 1.0.0 would report the old notes conformant. R8 split in the VER-2 table: its MUST clause mechanical, its SHOULD clause judgment. The question the change raises, recorded in `BACKLOG.md` (DEV-6). |
 | 60–68 | Five claims, and the invariant | The table, one line of evidence per claim from the two lectures. Diagram 4. `process/README.md`: the invariant in three clauses, and which document maintains each. |
-| 68–72 | Exercise 2; Project 0; before next meeting | Exercise 2 in three sentences: audit the ConOps, derive the operations document, perform operations on your own notes under DEV-7, break the invariant by hand and repair it. Project 0 as the same structure at the student's scale. Exercise 1 reminder. Lecture 03: a program; a sketch of a ConOps; several kinds of specification. |
+| 68–72 | Exercise 2; Project 0; before next meeting | Exercise 2 in three sentences: audit the ConOps, derive the operations document, perform operations on your own notes under DEV-7, break the invariant by hand and repair it. Project 0 assigned: the same structure at the student's scale; the brief (`../project-0-pkb-brief.md`), the starter and example in `student-materials/`, kickoff due before Lecture 05. Exercise 1 reminder. Lecture 03: a program; a sketch of a ConOps; several kinds of specification. |
 
 Blocks sum to 72 minutes; 3 minutes slack.
 
@@ -90,7 +90,10 @@ Blocks sum to 72 minutes; 3 minutes slack.
   (ten minutes); [recommended] the concept-of-operations template (the full
   skeleton, with sections 2, 3, and 6 marked optional).
 - Exercise: `../exercises/exercise-02-operations-under-contract.md`, due before
-  Lecture 04. Exercise 1 is due before Lecture 03. Project 0 continues.
+  Lecture 04. Exercise 1 is due before Lecture 03.
+- Project: **Project 0 — the personal knowledge base**
+  (`../project-0-pkb-brief.md`; starter `../student-materials/pkb-starter/`,
+  example `../student-materials/pkb-example/`), kickoff due before Lecture 05.
 
 ## Instructor notes
 

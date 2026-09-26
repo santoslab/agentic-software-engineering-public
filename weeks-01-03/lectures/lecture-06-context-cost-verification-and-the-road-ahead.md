@@ -31,10 +31,10 @@ After this lecture, students can:
 | 0–15 | Context economics, grounded | Open with a quiz the toy agent makes answerable: "turn 30 of a session — what gets sent?" (everything, again). Token pricing; prompt caching: cache-write vs cache-read, why caching makes replay affordable. Then real data: `session-costs.csv` on screen — columns InputTokens / OutputTokens / CacheWriteTokens / CacheReadTokens / EstCostUSD; first row shows CacheRead ≈ 3.7M vs Input ≈ 19K. Ask: "why is the cache-read number 190× the input number?" — they can now answer. |
 | 15–30 | Context management in practice | `/compact` (summarize, lossy) vs `/clear` (reset) vs fresh session (reset + re-gather); context rot and poisoning — old wrong statements keep getting replayed; when re-contextualizing from durable artifacts beats compacting a long sick session. Per-directory CLAUDE.md as scoped injection. The L04 trajectory restated: move context out of the conversation into artifacts. |
 | 30–45 | Verification & trust | The cautionary tale, from the retrospectives handout: **pass 4** — autonomous epic-driven run, single Opus session, $25–50, skipped verification, "well below par" — vs **pass 5** — checkpointed waves, Red→Green→Coverage→Self-review→Checkoff→Commit, best end product (8/10). The lesson is not "autonomy bad" — it's *autonomy without embedded checkpoints outruns trust*. Demonstrate a mechanical coverage gate with the bundled starter's pytest coverage report. |
-| 45–58 | The five agentic principles | Walk the handout: Spec-Driven Development; The Cycle of Development; Project Context Management (CLAUDE.md); Requirement Elicitation; Verification. For each: where weeks 1–3 already practiced it (Ex. 1 saw its absence; L04/Project 0 practiced elicitation and specs; Ex. 2 practiced context management; Ex. 4 built the thing being verified). **These five are the semester's grading lens for Projects 1–3.** |
+| 45–58 | The five agentic principles | Walk the handout: Spec-Driven Development; The Cycle of Development; Project Context Management (CLAUDE.md); Requirement Elicitation; Verification. For each: where weeks 1–3 already practiced it (Ex. 1 saw its absence; L04 practiced elicitation and specs, and Project 0 will in the software-engineering module; Ex. 2 practiced context management; Ex. 4 built the thing being verified). **These five are the semester's grading lens for Projects 1–3.** |
 | 58–65 | Memory taxonomy | Conversation = ephemeral, expensive, replayed. CLAUDE.md = durable, per-repo, injected. **Your PKB = durable, cross-project, yours** — the externalized memory that survives every `/clear` and every project; OKF's `log.md` is its history, `index.md` its compaction. Same engineering problem at three scales. |
 | 65–72 | The road ahead | Use the self-contained process excerpt in the companion notes: Brief → Gather → Develop → Verify → Report, mechanical gates, "the todo list is the enforcement mechanism" — *this is week-11 you.* Explain which advanced tools unlock when (hooks/subagents ~W9, MCP ~W12). |
-| 72–75 | Close | Ex. 4 checkpoint Q&A; Project 0 kickoff due now-ish; Project 1 brief drops next meeting. |
+| 72–75 | Close | Ex. 4 checkpoint Q&A; Project 0 is assigned in the software-engineering module; Project 1 brief drops next meeting. |
 
 ## Demos
 
@@ -76,7 +76,7 @@ After this lecture, students can:
 
 ## Assigned after class
 
-- Readings: none new — finish Ex. 4 and the Project 0 kickoff.
+- Readings: none new — finish Ex. 4.
 - Next meeting: **Project 1 brief** (week 4; tic-tac-toe-scale build applying all five
   principles).
 

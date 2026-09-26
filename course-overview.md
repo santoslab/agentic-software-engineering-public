@@ -27,8 +27,6 @@ Exercises and Projects
   - Reviewing the transcript of a coding agent applied to system development
   - Programming your own simple coding agent using an LLM API
   - Using a coding agent to understand and document an existing development project
-  - Using a coding agent to set up a markdown-based personal knowlege base (PKB).
-    You'll use this PKB through the semester to collect summaries of new articles, YouTube videos, and blog posts as well as your own on agentic software engineering. 
 
 
 ### Part 2 (Weeks 4-7) - Basic Agentic Software Engineering Principles 
@@ -44,7 +42,8 @@ Exercises and Projects
   - Exercises: Demonstrating basic software engineering concepts with small examples (specification vs implementation, verification, validation, plan mode, traceability, assurance artifacts)  
   - Exercises: Small exercises covering key harness concepts (skills, hooks, MCP, security configurations)
   - Reviewing and assessing previous project-sized agent development logs, hits and misses
-  - Individual project: building a simple on-line game in several different ways using agentic software engineering principles
+  - Individual project (Project 0): using a coding agent to set up and maintain a markdown-based personal knowledge base (PKB) on agentic software engineering, specified by a concept of operations and a format specification and kept conformant by the module's process. You'll use the PKB through the semester to collect summaries of articles, talks, and blog posts, and lessons from your own work.
+  - Individual project (Project 1): building a simple on-line game in several different ways using agentic software engineering principles
 
 ### Part 3 (Weeks 8-15) - Advanced Agentic Software Engineering Techniques and Larger-Scale Development
 

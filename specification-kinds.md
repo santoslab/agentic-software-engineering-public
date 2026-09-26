@@ -1,7 +1,7 @@
 # Kinds of Specification — A Catalog for the Course
 
 > A standing reference for the whole course. It is cited by the
-> software-engineering module (Lectures 01 to 06), by the Project 0 kickoff, and
+> software-engineering module (Lectures 01 to 06), by the Project 0 brief, and
 > by the Project 1 brief. It is an informal summary: every audit rule and
 > verification rule it names is defined in the module's process documents
 > (`module-software-engineering/demos/lecture-03-game-demo/reference/process/`,
@@ -381,7 +381,7 @@ and its verifier `check_notes.py`; the fixture file's shape — the loader
 contract in
 `module-software-engineering/demos/lecture-03-game-demo/reference/fixtures/README.md`
 and the Reversi shape in `project-1-reversi-brief.md` §3.1; the entry format of
-your Project 0 knowledge base (`weeks-01-03/exercises/project-0-pkb-kickoff.md`);
+your Project 0 knowledge base (`module-software-engineering/project-0-pkb-brief.md`, §3 and §4);
 the persisted game state of the project unit's Stage B
 (`weeks-04-07/project-1-brief.md`). General: a JSON Schema for an application's
 configuration file, against which every configuration is validated at start-up.

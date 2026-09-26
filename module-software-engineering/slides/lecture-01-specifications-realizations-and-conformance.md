@@ -272,7 +272,7 @@ Not yet present: operations on the set, a statement of what the set is *for*, th
 
 **Exercise 1** — run the audit and verification segments yourself; write one note carelessly; check it with all three kinds of verifier; report with RPT-2 scope lines; explain one disagreement; say which side should have moved and how each verifier could have been wrong. Due before Lecture 03.
 
-**Project 0** — the same structure at your scale: your PKB specification is this specification grown up; its checklist is R1–R7 grown up; the stretch-goal validator is `check_notes.py` grown up.
+**Project 0** — the same structure at your scale: your PKB specification is this specification grown up; its checklist is R1–R7 grown up; the stretch-goal validator is `check_notes.py` grown up. Assigned at Lecture 02.
 
 <!-- 70–72 min. -->
 
@@ -290,6 +290,6 @@ Not yet present: operations on the set, a statement of what the set is *for*, th
 
 - Read Royce (1970) and Meyer (1992); see `reading-list.md`. Meyer's precondition and postcondition are the form the next lecture gives to an operation.
 - Read the Lecture 02 handout: the draft concept of operations and the three process documents Lecture 02 adds.
-- Exercise 1 is due before Lecture 03; Project 0 continues.
+- Exercise 1 is due before Lecture 03; Project 0 is assigned at Lecture 02.
 
 **Next meeting:** what the set is for; operations with contracts; the specification as an invariant while the set changes.

@@ -82,7 +82,7 @@ Every agentic behavior you'll see this semester — planning, editing files, run
 | **11&#8209;14** | Long, autonomous agent runs | Design loops and workflow graphs; use issue tracking and context management at scale |
 | **15** | Retrospectives and presentations | Explain what worked, what failed, and why |
 
-Running underneath: **Project 0** — a personal knowledge base you design in week 2 and grow all semester.
+Running underneath: **Project 0** — a personal knowledge base you design in the software-engineering module and grow all semester.
 
 ---
 

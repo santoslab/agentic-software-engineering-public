@@ -980,8 +980,8 @@ restriction on coding-agent assistance.
 Extensions discussed in this lecture are examples for reasoning,
 not extra implementation requirements.
 
-**Before next lecture:** Project 0 will be given at the end of the
-next lecture.
+**Before next lecture:** Project 0 is assigned in the software-engineering
+module that follows this unit.
 
 <!-- Launch the unchanged exercise. The toy's limited context management and session persistence are exactly where the reflection questions point. -->
 

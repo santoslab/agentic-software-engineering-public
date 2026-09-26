@@ -32,7 +32,7 @@ After this lecture, students can:
 | 30–45 | Requirement elicitation | The grill-me skill is 13 lines — "a methodology in a paragraph": make the agent interview *you* until the decision tree is resolved. Read an excerpt from Attempt2 Session 16 (the ConOps interview). The principle: **the agent can only be as right as your requirements**; elicitation converts unknown-unknowns into decisions before they become rework. |
 | 45–58 | ConOps vs SPECS — and the punchline | Use the implementation-independent ConOps summary and shipped-spec excerpt in [Handout B](../student-repo/handouts/handout-B-9by9-excerpts.md), then explain the documented Java-port outcome: same ConOps, new language, Maven + JaCoCo, 100% branch coverage. **Specs are portable; prompts are not.** The ConOps outlived the codebase. |
 | 58–68 | Prompt evolution at scale | Use the prompt excerpts in the [NautilusTRX retrospectives](../student-repo/handouts/handout-nautilustrx-retrospectives.md): first-pass development prompts carried review and process instructions inline; later prompts named only the wave and elicitation step. The prompt *shrank* as ConOps, CLAUDE.md, and development plans grew — context moved from the prompt into durable artifacts. |
-| 68–75 | Project 0 kickoff | Everything today applies to a non-code artifact you'll keep all semester: your personal knowledge base. Tour the OKF spec in 3 minutes (frontmatter with `type`; reserved `index.md`/`log.md`; bundle-relative links; permissive conformance; Obsidian-viewable). Kickoff = grill-me your own KB design → 1-page spec → Claude scaffolds it. Spec-driven development where the "code" is markdown. |
+| 68–75 | Project 0 preview | Everything today applies to a non-code artifact you'll keep all semester: your personal knowledge base, Project 0, assigned in the software-engineering module (`../../module-software-engineering/project-0-pkb-brief.md`) once its Lectures 01 and 02 have introduced specifications and the concept of operations. Tour the OKF spec in 3 minutes (frontmatter with `type`, `title`, `description`, `generated`; reserved `index.md`/`log.md`; bundle-relative links; permissive conformance; Obsidian-viewable) and the example bundle. The kickoff there = your own sketch → grill-me elicitation to a concept of operations → a format specification → Claude scaffolds and seeds it. Spec-driven development where the "code" is markdown. |
 
 ## Demos
 
@@ -66,10 +66,12 @@ After this lecture, students can:
 ### Demo 3 — OKF in three minutes
 
 - **Artifacts:** the OKF SPEC.md (GitHub, have it cached/offline too); the worked
-  example bundle `../student-repo/pkb-example/`.
-- **Script:** frontmatter of one concept note (`type` required, rest recommended);
-  `index.md` as progressive disclosure; a bundle-relative link; "broken links are
-  allowed — they mark knowledge not yet written."
+  example bundle `../../module-software-engineering/student-materials/pkb-example/`.
+- **Script:** frontmatter of one concept note (`type` required by OKF; `title`,
+  `description`, `generated` required by the course's profile — the brief's §3
+  says which OKF fields are not used and why); `index.md` as progressive
+  disclosure; a bundle-relative link; "broken links are allowed — they mark
+  knowledge not yet written."
 - **Expected outcome:** OKF understood as *just markdown with light rules* — no
   toolchain fear.
 - **Fallback:** the local `pkb-example/` copy covers a GitHub outage.
@@ -92,8 +94,9 @@ After this lecture, students can:
   - [recommended] re-read *Building Effective Agents*, the "agents" section.
   - [recommended] Anthropic, *Writing effective tools for agents — with agents*
     (engineering blog).
-- Project: **Project 0 — PKB kickoff**
-  (`../exercises/project-0-pkb-kickoff.md`), kickoff due end of week 3.
+- Project: **Project 0 — the personal knowledge base** is previewed today and
+  assigned in the software-engineering module
+  (`../../module-software-engineering/project-0-pkb-brief.md`).
 - Reminder: Ex. 2 due before Lecture 05.
 
 ## Instructor notes

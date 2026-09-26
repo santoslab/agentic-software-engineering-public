@@ -252,41 +252,43 @@ The prompt stopped *specifying* and started *pointing*.
 
 <!-- _class: lead -->
 
-# Project 0 kickoff
+# Project 0 preview
 
 ---
 
 ## Everything today, applied to a markdown stack
 
-A **personal knowledge base** on agentic SWE, yours all semester. Format: OKF — and a conformant note is just this:
+A **personal knowledge base** on agentic SWE, yours all semester. Format: OKF, in the course's profile — and a conformant note is just this:
 
 ```markdown
 ---
 type: Concept
 title: The agent loop
 description: The while-loop-with-tools that turns a predictor into an actor.
-tags: [agents]
+generated: {by: "human:<your name>", at: 2026-09-25}
 ---
+
+# The agent loop
 
 An agent is a language model called in a loop by a harness…
 See also [context windows](/concepts/context-window.md).
 ```
 
-One required field (`type`) · reserved `index.md` + `log.md` · **broken links are legal** — they mark knowledge not yet written · Obsidian-viewable
+Four required fields (`type`, `title`, `description`, `generated`) · reserved `index.md` + `log.md` · **broken links are legal** — they mark knowledge not yet written · Obsidian-viewable
 
-<!-- 68–75 min. Worked example bundle ships in the starter repo — open it in Obsidian first. -->
+<!-- 68–75 min. Assigned in the software-engineering module, after its Lectures 01–02. The example bundle ships with the brief — open it in Obsidian. -->
 
 ---
 
-## The kickoff *is* this lecture
+## The kickoff, in the software-engineering module
 
-1. **Elicit** — grill-me your KB's purpose and organization, *before creating files*
-2. **Specify** — a one-page spec: taxonomy, `type` vocabulary, granularity, linking
-3. **Scaffold** — Claude builds the bundle from your spec (plus its own CLAUDE.md)
-4. **Seed** — 5+ notes from weeks 1–3, in your own words
+1. **Sketch** — your own concept of operations, before any agent is involved
+2. **Elicit** — grill-me turns the sketch into a concept of operations
+3. **Specify** — a format specification: `type` vocabulary, layout, rules a verifier can decide
+4. **Scaffold and seed** — Claude builds the bundle and adds 5+ notes, each as an operation
 5. **Stretch** — a conformance verifier: principle 3, aimed at knowledge work
 
-Due end of week 3 · checkpoints weeks 6, 10, 15
+Assigned at the module's Lecture 02 · checkpoints weeks 6, 10, 15 · `module-software-engineering/project-0-pkb-brief.md`
 
 ---
 
@@ -303,6 +305,6 @@ Due end of week 3 · checkpoints weeks 6, 10, 15
 - **Required:** Anthropic API docs — *Messages API* + *Tool use*, in depth (Ex. 4 builds on them)
 - **Required:** Thorsten Ball, *How to Build an Agent* — ~300 lines of Go; you build the Python equivalent
 - **Recommended:** *Building Effective Agents* ("agents" section); *Writing effective tools for agents*
-- **Project 0 now open** · Exercise 2 due before Lecture 5
+- **Project 0** is assigned in the software-engineering module · Exercise 2 due before Lecture 5
 
 *Next: the emperor has no clothes.*

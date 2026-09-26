@@ -54,15 +54,16 @@ Each unit README (`weeks-01-03/README.md`, `module-software-engineering/README.m
 
 ## Other top-level pieces
 
-- Root standing handouts: `course-overview.md`, `technical-concepts.md` (the "where is feature X taught" index), `prompt-cheat-sheet.md`, `specification-kinds.md` (the catalog of kinds of specification; cited from the module, the Project 0 kickoff, and the Project 1 brief), `glossary.md`.
+- Root standing handouts: `course-overview.md`, `technical-concepts.md` (the "where is feature X taught" index), `prompt-cheat-sheet.md`, `specification-kinds.md` (the catalog of kinds of specification; cited from the module and from the Project 0 and Project 1 briefs), `glossary.md`.
 - `carbon-layer/` — source material (book chapters, masterclass transcript, figures) used to draft the harness-anatomy lectures. Reference corpus, not a course deliverable.
-- `weeks-01-03/student-repo/` — handouts (Markdown sources + checked-in PDFs), the `pkb-example/` knowledge base, and `tictactoe-starter/`.
+- `weeks-01-03/student-repo/` — handouts (Markdown sources + checked-in PDFs) and `tictactoe-starter/`.
+- `module-software-engineering/student-materials/` — handouts, the Project 0 starter and example bundle (`pkb-starter/`, `pkb-example/`), and the Reversi starter; its README states what is exported to students and when. The Project 0 brief is `module-software-engineering/project-0-pkb-brief.md`.
 - `weeks-04-07/student-materials/` — per-stage artifacts shipped with the Project 1 brief; its README states what is exported to students and when.
 - `.claude-template/` — a *teaching artifact* students copy into their own projects, not this repo's live Claude Code configuration. Keep it minimal and permission-free.
 
 ## Intentional quirks — do not "fix"
 
-- `pkb-example` contains one unresolved `/concepts/tool-schemas.md` link on purpose (demonstrates links to unwritten knowledge).
+- `module-software-engineering/student-materials/pkb-example/` contains one unresolved `/concepts/tool-schemas.md` link on purpose (demonstrates links to unwritten knowledge).
 - `tictactoe-starter` deliberately ships with no project specification and no agent-memory file — creating those is the student assignment.
 - Tic-Tac-Toe, NautilusTRX, and lost-communities are historical case studies; the private prototype repositories are intentionally not referenced as prerequisites.
 

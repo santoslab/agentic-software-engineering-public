@@ -558,6 +558,13 @@ both, and — as the stretch goal — a verifier. The Open Knowledge Format keep
 conformance deliberately light; deciding how much to tighten it, and which
 clauses a program decides, is the decision this lecture made about R8.
 
+The project is assigned today. The brief is `../project-0-pkb-brief.md`; its
+starter (the loader and this lecture's process set, bound to the PKB) and an
+example bundle are in `../student-materials/`. The kickoff — your sketch, the
+elicited concept of operations, the format specification, the operations
+document, the scaffolded bundle, and five seeded notes — is due before
+Lecture 05; the project then continues through the semester.
+
 ## Questions to think about
 
 1. Findings 3, 4, and 5 of the audit changed nothing. Was the audit wasted on
@@ -574,4 +581,4 @@ clauses a program decides, is the decision this lecture made about R8.
   documents as shipped in that demo's starter. Lecture 03 applies this method to
   a program, starting from a sketch rather than a draft.
 - Exercise 1 is due before Lecture 03; Exercise 2, assigned today, before
-  Lecture 04. Project 0 continues.
+  Lecture 04. Project 0 is assigned today; its kickoff is due before Lecture 05.

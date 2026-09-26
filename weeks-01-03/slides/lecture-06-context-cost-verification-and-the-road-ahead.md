@@ -193,10 +193,10 @@ What you don't understand, you cannot verify.
 
 | Principle | Weeks 1–3 practice |
 |-----------|--------------------|
-| Spec-Driven Development | PKB spec; Attempt 2; the Java port |
+| Spec-Driven Development | Attempt 2; the Java port; the PKB spec, in the module |
 | The Cycle of Development | pass-5's wave cycle (pass 4 = its absence) |
 | Project Context Management | improving Ex. 2's CLAUDE.md |
-| Requirement Elicitation | grill-me, PKB kickoff |
+| Requirement Elicitation | grill-me; the PKB kickoff, in the module |
 | Verification | catching Claude wrong in Ex. 2; coverage gates |
 
 From Project 1 on: retrospectives ask **where each principle was applied — or what happened where it wasn't.**
@@ -251,7 +251,7 @@ That is pass 4's lesson, institutionalized.
 ## Before week 4
 
 - Finish **Exercise 4** (due at the start of week 4)
-- **Project 0 kickoff due now**
+- **Project 0** is assigned in the software-engineering module
 - No new reading. Rest.
 
 **Next meeting: the Project 1 brief.**

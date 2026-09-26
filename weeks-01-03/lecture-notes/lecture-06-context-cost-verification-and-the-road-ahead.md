@@ -143,7 +143,8 @@ what / how / why / when. You have now *practiced* every one of them:
    generated CLAUDE.md.
 4. **Requirement Elicitation** — find the gaps in your own spec by making the agent
    interview you; a few hundred tokens of questions against tens of thousands of
-   tokens of rework. You ran this for your PKB kickoff.
+   tokens of rework. You will run this for your PKB kickoff in the
+   software-engineering module.
 5. **Verification** — ensure what you instructed actually happened: tests, coverage
    gates, review subagents, and your own skeptical reading. *You are responsible for
    every line you ship.* You practiced the manual half catching Claude wrong in
@@ -215,7 +216,7 @@ document is you.
 
 ## Before week 4
 
-- Finish **Exercise 4** (due at the start of week 4) and your **Project 0 kickoff**
-  (due now).
+- Finish **Exercise 4** (due at the start of week 4). **Project 0** is assigned in
+  the software-engineering module.
 - No new reading. Rest; Project 1 starts Monday.
 

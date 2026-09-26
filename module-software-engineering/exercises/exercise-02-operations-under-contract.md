@@ -97,4 +97,5 @@ A folder (zip or repository link) containing:
 Your PKB will have an operations document derived from its concept of
 operations and its format specification, and every operation you perform on it
 ends the way step 3 ends. The stretch is what a requirement change looks like at
-your PKB's scale.
+your PKB's scale. The brief is `../project-0-pkb-brief.md`, assigned with this
+exercise.

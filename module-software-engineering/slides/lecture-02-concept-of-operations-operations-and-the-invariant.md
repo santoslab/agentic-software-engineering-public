@@ -326,6 +326,8 @@ The demand did not weaken by moving into a file; it is versioned and cited, and 
 
 The Open Knowledge Format keeps conformance light on purpose. How much to tighten it, and which clauses a program decides, is the decision this lecture made about R8.
 
+Assigned today: `project-0-pkb-brief.md`, with its starter and example bundle in `student-materials/`. Kickoff due before Lecture 05.
+
 <!-- 68–72 min. -->
 
 ---
@@ -341,6 +343,6 @@ The Open Knowledge Format keeps conformance light on purpose. How much to tighte
 ## Before next meeting
 
 - Read the Lecture 03 handout: the game's `CONOPS-sketch.md` and the process documents in that demo's starter.
-- Exercise 1 is due before Lecture 03; Exercise 2 before Lecture 04. Project 0 continues.
+- Exercise 1 is due before Lecture 03; Exercise 2 before Lecture 04. Project 0 is assigned today; its kickoff is due before Lecture 05.
 
 **Next meeting:** a program instead of a note set; a sketch of a concept of operations instead of a draft; several kinds of specification.

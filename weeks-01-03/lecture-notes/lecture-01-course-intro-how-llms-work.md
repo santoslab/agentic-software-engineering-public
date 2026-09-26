@@ -43,8 +43,8 @@ concepts from traditional software engineering, and explain how these concepts g
 - **Week 15:** retrospectives and presentations.
 
 Running underneath all of it is **Project 0**: a personal knowledge base on agentic
-software engineering that you design in week 2, seed in week 3, and grow all semester.
-More on that when we reach Lecture 4.
+software engineering that you design and seed in the software-engineering module
+and grow all semester. Lecture 4 previews it.
 
 There are no exams. Weeks 1–3 exercises are completion-based; the projects make up
 the bulk of the grade.  You will need a Claude Pro subscription by the start of week 2.

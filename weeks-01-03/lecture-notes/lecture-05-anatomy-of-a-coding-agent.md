@@ -552,7 +552,7 @@ not extra implementation requirements.
 
 ## Before next lecture
 
-- Project 0 will be given at the end of the next lecture.
+- Project 0 is assigned in the software-engineering module that follows this unit.
 
 ## Sources and attribution
 

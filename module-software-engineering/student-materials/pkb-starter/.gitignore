@@ -1,0 +1,5 @@
+.obsidian/
+__pycache__/
+.venv/
+*.local*
+.DS_Store

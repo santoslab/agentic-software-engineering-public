@@ -92,4 +92,5 @@ Your PKB specification will need the same three kinds of verifier. The Open
 Knowledge Format keeps conformance light on purpose; the decision of how much to
 tighten your PKB's rules, and which of those rules a program can decide, is the
 decision this exercise practices on a handful of rules. The Project 0
-stretch-goal validator is `check_notes.py` at PKB scale.
+stretch-goal validator is `check_notes.py` at PKB scale. The brief is
+`../project-0-pkb-brief.md`, assigned at Lecture 02.

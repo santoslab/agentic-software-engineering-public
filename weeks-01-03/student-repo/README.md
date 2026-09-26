@@ -1,7 +1,7 @@
 # Weeks 1–3 Student Materials
 
-This directory collects the handouts, worked example, templates, and starter code
-used by the foundations unit.
+This directory collects the handouts, templates, and starter code used by the
+foundations unit.
 
 ## Handouts
 
@@ -18,9 +18,6 @@ files are the editable sources.
 
 ## Examples and starter code
 
-- [`pkb-example/`](pkb-example/index.md) — a tiny Open Knowledge Format bundle.
-  Its unresolved `/concepts/tool-schemas.md` link is intentional: it demonstrates
-  how an unwritten knowledge topic appears in Obsidian.
 - [`tictactoe-starter/`](tictactoe-starter/) — the Python game and tests used by
   Project 1. It intentionally has no project specification or agent-memory file;
   creating those artifacts is part of the assignment.
@@ -29,7 +26,10 @@ files are the editable sources.
 
 Exercise specifications live in [`../exercises/`](../exercises/), and the
 student-facing prose for each class meeting lives in
-[`../lecture-notes/`](../lecture-notes/).
+[`../lecture-notes/`](../lecture-notes/). The example Open Knowledge Format
+bundle that Lecture 04 previews lives with the Project 0 brief in the
+software-engineering module,
+[`../../module-software-engineering/student-materials/pkb-example/`](../../module-software-engineering/student-materials/pkb-example/index.md).
 
 ## Verification
 

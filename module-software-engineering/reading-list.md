@@ -39,6 +39,18 @@ URLs verified 2026-09-16 unless marked ⚠ verify.
   the draft concept of operations and the three process documents Lecture 02
   adds. Ten minutes.
 
+## For Project 0 (assigned at L02)
+
+- **[required]** The Project 0 brief,
+  [`project-0-pkb-brief.md`](project-0-pkb-brief.md), in full, and its §3 before
+  the OKF specification.
+- **[required]** Google, *Open Knowledge Format (OKF) specification*, v0.2 —
+  <https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md>.
+  Read after the brief's §3, which says which of its fields the course uses.
+- **[recommended]** The example bundle,
+  [`student-materials/pkb-example/`](student-materials/pkb-example/index.md),
+  opened in Obsidian or any Markdown viewer; five minutes.
+
 ## For Lecture 03 (assigned at L02)
 
 - **[required]** The Lecture 03 handout: the game's `CONOPS-sketch.md` and the

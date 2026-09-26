@@ -71,7 +71,11 @@ questions; the video below is the shared vocabulary for the conversation.
 - **[recommended]** Claude Code docs: *Context window* —
   <https://code.claude.com/docs/en/context-window>.
 
-## Project 0 references (assigned at L04)
+## Project 0 references (previewed at L04; assigned in the software-engineering module)
+
+The project itself is assigned by
+`../module-software-engineering/project-0-pkb-brief.md`, and that module's
+reading list repeats these entries.
 
 - **[required]** Google, *Open Knowledge Format (OKF) spec* —
   <https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md>.

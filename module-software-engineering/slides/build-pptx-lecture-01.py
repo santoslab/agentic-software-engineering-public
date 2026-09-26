@@ -657,7 +657,7 @@ s = new_slide("Title and Content", "Exercise 1, and Project 0", note="70–72 mi
 body(s, [
     ("p", "**Exercise 1** — run the audit and verification segments yourself; write one note carelessly; check it with all three kinds of verifier; report with RPT-2 scope lines; explain one disagreement; say which side should have moved and how each verifier could have been wrong. Due before Lecture 03."),
     ("gap", ""),
-    ("p", "**Project 0** — the same structure at your scale: your PKB specification is this specification grown up; its checklist is R1–R7 grown up; the stretch-goal validator is `check_notes.py` grown up."),
+    ("p", "**Project 0** — the same structure at your scale: your PKB specification is this specification grown up; its checklist is R1–R7 grown up; the stretch-goal validator is `check_notes.py` grown up. Assigned at Lecture 02."),
 ], size=20)
 
 # 22 — questions
@@ -673,7 +673,7 @@ s = new_slide("Title and Content", "Before next meeting")
 body(s, [
     ("b", "Read Royce (1970) and Meyer (1992); see `reading-list.md`. Meyer's precondition and postcondition are the form the next lecture gives to an operation."),
     ("b", "Read the Lecture 02 handout: the draft concept of operations and the three process documents Lecture 02 adds."),
-    ("b", "Exercise 1 is due before Lecture 03; Project 0 continues."),
+    ("b", "Exercise 1 is due before Lecture 03; Project 0 is assigned at Lecture 02."),
     ("p", "**Next meeting:** what the set is for; operations with contracts; the specification as an invariant while the set changes."),
 ], size=20)
 

@@ -1,45 +1,73 @@
 # Project 0 — A Personal Knowledge Base, Specification-First
 
-> **Assigned:** Lecture 02 · **Kickoff due:** before Lecture 05 *(date: instructor
-> to fix)* · **Then:** semester-long, about thirty minutes a week ·
-> **Checkpoints:** weeks 6, 10, and 15 · **Effort (kickoff):** about 6–8 h
-> without the optional verifier, which adds 2–4 h *(unvalidated)*
+> **Effort (kickoff):** about 6–8 h
+> without the optional verifier, which probably adds 2–4 h.  
 >
 > **Requires:** Claude Code; git; Obsidian (free) or any Markdown viewer; Python
 > 3.11 or newer for the optional verifier (step 7).
 >
-> **Status:** draft; instructor review required before assigning (due date,
-> effort estimate).
 
 ## 0. What this project is
 
 You will design, build, and then maintain for the rest of the semester a
 personal knowledge base (PKB): a set of Markdown notes on agentic software
 engineering, organized around your own interests, kept in a git repository, and
-maintained by a coding agent that follows written specifications. The notes are
-the product. What the project teaches is the method for producing them.
+maintained by a coding agent that follows written specifications. 
+You will continue to evolve the PKB contents and functionality throughout
+the semester.  What is important in this effort is not the content of the notes 
+themselves — you decide what type of note content is valuable to you and your 
+learning. What we want you to learn in this project is a method for using agents to 
+maintain artifacts according to a certain set of rules: rules for the format of notes,
+and rules for how to maintain (add, modify, remove) notes in the knowledge
+base.  
 
 Lectures 01 and 02 introduced that method on a small note set: a specification
-and its realizations, conformance between them, verification by three kinds of
-verifier, a concept of operations that says what the set is for and which
-operations an agent may perform on it, an operations document derived from
-both, and a process under which conformance is re-established after every
-operation. The note set was designed as a reduced version of this project.
-Project 0 is the same structure at your scale: you write the same three
+(the note-formatting rules) and its realizations (the notes); conformance
+between them (a note conforms to the rules); and verification (checking that a
+note conforms to the formatting rules) by three kinds of verifier (a human, an
+agent, an algorithm). We also introduced the notion of a "concept of
+operations" — a document that describes the scope and purpose of a system and
+tells stories about the operations that can be performed on it, focusing
+entirely on the user's external view of the system. In this case, the stories
+described how we want the agent to help the user maintain the note set. From
+this high-level description we derived a lower-level specification of the
+operations that we need to implement (the lower-level specification reveals
+some of the internal technologies and mechanics). As usual, whenever we have a
+specification (the operations document) and a realization (the actions the
+agent takes), we want some means of verifying whether the realizations (the
+actions on the note set) conform to the specification. This led us to set up
+development rules (also called process rules) that check that conformance is
+re-established after every operation.
+
+The note set was designed as a reduced version of this project.
+This Project 0 PKB is the same structure, but scaled up: you write the same three
 governing documents for your PKB, install the same process documents, and
 perform the same kinds of operation. The scale — how many notes, how many
 kinds of note, how strict the rules — is yours to set, and to change as the
 semester goes on.
 
-Three things differ from the note set, and each is a learning outcome:
+**Important**: when developing on your own, you do not have to follow this
+specific approach. You could almost certainly get away with telling the agent,
+in a less structured way, what you want done. You can even experiment with
+that on your own by setting up a different PKB with your own set of prompts.
+However, what we are trying to do in this project (and in subsequent projects)
+is introduce some concepts and general approaches that we believe are
+important for agentic development: specifications, checking that realizations
+conform to specifications, process rules (development rules), and so on. Also,
+do not worry if this first phase of the project ends with something you are
+not happy or comfortable with. You can modify it later — that is part of the
+learning experience.
+
+Three things differ from the smaller note-set example, and each is a learning outcome:
 
 - **You are the client.** The note set's concept of operations arrived as a
-  draft. Yours does not exist until you write a sketch of it, and the agent's
+  draft (that is, we gave you its initial content).
+  Yours does not exist until you write a sketch of it, and the agent's
   first job is to turn that sketch into a concept of operations by asking you
   questions. A concept of operations answers a validation question (Lecture
   02): is this the system that was wanted? Only its user can answer, and here
   the user is you.
-- **The format is given, and you restrict it.** Notes follow Google's Open
+- **The format is given, and you restrict it.** Notes in the PKB follow Google's Open
   Knowledge Format (OKF), a short specification for Markdown files with YAML
   frontmatter. OKF was designed for catalogs of datasets as well as for
   personal notes, and most of its fields serve the former. §3 fixes the
@@ -47,9 +75,9 @@ Three things differ from the note set, and each is a learning outcome:
   and which of your rules a program can decide, is the decision Lecture 02
   made about rule R8, made for every rule of yours.
 - **The realization is knowledge, not code.** There is no compiler and no test
-  suite between you and the artifacts. Every concept from the two lectures
-  applies unchanged, and the artifacts are small enough that you can read all
-  of them.
+  suite between you and the artifacts (the next project addresses that).
+  Every concept from the two lectures applies unchanged, and the artifacts
+  are small enough that you can read all of them.
 
 Why a knowledge base at all. Over the semester you will read papers, watch
 talks, and learn things from your own project sessions. Anything you find
@@ -57,9 +85,9 @@ yourself explaining to the agent twice belongs in a note the agent can read.
 Later units connect tooling to the PKB (§7). By the end of the course it should
 be the artifact from this course that you keep using.
 
-Grading is completion-based (§6). There is no correct taxonomy and no correct
-set of rules. There is a correct way of arriving at them and recording them,
-and that is what the required elements check.
+Grading is completion-based (§6). There is no "correct taxonomy" and no
+"correct set of rules." There *is a correct way of arriving at them and
+recording them*, and that is what the required elements check.
 
 ## 1. What you get
 
@@ -73,24 +101,26 @@ and that is what the required elements check.
 | `demos/lecture-01-note-specs-demo/completed/` | The note set at the end of Lecture 02: the model for your three governing documents and for the verifier. |
 | The OKF specification, v0.2 | <https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md>. Read §3 of this brief first; it says which parts apply. |
 
-**Repository layout.** At the end of the kickoff your repository looks like
-this. The bundle is the folder `kb/` and nothing above it: OKF requires every
-non-reserved Markdown file inside a bundle to carry note frontmatter, so the
-governing documents, the process documents, and the report cannot live inside
-it.
+**Repository layout.** At the end of the kickoff (the first phase of the
+project) the `project-0-pkb/` folder of your course repository looks like
+this. Every path in this brief is relative to that folder. The bundle is the
+folder `kb/` and nothing above it: OKF requires every non-reserved Markdown
+file inside a bundle to carry note frontmatter, so the governing documents,
+the process documents, and the report cannot live inside it.
 
 ```
-CLAUDE.md                the loader (from the starter)
-pkb-conops-sketch.md     step 1, written by you
-pkb-conops.md            step 2
-pkb-format-spec.md       step 3
-pkb-operations.md        step 4
-process/                 from the starter
-BACKLOG.md               from the starter
-kb/                      the OKF bundle: index.md, log.md, your notes
-check_pkb.py             step 7, optional
-transcripts/             step 2
-KICKOFF-REPORT.md        step 8
+project-0-pkb/
+  CLAUDE.md                the loader (from the starter)
+  pkb-conops-sketch.md     step 1, written by you
+  pkb-conops.md            step 2
+  pkb-format-spec.md       step 3
+  pkb-operations.md        step 4
+  process/                 from the starter
+  BACKLOG.md               from the starter
+  kb/                      the OKF bundle: index.md, log.md, your notes
+  check_pkb.py             step 7, optional
+  transcripts/             step 2
+  KICKOFF-REPORT.md        step 8
 ```
 
 **The worked example.** The model for each step is the note set at the end of
@@ -121,8 +151,28 @@ to `BACKLOG.md`, not guessed (DEV-6).
 
 ### Step 0 — Start
 
-**Do.** Copy the starter outside the course repository, initialize a
-repository, and make one initial commit:
+**Do.** Work in your course repository, the one that holds your exercise
+solutions. Create a top-level folder `project-0-pkb/`, copy the starter's
+contents into it — including the two dot-entries, `.gitignore` and the
+`.claude/` folder that holds the grill-me skill — and commit:
+
+```sh
+cd <your-course-repository>
+mkdir project-0-pkb
+cp -R <path-to-module>/student-materials/pkb-starter/. project-0-pkb/
+git add project-0-pkb && git commit -m "kickoff start: process and loader"
+```
+
+Every path in this brief is relative to `project-0-pkb/`: `kb/` means
+`project-0-pkb/kb/`, and so on. Start Claude Code inside that folder for every
+session of this project (`cd project-0-pkb && claude`), so that its `CLAUDE.md`
+is the loader the agent reads first and the `@process/…` imports in it
+resolve. Claude Code also loads your repository's own top-level `CLAUDE.md`, if
+you have one; keep the two consistent, and keep this project's rules in this
+project's loader.
+
+If you were building a PKB outside your course repository, the same start
+would be a repository of its own:
 
 ```sh
 cp -R <path-to-module>/student-materials/pkb-starter ~/pkb
@@ -211,7 +261,8 @@ for what version 0.1 of one looks like.
 
 ### Step 2 — Elicitation: the sketch to `pkb-conops.md` 1.0
 
-**Do.** In plan mode: the audit of the sketch, before anything is proposed;
+**Do.** A summary first; the prompts that carry it out follow. In plan
+mode: the audit of the sketch, before anything is proposed;
 the gap list per RPT-1; an interview about every decision the sketch leaves
 open, using the grill-me skill; your rulings, one or two sentences each; at
 least one deferral to `BACKLOG.md`; the amendments proposed and approved; the
@@ -253,7 +304,11 @@ appearing in the concept of operations, and the audit should move them.
 > the sketch leaves open, one question at a time, with your recommended
 > answer for each. Stop after the gap list and wait for my rulings.
 
-Rule on every item. For an item you defer:
+Notice that this prompt uses the `grill-me` skill — we will say more about
+skills in lecture this week.
+
+As the agent surfaces issues, rule on every item. For an item you want to
+defer, you can say something like this:
 
 > Ruling on item N: deferred. Write it to `BACKLOG.md` per DEV-6 — the
 > question, where it arose, the options — and do not decide it.
@@ -288,8 +343,22 @@ elicited, not typed.
 
 ### Step 3 — Derive `pkb-format-spec.md` 1.0.0
 
-**Do.** The same moves, with a new target: the format specification, which
-says what a conformant entry in the bundle is. Its base is OKF v0.2 restricted
+In the note-set example, we made up our own specification of what a properly
+formatted note looks like. In this project, we use an existing industry
+specification — Google's OKF. This will happen often in your development work:
+you adopt an existing interface specification, a JSON schema, and so on. The
+problem with adopting OKF blindly is that it contains many fields you do not
+need for a first version of a PKB. Unless you tell it otherwise, the agent will
+try to make meaningful use of those fields, resulting in a large set of
+operations and workflows that is too complicated for your learning experience.
+
+Therefore, later in this brief (§3, *The OKF profile this course uses*), we
+describe a minimal set of fields that we think is appropriate for the first
+version of your PKB. Read that section before continuing.
+
+**Do.** The same steps and workflow you used to produce the concept of
+operations in step 2, now for a new kind of specification: the format
+specification, which says what a conformant entry in the bundle is. Its base is OKF v0.2 restricted
 to the profile in §3. On top of the profile you decide the type vocabulary,
 the folder layout under `kb/`, the filename rule, the index-entry form, what
 `log.md` records, and how strict each rule is (§4). Every rule is numbered R1,
@@ -316,8 +385,9 @@ specification that carries fields no operation ever sets misleads the next
 reader about what the system does, and is incomplete at its own level (AUD-4)
 because it does not say what those fields mean here.
 
-**Prompt.** Two, in order. The first pastes the profile paragraph from §3, so
-that the exclusion is in the agent's context and not only in yours:
+**Prompt.** Two, in order. The first pastes the profile paragraph from §3
+(the restriction of the OKF format to the course's profile), so that the
+exclusion is in the agent's context and not only in yours:
 
 > Read `pkb-conops.md`, `CLAUDE.md`, and the documents under `process/`.
 > Derive `pkb-format-spec.md` 1.0.0 from the concept of operations: the
@@ -364,8 +434,8 @@ changelog entry.
 
 ### Step 4 — Derive `pkb-operations.md` 1.0
 
-**Do.** Derive the operations document from the two governing documents: one
-section per operation the concept of operations promises, each with its
+**Do.** Derive the operations document from the two governing documents (the ConOps and
+the format specification): one section per operation the concept of operations promises, each with its
 input, precondition, steps, and postcondition; a short section for the
 one-time scaffold of the empty bundle (step 5), which the concept of
 operations need not list; a conventions section — the slug function, the rule
@@ -425,7 +495,8 @@ When the answer is right, have the agent scaffold the bundle: `kb/index.md`, `kb
 the folders `pkb-format-spec.md` names, with nothing else in them.
 
 **Why.** Everything the agent knows after `/clear` comes from the files the
-loader names. This is the test of whether your three documents and the loader
+loader names, plus your course repository's own `CLAUDE.md` if it has one.
+This is the test of whether your three documents and the loader
 carry the whole state of the project across a context boundary — the property
 that lets a later session, a colleague, or a later you pick the work up.
 A loader that needs the conversation to make sense is a specification that is
@@ -572,8 +643,8 @@ has four sections, in this order.
    an agent response, a tool call, and a tool result feeding back into the
    context — quoted, or cited by line — with one sentence each on what the
    element did for the session.
-2. **Commits and rules.** For each commit in your history, the DEV rule or
-   rules it obeyed; for each change to a realization, which of DEV-2's three
+2. **Commits and rules.** For each commit that touches `project-0-pkb/`
+   (`git log -- project-0-pkb`), the DEV rule or rules it obeyed; for each change to a realization, which of DEV-2's three
    kinds it was.
 3. **Verification scope.** In the form of RPT-2's three scope lines, what the
    bundle was checked against at the end of the kickoff: which verifier,
@@ -608,8 +679,9 @@ Exercise 2, step 6.
 
 ### Required elements (all must be present)
 
-- [ ] **[0]** The starter's `process/` and `CLAUDE.md` in the first commit,
-      unmodified afterwards except by RPT-3 amendments with changelog entries.
+- [ ] **[0]** The starter's `process/` and `CLAUDE.md` in the folder's first
+      commit, unmodified afterwards except by RPT-3 amendments with changelog
+      entries.
 - [ ] **[1]** `pkb-conops-sketch.md` 0.1, written by you, with at least three
       scenarios.
 - [ ] **[2]** `pkb-conops.md` 1.0 with a changelog entry;
@@ -768,9 +840,10 @@ verifier time that the notes need more.
 6. **Every operation ends the same way (DEV-7).** Verification of what changed
    (VER-3, and the gate once it exists, VER-4), a completion note (RPT-5), a
    commit named for the operation.
-7. **The bundle boundary.** `kb/` is the OKF bundle, and nothing above it is.
-   The governing documents, the process documents, the transcripts, and the
-   report live outside it; the verifier checks `kb/` only.
+7. **The bundle boundary.** `project-0-pkb/kb/` is the OKF bundle, and
+   nothing above it is. The governing documents, the process documents, the
+   transcripts, and the report live in `project-0-pkb/`, outside the bundle;
+   the verifier checks `kb/` only.
 8. **Commit vocabulary.** `kickoff start: …`; `conops: …`; `format-spec: …`;
    `operations: …`; `scaffold: …`; `<operation>: <title>` for every operation
    on the bundle, where `<operation>` is the name your operations document
@@ -806,9 +879,9 @@ The rest of Project 0 is that process, run weekly.
   (VER-3), not a note that quietly breaks the rule. Expect at least one such
   amendment before week 10.
 
-**Checkpoints (completion-based).** At each, tag the commit (`cp1`, `cp2`,
-`cp3`) and add a half-page `CHECKPOINT-n.md` at the repository root that
-addresses the items:
+**Checkpoints (completion-based).** At each, tag the commit (`pkb-cp1`,
+`pkb-cp2`, `pkb-cp3`) and add a half-page `CHECKPOINT-n.md` in
+`project-0-pkb/` that addresses the items:
 
 - **Checkpoint 1, week 6** (the project unit's Lecture 11): twelve or more
   notes; `kb/log.md` showing steady accretion; one note capturing a lesson
@@ -839,9 +912,11 @@ kickoff.
 
 ## 8. Do / don't
 
-- **Do** write the sketch yourself, before the agent sees anything. **Don't**
+- **Do** write the ConOps sketch yourself, before the agent sees anything. **Don't**
   paste the OKF specification and ask for "a personal knowledge base"; the
-  result will conform to OKF and to nothing you decided.
+  result will conform to OKF and to nothing you decided (you can try this
+  outside the project and see what happens — it might be an interesting
+  learning experience).
 - **Do** paste the profile paragraph from §3 into every prompt that touches
   frontmatter. **Don't** accept a field from the excluded list because "OKF
   allows it"; your specification does not.

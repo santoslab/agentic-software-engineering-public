@@ -1,7 +1,7 @@
 # Project 0 — A Personal Knowledge Base, Specification-First
 
 > **Effort (kickoff):** about 6–8 h
-> without the optional verifier, which probably adds 2–4 h.  
+> without the optional verifier, which probably adds 2–4 h.
 >
 > **Requires:** Claude Code; git; Obsidian (free) or any Markdown viewer; Python
 > 3.11 or newer for the optional verifier (step 7).
@@ -12,14 +12,14 @@
 You will design, build, and then maintain for the rest of the semester a
 personal knowledge base (PKB): a set of Markdown notes on agentic software
 engineering, organized around your own interests, kept in a git repository, and
-maintained by a coding agent that follows written specifications. 
+maintained by a coding agent that follows written specifications.
 You will continue to evolve the PKB contents and functionality throughout
-the semester.  What is important in this effort is not the content of the notes 
-themselves — you decide what type of note content is valuable to you and your 
-learning. What we want you to learn in this project is a method for using agents to 
+the semester.  What is important in this effort is not the content of the notes
+themselves — you decide what type of note content is valuable to you and your
+learning. What we want you to learn in this project is a method for using agents to
 maintain artifacts according to a certain set of rules: rules for the format of notes,
 and rules for how to maintain (add, modify, remove) notes in the knowledge
-base.  
+base.
 
 Lectures 01 and 02 introduced that method on a small note set: a specification
 (the note-formatting rules) and its realizations (the notes); conformance
@@ -119,7 +119,7 @@ project-0-pkb/
   BACKLOG.md               from the starter
   kb/                      the OKF bundle: index.md, log.md, your notes
   check_pkb.py             step 7, optional
-  transcripts/             step 2
+  transcripts/             steps 2 to 7, one export per agent session
   KICKOFF-REPORT.md        step 8
 ```
 
@@ -132,12 +132,20 @@ Your PKB's purpose, vocabulary, and rules are decisions you make and record.
 
 ## 2. The kickoff, step by step
 
-**How to read a step.** Each step has the same seven parts. *Do* is the
+**How to read a step.** Each step has the same eight parts. *Do* is the
 operation. *Why* names the learning outcome the step serves and the concept
 from Lectures 01 and 02 that it applies; read it before the prompt, because the
 prompt makes more sense once you know what it is for. *Prompt* is the shape of
-what you type; adapt the names, not the structure. *Rules* are the process
-rules that govern the step; the agent has them loaded, and you are expected to
+what you type; adapt the names, not the structure. *Transcript* is the export
+of the session that carried out the step: the `/export` command with the file
+to write, and the commit that saves it. Make the export as soon as the step's
+closing commit exists, before you clear or end the session. The export is
+plain text; the `.md` extension is kept for consistency with the Project 1
+brief. A step's transcript is the session up to the end of that step, so if
+several steps share one session the later export contains the earlier steps
+as well, and that is acceptable. A step that takes more than one session
+numbers its files (`06-seeding-1.md`, `06-seeding-2.md`). *Rules* are the
+process rules that govern the step; the agent has them loaded, and you are expected to
 know which apply. *Shown in* is where the lectures performed the same move on
 the note set — the lecture notes are
 `lecture-notes/lecture-01-specifications-realizations-and-conformance.md` and
@@ -196,6 +204,8 @@ it against them is how the process is audited.
 
 **Prompt.** None.
 
+**Transcript.** None; this step has no agent session.
+
 **Rules.** DEV-1; DEV-3 (nothing under `process/` or in `CLAUDE.md` changes
 without a proposal and a changelog entry).
 
@@ -246,6 +256,8 @@ the format specification is a skill in itself. The test in AUDCON-1 — would a
 user of the system encounter this noun? — is the quickest way to decide.
 
 **Prompt.** None.
+
+**Transcript.** None; this step has no agent session.
 
 **Rules.** AUDCON-1 (implementation-independent); AUDCON-5 (third person,
 present tense).
@@ -322,6 +334,14 @@ Read the proposals; approve them, or rule again. Then:
 > Write `pkb-conops.md` 1.0, run both audits on it again, report per RPT-1,
 > and commit as `conops: 0.1 sketch -> 1.0`.
 
+**Transcript.** As soon as that commit exists:
+
+> /export transcripts/02-conops-elicitation.md
+
+Then commit the file as `transcripts: step 2`. The RPT-1 list, your rulings,
+and the RPT-3 amendments in that transcript are the evidence that the
+document was elicited, not typed.
+
 **Rules.** RPT-1, AUD-1 to AUD-7, AUDCON-1 to AUDCON-6, DEV-6, RPT-3, RPT-4,
 DEV-3, DEV-7.
 
@@ -334,12 +354,7 @@ concept-of-operations interview in the 9×9 excerpts.
 input / precondition / postcondition form; the changelog entry that records
 what the audit changed and why.
 
-**Ends with.** `conops: 0.1 sketch -> 1.0`. Then export the session with
-`/export transcripts/01-conops-elicitation.md` and commit it as
-`transcripts: conops elicitation`. The export is plain text; the `.md`
-extension is kept for consistency with the Project 1 brief. The RPT-1 list, your rulings, and the
-RPT-3 amendments in that transcript are the evidence that the document was
-elicited, not typed.
+**Ends with.** `conops: 0.1 sketch -> 1.0`, then `transcripts: step 2`.
 
 ### Step 3 — Derive `pkb-format-spec.md` 1.0.0
 
@@ -416,6 +431,12 @@ Rule on every item; defer what you cannot settle. Then:
 
 Approve, or rule again; then have the agent commit.
 
+**Transcript.** As soon as the `format-spec: 1.0.0` commit exists:
+
+> /export transcripts/03-format-spec.md
+
+Then commit the file as `transcripts: step 3`.
+
 **Rules.** AUD-1 to AUD-7, RPT-1, RPT-3, DEV-3, DEV-5 (the format
 specification must not contradict the concept of operations), VER-2, DEV-7.
 
@@ -430,7 +451,7 @@ table at specification 2.0.0.
 
 **Ends with.** `format-spec: 1.0.0`, with the amendment to
 `process/verification.md` in the same commit or the one before it, with its
-changelog entry.
+changelog entry; then `transcripts: step 3`.
 
 ### Step 4 — Derive `pkb-operations.md` 1.0
 
@@ -471,6 +492,12 @@ something — shows up later as an inconsistent bundle.
 
 Rule; then have the agent commit.
 
+**Transcript.** As soon as the `operations: 1.0` commit exists:
+
+> /export transcripts/04-operations.md
+
+Then commit the file as `transcripts: step 4`.
+
 **Rules.** DEV-5, AUD-3, AUD-5, RPT-1, DEV-7.
 
 **Shown in.** Lecture 02 notes, *Deriving lower-level specifications from the
@@ -478,7 +505,7 @@ concept of operations*; the L02 demo script, Segment 3.
 
 **Model.** `completed/note-set-operations.md`.
 
-**Ends with.** `operations: 1.0`.
+**Ends with.** `operations: 1.0`, then `transcripts: step 4`.
 
 ### Step 5 — Clear the context; scaffold the empty bundle
 
@@ -490,8 +517,9 @@ concept of operations*; the L02 demo script, Segment 3.
 If the answer is wrong or incomplete, the fix is to the loader or to the
 documents, not to the conversation: correct the file, commit it (`loader: …`
 with a changelog entry, since `CLAUDE.md` is under DEV-3), clear again, and
-ask again. Save the final question and answer; they open the report (step 8).
-When the answer is right, have the agent scaffold the bundle: `kb/index.md`, `kb/log.md`, and
+ask again. The final question and answer end up in this step's transcript,
+and the report quotes them from there. When the answer is right, have the
+agent scaffold the bundle: `kb/index.md`, `kb/log.md`, and
 the folders `pkb-format-spec.md` names, with nothing else in them.
 
 **Why.** Everything the agent knows after `/clear` comes from the files the
@@ -512,6 +540,14 @@ is performed as an operation so that it ends the way every operation ends
 > against the specification, give the completion note per RPT-5, and commit
 > as `scaffold: empty bundle`.
 
+**Transcript.** As soon as that commit exists:
+
+> /export transcripts/05-scaffold.md
+
+Then commit the file as `transcripts: step 5`. Because this session began
+with the memory check, the export holds the question you asked and the answer
+you accepted; the report quotes them from here.
+
 **Rules.** DEV-1, DEV-3 (the loader), VER-3, RPT-5, DEV-7.
 
 **Shown in.** Lecture 01 notes, the closing section on where a developer's
@@ -521,7 +557,7 @@ foundations unit's Lecture 06 on memory across `/clear`.
 **Model.** `completed/index.md` for an index with entries; `completed/CLAUDE.md`
 for what a loader must carry.
 
-**Ends with.** `scaffold: empty bundle`.
+**Ends with.** `scaffold: empty bundle`, then `transcripts: step 5`.
 
 ### Step 6 — Seed the bundle: five or more notes, as operations
 
@@ -567,6 +603,14 @@ For a Reference note from a source:
 > paragraphs, record the source in `resource` and `sources`, and end the
 > operation as DEV-7 requires.
 
+**Transcript.** When the last of the seeding commits exists:
+
+> /export transcripts/06-seeding.md
+
+Then commit the file as `transcripts: step 6`. If the seeding took more than
+one session, export at the end of each, numbered `06-seeding-1.md`,
+`06-seeding-2.md`, and so on.
+
 **Rules.** DEV-1; DEV-2 (every change to the bundle is a repair, a
 conformance-preserving change, or a change of specified behavior, and the
 history shows which); VER-3; VER-4 once the verifier exists, and before that
@@ -582,7 +626,7 @@ messages in the L02 demo script.
 
 **Ends with.** Five or more commits, each named for its operation — the
 operation's name as your operations document gives it, not its O-number — for
-example `add-note: The agent loop`.
+example `add-note: The agent loop`; then `transcripts: step 6`.
 
 ### Step 7 — Stretch: the algorithmic verifier
 
@@ -620,6 +664,13 @@ makes it a gate, and from now on every operation on the PKB ends with it.
 > propose per RPT-3 the amendments to the VER-2 table and to the Commands
 > section of `CLAUDE.md`, and wait.
 
+**Transcript.** After the `careless edit (after)` commit, so that the
+sabotage round is in it:
+
+> /export transcripts/07-verifier.md
+
+Then commit the file as `transcripts: step 7`.
+
 **Rules.** VER-1, VER-2, VER-4, RPT-2, RPT-3, RPT-4, DEV-3, DEV-4, DEV-7.
 
 **Shown in.** Lecture 01 notes, *The verification gate*, *Verification and the
@@ -630,7 +681,7 @@ L01 demo script, Segments 3 and 4.
 VER-2 table and VER-4.
 
 **Ends with.** `verifier: check_pkb.py for format-spec 1.0.0`, then `careless
-edit (before)` and `careless edit (after)`.
+edit (before)` and `careless edit (after)`, then `transcripts: step 7`.
 
 ### Step 8 — Close: the kickoff report
 
@@ -639,10 +690,11 @@ the question you asked after `/clear` and the answer you accepted — and then
 has four sections, in this order.
 
 1. **The elicitation as an agent loop.** From
-   `transcripts/01-conops-elicitation.md`, two examples each of a user input,
+   `transcripts/02-conops-elicitation.md`, two examples each of a user input,
    an agent response, a tool call, and a tool result feeding back into the
    context — quoted, or cited by line — with one sentence each on what the
-   element did for the session.
+   element did for the session. The other transcripts may be cited as well;
+   the elicitation is where the loop is richest.
 2. **Commits and rules.** For each commit that touches `project-0-pkb/`
    (`git log -- project-0-pkb`), the DEV rule or rules it obeyed; for each change to a realization, which of DEV-2's three
    kinds it was.
@@ -668,6 +720,9 @@ in this course carries.
 
 **Prompt.** None; this is yours to write.
 
+**Transcript.** Optional. If you used the agent to draft or check the report,
+`/export transcripts/08-report.md` and commit it as `transcripts: step 8`.
+
 **Rules.** RPT-2 (the scope lines); DEV-2.
 
 **Shown in.** Lecture 01 notes, *How a verification result can be invalid*;
@@ -685,7 +740,7 @@ Exercise 2, step 6.
 - [ ] **[1]** `pkb-conops-sketch.md` 0.1, written by you, with at least three
       scenarios.
 - [ ] **[2]** `pkb-conops.md` 1.0 with a changelog entry;
-      `transcripts/01-conops-elicitation.md` showing the RPT-1 gap list, your
+      `transcripts/02-conops-elicitation.md` showing the RPT-1 gap list, your
       rulings, and the RPT-3 amendments; at least one entry in `BACKLOG.md`
       written instead of decided.
 - [ ] **[3]** `pkb-format-spec.md` 1.0.0: numbered rules, a closed type
@@ -694,7 +749,8 @@ Exercise 2, step 6.
       every rule.
 - [ ] **[4]** `pkb-operations.md` 1.0, each step citing what it realizes.
 - [ ] **[5]** `kb/index.md` and `kb/log.md` in the forms the specification
-      gives; the memory-check question and answer at the top of the report.
+      gives; the memory-check question and answer in
+      `transcripts/05-scaffold.md` and quoted at the top of the report.
 - [ ] **[6]** Five or more notes, each added by a commit named for its
       operation and reported in an RPT-5 completion note (saved in the report,
       or as the body of the commit message); at least one with `sources` and a
@@ -702,6 +758,9 @@ Exercise 2, step 6.
       bundle opens as a vault with every intended link resolving.
 - [ ] **[7]** *(optional)* `check_pkb.py`; the VER-2 table and the loader
       amended; the `careless edit (before)` / `(after)` pair.
+- [ ] **[2–7]** `transcripts/` holds one export per agent session, named for
+      its step (`02-conops-elicitation.md` … `07-verifier.md`), each committed
+      as `transcripts: step N`.
 - [ ] **[8]** `KICKOFF-REPORT.md`: the memory check, then its four sections.
 
 ## 3. The OKF profile this course uses
@@ -848,8 +907,13 @@ verifier time that the notes need more.
    `operations: …`; `scaffold: …`; `<operation>: <title>` for every operation
    on the bundle, where `<operation>` is the name your operations document
    gives it (`add-note`, `add-reference`, `remove-note`), not its O-number; `verifier: …`; `careless edit (before)` / `(after)`;
-   `transcripts: …`; `kickoff report`; and `<document>: <old> -> <new>` for
-   every amendment.
+   `transcripts: step N`; `kickoff report`; and `<document>: <old> -> <new>`
+   for every amendment.
+9. **Every agent session is exported.** When a step's closing commit exists,
+   and before you clear or end the session, `/export transcripts/NN-<step>.md`
+   with the step's number and name, and commit it as `transcripts: step N`.
+   The transcripts are the evidence the report reads (step 8) and the record
+   a checkpoint can ask for; a step without its transcript is incomplete.
 
 ## 6. Grading
 
@@ -870,7 +934,9 @@ The rest of Project 0 is that process, run weekly.
   `pkb-operations.md`: a concept from the week's lectures in your own words; a
   summary of a paper, post, or talk you read; a lesson from a project session.
   Each ends per DEV-7. Anything you find yourself explaining to the agent
-  twice is a note.
+  twice is a note. Weekly sessions need not be exported; a checkpoint may ask
+  for the exports of the sessions since the previous checkpoint, named
+  `transcripts/cpN-YYYY-MM-DD.md`, made the same way as the kickoff's.
 - **`kb/log.md` is the record.** It is what a checkpoint reads for evidence
   that the bundle grew by operations rather than by a batch of files.
 - **Amend when the rules get in the way.** A rule you keep working around is

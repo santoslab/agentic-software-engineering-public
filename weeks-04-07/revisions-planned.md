@@ -2,6 +2,7 @@
 
 This file list revisions planned to the material based on experiences in the first run of the course during Fall 2026.
 
+
 ## Pending
 
 - **Review the foundations unit's Lecture 04 (Prompting and Spec-Driven

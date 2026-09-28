@@ -1,28 +1,27 @@
-# Reversi walkthrough (Lecture 05) — the brief's Phase 1, step by step
+# Reversi walkthrough (Lecture 05) — the Project 1 brief, step by step
 
 The demonstration for Lecture 05 is the Project 1 brief
-(`../../project-1-reversi-brief.md`) read in order. Step 1 — the audit of the
-Reversi concept-of-operations sketch, the gap list per RPT-1, rulings on four
-of its items, one deferral, and one ruling carried through to an amendment
-proposal per RPT-3 — is shown from captures taken at rehearsal, on the starter
-the students have, and stops before `CONOPS.md` is written. Steps 2 to 5 are
-shown by opening, at each step, the artifact the reference game produced
-(`../lecture-03-game-demo/reference/`, the `t5` state) at the section the brief
+(`../../project-1-reversi-brief.md`) read in order. Step 1 is shown on Reversi
+only as far as reading the sketch: the room sorts §4.2 into stated, implied,
+and missing, and finds the tension. The rest of step 1 — the prompt, the gap
+list, rulings, a deferral, and an amendment proposal — is shown in its form,
+on tic-tac-toe, from *Specifying a Game*. The Reversi gap list and its rulings
+are the students' work, and nothing from one is shown. Steps 2 to 5 are shown
+by opening, at each step, the artifact the finished tic-tac-toe game — the
+reference — produced (`../lecture-03-game-demo/reference/`, the `t5` state) at the section the brief
 names as the model. Step 6 and the logistics close the hour.
 
-**A caution that governs the step-1 captures.** Do not depend on the agent
-making one specific move. The agent's list will be longer than the key and
-ordered differently; rule on the four scripted gaps and defer one, and mark the
-rest *ruled* in a sentence or *deferred*. Take the captures at rehearsal with
-the step-1 prompt exactly as the brief prints it, so that students see one
-prompt for one move; the key stands in for the list if a capture is missing.
+**What is not shown.** No agent output on the Reversi sketch — no gap list, no
+ruling, no amendment. You may run the step-1 prompt on a private copy of the
+starter to know what students will get back, but it stays on your machine.
+`expected-gaps.md` is for your eyes: for answering questions and for feedback.
 
-## What is live and what is from captures
+## What is live and what is from files
 
-| Segment | Step | Live | From captures or files |
+| Segment | Step | Live | From files |
 |---|---|---|---|
-| 1 | — | the checklist table; the brief's §2 on screen | — |
-| 2 | 1 | the room's own gap list; the sorting of §4.2 | C1 the RPT-1 list; C2 the four rulings; C3 the deferral and `BACKLOG.md`; C4 the RPT-3 proposal |
+| 1 | — | the recap; a minute of the Reversi demo; the Project 1 summary; the checklist table; the brief's §2 on screen | the demo page, https://ase.santoslab.org/reversi/ |
+| 2 | 1 | the sketch; the sorting of §4.2; the tension; the room's own gap list | the step-1 prompt; the tic-tac-toe rulings and deferral (from *Specifying a Game*); the amendment form |
 | 3 | 2 | — | `reference/SPECS.md` §4, §5.1, §7.2, §9.5 opened |
 | 4 | 3 | the six commands of the five-artifact history | `plans/001` opened |
 | 5 | 4 | the gate in `reference/`; the pragma grep | `plans/002` and two tests opened |
@@ -32,9 +31,10 @@ prompt for one move; the key stands in for the list if a capture is missing.
 ## What the starter contains, and what is known about it
 
 The starter (`../../student-materials/reversi-starter/`) has five things:
-`CONOPS-sketch.md` — the client's general idea in the Lecture 02 skeleton with
+`CONOPS-sketch.md` — the client's general idea in the concept-of-operations skeleton with
 sections 2, 3, and 6 omitted, because there is no existing system; the loader
-`CLAUDE.md`; `process/`, the L04 set, identical to the game demo's;
+`CLAUDE.md`; `process/`, the set *Verifying a Game* ended with, identical to the
+reference's;
 `BACKLOG.md`; and the gate's configuration — `.coveragerc`, `pytest.ini`,
 `requirements-dev.txt`, `.gitignore`. No `CONOPS.md`, no `SPECS.md`, no code,
 no tests.
@@ -42,26 +42,25 @@ no tests.
 The sketch is incomplete on purpose and contains one internal tension. The key,
 `expected-gaps.md`, lists 18 decisions the sketch leaves open and 8 more that
 surface when `SPECS.md` is derived, with the standard ruling for each and a
-mark on the ones that are genuinely the student's. Four are ruled in the
-captures and one is deferred:
+mark on the ones that are genuinely the student's. None is ruled in class; the
+students find and rule on them. This script is linked from the student notes, so
+the standard rulings are kept only in `expected-gaps.md`, which is for your eyes;
+have it open for questions. The rows most worth knowing are 1 (the end of the
+game), 2 (the opening), 5 (the pass), 6 (the flips), and 7 (legal-move hints).
 
-| # | Gap | Scripted ruling | Found by |
-|---|---|---|---|
-| 1 | The game ends "when the board is full" — **in tension with** the forfeit rule: with forced passes the board may never fill | the game ends when neither player has a legal move; a full board is one case of that | AUD-2 |
-| 2 | The opening position: "a few discs already in the middle" | d4 and e5 light, d5 and e4 dark | AUD-4; AUD-8 |
-| 5 | Consequences of a pass: forced or chosen; announced; whose turn; two in a row | forced, never chosen; announced; the opponent moves; two consecutive passes end the game | AUD-4; AUDCON-3 |
-| 6 | Must *all* flanked runs flip, in all eight directions? | yes — every direction, every run | AUD-1 |
-| 7 | Legal-move hints — flagged by the client as undecided | **deferred** to `BACKLOG.md`: a display decision; the concept of operations does not need it settled; the display format will | AUD-4 → DEV-6 |
-
-Item 1 is the one to spend time on. The sketch's two statements — "if you have
+Item 1 is the one to spend time on, and the only Reversi finding shown in
+class. The sketch's two statements — "if you have
 no square you can play, you forfeit your turn" and "when the board is full, the
 discs are counted" — are each true of Reversi, and together they are incomplete:
 if both players are stuck with empty squares left, the sketch says nothing about
-what happens. AUD-2 finds it by reading the two bullets side by side. Students
-who know Reversi will supply the answer and call it obvious. The reply, once, is
-that a rule the sketch does not state is a finding, whatever the reader already
-knows — the brief's convergence rule says how such findings are resolved, not
-that they are skipped.
+what happens. It can happen early: the shortest game that reaches it is a
+nine-move wipeout, `d3 c3 b3 d2 e1 d6 d7 e3 f4`, after which every disc is
+black and neither player can move with 51 squares empty (the slide shows the
+boards). AUD-2 finds it by reading the two bullets side by side. Students who
+know Reversi will supply the answer and call it obvious. The reply, once, is:
+if the sketch does not say it, it is a gap — record it and rule on it, even
+when you know the answer. The brief's convergence rule says how such gaps are
+resolved, not that they are skipped.
 
 ## Before class — setup checklist
 
@@ -72,13 +71,11 @@ that they are skipped.
    rm -rf ~/reversi-demo
    cp -R <path-to-module>/student-materials/reversi-starter ~/reversi-demo
    cd ~/reversi-demo && git init && git add -A
-   git commit -m "phase 1 start: conops sketch and process"
+   git commit -m "project 1 start: conops sketch and process"
    ```
 
-2. Rehearse Segment 2 once in that copy with the step-1 prompt exactly as the
-   brief prints it, and capture C1 to C4 at the markers below. Keep the
-   rehearsal repository. Nothing beyond C4 is captured — a Reversi `CONOPS.md`
-   1.0 is the homework and is never shown.
+2. Optional, private: run the step-1 prompt in that copy to know what the
+   students' lists will look like. Nothing from it is shown in class.
 3. `reference/` (`../lecture-03-game-demo/reference/`) open in an editor with
    these bookmarked, in the order they are opened: `CONOPS.md` §4.2 and §5.4;
    `SPECS.md` §4, §5.1, §7.2, §9.5, and the Changelog;
@@ -94,22 +91,41 @@ that they are skipped.
    in the terminal, so that no `__pycache__` appears in the reference. The six
    commands of Segment 4 in a text file.
 5. Two terminals, large font; `expected-gaps.md` printed, for your eyes; the
-   brief open at §2 and at §3.1; its required-elements checklist on a slide.
+   brief open at §2 and at §3.1; its required-elements checklist on a slide;
+   the Reversi demo page open in a browser — https://ase.santoslab.org/reversi/.
+   Confirm before class that it is live (the course site must be published);
+   if it is not, show slide 3's screenshot instead.
 
 ## Segment 1 — Where we are (about 6 minutes)
 
-No agent. The specification-family table with its audit and verifier columns,
-as the checklist for Project 1. Then the brief's §2 headings on screen: seven
-steps, with the demo's tags `t0` to `t5` beside steps 0 to 5.
+No agent. Slides 2–6:
+
+- **The recap** (slide 2): the chain from an idea to a verified program — idea,
+  sketch, `CONOPS.md`, `SPECS.md`, plans, code, verified — naming the lecture
+  that showed each part.
+- **The Reversi demo** (slide 3): a minute of play on the demo page, so that
+  the room has seen the game. Say that it has more than Project 1 asks for — a
+  clock, hover previews, a browser page; it plays at four strengths (Random,
+  Easy, Medium, Hard) or human against human. Students build a text-based game.
+- **Project 1** (slide 4): what you get, what you build, that the decisions are
+  yours, that the evidence is the history, and the due date.
+- **The checklist** (slide 5): each kind, what its audit demands, and how its
+  realization is checked. Point at input grammar versus interaction flow: one
+  entry versus the sequence.
+- **The seven steps** (slide 6): each of steps 1 to 3 opens with an audit of
+  the document the step before produced.
 
 **Say:** today reads the brief in order. At each step we open the artifact the
-reference game produced, so that you know what finished looks like before you
+tic-tac-toe reference produced, so that you know what finished looks like before you
 start. Nothing in the brief is new; what is new is the game.
 
-## Segment 2 — Step 1, from captures (about 12 minutes)
+## Segment 2 — Step 1: reading the sketch, and the form of the rest (about 12 minutes)
 
-**Do (shell, live):** `cat CONOPS-sketch.md`. Read §1.2 and §4.2 aloud, and
-sort §4.2's policies on the board with the room:
+**Do (shell, live):** `cat CONOPS-sketch.md`, or show slide 8's excerpts. Read
+§1.2 and §4.2 aloud. **Say:** it comes in our skeleton only so the audit can
+point at "§4.2, second bullet"; what makes it a sketch is its state — first
+person, unreviewed, TBDs, one tension. Then sort §4.2's policies with the room
+(slide 9):
 
 | Stated | Implied | Missing |
 |---|---|---|
@@ -118,68 +134,33 @@ sort §4.2's policies on the board with the room:
 | a player with no square to play forfeits the turn | the count is shown at the end (§5.1) | equal counts |
 | when the board is full, the discs are counted and more wins | | whether a move can be taken back (§7 says no — in the wrong section) |
 
-Then the tension. **Ask:** "Both players are stuck with twelve empty squares
-left. What does the program do?" Let the room find that §4.2's last bullet and
-its third bullet do not, together, say. That is the finding the audit makes
-first.
+**Say:** you know the game, so you will fill gaps from memory without
+noticing. If the sketch does not say it, it is a gap — record it and rule on
+it, even when you know the answer.
+
+Then the tension (slide 10). **Ask:** "Can both players be stuck with squares
+still empty? What does the program do?" Let the room find that §4.2's last
+bullet and its third bullet do not, together, say. Then show the nine-move
+wipeout on the slide: every disc black, 51 squares empty, neither can move.
+That is the finding the audit makes first — and the only Reversi finding shown.
 
 **Do:** give the room three minutes to write its own gap list, on paper, from
-the sketch alone. Then the prompt, on screen, as the brief prints it for
-step 1:
+the sketch alone. Then the prompt (slide 11). **Say:** it is word for word the
+prompt *Specifying a Game* typed on tic-tac-toe; it names no game; you type it
+on your own starter tonight, and the list you get back will be longer than
+yours and ordered differently.
 
-> Read `CONOPS-sketch.md` and the process documents. I want a `CONOPS.md` 1.0
-> that realizes this sketch as a full-skeleton concept of operations. Before
-> proposing anything, run the audits in `process/conops-audit.md` and
-> `process/spec-audit.md` on the sketch (DEV-8) and report the gap list per
-> RPT-1 — numbered, each with your recommended resolution. Then stop and wait
-> for my rulings.
+**Show** slide 12 — what rulings and a deferral look like, on tic-tac-toe, from
+*Specifying a Game*'s round 1: six in a row (ambiguous, AUD-1), a win on the
+last empty square (incomplete, AUD-4), the post-game options stated two ways in
+§4.3 and §5.1 (inconsistent, AUD-2), and quitting mid-game deferred to
+`BACKLOG.md` (DEV-6). **Say:** each ruling says what was decided and which
+document it goes in; a deferral is a decision not to decide yet, recorded where
+the next reader finds it — not a guess. On Reversi, the rulings are yours.
 
-**Show C1** — the RPT-1 list from rehearsal. `[capture C1]`
-
-**Expected:** an RPT-1 list — where, category, quoted text, recommendation,
-status — ending with the three search places covered (AUD-6). It usually
-contains most of the key's first 18 rows, in its own order, and things the key
-does not list.
-
-**Do:** compare, aloud, with the room's lists: what the room found that the
-agent did not, and the reverse. **Show C2** — the rulings on 1, 2, 5, and 6
-per the table above, each in one or two sentences, saying which document the
-ruling belongs in: the end condition, the opening, the pass, and the flips are
-all things a player observes, so they go in the concept of operations
-(AUDCON-2). `[capture C2]`
-
-**Show C3** — the deferral of 7, and `BACKLOG.md` after it. The ruling, as
-typed at rehearsal:
-
-> Ruling on the hints item: deferred. Write it to `BACKLOG.md` per DEV-6 — the
-> question, where it arose, the options — and do not decide it. The display
-> format will settle it when `SPECS.md` is derived.
-
-`[capture C3]`
-
-**Say:** a deferral is a decision not to decide yet, recorded where the next
-person can find it. It is not a guess. For the remaining items, say *ruled*
-with the standard ruling in a sentence each, or *the student's choice* — and
-say what that phrase means: the brief lists which decisions are the client's
-and which are yours; yours are graded on being recorded, consistent, and
-stated in the right document, not on which way you decided.
-
-**Show C4** — one ruling carried to the amendment form. The prompt, as typed at
-rehearsal:
-
-> Propose the amendment for item 1 per RPT-3 — document, clause, old text, new
-> text, rationale citing the gap-list item, the version bump, the changelog
-> entry — and wait for approval.
-
-`[capture C4]` — an RPT-3 proposal, marked *awaiting approval*, for the
-sketch's §4.2 last bullet.
-
-**Say:** this is the form every ruling takes before a document changes (DEV-3).
-Approve nothing further. Then stop, and say why: from here to `CONOPS.md`
-1.0 — the remaining rulings, the amendments, the rewrite in the third person,
-the five scenarios, the glossary, the audit run again — is step 1, and the
-brief's step 1 lists what the audit must find in this sketch. The class has
-now seen its exact first move performed on its own starter.
+**Show** slide 13 — the amendment form: the agent proposes, marks it *awaiting
+approval*, and waits; nothing in a governing document changes until you approve
+(DEV-3). From there to `CONOPS.md` 1.0 is the rest of step 1.
 
 **Open:** `reference/CONOPS.md` §4.2, then §5.4. **Say:** a policy as a player
 observes it; and a scenario for the policy of rejecting an entry — every policy
@@ -188,32 +169,28 @@ a pass and an early end are policies tic-tac-toe did not have; and a version, a
 status, and a changelog, which the sketch lacks (AUDCON-6). The step ends with
 `conops: 0.1 sketch -> 1.0` and the transcript.
 
-**If it goes differently at rehearsal:** if the agent misses item 1, nudge:
-"Both players are stuck with twelve empty squares left. What does the program
-do?" Item 2: "Draw the board before the first move. Which squares hold which
-color?" Item 5: "You have no move. What is the very next thing that happens —
-and the thing after that?" Item 6: "A square would trap discs both across and
-diagonally. What flips?" If the agent starts writing `CONOPS.md` after the
-rulings, stop it; the amendment proposal is the last artifact of the step's
-first move, and DEV-3 — nothing in a governing document changes until an
-amendment is approved — is the rule it skipped.
+**If a student asks for the Reversi answers:** point to the convergence rule —
+where the sketch is silent, the client's intent is standard Reversi — and to
+the brief's §4 list of decisions. Finding each gap, ruling on it, and stating it
+in the right document is the work.
 
 ## Segment 3 — Step 2, the reference's `SPECS.md` (about 10 minutes)
 
-**Say:** step 2's prompt is Lecture 03's round-2 prompt, which names no game;
+**Say:** step 2's prompt is the round-2 prompt *Specifying a Game* typed on
+tic-tac-toe, which names no game;
 the kinds are pre-picked; the brief's §4 is the floor for the list the agent
 returns, and every item gets a ruling. Then, on the slide, what Reversi demands
 that tic-tac-toe did not, kind by kind.
 
 **Open:** `SPECS.md` §4. **Say:** rules of play as numbered clauses, so that a
-test can cite one (AUD-5). **Reversi:** more clauses — the opening, the legal
-move, the flips in every direction, the pass, the end, the count.
+test can cite one (AUD-5). **Reversi:** more clauses, one per rule the
+student's rulings settle — which ones is theirs to find.
 
 **Open:** §5.1, `make_move`. **Say:** a precondition, a postcondition, and
 behavior outside the precondition, including after the game is over (AUD-12);
-the Changelog shows that clause arriving at 1.2.0. **Reversi:** the
-postcondition names the set of discs that flip; a test of a move claims the
-set.
+the Changelog shows that clause arriving at 1.2.0. **Reversi:** one move
+changes many cells — what the postcondition says about them, and what a test of
+a move can check, is the student's to decide.
 
 **Open:** §7.2. **Say:** byte-exact, two examples (AUD-9); "looks like the
 example" is a finding. **Reversi:** the same, plus the decision whether hints
@@ -263,21 +240,21 @@ bullet; find the `make_move` bullet. Then *Verification at the end of this
 build*: a human plays one game per mode against §8, and the RPT-5 note says so —
 there is no suite yet (VER-1).
 
-**Say:** the two DEV-9 prompts, on the slide. The first asks for the plan and
-nothing else. The second approves, commits the plan under `plans/`, builds,
-reports per RPT-5, commits — and says nothing about how to build anything,
-because the plan says that and the plan cites the contract clause by clause.
-**Reversi:** the same two prompts, over the modules `SPECS.md` §2 names; and
-before them, the audit of `SPECS.md` itself — the move that would have caught
-the silence.
+**Say:** step 3's three prompts, on slide 22. The first audits `SPECS.md`
+itself before any plan (DEV-8) — the move that would have caught the silence.
+The second asks for the plan and nothing else (DEV-9). The third approves,
+commits the plan under `plans/`, builds, reports per RPT-5, commits — and says
+nothing about how to build anything, because the plan says that and the plan
+cites the contract clause by clause. **Reversi:** the same three prompts, over
+the modules the student's `SPECS.md` §2 names.
 
 `[fallback capture]` — the six commands' output.
 
 ## Segment 5 — Step 4, the suite as a build, and the gate (about 12 minutes)
 
-**Say:** the process set in the starter is already the L04 set — VER-5 to
-VER-8 are in `verification.md` 1.3, and the amendment Lecture 04 performed
-before writing any test is done for the students; its changelog entry says
+**Say:** the process set in the starter is already the set *Verifying a Game* ended with — VER-5 to
+VER-8 are in `verification.md` 1.3, and the amendment *Verifying a Game*
+performed before writing any test is done for the students; its changelog entry says
 why. The suite is a build, so DEV-9 applies: the prompt (on the slide) asks
 for a plan that names, per step, the §9 obligations it claims and the clauses
 each test cites, and only then the suite.
@@ -292,10 +269,11 @@ assignment and the behavior goes through `make_move` (VER-6). This is the test
 that follows the 1.2.0 amendment in the history.
 
 **Open:** `tests/test_main.py` at `test_prompt_human_rejects_invalid_forms`.
-**Say:** one clause, eight rejected forms, parametrized. **Reversi:** the forms
-the student's grammar rejects — `D3`, ` d3 `, `d9`, `i3`, `d`, `dd3`, an
-occupied square, a square that flips nothing — in the order the grammar lists
-them.
+**Say:** one clause, eight rejected forms, parametrized. **Reversi:** one case for
+each form the student's grammar rejects — `d9`, `i3`, an occupied square, a
+square that flips nothing, and whatever else the grammar rules out (whether
+`D3` or ` d3 ` is accepted is the student's decision) — in the order the
+grammar lists them.
 
 **Do (shell, live), in `reference/`:**
 
@@ -309,13 +287,14 @@ grep -n 'pragma' *.py
 
 **Say:** RPT-5 carries two coverage lines — the gate's branch figure, and
 which §9 obligations are claimed by at least one test (VER-8). They answer
-different questions, and Lecture 04's three sabotage steps showed a case where
+different questions, and *Verifying a Game*'s three sabotage steps showed a case where
 each was informative and the other was not. Then DEV-2's three kinds of
 change, and the standing rule from step 3 on: a change of specified behavior
 commits its amendment first.
 
-**Open:** `.coveragerc`. **Say:** the starter ships the same file with
-`source = .`, so it measures every module in the root whatever the split;
+**Open:** `.coveragerc`. **Say:** this one names its modules; the starter's
+follows the same policy with `source = .`, so it measures every module in the
+root whatever the split;
 neither it nor `pytest.ini` is edited to weaken the gate.
 
 `[fallback capture]` — the gate's output.
@@ -346,14 +325,14 @@ file and its README, the loader's plan, the loader.
 
 ## Segment 7 — Step 6, the checklist, and logistics (about 10 minutes)
 
-No agent. `PHASE-1-REPORT.md`'s four items: the amendment implementation
+No agent. `PROJECT-1-REPORT.md`'s four items: the amendment implementation
 forced, one of them traced through five artifacts in the form of Segment 4;
 what 100% branch coverage did not tell you; how the pass and early-end fixtures
 were constructed and checked; what remains for a human or agent verifier. Then
 the brief's required-elements checklist on the slide, each item tagged with its
 step.
 
-- The `process/` set is adopted, not authored. It is the L04 set; a rule
+- The `process/` set is adopted, not authored. It is the set *Verifying a Game* ended with; a rule
   changes only by an amendment with a changelog entry (DEV-3), and a change
   that weakens a rule is returned. The gate's configuration is adopted the same
   way.
@@ -361,19 +340,17 @@ step.
   chessboard"; whether `D3` and ` d3 ` are accepted, and where the letter
   becomes an index, are the student's decisions — stated as a grammar
   (AUD-10) and placed inside the engine (AUD-12).
-- Due one week from today (date per the brief); start with step 0 tonight.
-  Lecture 06 is MCP and launches nothing — finish Phase 1. Where to ask.
+- Due Thursday, October 8, 11:55 pm; Project 0 is still due Thursday, October 1. Start with step 0 tonight.
+  Where to ask.
 
 ## End
 
-The rehearsal repository holds the sketch, the process set, the gate
-configuration, one deferred question in `BACKLOG.md`, and an unapproved
-amendment proposal in its transcript. It is not committed further; students
-start from the starter, not from this repository.
+Nothing from a Reversi gap list was shown. If you ran the step-1 prompt on a
+private copy, it stays there; students start from the starter.
 
 ## Recreating this yourself (students)
 
 This is the brief. Run it in order in your own copy of the starter, beginning
-tonight with step 0 and then the audit you watched. Rule on every item
-yourself — the brief's §4 is your checklist; the instructor key is for grading,
+tonight with step 0 and then the audit of your own starter. Rule on every item
+yourself — the brief's §4 is your checklist; the instructor key is for feedback,
 and reading it first defeats step 1.

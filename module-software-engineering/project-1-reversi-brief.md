@@ -1,13 +1,9 @@
 # Project 1 — Reversi, Specification-First
 
-> **Assigned:** Lecture 05 · **Due:** one week after Lecture 05 *(date:
-> instructor to fix)* · **Effort:** ≈ 9–12 h *(unvalidated until the reference
-> solution exists)*
+> **Assigned:** *Reversi Kickoff*, Tuesday, September 29 · **Due:** Thursday, October 8,
+> 11:55 pm
 >
 > **Requires:** Claude Code, Python 3.11+, git, `pytest` with `pytest-cov`.
->
-> **Status:** draft; instructor review required before assigning (date, effort
-> estimate).
 
 ## 0. What this project is
 
@@ -16,33 +12,26 @@ sketch of a concept of operations. That sketch, a `CLAUDE.md`, a `process/`
 folder, and the configuration of a coverage gate are everything you receive.
 There is no specification, no code, no tests.
 
-You will do to Reversi what Lectures 03 and 04 did to five-in-a-row
+You will do to Reversi what *Specifying a Game* and *Verifying a Game* did to five-in-a-row
 tic-tac-toe, in the order the demo repository's tags follow: `t0` the sketch,
 `t1` the concept of operations, `t2` the family of specifications, `t3` the
 plan and the engine, `t4` the tests and the gate, `t5` the fixtures. §2 is that
 sequence as seven steps. Each step names what you do, the prompt you type, the
 process rules that govern it, where the lectures performed it, and the artifact
-of the reference game that shows what the result looks like. Lecture 05 walks
+of the reference game that shows what the result looks like. *Reversi Kickoff* walks
 through the steps in this order and opens the reference artifact at each one,
 so that you know what finished looks like before you start. The method is the
 same; the game is harder in ways that make each kind of specification earn its
 place (§4).
 
-Phase 1 is the whole of this brief. Later stages of Project 1 — persistence, a
-web layer, a port to another language proven equivalent by shared fixtures, an
-MCP server — build on what you produce here. Read Stages B–E of the project
-unit's brief (`../weeks-04-07/project-1-brief.md`) with "Reversi" in place of
-"tic-tac-toe"; they are otherwise unchanged. Lecture 06 launches nothing new;
-it previews Stage E, an MCP server over the engine you produce here.
-
 ## 1. What you get
 
 | File | What it is |
 |---|---|
-| `student-materials/reversi-starter/CONOPS-sketch.md` | The client's general idea, in the Lecture 02 skeleton with sections 2, 3, and 6 omitted (no existing system). Incomplete on purpose; it contains at least one internal tension. |
+| `student-materials/reversi-starter/CONOPS-sketch.md` | The client's general idea, in the concept-of-operations skeleton with sections 2, 3, and 6 omitted (no existing system). Incomplete on purpose; it contains at least one internal tension. |
 | `student-materials/reversi-starter/CLAUDE.md` | The loader: the governing documents in authority order, the process files, two bootstrap rules, the commands. |
 | `student-materials/reversi-starter/process/`, `…/BACKLOG.md` | How development proceeds with respect to the specifications — `development-rules.md` (DEV), `spec-audit.md` (AUD), `conops-audit.md` (AUDCON), `verification.md` (VER), `reporting.md` (RPT), and the invariant in `process/README.md` — identical to the reference game's. DEV-8 makes the audit a standing law; DEV-9 makes the plan one; `BACKLOG.md` is where deferred questions go (DEV-6). |
-| `…/.coveragerc`, `…/pytest.ini`, `…/requirements-dev.txt`, `…/.gitignore` | The gate's configuration, the same as the reference's: branch coverage over every module in the repository root, whatever your module split; tests and the virtual environment excluded; the `__main__` guard excluded by pattern (VER-5). Adopted, not authored, like `process/`. |
+| `…/.coveragerc`, `…/pytest.ini`, `…/requirements-dev.txt`, `…/.gitignore` | The gate's configuration, the same policy as the reference's (whose `.coveragerc` names its modules; yours has `source = .`): branch coverage over every module in the repository root, whatever your module split; tests and the virtual environment excluded; the `__main__` guard excluded by pattern (VER-5). Adopted, not authored, like `process/`. |
 
 **The worked example.** The in-class demo repository is a tic-tac-toe built by
 the same method, and its tags name the states this brief's steps reach:
@@ -67,7 +56,7 @@ your engine is derived from your `SPECS.md`, and your git history has to show
 that.
 
 **Where the sketch is silent, the client's intent is standard Reversi** (8×8; the
-standard four-disc opening; dark moves first; a move must flip at least one disc; a
+standard four-disc opening; black moves first; a move must flip at least one disc; a
 player with no legal move passes; the game ends when neither player can move; more
 discs wins; equal counts tie). This does not let you skip the questions. Your job
 is to *find* every place the sketch leaves a decision open, record the ruling, and
@@ -76,16 +65,16 @@ implicit fails the completeness check. Rulings that are genuinely yours (display
 glyphs, hints, post-game options, side alternation, error wording, interface
 shapes, module split) are yours to make and record.
 
-## 2. Phase 1, step by step
+## 2. Project 1, step by step
 
 **How to read a step.** Each step has the same six parts. *Do* is the operation.
 *Prompt* is the shape of what you type, taken from the demo scripts; adapt the
 names, not the structure. *Rules* are the process rules that govern the step;
 the agent has them loaded, and you are expected to know which apply. *Shown in*
-is where Lectures 03 to 05 performed it — the lecture notes are
+is where *Specifying a Game*, *Verifying a Game*, and *Reversi Kickoff* performed it — the lecture notes are
 `lecture-notes/lecture-03-specifying-a-game-one-system-several-specifications.md`
 and `lecture-notes/lecture-04-verifying-a-game-tests-as-executable-specification.md`,
-the demo scripts are the two named above, and "Lecture 05, step N" is the block
+the demo scripts are the two named above, and "*Reversi Kickoff*, step N" is the block
 of that lecture that walks this step. *Model* is the reference artifact that
 shows what the result looks like, under `demos/lecture-03-game-demo/reference/`.
 *Ends with* is the commit that closes the step (DEV-7). Rulings are yours, typed
@@ -104,13 +93,13 @@ cp -R <path-to-module>/student-materials/reversi-starter ~/reversi
 cd ~/reversi && git init
 python -m venv .venv && . .venv/bin/activate
 pip install -r requirements-dev.txt
-git add -A && git commit -m "phase 1 start: conops sketch and process"
+git add -A && git commit -m "project 1 start: conops sketch and process"
 ```
 
 Then read, in full, `CLAUDE.md`, `CONOPS-sketch.md`, and the six documents
 under `process/`. DEV-1 applies to you as well as to the agent. Notice that
 `process/verification.md` is at version 1.3 with VER-5 through VER-8 already in
-it: the amendment Lecture 04 performed before writing any test has been applied
+it: the amendment *Verifying a Game* performed before writing any test has been applied
 for you, and its changelog entry says why.
 
 **Prompt.** None.
@@ -118,13 +107,13 @@ for you, and its changelog entry says why.
 **Rules.** DEV-1 (read before acting); DEV-3 (nothing under `process/` or in
 `CLAUDE.md` changes without a proposal and a changelog entry).
 
-**Shown in.** The L03 demo script, *Before class — setup checklist*, step 1;
-Lecture 05, opening block.
+**Shown in.** The *Specifying a Game* demo script, *Before class — setup checklist*, step 1;
+*Reversi Kickoff*, opening block.
 
 **Model.** `demos/lecture-03-game-demo/starter/` is the same state for the other
 game.
 
-**Ends with.** `phase 1 start: conops sketch and process`.
+**Ends with.** `project 1 start: conops sketch and process`.
 
 ### Step 1 — The sketch to `CONOPS.md` 1.0 (`t1`)
 
@@ -147,8 +136,8 @@ recovery from an entry the program rejects; a version, a status, and a changelog
 purpose it serves (AUDCON-8 — the sketch's "no taking a move back" sits under
 Limitations and belongs in §4.2).
 
-**Prompt.** Four, in order. The first is the one Lecture 03 typed on its own
-sketch and the one Lecture 05's captures show on yours:
+**Prompt.** Four, in order. The first is the one *Specifying a Game*
+typed on tic-tac-toe's sketch; it names no game, and you type it on yours:
 
 > Read `CONOPS-sketch.md` and the process documents. I want a `CONOPS.md` 1.0
 > that realizes this sketch as a full-skeleton concept of operations. Before
@@ -174,10 +163,10 @@ Read the proposals; approve them, or rule again. Then:
 **Rules.** DEV-8, RPT-1, AUD-1 to AUD-7, AUDCON-1 to AUDCON-8, DEV-6, RPT-3,
 DEV-3, DEV-7.
 
-**Shown in.** Lecture 03 notes, *A concept of operations for a program* and
-*Round 1: turning the sketch to a concept of operations*; the L03 demo script,
-Segment 2 and *Recreating this part yourself*; Lecture 05, step 1 — the same
-audit, on this sketch.
+**Shown in.** The *Specifying a Game* notes, *A concept of operations for a program* and
+*Round 1: turning the sketch to a concept of operations*; the *Specifying a Game* demo script,
+Segment 2 and *Recreating this part yourself*; *Reversi Kickoff*, step 1 — reading this
+sketch, and the tension in it.
 
 **Model.** `reference/CONOPS.md` — §4.2 for how a policy reads when it is
 something a player observes; §5.1 to §5.4 for one scenario per mode and per
@@ -211,7 +200,7 @@ tests must claim about Reversi, category by category, each traced to the
 clauses it verifies (AUD-14). The reference's `SPECS.md` §9.5 is the model;
 notice how much of it carries over — that is the point.
 
-**Prompt.** The round-2 prompt of Lecture 03, which names no game:
+**Prompt.** The round-2 prompt of *Specifying a Game*, which names no game:
 
 > Read `CONOPS.md` and the process documents. Derive `SPECS.md` 1.0.0 from it:
 > one section per kind — board and coordinates; rules of play; display format,
@@ -230,10 +219,9 @@ Rule on every item. Then:
 **Rules.** DEV-8, AUD-5, AUD-8 to AUD-14 (one per kind), AUD-3 and DEV-5 (the
 contract never contradicts the concept of operations), RPT-1, DEV-7.
 
-**Shown in.** Lecture 03 notes, *Several kinds of specification*, *Round 2:
+**Shown in.** The *Specifying a Game* notes, *Several kinds of specification*, *Round 2:
 deriving specifications from the concept of operations*, and *Quality across
-the family of specifications*; the L03 demo script, Segment 3; Lecture 05,
-step 2.
+the family of specifications*; the *Specifying a Game* demo script, Segment 3; *Reversi Kickoff*, step 2.
 
 **Model.** `reference/SPECS.md` — §4 for rules of play as numbered clauses;
 §5.1 for an operation's pre- and postconditions (`make_move` there changes one
@@ -258,11 +246,11 @@ the three kinds DEV-2 names. The history has to show which:
   whitespace is accepted. The amendment (RPT-3; approved, DEV-3; version bump
   and changelog entry) is committed **before** the code that depends on the
   ruling, and the audit runs again on the amended document (DEV-8). At least
-  one such amendment is expected in Phase 1. A question you cannot settle goes
+  one such amendment is expected in Project 1. A question you cannot settle goes
   to `BACKLOG.md` (DEV-6).
 
 A process document changes only by the same mechanism, and a change that
-weakens a rule is returned. Lecture 04 read the reference's history to show why
+weakens a rule is returned. *Verifying a Game* read the reference's history to show why
 the order matters: a silence in `SPECS.md` 1.1.0 — nothing said about a move
 after the game is over — passed, unaltered, through the engine plan, the
 engine, the verification obligations, and the test plan. Five artifacts, none
@@ -314,10 +302,10 @@ a fourth source of truth competing with three that are already written down.
 this point is a person playing one game in each mode against §8 of your
 specification, and the RPT-5 note has to say so.
 
-**Shown in.** Lecture 03 notes, *Implementation as a consequence of the
-specifications*; the L03 demo script, Segment 4; Lecture 04 notes, *Why
-coverage is not conformance*, the DEV-2 (c) paragraph; the L04 demo script,
-Segment 4, *The reference's history*; Lecture 05, step 3.
+**Shown in.** The *Specifying a Game* notes, *Implementation as a consequence of the
+specifications*; the *Specifying a Game* demo script, Segment 4; the *Verifying a Game* notes, *Why
+coverage is not conformance*, the DEV-2 (c) paragraph; the *Verifying a Game* demo script,
+Segment 4, *The reference's history*; *Reversi Kickoff*, step 3.
 
 **Model.** `reference/plans/001-engine-opponent-cli.md` — step 1 cites a clause
 per bullet, and its `make_move` bullet is the one that inherited the silence;
@@ -343,13 +331,13 @@ carries two coverage lines: the gate's branch figure, and which obligations of
 §9 are claimed by at least one test and which are not (VER-8). Every
 obligation must be claimed.
 
-Recommended, not required: perform Lecture 04's first sabotage step on your
+Recommended, not required: perform *Verifying a Game*'s first sabotage step on your
 own suite. Delete one test that is the only claimant of a clause, run the
 gate, watch it stay green, restore the test. Write the verdict in the lecture's
 form — what the gate established, and what it did not. It is the shortest route
 to the second item of your report.
 
-**Prompt.** The one Lecture 04 used, which names no game:
+**Prompt.** The one *Verifying a Game* used, which names no game:
 
 > Read `SPECS.md` and the process documents. Propose a plan for the test suite
 > under `tests/`, one file per source module, that claims every obligation in
@@ -369,11 +357,11 @@ then a repair — DEV-2 (a) — or an amendment — DEV-2 (c).
 
 **Rules.** DEV-9, VER-4, VER-5, VER-6, VER-8, RPT-5, AUD-14, DEV-2.
 
-**Shown in.** Lecture 04 notes, *Extending the process documents before writing
+**Shown in.** The *Verifying a Game* notes, *Extending the process documents before writing
 any tests* (why the rules are already in force), *Tests as executable
 specifications*, *Running the gate, then breaking things on purpose*, and *Why
-coverage is not conformance*; the L04 demo script, Segments 1 to 4 and
-*Recreating this part yourself*; Lecture 05, step 4.
+coverage is not conformance*; the *Verifying a Game* demo script, Segments 1 to 4 and
+*Recreating this part yourself*; *Reversi Kickoff*, step 4.
 
 **Model.** `reference/plans/002-test-suite.md` — step 0 is the harness:
 `tests/__init__.py` and a `tests/conftest.py` that puts the repository root on
@@ -382,9 +370,10 @@ coverage is not conformance*; the L04 demo script, Segments 1 to 4 and
 `test_game.py::test_make_move_rejected_after_game_over` (the test that cites
 the amended clause) and `::test_render_mid_game_byte_exact` (a golden string);
 `test_main.py::test_prompt_human_rejects_invalid_forms` (one clause, eight
-rejected forms, parametrized — yours enumerates the forms your grammar rejects,
-such as `D3`, ` d3 `, `d9`, `i3`, `d`, `dd3`, an occupied square, a square that
-flips nothing, in the order your grammar lists them);
+rejected forms, parametrized — yours has one case for each form your grammar
+rejects: `d9`, `i3`, an occupied square, a square that flips nothing, and
+whatever else your grammar rules out — whether `D3` or ` d3 ` is accepted is
+your decision — in the order your grammar lists them);
 `test_computer_ai.py::test_random_move_always_returns_valid_position_over_many_calls`
 (a property, not a distribution). `reference/.coveragerc`, beside your own.
 
@@ -411,7 +400,7 @@ fails is a finding about the pair (fixture, specification) — an RPT-1 gap and 
 DEV-4 ruling — and never an edit to make it pass (VER-7). A ruling may change
 the file; if it does, the README says why.
 
-**Prompt.** The one Lecture 04 used for its loader, with the file already
+**Prompt.** The one *Verifying a Game* used for its loader, with the file already
 committed:
 
 > `fixtures/scenarios.json` and `fixtures/README.md` are committed and are not
@@ -425,8 +414,8 @@ committed:
 **Rules.** VER-7, DEV-9, VER-4, VER-8, RPT-1 and DEV-4 for a wrong-looking
 expectation, DEV-7.
 
-**Shown in.** Lecture 04 notes, *Fixtures: executable specifications that
-outlive the code*; the L04 demo script, Segment 5; Lecture 05, step 5.
+**Shown in.** The *Verifying a Game* notes, *Fixtures: executable specifications that
+outlive the code*; the *Verifying a Game* demo script, Segment 5; *Reversi Kickoff*, step 5.
 
 **Model.** `reference/fixtures/scenarios.json` — a scenario's name cites the
 clause it exercises (`x-wins-row-overline` is §4.1 as moves);
@@ -440,10 +429,10 @@ blind spots declared, not hidden.
 
 ### Step 6 — Close: the report and the loader's commands
 
-**Do.** Write `PHASE-1-REPORT.md`, one page, four items:
+**Do.** Write `PROJECT-1-REPORT.md`, one page, four items:
 
 1. **The amendment(s) implementation forced.** For one of them, the trace in
-   the form Lecture 04 used for the reference: the clause as it stood; the plan
+   the form *Verifying a Game* used for the reference: the clause as it stood; the plan
    step that realized it; the code; the §9 obligation; the test plan or the
    test — and, at each artifact, whether the silence was still there. Say at
    which step of this brief, and under which rule, your process caught it.
@@ -463,13 +452,12 @@ every deferral open, or closed with a pointer to the ruling that closed it.
 **Rules.** VER-8, VER-2, RPT-2 (its scope lines are the report's form), RPT-5,
 DEV-6.
 
-**Shown in.** Lecture 04 notes, *Why coverage is not conformance*; the L04 demo
-script, Segment 4, *The completion note, read again*; Lecture 05, step 6.
+**Shown in.** The *Verifying a Game* notes, *Why coverage is not conformance*; the *Verifying a Game* demo script, Segment 4, *The completion note, read again*; *Reversi Kickoff*, step 6.
 
 **Model.** `process/reporting.md`, RPT-5 — the report's ancestor. The reference
 has no report; this one is yours.
 
-**Ends with.** `phase 1: report`.
+**Ends with.** `project 1: report`.
 
 ### Required elements (all must be present)
 
@@ -506,7 +494,7 @@ Each item names the step it belongs to.
 - [ ] **[3–5]** At least one `SPECS.md` amendment committed **before** the
       code that depends on it (DEV-2 (c)); every realization commit
       identifiable as (a), (b), or (c); `BACKLOG.md` lists every deferral.
-- [ ] **[6]** `PHASE-1-REPORT.md` with the four items, including one
+- [ ] **[6]** `PROJECT-1-REPORT.md` with the four items, including one
       five-artifact trace.
 - [ ] **[6]** `CLAUDE.md`'s Commands say how to run the game and the tests.
 
@@ -516,19 +504,18 @@ Each item names the step it belongs to.
 
 Moves are squares in the notation your input grammar defines (`d3`); the literal
 `"pass"` means the player to move has no legal move and the engine must report
-that before play continues. Colors are named `dark` and `light` regardless of the
-glyphs your display uses, so the same file can later run against an engine in
-another language.
+that before play continues. Colors are named `black` and `white`, as in the sketch, regardless of the
+glyphs your display uses, so the file stays independent of your code.
 
 ```json
 {
-  "description": "Reversi engine fixtures. Standard rules: 8x8, standard opening, dark moves first.",
+  "description": "Reversi engine fixtures. Standard rules: 8x8, standard opening, black moves first.",
   "games": [
     {
-      "name": "dark-opens-d3",
+      "name": "black-opens-d3",
       "moves": ["d3"],
       "flips": [["d4"]],
-      "expected": {"to_move": "light", "dark": 4, "light": 1, "over": false}
+      "expected": {"to_move": "white", "black": 4, "white": 1, "over": false}
     }
   ],
   "rejections": [
@@ -571,7 +558,7 @@ list is the floor, not the ceiling.
   happens after a pass (whose turn; is it announced). When the game ends — and
   that this is not "when the board is full." Who wins on equal counts. Whether a
   move can be taken back.
-- **Display.** The glyphs for dark, light, and empty. Row and column labels.
+- **Display.** The glyphs for black, white, and empty. Row and column labels.
   Whether legal-move hints are shown, when, and how. Whether the count is shown
   during play. Byte-exact format.
 - **Input grammar.** The square notation; case; whitespace; length; what is
@@ -611,24 +598,14 @@ list is the floor, not the ceiling.
    `tests: suite per SPECS 9 (VER-4 green)`,
    `fixtures: scenarios.json and README (VER-7)`, `fixtures: loader (VER-7)`.
 
-## 6. Grading
+## 6. Feedback
 
-Completion-based. Phase 1 is **satisfactory** when every required element is
-present and honest — a documented failure or a well-argued deviation counts, a
-missing element does not. One resubmission pass.
+There is no grade. You get written feedback that checks every required element
+for being present and honest — a documented failure or a well-argued deviation
+counts; a missing element is pointed out. You may revise once after the
+feedback.
 
-## 7. What comes next
-
-Stages B–E of the project unit's brief (`../weeks-04-07/project-1-brief.md`),
-with Reversi as the subject. Your `fixtures/scenarios.json` and the
-instructor's shared fixture set are what the port stage will run against your
-engine and its counterpart in another language. Your Phase 1 engine — obvious,
-spec-traceable, tested — is the executable specification a later stage will
-hold a faster implementation to. Lecture 06 shows the shape of Stage E's MCP
-server over the tic-tac-toe engine; over yours, `legal_moves` becomes a
-necessary tool, because flanking cannot be read off an ASCII board.
-
-## 8. Do / don't
+## 7. Do / don't
 
 - **Do** rule on gaps yourself and record the ruling; **don't** let the agent
   decide by default and discover the decision in the code later.

@@ -3,7 +3,7 @@
 Version: 0.1 (sketch)
 Status: my general idea, written down in one sitting; not reviewed; nothing built.
 
-*I am using the ConOps skeleton from Lecture 02. There is no existing system here —
+*I am using the concept-of-operations skeleton. There is no existing system here —
 this is a new game, not an improvement to one — so sections 2, 3, and 6 do not
 apply and I have left them out. Where I have not decided something I have written a
 question or "TBD" rather than guessing.*

@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 884 422" font-family="Helvetica, Arial, sans-serif">
+<!-- The shortest Reversi game that ends with empty squares (a wipeout, nine moves: a known result, checked by exhaustive search). Positions from a standard Reversi engine. -->
+<rect width="884" height="422" fill="#fff"/>
+<rect x="14" y="14" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="34" y1="14" x2="34" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="34" x2="174" y2="34" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="54" y1="14" x2="54" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="54" x2="174" y2="54" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="74" y1="14" x2="74" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="74" x2="174" y2="74" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="94" y1="14" x2="94" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="94" x2="174" y2="94" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="114" y1="14" x2="114" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="114" x2="174" y2="114" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="134" y1="14" x2="134" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="134" x2="174" y2="134" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="154" y1="14" x2="154" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="154" x2="174" y2="154" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="84.0" cy="84.0" r="8.0" fill="#fafafa"/>
+<circle cx="104.0" cy="84.0" r="8.0" fill="#111"/>
+<circle cx="84.0" cy="104.0" r="8.0" fill="#111"/>
+<circle cx="104.0" cy="104.0" r="8.0" fill="#fafafa"/>
+<text x="94.0" y="196" font-size="17" text-anchor="middle" fill="#310066">start</text>
+<rect x="188" y="14" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="208" y1="14" x2="208" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="34" x2="348" y2="34" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="228" y1="14" x2="228" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="54" x2="348" y2="54" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="248" y1="14" x2="248" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="74" x2="348" y2="74" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="268" y1="14" x2="268" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="94" x2="348" y2="94" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="288" y1="14" x2="288" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="114" x2="348" y2="114" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="308" y1="14" x2="308" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="134" x2="348" y2="134" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="328" y1="14" x2="328" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="154" x2="348" y2="154" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="258.0" cy="64.0" r="8.0" fill="#111"/>
+<circle cx="258.0" cy="64.0" r="2.0" fill="#d22"/>
+<circle cx="258.0" cy="84.0" r="8.0" fill="#111"/>
+<circle cx="278.0" cy="84.0" r="8.0" fill="#111"/>
+<circle cx="258.0" cy="104.0" r="8.0" fill="#111"/>
+<circle cx="278.0" cy="104.0" r="8.0" fill="#fafafa"/>
+<text x="268.0" y="196" font-size="17" text-anchor="middle" fill="#310066">1. Black d3</text>
+<rect x="362" y="14" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="382" y1="14" x2="382" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="34" x2="522" y2="34" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="402" y1="14" x2="402" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="54" x2="522" y2="54" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="422" y1="14" x2="422" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="74" x2="522" y2="74" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="442" y1="14" x2="442" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="94" x2="522" y2="94" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="462" y1="14" x2="462" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="114" x2="522" y2="114" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="482" y1="14" x2="482" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="134" x2="522" y2="134" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="502" y1="14" x2="502" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="154" x2="522" y2="154" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="412.0" cy="64.0" r="8.0" fill="#fafafa"/>
+<circle cx="412.0" cy="64.0" r="2.0" fill="#d22"/>
+<circle cx="432.0" cy="64.0" r="8.0" fill="#111"/>
+<circle cx="432.0" cy="84.0" r="8.0" fill="#fafafa"/>
+<circle cx="452.0" cy="84.0" r="8.0" fill="#111"/>
+<circle cx="432.0" cy="104.0" r="8.0" fill="#111"/>
+<circle cx="452.0" cy="104.0" r="8.0" fill="#fafafa"/>
+<text x="442.0" y="196" font-size="17" text-anchor="middle" fill="#310066">2. White c3</text>
+<rect x="536" y="14" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="556" y1="14" x2="556" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="34" x2="696" y2="34" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="576" y1="14" x2="576" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="54" x2="696" y2="54" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="596" y1="14" x2="596" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="74" x2="696" y2="74" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="616" y1="14" x2="616" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="94" x2="696" y2="94" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="636" y1="14" x2="636" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="114" x2="696" y2="114" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="656" y1="14" x2="656" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="134" x2="696" y2="134" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="676" y1="14" x2="676" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="154" x2="696" y2="154" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="566.0" cy="64.0" r="8.0" fill="#111"/>
+<circle cx="566.0" cy="64.0" r="2.0" fill="#d22"/>
+<circle cx="586.0" cy="64.0" r="8.0" fill="#111"/>
+<circle cx="606.0" cy="64.0" r="8.0" fill="#111"/>
+<circle cx="606.0" cy="84.0" r="8.0" fill="#fafafa"/>
+<circle cx="626.0" cy="84.0" r="8.0" fill="#111"/>
+<circle cx="606.0" cy="104.0" r="8.0" fill="#111"/>
+<circle cx="626.0" cy="104.0" r="8.0" fill="#fafafa"/>
+<text x="616.0" y="196" font-size="17" text-anchor="middle" fill="#310066">3. Black b3</text>
+<rect x="710" y="14" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="730" y1="14" x2="730" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="34" x2="870" y2="34" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="750" y1="14" x2="750" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="54" x2="870" y2="54" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="770" y1="14" x2="770" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="74" x2="870" y2="74" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="790" y1="14" x2="790" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="94" x2="870" y2="94" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="810" y1="14" x2="810" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="114" x2="870" y2="114" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="830" y1="14" x2="830" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="134" x2="870" y2="134" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="850" y1="14" x2="850" y2="174" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="154" x2="870" y2="154" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="780.0" cy="44.0" r="8.0" fill="#fafafa"/>
+<circle cx="780.0" cy="44.0" r="2.0" fill="#d22"/>
+<circle cx="740.0" cy="64.0" r="8.0" fill="#111"/>
+<circle cx="760.0" cy="64.0" r="8.0" fill="#111"/>
+<circle cx="780.0" cy="64.0" r="8.0" fill="#fafafa"/>
+<circle cx="780.0" cy="84.0" r="8.0" fill="#fafafa"/>
+<circle cx="800.0" cy="84.0" r="8.0" fill="#111"/>
+<circle cx="780.0" cy="104.0" r="8.0" fill="#111"/>
+<circle cx="800.0" cy="104.0" r="8.0" fill="#fafafa"/>
+<text x="790.0" y="196" font-size="17" text-anchor="middle" fill="#310066">4. White d2</text>
+<rect x="14" y="218" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="34" y1="218" x2="34" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="238" x2="174" y2="238" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="54" y1="218" x2="54" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="258" x2="174" y2="258" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="74" y1="218" x2="74" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="278" x2="174" y2="278" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="94" y1="218" x2="94" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="298" x2="174" y2="298" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="114" y1="218" x2="114" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="318" x2="174" y2="318" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="134" y1="218" x2="134" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="338" x2="174" y2="338" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="154" y1="218" x2="154" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="14" y1="358" x2="174" y2="358" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="104.0" cy="228.0" r="8.0" fill="#111"/>
+<circle cx="104.0" cy="228.0" r="2.0" fill="#d22"/>
+<circle cx="84.0" cy="248.0" r="8.0" fill="#111"/>
+<circle cx="44.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="64.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="84.0" cy="268.0" r="8.0" fill="#fafafa"/>
+<circle cx="84.0" cy="288.0" r="8.0" fill="#fafafa"/>
+<circle cx="104.0" cy="288.0" r="8.0" fill="#111"/>
+<circle cx="84.0" cy="308.0" r="8.0" fill="#111"/>
+<circle cx="104.0" cy="308.0" r="8.0" fill="#fafafa"/>
+<text x="94.0" y="400" font-size="17" text-anchor="middle" fill="#310066">5. Black e1</text>
+<rect x="188" y="218" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="208" y1="218" x2="208" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="238" x2="348" y2="238" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="228" y1="218" x2="228" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="258" x2="348" y2="258" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="248" y1="218" x2="248" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="278" x2="348" y2="278" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="268" y1="218" x2="268" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="298" x2="348" y2="298" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="288" y1="218" x2="288" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="318" x2="348" y2="318" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="308" y1="218" x2="308" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="338" x2="348" y2="338" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="328" y1="218" x2="328" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="188" y1="358" x2="348" y2="358" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="278.0" cy="228.0" r="8.0" fill="#111"/>
+<circle cx="258.0" cy="248.0" r="8.0" fill="#111"/>
+<circle cx="218.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="238.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="258.0" cy="268.0" r="8.0" fill="#fafafa"/>
+<circle cx="258.0" cy="288.0" r="8.0" fill="#fafafa"/>
+<circle cx="278.0" cy="288.0" r="8.0" fill="#111"/>
+<circle cx="258.0" cy="308.0" r="8.0" fill="#fafafa"/>
+<circle cx="278.0" cy="308.0" r="8.0" fill="#fafafa"/>
+<circle cx="258.0" cy="328.0" r="8.0" fill="#fafafa"/>
+<circle cx="258.0" cy="328.0" r="2.0" fill="#d22"/>
+<text x="268.0" y="400" font-size="17" text-anchor="middle" fill="#310066">6. White d6</text>
+<rect x="362" y="218" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="382" y1="218" x2="382" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="238" x2="522" y2="238" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="402" y1="218" x2="402" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="258" x2="522" y2="258" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="422" y1="218" x2="422" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="278" x2="522" y2="278" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="442" y1="218" x2="442" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="298" x2="522" y2="298" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="462" y1="218" x2="462" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="318" x2="522" y2="318" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="482" y1="218" x2="482" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="338" x2="522" y2="338" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="502" y1="218" x2="502" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="362" y1="358" x2="522" y2="358" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="452.0" cy="228.0" r="8.0" fill="#111"/>
+<circle cx="432.0" cy="248.0" r="8.0" fill="#111"/>
+<circle cx="392.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="412.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="432.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="432.0" cy="288.0" r="8.0" fill="#111"/>
+<circle cx="452.0" cy="288.0" r="8.0" fill="#111"/>
+<circle cx="432.0" cy="308.0" r="8.0" fill="#111"/>
+<circle cx="452.0" cy="308.0" r="8.0" fill="#fafafa"/>
+<circle cx="432.0" cy="328.0" r="8.0" fill="#111"/>
+<circle cx="432.0" cy="348.0" r="8.0" fill="#111"/>
+<circle cx="432.0" cy="348.0" r="2.0" fill="#d22"/>
+<text x="442.0" y="400" font-size="17" text-anchor="middle" fill="#310066">7. Black d7</text>
+<rect x="536" y="218" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="556" y1="218" x2="556" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="238" x2="696" y2="238" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="576" y1="218" x2="576" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="258" x2="696" y2="258" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="596" y1="218" x2="596" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="278" x2="696" y2="278" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="616" y1="218" x2="616" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="298" x2="696" y2="298" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="636" y1="218" x2="636" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="318" x2="696" y2="318" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="656" y1="218" x2="656" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="338" x2="696" y2="338" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="676" y1="218" x2="676" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="536" y1="358" x2="696" y2="358" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="626.0" cy="228.0" r="8.0" fill="#111"/>
+<circle cx="606.0" cy="248.0" r="8.0" fill="#111"/>
+<circle cx="566.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="586.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="606.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="626.0" cy="268.0" r="8.0" fill="#fafafa"/>
+<circle cx="626.0" cy="268.0" r="2.0" fill="#d22"/>
+<circle cx="606.0" cy="288.0" r="8.0" fill="#111"/>
+<circle cx="626.0" cy="288.0" r="8.0" fill="#fafafa"/>
+<circle cx="606.0" cy="308.0" r="8.0" fill="#111"/>
+<circle cx="626.0" cy="308.0" r="8.0" fill="#fafafa"/>
+<circle cx="606.0" cy="328.0" r="8.0" fill="#111"/>
+<circle cx="606.0" cy="348.0" r="8.0" fill="#111"/>
+<text x="616.0" y="400" font-size="17" text-anchor="middle" fill="#310066">8. White e3</text>
+<rect x="710" y="218" width="160" height="160" fill="#2e8b3e" stroke="#143d1b" stroke-width="1.5"/>
+<line x1="730" y1="218" x2="730" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="238" x2="870" y2="238" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="750" y1="218" x2="750" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="258" x2="870" y2="258" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="770" y1="218" x2="770" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="278" x2="870" y2="278" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="790" y1="218" x2="790" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="298" x2="870" y2="298" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="810" y1="218" x2="810" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="318" x2="870" y2="318" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="830" y1="218" x2="830" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="338" x2="870" y2="338" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="850" y1="218" x2="850" y2="378" stroke="#143d1b" stroke-width="0.8"/>
+<line x1="710" y1="358" x2="870" y2="358" stroke="#143d1b" stroke-width="0.8"/>
+<circle cx="800.0" cy="228.0" r="8.0" fill="#111"/>
+<circle cx="780.0" cy="248.0" r="8.0" fill="#111"/>
+<circle cx="740.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="760.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="780.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="800.0" cy="268.0" r="8.0" fill="#111"/>
+<circle cx="780.0" cy="288.0" r="8.0" fill="#111"/>
+<circle cx="800.0" cy="288.0" r="8.0" fill="#111"/>
+<circle cx="820.0" cy="288.0" r="8.0" fill="#111"/>
+<circle cx="820.0" cy="288.0" r="2.0" fill="#d22"/>
+<circle cx="780.0" cy="308.0" r="8.0" fill="#111"/>
+<circle cx="800.0" cy="308.0" r="8.0" fill="#111"/>
+<circle cx="780.0" cy="328.0" r="8.0" fill="#111"/>
+<circle cx="780.0" cy="348.0" r="8.0" fill="#111"/>
+<text x="790.0" y="400" font-size="17" text-anchor="middle" fill="#310066">9. Black f4</text>
+</svg>

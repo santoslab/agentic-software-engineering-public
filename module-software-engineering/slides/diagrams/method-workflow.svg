@@ -1,0 +1,61 @@
+<!-- Hand-drawn (no .mmd source): Mermaid cannot route the row-to-row elbow cleanly.
+     Palette as the other diagrams: #beaefc fill, #310066 text, borders, and lines. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 300" font-family="Helvetica, Arial, sans-serif" fill="#310066">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#310066"/>
+    </marker>
+    <style>
+      .box { fill: #beaefc; stroke: #310066; stroke-width: 1.5; }
+      .t { font-size: 22px; text-anchor: middle; }
+      .s { font-size: 17px; text-anchor: middle; }
+      .l { font-size: 16px; text-anchor: middle; }
+      .e { stroke: #310066; stroke-width: 1.5; fill: none; marker-end: url(#a); }
+    </style>
+  </defs>
+
+  <!-- row 1 -->
+  <rect x="20" y="30" width="200" height="80" rx="3" fill="#310066"/>
+  <text class="t" x="120" y="64" fill="#fff">Idea</text>
+  <text class="s" x="120" y="90" fill="#fff">brainstorming</text>
+
+  <rect class="box" x="390" y="30" width="200" height="80" rx="3"/>
+  <text class="t" x="490" y="64">CONOPS sketch</text>
+  <text class="s" x="490" y="90">the client's words</text>
+
+  <rect class="box" x="760" y="30" width="200" height="80" rx="3"/>
+  <text class="t" x="860" y="64">CONOPS</text>
+  <text class="s" x="860" y="90">what a user observes</text>
+
+  <rect class="box" x="1130" y="30" width="200" height="80" rx="3"/>
+  <text class="t" x="1230" y="64">SPECS</text>
+  <text class="s" x="1230" y="90">one section per kind</text>
+
+  <path class="e" d="M220,70 H390"/>
+  <path class="e" d="M590,70 H760"/>
+  <text class="l" x="675" y="60">audit · rule · amend</text>
+  <path class="e" d="M960,70 H1130"/>
+  <text class="l" x="1045" y="60">derive · audit · rule</text>
+
+  <!-- the elbow: down from SPECS.md, left, down into plans/ -->
+  <path class="e" d="M1230,110 V160 H120 V210"/>
+  <rect x="600" y="148" width="150" height="24" fill="#fff"/>
+  <text class="l" x="675" y="166">audit, then plan</text>
+
+  <!-- row 2 -->
+  <rect class="box" x="20" y="210" width="200" height="80" rx="3"/>
+  <text class="t" x="120" y="244">plans/</text>
+  <text class="s" x="120" y="270">clause by clause</text>
+
+  <rect class="box" x="390" y="210" width="200" height="80" rx="3"/>
+  <text class="t" x="490" y="257">the code</text>
+
+  <rect class="box" x="760" y="210" width="200" height="80" rx="3"/>
+  <text class="t" x="860" y="244">verified</text>
+  <text class="s" x="860" y="270">tests · gate · fixtures</text>
+
+  <path class="e" d="M220,250 H390"/>
+  <text class="l" x="305" y="240">build</text>
+  <path class="e" d="M590,250 H760"/>
+  <text class="l" x="675" y="240">verify</text>
+</svg>

@@ -242,6 +242,8 @@ Then the rest of step 1: the rewrite to `CONOPS.md` 1.0, and the audit run again
 
 Ends with `conops: 0.1 sketch -> 1.0`, and the session exported to `transcripts/01-conops-elicitation.md` — the evidence that the document was elicited, not typed.
 
+The file: [`demos/lecture-03-game-demo/reference/CONOPS.md`](https://github.com/santoslab/agentic-software-engineering-public/blob/main/module-software-engineering/demos/lecture-03-game-demo/reference/CONOPS.md)
+
 <!-- Open demos/lecture-03-game-demo/reference/CONOPS.md at §4.2, then §5.4. -->
 
 ---
@@ -299,6 +301,8 @@ Each row is a question your `SPECS.md` must answer. The largest is the interface
 - **§5.1 `game.py`: `make_move`** — precondition, postcondition, behavior outside the precondition, including after the game is over (the interface contract, AUD-12; arrived at 1.2.0). Reversi: what does the postcondition say when one move changes many cells?
 - **§7.2** — byte-exact, two examples (the display format, AUD-9). Reversi: plus the hints decision
 - **§9.5** — obligations, not policy. The policy — the gate, coverage, test discipline, fixtures (VER-4 to VER-8) — is not yours to weaken. Read it against Reversi and see how much carries over
+
+The file: [`demos/lecture-03-game-demo/reference/SPECS.md`](https://github.com/santoslab/agentic-software-engineering-public/blob/main/module-software-engineering/demos/lecture-03-game-demo/reference/SPECS.md)
 
 <!-- Open each in demos/lecture-03-game-demo/reference/SPECS.md; the Changelog for §5.1's history. -->
 

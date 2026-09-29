@@ -163,14 +163,14 @@ You say where you want to play by typing the square, like `d3` on a chessboard.
 
 ## What §4.2 states, implies, and leaves out
 
-<style scoped>table { font-size: 21px; }</style>
+<style scoped>table { font-size: 19px; } p { font-size: 22px; }</style>
 
-| Stated | Implied | Missing |
-|---|---|---|
-| two colors; players alternate; one disc per turn | an opening position exists — "a few discs already in the middle" | who moves first |
-| a move must trap at least one disc, in a straight line — across, down, or diagonally | a move can trap in more than one direction — "everything trapped flips" | what happens after a forfeit: whose turn; announced; both stuck |
-| a player with no square to play forfeits the turn | the count is shown at the end (§5.1) | equal counts |
-| when the board is full the discs are counted; more wins | | taking a move back — §7 says no, under Limitations: a fact in the wrong section (AUDCON-8) |
+| # | States | Implies | Leaves out |
+|---|---|---|---|
+| 1 | two colors; players alternate; one disc per turn, on an empty square | an opening position exists — "a few discs already in the middle" (§1.2) | who moves first? which discs, where? |
+| 2 | a move must trap at least one disc, in a straight line — across, down, or diagonally | a move can trap in more than one direction — "everything trapped flips" | does every trapped line flip, or one? |
+| 3 | a player with no square to play forfeits the turn | the other player moves next | is the forfeit announced? what if both players are stuck? |
+| 4 | when the board is full, the discs are counted; more wins | the count is shown at the end (§5.1) | what if the counts are equal? can the game end before the board is full? |
 
 **Important**: you know the game, so you will fill gaps from memory without noticing. If the sketch does not say it, it is a gap — record it and rule on it, even when you know the answer.
 
@@ -397,7 +397,7 @@ def test_prompt_human_rejects_invalid_forms(monkeypatch, capsys, bad_input):
     """SPECS §6.2: every invalid move form is rejected and re-prompted."""
 ```
 
-One clause, eight forms, parametrized. **Reversi:** one case for each form your grammar rejects — `d9`, `i3`, an occupied square, a square that flips nothing, and whatever else your grammar rules out — in the order your grammar lists them.
+One clause, eight forms, parametrized. **Reversi:** one case for each form your grammar rejects — `d9`, `i3`, and whatever else it rules out — in the order your grammar lists them. An occupied square or one that flips nothing is well-formed: the rules of play reject it, and its test cites that clause.
 
 <!-- Open tests/test_game.py at line 111, tests/test_main.py at line 70. -->
 

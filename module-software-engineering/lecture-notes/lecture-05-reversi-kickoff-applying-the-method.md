@@ -246,12 +246,12 @@ I am allowed to play, or make me work it out?" The one scenario, §5.1, ends
 
 Here is what §4.2 states, what it implies, and what it leaves out:
 
-| Stated | Implied | Missing |
-|---|---|---|
-| two colors; players alternate; one disc per turn | an opening position exists — "a few discs already in the middle" | who moves first |
-| a move must trap at least one disc, in a straight line, across, down, or diagonally | a move can trap in more than one direction — "everything trapped flips" | what happens after a forfeit: whose turn, whether it is announced, what if both players are stuck |
-| a player with no square to play forfeits the turn | the count is shown at the end (§5.1) | equal counts |
-| when the board is full the discs are counted, and more wins | | taking a move back — §7 says no, under Limitations, which is the wrong section (AUDCON-8) |
+| §4.2 bullet | States | Implies | Leaves out |
+|---|---|---|---|
+| 1 | two colors; players alternate; one disc per turn, on an empty square | an opening position exists — "a few discs already in the middle" (§1.2) | who moves first? which discs, where? |
+| 2 | a move must trap at least one disc, in a straight line — across, down, or diagonally | a move can trap in more than one direction — "everything trapped flips" | does every trapped line flip, or one? |
+| 3 | a player with no square to play forfeits the turn | the other player moves next | is the forfeit announced? what if both players are stuck? |
+| 4 | when the board is full, the discs are counted; more wins | the count is shown at the end (§5.1) | what if the counts are equal? can the game end before the board is full? |
 
 One item in the table is more than a gap. The sketch says the game ends when
 the board is full, and it says a player with no move forfeits the turn. Each
@@ -573,9 +573,10 @@ follows the 1.2.0 amendment in the history. In `tests/test_main.py`,
 `test_prompt_human_rejects_invalid_forms` carries "SPECS §6.2: every invalid
 move form is rejected and re-prompted" and is parametrized over the eight
 forms §6.2 lists: one clause, many realizations, one test. Yours enumerates
-the forms your grammar rejects — `d9`, `i3`, an occupied square, a square that
-flips nothing, and whatever else your grammar rules out (whether `D3` or ` d3 `
-is accepted is your decision) — in the order your grammar lists them.
+the forms your grammar rejects — `d9`, `i3`, and whatever else it rules out
+(whether `D3` or ` d3 ` is accepted is your decision) — in the order your
+grammar lists them. An occupied square or a square that flips nothing is
+well-formed: the rules of play reject it, and its test cites that clause.
 
 The gate is the command in your `CLAUDE.md`:
 

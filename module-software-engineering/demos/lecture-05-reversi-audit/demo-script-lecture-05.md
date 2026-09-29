@@ -127,12 +127,14 @@ point at "§4.2, second bullet"; what makes it a sketch is its state — first
 person, unreviewed, TBDs, one tension. Then sort §4.2's policies with the room
 (slide 9):
 
-| Stated | Implied | Missing |
-|---|---|---|
-| two colors; alternate turns; one disc per turn | an opening position exists (§1.2 "a few discs already in the middle") | who moves first |
-| a move must trap at least one disc, in a straight line, in any of the three kinds of direction | trapping in more than one direction at once is possible (§4.2 "everything trapped flips") | what happens after a forfeit: whose turn, is it announced, what if both are stuck |
-| a player with no square to play forfeits the turn | the count is shown at the end (§5.1) | equal counts |
-| when the board is full, the discs are counted and more wins | | whether a move can be taken back (§7 says no — in the wrong section) |
+| # | States | Implies | Leaves out |
+|---|---|---|---|
+| 1 | two colors; players alternate; one disc per turn, on an empty square | an opening position exists — "a few discs already in the middle" (§1.2) | who moves first? which discs, where? |
+| 2 | a move must trap at least one disc, in a straight line — across, down, or diagonally | a move can trap in more than one direction — "everything trapped flips" | does every trapped line flip, or one? |
+| 3 | a player with no square to play forfeits the turn | the other player moves next | is the forfeit announced? what if both players are stuck? |
+| 4 | when the board is full, the discs are counted; more wins | the count is shown at the end (§5.1) | what if the counts are equal? can the game end before the board is full? |
+
+One row per §4.2 bullet.
 
 **Say:** you know the game, so you will fill gaps from memory without
 noticing. If the sketch does not say it, it is a gap — record it and rule on
@@ -270,10 +272,10 @@ that follows the 1.2.0 amendment in the history.
 
 **Open:** `tests/test_main.py` at `test_prompt_human_rejects_invalid_forms`.
 **Say:** one clause, eight rejected forms, parametrized. **Reversi:** one case for
-each form the student's grammar rejects — `d9`, `i3`, an occupied square, a
-square that flips nothing, and whatever else the grammar rules out (whether
-`D3` or ` d3 ` is accepted is the student's decision) — in the order the
-grammar lists them.
+each form the student's grammar rejects — `d9`, `i3`, and whatever else it
+rules out (whether `D3` or ` d3 ` is accepted is the student's decision) — in
+the order the grammar lists them. An occupied square or one that flips nothing
+is well-formed: the rules of play reject it, and its test cites that clause.
 
 **Do (shell, live), in `reference/`:**
 

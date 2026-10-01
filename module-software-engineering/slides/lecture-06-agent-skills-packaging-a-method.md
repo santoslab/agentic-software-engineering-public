@@ -545,7 +545,7 @@ Optional LIVE: /context in the demo session, the Skills row.
 
 | Field (Claude Code only) | Effect |
 |---|---|
-| `disable-model-invocation: true` | only you can start it, with `/name`; its description is never loaded into the model's context |
+| `disable-model-invocation: true` | only you can start it, with `/name`; neither its name nor its description is loaded into the model's context |
 | `user-invocable: false` | model only; hidden from the `/` menu |
 | `allowed-tools` | the listed tools run without a permission prompt, **while the skill runs** |
 | `context: fork` + `agent` | runs the skill in a subagent, **without the conversation history** |
@@ -643,7 +643,7 @@ Sources: agentskills.io specification; Claude Code skills and memory docs, fetch
 
 ## One skill, four harnesses: who may start it?
 
-<style scoped>table { font-size: 19px; } p { font-size: 22px; }</style>
+<style scoped>table { font-size: 17px; } p { font-size: 19.5px; margin: 0.3em 0; } h2 { margin-bottom: 0.2em; }</style>
 
 | Harness | Finds v2 in | Keeps the model from starting it | You start it with |
 |---|---|---|---|
@@ -652,7 +652,9 @@ Sources: agentskills.io specification; Claude Code skills and memory docs, fetch
 | OpenCode (open-source agent) | `.claude/skills/` or `.agents/skills/` | nothing in the folder — `"permission": {"skill": {"conops-from-sketch": "ask"}}` in `opencode.json` | ask in chat |
 | Grok (xAI) | `.claude/skills/`, `.agents/skills/`, or `.grok/skills/` | `disable-model-invocation: true` in `SKILL.md` — the same as Claude Code | `/conops-from-sketch` |
 
-Codex and OpenCode ignore Claude Code's setting; Grok honors it (per its docs). Our test, one run each, *"Turn CONOPS-sketch.md into CONOPS.md"*: Codex without `openai.yaml` **started v2 on its own**; with it, did not.
+Codex and OpenCode ignore Claude Code's setting; Grok honors it. Our test, one run each, *"Turn CONOPS-sketch.md into CONOPS.md"*: Codex without `openai.yaml` **started v2 on its own**; with it, did not.
+
+When the switch keeps the model from starting a skill, the model is not told the skill exists — not even its name (our test: Claude Code, Codex, Grok; one run each).
 
 The standard makes one folder **load** in every agent; **who may start it** is still set per agent.
 

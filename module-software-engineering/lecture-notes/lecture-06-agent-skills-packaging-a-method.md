@@ -436,7 +436,7 @@ these fields as Claude Code's, beyond the portable standard:
 
 | Field | Effect |
 |---|---|
-| `disable-model-invocation: true` | only the user can invoke it (`/name`); its description is **not** loaded — the documentation: "Description not in context, full skill loads when you invoke" — though the name still appears in the `init` event's list |
+| `disable-model-invocation: true` | only the user can invoke it (`/name`); its description is **not** loaded (the documentation: "Description not in context, full skill loads when you invoke"), and in our test neither was its name: asked to list every skill it had been told about, the model named the unflagged `conops` but not `conops-from-sketch`. The name still appears in Claude Code's own list (the `/` menu and the `init` event) |
 | `user-invocable: false` | the model can invoke it; it is hidden from the `/` menu; its description is always in context, so the model can match it |
 | `allowed-tools` | tools the model may use without asking permission during the turn that invokes the skill; the grant clears at your next message (our skill: `Read Grep Glob`) |
 | `disallowed-tools` | tools removed while the skill is active |
@@ -566,7 +566,7 @@ lesson in the body: the text is portable, the tool it names is not.
 
 We checked the "would be" for three other harnesses. Codex and OpenCode have
 their own switches and ignore Claude Code's; Grok honors Claude Code's field
-(per its bundled user guide, Grok 1.0.41; we did not run it):
+(per its bundled user guide, Grok 1.0.41; confirmed in the test below):
 
 | Harness | Finds v2 in | Keeps the model from starting it | You start it with |
 |---|---|---|---|
@@ -585,6 +585,21 @@ Without `agents/openai.yaml`, Codex announced "I'll use the
 opened the skill. So v2 now ships that file too. It sits beside `SKILL.md`,
 which the standard allows and Claude Code ignores; `SKILL.md` and the bundled
 files are unchanged, so the evaluation below still describes this skill.
+
+**Does a skill the model may not start still cost anything?** We asked each agent, with the
+unflagged v1 `conops` installed as a control next to v2, to list every skill
+name it had been told about (one run each):
+
+| Agent (model) | `conops` listed? | `conops-from-sketch` listed? |
+|---|---|---|
+| Claude Code (Sonnet 5) | yes | no |
+| Codex (gpt-6-luna, medium) | yes | no |
+| Grok (4.7, high) | yes | no |
+
+So when a skill's switch keeps the model from starting it, the model is not
+told the skill exists — not its description, not even its name — until you start it
+yourself. One more Grok detail: it skips a project's skills entirely until you
+trust the folder (`--trust`); our first Grok run listed neither skill.
 
 The standard's own checker says the same thing from the other side.
 `skills-ref validate` checks the front matter against the six fields and the

@@ -436,8 +436,8 @@ these fields as Claude Code's, beyond the portable standard:
 
 | Field | Effect |
 |---|---|
-| `disable-model-invocation: true` | only the user can invoke it (`/name`); the documentation says this "removes the skill from Claude's context entirely" — though the name still appears in the `init` event's list |
-| `user-invocable: false` | the model can invoke it; it is hidden from the `/` menu |
+| `disable-model-invocation: true` | only the user can invoke it (`/name`); its description is **not** loaded — the documentation: "Description not in context, full skill loads when you invoke" — though the name still appears in the `init` event's list |
+| `user-invocable: false` | the model can invoke it; it is hidden from the `/` menu; its description is always in context, so the model can match it |
 | `allowed-tools` | tools the model may use without asking permission during the turn that invokes the skill; the grant clears at your next message (our skill: `Read Grep Glob`) |
 | `disallowed-tools` | tools removed while the skill is active |
 | `argument-hint`, `arguments` | the hint shown when the user types `/name`; named arguments |

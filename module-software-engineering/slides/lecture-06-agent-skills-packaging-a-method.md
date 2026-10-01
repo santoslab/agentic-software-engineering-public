@@ -545,7 +545,7 @@ Optional LIVE: /context in the demo session, the Skills row.
 
 | Field (Claude Code only) | Effect |
 |---|---|
-| `disable-model-invocation: true` | only you can start it, with `/name`; the model never sees its description |
+| `disable-model-invocation: true` | only you can start it, with `/name`; its description is never loaded into the model's context |
 | `user-invocable: false` | model only; hidden from the `/` menu |
 | `allowed-tools` | the listed tools run without a permission prompt, **while the skill runs** |
 | `context: fork` + `agent` | runs the skill in a subagent, **without the conversation history** |

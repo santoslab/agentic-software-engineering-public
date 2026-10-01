@@ -35,3 +35,7 @@ This folder holds the materials for live demonstrations run during lectures.
   artifacts. Contains `demo-script-lecture-05.md` and the instructor key
   `expected-gaps.md`; the starter it runs on is
   `../student-materials/reversi-starter/`.
+- [`lecture-06-skills/`](lecture-06-skills/) — the Lecture 06 worked example: `conops/`
+  (v1, the obvious skill) and `conops-from-sketch/` (v2, the method packaged,
+  with `agents/openai.yaml` for Codex). Copy a folder into a repository's
+  `.claude/skills/` to use it.

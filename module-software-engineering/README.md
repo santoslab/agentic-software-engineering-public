@@ -30,10 +30,11 @@ artifacts it must produce, and how its output is checked.
 | [02](lectures-instructor-notes/lecture-02-concept-of-operations-operations-and-the-invariant.md) | The Concept of Operations, Operations with Contracts, and the Specification as an Invariant | What is the system for, what may an agent do to it, and how is conformance kept while it changes? | [Ex. 2](exercises/exercise-02-operations-under-contract.md); [Project 0](project-0-pkb-brief.md) |
 | [03](lectures-instructor-notes/lecture-03-specifying-a-game-one-system-several-specifications.md) | Specifying a Game: One System, Several Specifications | What kinds of specification does a program need, and how does an agent help discover them? | Ex. 3 (optional) |
 | [04](lectures-instructor-notes/lecture-04-verifying-a-game-tests-as-executable-specification.md) | Verifying a Game: Tests as Executable Specification | What does a test suite claim, and what does coverage not tell you? | — |
-| [05](lectures-instructor-notes/lecture-05-reversi-kickoff-applying-the-method.md) | Reversi Kickoff: Applying the Method | Can you run the same moves on a game you were just handed? | Project 1, Phase 1 |
-| [06](lectures-instructor-notes/lecture-06-mcp-the-tool-contract-as-a-specification.md) | MCP: The Tool Contract as a Specification | What changes when the reader of a contract is a machine? | — (Phase 1 continues; Stage E previewed) |
+| [05](lectures-instructor-notes/lecture-05-reversi-kickoff-applying-the-method.md) | Reversi Kickoff: Applying the Method | Can you run the same moves on a game you were just handed? | Project 1 |
+| [06](lecture-notes/lecture-06-agent-skills-packaging-a-method.md) | Agent Skills: Packaging a Method So an Agent Can Follow It | How do you package a method so an agent follows it, and how do you tell whether it works? | [Skills exercise](exercises/exercise-03-a-skill-for-specs-from-conops.md) |
+| [07](lectures-instructor-notes/lecture-07-mcp-the-tool-contract-as-a-specification.md) | MCP: The Tool Contract as a Specification | What changes when the reader of a contract is a machine? | — (Phase 1 continues; Stage E previewed) |
 
-Across the six lectures the module introduces most of the kinds of
+Across the seven lectures the module introduces most of the kinds of
 specification in the course catalog (`../specification-kinds.md`); Lecture 03's
 table is the module's view of it, and Lecture 06 adds the last kind.
 
@@ -57,6 +58,7 @@ rules.
 | Ex. 1 | [exercise-01-conformance-three-ways.md](exercises/exercise-01-conformance-three-ways.md) | L01 | before L03 | 2–3 h | Claude Code, Python 3.11+, git |
 | Ex. 2 | [exercise-02-operations-under-contract.md](exercises/exercise-02-operations-under-contract.md) | L02 | before L04 | 2–3 h | Claude Code, Python 3.11+, git |
 | Ex. 3 (optional) | to write | L03 | before L05 | 1–2 h | Claude Code |
+| Skills | [exercise-03-a-skill-for-specs-from-conops.md](exercises/exercise-03-a-skill-for-specs-from-conops.md) | L06 | Tue Oct 13, 11:55 pm | — | Claude Code, git, jq |
 
 **Project 0** — the personal knowledge base — is assigned in this module at
 Lecture 02 by [`project-0-pkb-brief.md`](project-0-pkb-brief.md), with its

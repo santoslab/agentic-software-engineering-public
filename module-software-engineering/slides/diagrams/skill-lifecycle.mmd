@@ -1,0 +1,20 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "17px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    S["Session start<br/>name + description<br/>of every skill<br/><i>every turn</i>"] --> T{"/name typed,<br/>or the model<br/>calls Skill"}
+    T --> B["Body injected<br/>as one message<br/><i>rest of session</i>"]
+    B --> F["Bundled files<br/>read when the body<br/>sends the model there<br/><i>only if read</i>"]
+    B --> C["After compaction (docs)<br/>re-added: up to 5k tokens<br/>per skill, 25k in all"]
+
+    style S fill:#310066,color:#ffffff,stroke:#310066

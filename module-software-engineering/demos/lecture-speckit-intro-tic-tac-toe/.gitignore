@@ -1,0 +1,10 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Environments and tool caches (uv / pytest)
+.venv/
+.pytest_cache/
+
+# Generated conformance report (plan research.md R7)
+reports/

@@ -137,7 +137,7 @@ These are presentation details the spec leaves to planning; the binding text is 
 
 ## Proposed specification corrections
 
-Planning found one behavior the specification does not settle and that a design choice
+Planning found one behavior the specification did not settle and that a design choice
 should not settle on its own:
 
 - **P1 — End of input / interrupt.** If the terminal's input ends (Ctrl-D) or the player
@@ -147,3 +147,4 @@ should not settle on its own:
   with a short goodbye message and without an error trace." The plan and contracts are
   written assuming this proposal is accepted; if the developer rejects or changes it, only
   `contracts/cli.md` §5 and its tests change.
+  **Status: accepted by the developer (2026-10-08); now spec FR-020 and US3-6.**

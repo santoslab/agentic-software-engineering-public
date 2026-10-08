@@ -111,14 +111,13 @@ Choose 1 or 2:
 - **C-16** Back to the start menu ends the session; choosing `1` there again starts with
   the human as X (FR-013).
 
-## 5. End of input and interrupt — *pending proposal P1*
+## 5. End of input and interrupt (FR-020)
 
 - **C-17** If input ends (EOF) or the player interrupts (Ctrl-C) at any prompt, the
   program prints a one-line goodbye and exits with status 0, without a traceback.
 
-This rule implements proposed specification correction P1
-([research.md](../research.md#proposed-specification-corrections)). It is not yet in the
-spec and is not to be implemented until the developer accepts it.
+This rule implements FR-020, added to the spec when the developer accepted proposal P1
+([research.md](../research.md#proposed-specification-corrections)).
 
 ## Evidence expected (tests in `tests/cli/`)
 
@@ -134,4 +133,4 @@ or scripted opponent, and assert on the transcript.
 | C-10, C-11 | FR-012, FR-019, FR-013, US2-2, US2-5, US2-6 |
 | C-12 – C-16 | FR-009, FR-010, FR-013, FR-015, US2-4, US2-7, US3-2, US3-3 |
 | full scripted sessions (X wins, O wins, draw) | US1 independent test, SC-003 |
-| C-17 | proposal P1 |
+| C-17 | FR-020, US3-6, Edge Cases |

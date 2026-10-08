@@ -10,7 +10,7 @@
 
 A terminal game of tic-tac-toe on a 9×9 board where five or more in a line wins, played
 against a random computer opponent or by two people at one keyboard (spec FR-001 –
-FR-019). The design splits the program into three modules with a one-way dependency rule
+FR-020). The design splits the program into three modules with a one-way dependency rule
 so each can evolve on its own:
 
 - **engine** — rules only: an immutable `GameState` whose `play(square)` validates the
@@ -60,7 +60,7 @@ Constitution v1.0.1.
 | **I. Specification and Realization** | Spec (`spec.md`) and realization (`src/`) are kept separate. Each contract lists the evidence it expects; tests are tagged with the spec IDs they evidence (R7). | PASS | PASS |
 | **II. Specification Before Realization** | All realization work in this feature is case (c): it follows the spec. Design choices the spec leaves open are recorded as such (research.md R3–R8), so later changes to them are case (b) and need no spec change. | PASS | PASS |
 | **III. A Person Decides Which Side Changes** | When a test fails, the plan does not say whether spec or code moves; tasks must stop and ask. Spec changes go in `specs/001-five-in-a-row/CHANGELOG.md`; code changes record the decision in the commit message. | PASS | PASS |
-| **IV. Derived Documents Follow Governing Ones** | This plan and its artifacts are derived from `spec.md` and do not contradict it. One gap found during design (end of input / interrupt) is raised as **proposal P1** in research.md, not decided by the plan; `contracts/cli.md` C-17 is marked pending until the developer accepts it. | PASS | PASS |
+| **IV. Derived Documents Follow Governing Ones** | This plan and its artifacts are derived from `spec.md` and do not contradict it. One gap found during design (end of input / interrupt) was raised as **proposal P1** in research.md rather than decided by the plan; the developer accepted it and it is now spec FR-020, implemented by `contracts/cli.md` C-17. | PASS | PASS |
 | **V. Reports** | `reports/conformance.md` is generated on every test run, mapping each spec ID to its tests and their status and flagging IDs with no evidence (R7). The spec's acceptance scenarios serve as the explanatory examples; the CLI contract adds sample screens. | PASS | PASS |
 | **Document Hierarchy** | Contracts cite the spec IDs they implement; where a contract says more than the spec (menu numbers, `m` command, separators), it is a choice inside what the spec leaves open (FR-004, FR-018) — see research.md R8. | PASS | PASS |
 | **Records of Change** | Applies from implementation on; nothing here changes the spec. | PASS | PASS |
@@ -139,8 +139,8 @@ variant — is made and verified against that module's contract alone.
 
 ## Open Items for the Developer
 
-- **Proposal P1** (research.md): add a spec rule for end of input / Ctrl-C. Accept, change,
-  or reject before `/speckit-tasks`; if accepted, update `spec.md` and its `CHANGELOG.md`.
+None. Proposal P1 (end of input / interrupt) was accepted on 2026-10-08 and is now spec
+FR-020.
 
 ## Complexity Tracking
 

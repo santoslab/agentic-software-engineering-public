@@ -21,3 +21,7 @@ Records changes to `spec.md` and the reason for each, as required by the constit
   - FR-004 now fixes the move format: row then column on one line, separated by a space or
     a comma (`4 7` or `4,7`). Removed the assumption that left the format to planning;
     updated the unreadable-input edge case.
+- Added FR-020, User Story 3 scenario 6, and an edge case: if input ends or the player
+  interrupts the program at any prompt, it ends promptly with a short goodbye and no error
+  trace. Decided by the developer: accepted proposal P1 raised during `/speckit-plan`
+  (research.md), which found the spec silent on this.

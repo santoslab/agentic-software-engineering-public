@@ -124,6 +124,9 @@ exits.
 5. **Given** a game is in progress and the program is asking for a move, **When** the player
    enters the leave-game command, **Then** the game ends with no result announced and the
    start menu is shown.
+6. **Given** the program is waiting for any entry (a menu choice or a move), **When** input
+   ends or the player interrupts the program, **Then** the program prints a short goodbye
+   and ends, without an error trace.
 
 ---
 
@@ -142,6 +145,8 @@ exits.
   not a draw.
 - **Two lines at once**: a single move completes five in a row in two directions. This is
   one win for the player who moved.
+- **End of input or interrupt**: the terminal's input ends (e.g. Ctrl-D) or the player
+  interrupts the program (e.g. Ctrl-C) at any prompt. The program ends promptly (FR-020).
 
 ## Requirements *(mandatory)*
 
@@ -197,6 +202,8 @@ exits.
   draw) and show the start menu.
 - **FR-019**: After every computer move the system MUST state, in words, the row and column
   of the square the computer took, in addition to redrawing the board (FR-006).
+- **FR-020**: If input ends or the player interrupts the program at any prompt, the program
+  MUST end promptly with a short goodbye message and without an error trace.
 
 ### Key Entities
 

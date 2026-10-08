@@ -131,4 +131,4 @@ The CLI's memory across games between visits to the start menu.
 ```
 
 Leaving with `m` shows no result and offers no "play again" (FR-018; spec Assumptions).
-End of input or interrupt in any state ends the program (proposal P1, research.md).
+End of input or interrupt in any state ends the program (FR-020).

@@ -46,7 +46,7 @@ Start the game with `uv run five-in-a-row`. Each walkthrough follows a user stor
 | M5 | Choose `1` (play again). | You are now O; the computer moves first without input. Play again once more: you are X. | FR-013, US2-5, US2-6 |
 | M6 | Choose `2` (back to start menu), then `1`. | You are X again. | US2-7 |
 | M7 | From the start menu type `7`, then `3`. | `7` rejected and the menu redrawn; `3` ends the program. | FR-016, FR-017 |
-| M8 | Start the game and press Ctrl-D at the menu; start again and press Ctrl-C mid-game. | One-line goodbye, no traceback. *Only once proposal P1 is accepted.* | P1 |
+| M8 | Start the game and press Ctrl-D at the menu; start again and press Ctrl-C mid-game. | One-line goodbye, no traceback. | FR-020, US3-6 |
 
 A draw is impractical to reach by hand on a 9×9 board; it is covered by a scripted
 session in `tests/cli` and by engine tests.

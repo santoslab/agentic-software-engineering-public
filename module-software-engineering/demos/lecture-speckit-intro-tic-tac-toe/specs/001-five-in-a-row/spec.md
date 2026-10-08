@@ -10,6 +10,19 @@
 text-based tic-tac-toe variant on a 9-by-9 board, five in a row to win, played at a terminal
 against the computer or against a friend at the same keyboard.
 
+## Clarifications
+
+### Session 2026-10-08
+
+- Q: Should a player be able to leave a game partway through and go back to the start menu,
+  without closing the terminal? → A: Yes — a command typed at any move prompt abandons the
+  game and returns to the start menu (FR-018).
+- Q: After the computer moves, should the program also say in words which square it took?
+  → A: Yes — it names the square (row and column) and redraws the board (FR-019).
+- Q: How should a player type a square: both numbers on one line, or one number at a time?
+  → A: Row then column on one line, separated by a space or a comma, e.g. `4 7` or `4,7`
+  (FR-004).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Two players at one keyboard (Priority: P1)
@@ -68,7 +81,8 @@ or a draw is announced.
    empty grid is drawn, the human plays X, and the program asks the human for the first
    move.
 2. **Given** it is the computer's turn, **When** the turn begins, **Then** the computer
-   places its mark on an empty square without waiting for input, and the turn passes to the
+   places its mark on an empty square without waiting for input, the program states the row
+   and column of that square, the board is redrawn showing it, and the turn passes to the
    player.
 3. **Given** many computer moves are observed across games, **When** the positions are
    compared, **Then** every computer move is on a square that was empty, and the computer
@@ -107,6 +121,9 @@ exits.
 3. **Given** a game in "play a friend" mode has ended, **When** the player chooses "play
    again", **Then** a new game in the same mode begins with an empty grid and X to move.
 4. **Given** the start menu, **When** the player chooses "quit", **Then** the program ends.
+5. **Given** a game is in progress and the program is asking for a move, **When** the player
+   enters the leave-game command, **Then** the game ends with no result announced and the
+   start menu is shown.
 
 ---
 
@@ -115,8 +132,8 @@ exits.
 - **Occupied square**: the player enters a square that already holds a mark. The move is
   rejected, the program says why, the board is unchanged, and the same player is asked again.
 - **Out-of-range square**: the player enters a row or column outside 1–9. Rejected as above.
-- **Unreadable input**: the player enters something that is not a row and column (letters,
-  one number, blank line). Rejected as above.
+- **Unreadable input**: the player enters something that is not a row and column in the
+  form of FR-004 (letters, one number, three numbers, a blank line) and is not the leave-game command (FR-018). Rejected as above.
 - **Invalid menu choice**: the player enters something that is not one of the offered menu
   options. The program says so and shows the same choices again.
 - **More than five in a row**: a move completes six or more marks in a line, e.g. by
@@ -136,11 +153,12 @@ exits.
   at the start of each game.
 - **FR-002**: The two marks MUST be X and O, and X MUST move first in every game.
 - **FR-003**: Players MUST alternate turns, placing exactly one mark per turn.
-- **FR-004**: A player MUST choose a square by entering its row and its column, each
-  numbered 1 to 9; row 1 is the top row and column 1 the leftmost column.
+- **FR-004**: A player MUST choose a square by entering, on one line, its row and then its
+  column, each a number from 1 to 9, separated by a space or a comma (e.g. `4 7` or `4,7`
+  is row 4, column 7). Row 1 is the top row and column 1 the leftmost column.
 - **FR-005**: The system MUST accept a move only onto an empty square within the grid. Any
-  other entry MUST be rejected with a message saying why, leave the board unchanged, and ask
-  the same player again.
+  other entry, except the leave-game command (FR-018), MUST be rejected with a message
+  saying why, leave the board unchanged, and ask the same player again.
 - **FR-006**: The system MUST draw the grid, showing every mark and the row and column
   numbers, at the start of the game and after every accepted move.
 - **FR-007**: Before each human move the system MUST say whose turn it is, naming the mark.
@@ -174,6 +192,11 @@ exits.
 - **FR-016**: Choosing "quit" from the start menu MUST end the program.
 - **FR-017**: An entry that is not one of the offered menu choices MUST be rejected with a
   message and the same menu shown again.
+- **FR-018**: At every prompt for a move, the system MUST accept a leave-game command, and
+  MUST say how to enter it. Entering it MUST end the game without a result (no winner, no
+  draw) and show the start menu.
+- **FR-019**: After every computer move the system MUST state, in words, the row and column
+  of the square the computer took, in addition to redrawing the board (FR-006).
 
 ### Key Entities
 
@@ -209,15 +232,13 @@ exits.
 
 - The program runs in a text terminal on a single laptop; one keyboard is shared in
   two-player mode. No network play, accounts, or saved games.
-- A game cannot be abandoned midway from within the program; leaving mid-game is out of
-  scope for this feature (the player can still close the terminal).
+- A game left with the leave-game command (FR-018) is not "ended" in the sense of FR-015:
+  no result is shown and "play again" is not offered. Because it returns to the start menu,
+  the next game against the computer starts with the human as X (FR-013).
 - "Games that are actually contested" (ConOps 2.1) is not a requirement on this feature:
   the ConOps deliberately makes the computer random for now, so a contested game against
   the computer is a future capability.
 - A draw is kept as a rule even though the ConOps doubts it is realistic on a 9-by-9 board.
-- Square entry uses numbers for both row and column; the exact way the two numbers are
-  typed (separator, order prompt) is a presentation detail left to planning, as long as
-  FR-004 holds.
 - In two-player mode the two people decide between themselves who plays X; the program
   does not track or swap who is who across "play again".
 - Returning to the start menu ends the series of games against the computer; the next

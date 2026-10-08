@@ -12,3 +12,12 @@ Records changes to `spec.md` and the reason for each, as required by the constit
   - FR-013: against the computer, the human is X in the first game from the start menu;
     marks swap on each "play again". Reason: fairer across a series of games. Answers the
     question left open in ConOps §2.2. Added User Story 2 scenarios 5–7 and two assumptions.
+- `/speckit-clarify` session; answers decided by the developer:
+  - Added FR-018: a leave-game command at every move prompt abandons the game (no result)
+    and returns to the start menu. Replaces the assumption that leaving mid-game was out of
+    scope. Added User Story 3 scenario 5; updated FR-005 and the unreadable-input edge case.
+  - Added FR-019: after each computer move the program names the square it took, as well as
+    redrawing the board. Updated User Story 2 scenario 2.
+  - FR-004 now fixes the move format: row then column on one line, separated by a space or
+    a comma (`4 7` or `4,7`). Removed the assumption that left the format to planning;
+    updated the unreadable-input edge case.

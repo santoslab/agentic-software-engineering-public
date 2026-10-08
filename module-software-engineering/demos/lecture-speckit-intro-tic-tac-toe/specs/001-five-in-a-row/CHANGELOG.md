@@ -31,3 +31,6 @@ Records changes to `spec.md` and the reason for each, as required by the constit
     no measure a test could fail (analysis A1).
   - "Grid" replaced by "board" throughout; "board" added to the glossary. Reason: one term
     for one concept, matching the contracts (analysis I3). No behavior change.
+  - User Story 3 scenario 6: "prints a short goodbye" aligned with FR-020 ("a single
+    goodbye line … within 1 second"). Reason: missed in the FR-020 rewording; found by the
+    second `/speckit-analyze` run (I7).

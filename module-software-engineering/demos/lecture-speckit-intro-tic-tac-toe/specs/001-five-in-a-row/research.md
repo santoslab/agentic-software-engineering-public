@@ -147,4 +147,6 @@ should not settle on its own:
   with a short goodbye message and without an error trace." The plan and contracts are
   written assuming this proposal is accepted; if the developer rejects or changes it, only
   `contracts/cli.md` §5 and its tests change.
-  **Status: accepted by the developer (2026-10-08); now spec FR-020 and US3-6.**
+  **Status: accepted by the developer (2026-10-08); now spec FR-020 and US3-6.** Wording
+  since tightened (single goodbye line, within 1 second); see FR-020 and the spec
+  CHANGELOG.

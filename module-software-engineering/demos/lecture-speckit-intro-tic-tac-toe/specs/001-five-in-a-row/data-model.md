@@ -32,7 +32,7 @@ be *described* (so the CLI can report "out of range"), but the engine rejects it
 
 | Field | Type | Rule |
 |-------|------|------|
-| cells | 9×9 grid of `Mark` or empty | All empty at the start of every game (FR-001). |
+| cells | 9×9 arrangement of squares, each a `Mark` or empty | All empty at the start of every game (FR-001). |
 
 Operations: `at(square) -> Mark | None`; `empty_squares() -> tuple[Square, ...]` in
 row-major order; `is_full()`.

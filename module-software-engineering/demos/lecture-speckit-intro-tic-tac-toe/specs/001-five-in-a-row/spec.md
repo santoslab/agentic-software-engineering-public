@@ -125,8 +125,8 @@ exits.
    enters the leave-game command, **Then** the game ends with no result announced and the
    start menu is shown.
 6. **Given** the program is waiting for any entry (a menu choice or a move), **When** input
-   ends or the player interrupts the program, **Then** the program prints a short goodbye
-   and ends, without an error trace.
+   ends or the player interrupts the program, **Then** the program prints a single goodbye
+   line and ends within 1 second, without an error trace.
 
 ---
 

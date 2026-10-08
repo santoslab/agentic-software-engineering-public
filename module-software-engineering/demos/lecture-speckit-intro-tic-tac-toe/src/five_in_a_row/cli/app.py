@@ -6,7 +6,7 @@ from typing import TextIO
 from five_in_a_row.engine import GameState, IllegalMove, Mark, Result
 from five_in_a_row.opponent import Opponent, RandomOpponent
 
-from .parse import parse_menu, parse_move
+from .parse import is_leave_command, parse_menu, parse_move
 from .render import (
     computer_move,
     move_prompt,
@@ -18,11 +18,16 @@ from .render import (
 
 TITLE = "Five-in-a-Row — 9×9, five or more in a line wins."
 START_MENU = ("Play the computer", "Play a friend", "Quit")
+GAME_OVER_MENU = ("Play again", "Back to the start menu")
 GOODBYE = "Goodbye."
 
 
 class _EndOfInput(Exception):
     """Input ended (EOF); the session ends as for an interrupt (C-17)."""
+
+
+class _LeaveGame(Exception):
+    """The player entered the leave-game command (C-9)."""
 
 
 class _App:
@@ -67,12 +72,50 @@ class _App:
             if choice == 3:
                 return
             if choice == 2:
-                self.two_player_game()
+                self.two_player_series()
             elif choice == 1:
-                # One opponent serves the whole series (contracts/cli.md §1).
-                self.computer_game(self._opponent_factory(), human=Mark.X)
+                self.computer_series()
             else:
                 self.say(f"'{entry.strip()}' is not a choice.")
+
+    def two_player_series(self) -> None:
+        """Games until the player goes back to the start menu (C-15, C-16)."""
+        while True:
+            try:
+                self.two_player_game()
+            except _LeaveGame:
+                return
+            if self.game_over_menu() == 2:
+                return
+
+    def computer_series(self) -> None:
+        """The human starts as X; marks swap on every "play again" (FR-013, C-15, C-16).
+
+        One opponent serves the whole series (contracts/cli.md §1).
+        """
+        opponent = self._opponent_factory()
+        human = Mark.X
+        while True:
+            try:
+                self.computer_game(opponent, human)
+            except _LeaveGame:
+                return
+            if self.game_over_menu() == 2:
+                return
+            human = human.other()
+
+    def game_over_menu(self) -> int:
+        """1 to play again, 2 to go back to the start menu (C-14)."""
+        while True:
+            self.say()
+            for number, label in enumerate(GAME_OVER_MENU, start=1):
+                self.say(f"  {number}  {label}")
+            self.say()
+            entry = self.ask("Choose 1 or 2:")
+            choice = parse_menu(entry, len(GAME_OVER_MENU))
+            if choice is not None:
+                return choice
+            self.say(f"'{entry.strip()}' is not a choice.")
 
 
     def two_player_game(self) -> None:
@@ -81,7 +124,6 @@ class _App:
         while state.result is Result.IN_PROGRESS:
             state = self.human_move(state)
         self.say(result_line(state))
-        # Interim (tasks.md T023): back to the start menu until US3 adds the game-over menu.
 
     def computer_game(self, opponent: Opponent, human: Mark) -> None:
         state = GameState.new()
@@ -92,7 +134,6 @@ class _App:
             else:
                 state = self.computer_turn(state, opponent)
         self.say(result_line(state, human))
-        # Interim (tasks.md T023): back to the start menu until US3 adds the game-over menu.
 
     def computer_turn(self, state: GameState, opponent: Opponent) -> GameState:
         """No input is read; the opponent's square is played and named (C-10)."""
@@ -111,6 +152,8 @@ class _App:
         """Ask until an accepted move; return the new state, board redrawn (C-6 to C-8)."""
         while True:
             entry = self.ask(move_prompt(state.turn))
+            if is_leave_command(entry):
+                raise _LeaveGame
             square = parse_move(entry)
             if square is None:
                 self.say(unreadable(entry.strip()))

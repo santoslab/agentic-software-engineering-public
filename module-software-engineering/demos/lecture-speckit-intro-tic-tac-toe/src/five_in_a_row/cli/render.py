@@ -15,7 +15,7 @@ def render_board(board: Board) -> str:
 
 
 def move_prompt(mark: Mark) -> str:
-    return f"{mark.value} to move — type row and column (e.g. 4 7):"
+    return f"{mark.value} to move — type row and column (e.g. 4 7), or m for the menu:"
 
 
 def rejection(reason: IllegalMoveReason, square: Square) -> str:

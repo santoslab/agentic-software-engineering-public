@@ -7,6 +7,13 @@ from five_in_a_row.engine import Square
 # Row then column: integers separated by spaces, or by a comma with optional spaces.
 _MOVE = re.compile(r"^\s*(-?\d+)\s*(?:,|\s)\s*(-?\d+)\s*$")
 
+LEAVE_COMMAND = "m"
+
+
+def is_leave_command(text: str) -> bool:
+    """`m` or `M`, surrounding spaces ignored (C-9). Checked before parse_move."""
+    return text.strip().lower() == LEAVE_COMMAND
+
 
 def parse_move(text: str) -> Square | None:
     """The square named by `text`, or None if it is not a row and column.

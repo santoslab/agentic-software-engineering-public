@@ -4,7 +4,7 @@ from typing import TextIO
 
 from five_in_a_row.engine import GameState, IllegalMove, Result
 
-from .parse import parse_move
+from .parse import parse_menu, parse_move
 from .render import move_prompt, rejection, render_board, result_line, unreadable
 
 TITLE = "Five-in-a-Row — 9×9, five or more in a line wins."
@@ -53,15 +53,16 @@ class _App:
             for number, label in enumerate(START_MENU, start=1):
                 self.say(f"  {number}  {label}")
             self.say()
-            entry = self.ask("Choose 1, 2 or 3:").strip()
-            if entry == "3":
+            entry = self.ask("Choose 1, 2 or 3:")
+            choice = parse_menu(entry, len(START_MENU))
+            if choice == 3:
                 return
-            if entry == "2":
+            if choice == 2:
                 self.two_player_game()
-                continue
-            if entry == "1":
+            elif choice == 1:
                 raise NotImplementedError("playing the computer arrives with User Story 2")
-            self.say(f"'{entry}' is not a choice.")
+            else:
+                self.say(f"'{entry.strip()}' is not a choice.")
 
 
     def two_player_game(self) -> None:

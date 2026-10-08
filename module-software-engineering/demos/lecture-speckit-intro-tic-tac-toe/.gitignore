@@ -8,3 +8,8 @@ __pycache__/
 
 # Generated conformance report (plan research.md R7)
 reports/
+
+# Build output
+dist/
+build/
+*.egg-info/

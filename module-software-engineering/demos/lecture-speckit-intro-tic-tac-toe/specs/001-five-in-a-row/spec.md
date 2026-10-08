@@ -6,8 +6,9 @@
 
 **Status**: Draft
 
-**Input**: User description: "@../ASE-seed-conops.md" — Concept of Operations sketch for a
-text-based tic-tac-toe variant on a 9-by-9 board, five in a row to win, played at a terminal
+**Input**: User description: "@../ASE-seed-conops.md" (now at
+[`demo-seeds/ASE-seed-conops.md`](../../demo-seeds/ASE-seed-conops.md)) — Concept of
+Operations sketch for a text-based tic-tac-toe variant on a 9-by-9 board, five in a row to win, played at a terminal
 against the computer or against a friend at the same keyboard.
 
 ## Clarifications

@@ -29,6 +29,14 @@ This folder holds the materials for live demonstrations run during lectures.
   `demo-script-lecture-04.md`, `starter/` (the `t0` state), and `reference/` (the
   `t5` state — the worked example the Project 1 brief cites step by step); its
   README maps the tags.
+- [`lecture-speckit-intro-tic-tac-toe/`](lecture-speckit-intro-tic-tac-toe/) — the
+  Spec Kit introduction, a companion to `lecture-03-game-demo/`: the same
+  five-in-a-row game built with GitHub Spec Kit and Claude Code, from a constitution
+  through `specify`, `clarify`, `plan`, `tasks`, `analyze` and `implement`, with every
+  step kept as a commit. Contains `demo-seeds/` (the developer's inputs), the Spec
+  Kit artifacts under `specs/001-five-in-a-row/` with the session transcript (Markdown
+  and PDF), and the Python game with 102 tests tagged by spec ID; its README maps
+  the commits.
 - [`lecture-05-reversi-audit/`](lecture-05-reversi-audit/) — the Lecture 05
   walk-through of the Project 1 brief: step 1 (the audit of the Reversi sketch)
   from rehearsal captures, steps 2 to 5 by opening the reference game's

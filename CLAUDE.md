@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Public materials for a graduate course on agentic software engineering. It is almost entirely Markdown content — there is no application to build at the root. The runnable code is the Python starter in `weeks-01-03/student-repo/tictactoe-starter/`, the reference game in `module-software-engineering/demos/lecture-03-game-demo/reference/` (99 tests under a 100% branch-coverage gate), and `check_notes.py` in the note-set demo; everything else "builds" into slide decks (Marp) or handout PDFs (Pandoc).
+Public materials for a graduate course on agentic software engineering. It is almost entirely Markdown content — there is no application to build at the root. The runnable code is the Python starter in `weeks-01-03/student-repo/tictactoe-starter/`, the reference game in `module-software-engineering/demos/lecture-03-game-demo/reference/` (99 tests under a 100% branch-coverage gate), the Spec Kit build of the same game in `module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/` (`uv run pytest`), and `check_notes.py` in the note-set demo; everything else "builds" into slide decks (Marp) or handout PDFs (Pandoc).
 
 ## Commands
 

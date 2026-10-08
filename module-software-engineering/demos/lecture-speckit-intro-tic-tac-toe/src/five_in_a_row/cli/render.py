@@ -31,8 +31,18 @@ def unreadable(entry: str) -> str:
     return f"'{entry}' was not understood. Type a row and a column, e.g. 4 7."
 
 
-def result_line(state: GameState) -> str:
-    """Two-player result (C-12, C-13)."""
+def computer_move(mark: Mark, square: Square) -> str:
+    """C-10, FR-019."""
+    return f"Computer ({mark.value}) plays row {square.row}, column {square.col}."
+
+
+def result_line(state: GameState, human: Mark | None = None) -> str:
+    """The result (C-12, C-13); `human` is the human's mark in a game against the computer."""
     if state.result is Result.DRAW:
         return "It's a draw."
-    return f"{state.winner.value} wins!"
+    winner = state.winner
+    if human is None:
+        return f"{winner.value} wins!"
+    if winner is human:
+        return f"You win! ({winner.value})"
+    return f"The computer wins! ({winner.value})"

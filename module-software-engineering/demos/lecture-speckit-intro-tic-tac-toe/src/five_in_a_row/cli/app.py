@@ -1,11 +1,20 @@
 """The session loop: start menu, games, end of input (contracts/cli.md)."""
 
+from collections.abc import Callable
 from typing import TextIO
 
-from five_in_a_row.engine import GameState, IllegalMove, Result
+from five_in_a_row.engine import GameState, IllegalMove, Mark, Result
+from five_in_a_row.opponent import Opponent, RandomOpponent
 
 from .parse import parse_menu, parse_move
-from .render import move_prompt, rejection, render_board, result_line, unreadable
+from .render import (
+    computer_move,
+    move_prompt,
+    rejection,
+    render_board,
+    result_line,
+    unreadable,
+)
 
 TITLE = "Five-in-a-Row — 9×9, five or more in a line wins."
 START_MENU = ("Play the computer", "Play a friend", "Quit")
@@ -60,7 +69,8 @@ class _App:
             if choice == 2:
                 self.two_player_game()
             elif choice == 1:
-                raise NotImplementedError("playing the computer arrives with User Story 2")
+                # One opponent serves the whole series (contracts/cli.md §1).
+                self.computer_game(self._opponent_factory(), human=Mark.X)
             else:
                 self.say(f"'{entry.strip()}' is not a choice.")
 
@@ -72,6 +82,25 @@ class _App:
             state = self.human_move(state)
         self.say(result_line(state))
         # Interim (tasks.md T023): back to the start menu until US3 adds the game-over menu.
+
+    def computer_game(self, opponent: Opponent, human: Mark) -> None:
+        state = GameState.new()
+        self.show_board(state)
+        while state.result is Result.IN_PROGRESS:
+            if state.turn is human:
+                state = self.human_move(state)
+            else:
+                state = self.computer_turn(state, opponent)
+        self.say(result_line(state, human))
+        # Interim (tasks.md T023): back to the start menu until US3 adds the game-over menu.
+
+    def computer_turn(self, state: GameState, opponent: Opponent) -> GameState:
+        """No input is read; the opponent's square is played and named (C-10)."""
+        square = opponent.choose_move(state)
+        new_state = state.play(square)
+        self.say(computer_move(state.turn, square))
+        self.show_board(new_state)
+        return new_state
 
     def show_board(self, state: GameState) -> None:
         self.say()
@@ -95,6 +124,10 @@ class _App:
             return new_state
 
 
-def run(stdin: TextIO, stdout: TextIO, opponent_factory=None) -> int:
+def run(
+    stdin: TextIO,
+    stdout: TextIO,
+    opponent_factory: Callable[[], Opponent] = RandomOpponent,
+) -> int:
     """Run one session on the given streams; return the exit status (contracts/cli.md §1)."""
     return _App(stdin, stdout, opponent_factory).run()

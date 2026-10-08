@@ -181,11 +181,11 @@ to the start menu, then quit (spec US3; quickstart M3, M5–M7).
 
 **Purpose**: Close evidence gaps, validate end to end, and leave the project easy to run.
 
-- [ ] T036 [P] Write `tests/cli/test_timing.py`: from `run()` starting to the first move prompt after input `2` takes under 15 seconds (`SC-001`)
-- [ ] T037 [P] Create `tests/test_manual_checks.py` with one test tagged `req("SC-002")` that calls `pytest.skip("manual: quickstart.md — a person who watched one game plays one unaided")`, so the conformance report shows SC-002 as **manual** rather than **no evidence**
-- [ ] T038 Run `uv run pytest`; open `reports/conformance.md` and confirm: no **FAIL**, no **no evidence**, no "Unknown IDs", and SC-002 is the only **manual** row. If any ID lacks evidence, add the missing test in the matching `tests/` subdirectory before continuing
-- [ ] T039 [P] Create `README.md` at the project root: one paragraph on the game, how to run it (`uv run five-in-a-row` or `python -m five_in_a_row`), how to run the tests and where the conformance report is written, and links to `specs/001-five-in-a-row/spec.md`, `plan.md`, and `quickstart.md`
-- [ ] T040 Walk through quickstart.md §2 (M1–M8) by hand with `uv run five-in-a-row`, and report each walkthrough's outcome to the developer; any mismatch is reported, not fixed silently (constitution Principle III)
+- [X] T036 [P] Write `tests/cli/test_timing.py`: from `run()` starting to the first move prompt after input `2` takes under 15 seconds (`SC-001`)
+- [X] T037 [P] Create `tests/test_manual_checks.py` with one test tagged `req("SC-002")` that calls `pytest.skip("manual: quickstart.md — a person who watched one game plays one unaided")`, so the conformance report shows SC-002 as **manual** rather than **no evidence**
+- [X] T038 Run `uv run pytest`; open `reports/conformance.md` and confirm: no **FAIL**, no **no evidence**, no "Unknown IDs", and SC-002 is the only **manual** row. If any ID lacks evidence, add the missing test in the matching `tests/` subdirectory before continuing
+- [X] T039 [P] Create `README.md` at the project root: one paragraph on the game, how to run it (`uv run five-in-a-row` or `python -m five_in_a_row`), how to run the tests and where the conformance report is written, and links to `specs/001-five-in-a-row/spec.md`, `plan.md`, and `quickstart.md`
+- [X] T040 Walk through quickstart.md §2 (M1–M8) by hand with `uv run five-in-a-row`, and report each walkthrough's outcome to the developer; any mismatch is reported, not fixed silently (constitution Principle III)
 
 ---
 

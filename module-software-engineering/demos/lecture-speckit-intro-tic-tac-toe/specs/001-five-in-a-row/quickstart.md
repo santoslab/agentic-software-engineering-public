@@ -3,7 +3,7 @@
 **Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md)
 
 How to check, once the feature is built, that it conforms to its specification. Paths
-are relative to the project root (`SpecKit/TicTacToe/`).
+are relative to the project root (this demo folder).
 
 ## Prerequisites
 

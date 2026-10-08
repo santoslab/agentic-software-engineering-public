@@ -88,7 +88,7 @@ specs/001-five-in-a-row/
 └── tasks.md             # Phase 2 (/speckit-tasks; not created here)
 ```
 
-### Source Code (project root `SpecKit/TicTacToe/`)
+### Source Code (project root: this demo folder)
 
 ```text
 pyproject.toml                    # package metadata, console script, pytest dev group

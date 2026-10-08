@@ -21,7 +21,7 @@ checked on its own.
 
 - **[P]**: Can run in parallel (different files, no dependencies on incomplete tasks)
 - **[Story]**: Which user story this task belongs to (US1, US2, US3)
-- All paths are relative to the project root `SpecKit/TicTacToe/`
+- All paths are relative to the project root (this demo folder)
 
 ## Conventions every task follows
 

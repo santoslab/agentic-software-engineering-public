@@ -4,9 +4,11 @@ A developer and an AI coding agent (Claude Code) take a small terminal game from
 
 **What is shown:** everything the developer typed, the agent's questions and the developer's answers, and the agent's final message for each request — for each Spec Kit command, the report it produced at the end.
 
-**What is omitted:** the text of each Spec Kit command (the skill instructions the agent receives), the agent's tool calls and their output (file reads, edits, shell commands, test runs), intermediate progress notes, and session metadata. The seed documents the developer referenced (`ASE-seed-development-rules.md`, `ASE-seed-conops.md`) are not reproduced; the artifacts produced from them are in this feature folder.
+**What is omitted:** the text of each Spec Kit command (the skill instructions the agent receives), the agent's tool calls and their output (file reads, edits, shell commands, test runs), intermediate progress notes, and session metadata. The seed documents the developer referenced (`ASE-seed-development-rules.md`, `ASE-seed-conops.md`) are not reproduced in the transcript; they are in this demo's `demo-seeds/` folder, and the artifacts produced from them are in this feature folder.
 
-**Session date:** 2026-10-08. **Project:** `SpecKit/TicTacToe`. **Feature folder:** `specs/001-five-in-a-row/`.
+**Session date:** 2026-10-08. **Project:** `SpecKit/TicTacToe` in the development repository, published here as this demo folder. **Feature folder:** `specs/001-five-in-a-row/`.
+
+*Editor's note for publication: the session took place in a private development repository, where the seed documents sat one folder above the project (hence `@../ASE-seed-….md` in the commands); they are now in this demo's `demo-seeds/` folder. Two mentions of private prototype folders were reworded. Commit hashes cited by the agent are from the development repository; the demo's README maps each to its commit here.*
 
 ## Contents
 
@@ -327,7 +329,7 @@ The proposed rule, **P1**: "If input ends or the player interrupts the program a
 - The plan includes a table showing which single module changes for each likely enhancement: a smarter opponent, a running score, another front end, or different rules.
 
 **Decisions I made that you may want to override:**
-- **Language:** Python 3.12 or later with only the standard library at run time, and pytest run through `uv` for tests. You hadn't named a language; I chose Python because the sibling experiments in `tic-tac-toe-project/` use Python and pytest.
+- **Language:** Python 3.12 or later with only the standard library at run time, and pytest run through `uv` for tests. You hadn't named a language; I chose Python because earlier prototypes of this game used Python and pytest.
 - **Leave-game command:** `m`. I avoided `q` because "quit" at the start menu ends the program.
 - **Menus:** numbered, so the player types `1`, `2` or `3`.
 - **Move entry:** a space or a comma separates row and column, and spaces around the comma are allowed (`4 , 7`).
@@ -414,7 +416,7 @@ Two of these come straight from the plan rather than being general habit:
 - **`reports/`**: the plan already says the conformance report is generated and not committed (`research.md` R7). The rule just makes that happen.
 - **`.venv/` and `.pytest_cache/`**: `uv run pytest` will create both.
 
-If you want it repo-wide instead, add `__pycache__/` and `*.py[cod]` to the root `.gitignore`. That would also cover the Python sibling experiments in `tic-tac-toe-project/`.
+If you want it repo-wide instead, add `__pycache__/` and `*.py[cod]` to the root `.gitignore`. That would also cover the earlier Python prototypes in the same repository.
 
 Should I create the project-level file and commit it?
 

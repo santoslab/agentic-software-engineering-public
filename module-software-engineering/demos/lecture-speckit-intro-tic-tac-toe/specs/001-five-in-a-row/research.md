@@ -13,11 +13,11 @@ decided here (constitution, Principle IV).
 - **Decision**: Python 3.12 or later, standard library only at run time.
 - **Rationale**: The program is a small text game on one laptop (spec, Assumptions); it
   needs no third-party run-time libraries. Python 3.14 is already installed, `uv` is
-  available for environments, and the sibling experiments in `tic-tac-toe-project/` use
-  Python + pytest, so results stay comparable across experiments. 3.12 is the floor
+  available for environments, and earlier prototypes of this game used Python + pytest,
+  so results stay comparable across experiments. 3.12 is the floor
   because it is the oldest release still receiving security fixes and has every language
   feature the contracts use (dataclasses with `slots`, `enum`, `typing.Protocol`).
-- **Alternatives considered**: Java (the `9by9_Java` sibling) — more ceremony for a
+- **Alternatives considered**: Java (an earlier Java prototype) — more ceremony for a
   single-process console program; Rust/Go — no benefit at this scale and less familiar
   for a teaching example.
 

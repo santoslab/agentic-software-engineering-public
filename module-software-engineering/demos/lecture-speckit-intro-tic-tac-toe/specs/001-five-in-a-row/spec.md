@@ -28,10 +28,10 @@ against the computer or against a friend at the same keyboard.
 ### User Story 1 - Two players at one keyboard (Priority: P1)
 
 Two people sit at one keyboard. One starts the program and chooses "play a friend". The
-program draws an empty 9-by-9 grid and says it is X's turn. The players take turns typing
-the row and column of the square they want; after each move the program redraws the grid
+program draws an empty 9-by-9 board and says it is X's turn. The players take turns typing
+the row and column of the square they want; after each move the program redraws the board
 and says whose turn it is. When one player gets five marks in a row — across, down, or on a
-diagonal — the program says who won. If the grid fills with no winner, it says the game is
+diagonal — the program says who won. If the board fills with no winner, it says the game is
 a draw.
 
 **Why this priority**: This is the whole game — board, turns, legal moves, win and draw —
@@ -43,7 +43,7 @@ both sides: one where X wins, one where O wins, and one that ends in a draw.
 **Acceptance Scenarios**:
 
 1. **Given** the start menu, **When** the player chooses "play a friend", **Then** an empty
-   9-by-9 grid is drawn and the program says it is X's turn.
+   9-by-9 board is drawn and the program says it is X's turn.
 2. **Given** it is X's turn and the square at row 5, column 5 is empty, **When** the player
    enters row 5, column 5, **Then** an X appears in that square and the program says it is
    O's turn.
@@ -78,7 +78,7 @@ or a draw is announced.
 **Acceptance Scenarios**:
 
 1. **Given** the start menu, **When** the player chooses "play the computer", **Then** an
-   empty grid is drawn, the human plays X, and the program asks the human for the first
+   empty board is drawn, the human plays X, and the program asks the human for the first
    move.
 2. **Given** it is the computer's turn, **When** the turn begins, **Then** the computer
    places its mark on an empty square without waiting for input, the program states the row
@@ -103,7 +103,7 @@ or a draw is announced.
 
 The program opens on a start menu offering "play the computer", "play a friend", and
 "quit". When a game ends, the program shows the result and offers "play again" or "back to
-the start menu". "Play again" starts a new game in the same mode with an empty grid.
+the start menu". "Play again" starts a new game in the same mode with an empty board.
 
 **Why this priority**: These are the transitions between games; useful, but a single game
 already delivers the core value.
@@ -119,7 +119,7 @@ exits.
 2. **Given** a game has ended, **When** the result is shown, **Then** the player is offered
    "play again" and "back to the start menu".
 3. **Given** a game in "play a friend" mode has ended, **When** the player chooses "play
-   again", **Then** a new game in the same mode begins with an empty grid and X to move.
+   again", **Then** a new game in the same mode begins with an empty board and X to move.
 4. **Given** the start menu, **When** the player chooses "quit", **Then** the program ends.
 5. **Given** a game is in progress and the program is asking for a move, **When** the player
    enters the leave-game command, **Then** the game ends with no result announced and the
@@ -136,7 +136,8 @@ exits.
   rejected, the program says why, the board is unchanged, and the same player is asked again.
 - **Out-of-range square**: the player enters a row or column outside 1–9. Rejected as above.
 - **Unreadable input**: the player enters something that is not a row and column in the
-  form of FR-004 (letters, one number, three numbers, a blank line) and is not the leave-game command (FR-018). Rejected as above.
+  form of FR-004 (letters, one number, three numbers, a blank line) and is not the
+  leave-game command (FR-018). Rejected as above.
 - **Invalid menu choice**: the player enters something that is not one of the offered menu
   options. The program says so and shows the same choices again.
 - **More than five in a row**: a move completes six or more marks in a line, e.g. by
@@ -146,7 +147,8 @@ exits.
 - **Two lines at once**: a single move completes five in a row in two directions. This is
   one win for the player who moved.
 - **End of input or interrupt**: the terminal's input ends (e.g. Ctrl-D) or the player
-  interrupts the program (e.g. Ctrl-C) at any prompt. The program ends promptly (FR-020).
+  interrupts the program (e.g. Ctrl-C) at any prompt. The program prints one goodbye line
+  and ends (FR-020).
 
 ## Requirements *(mandatory)*
 
@@ -154,17 +156,17 @@ exits.
 
 **Board and moves**
 
-- **FR-001**: The game MUST be played on a square grid of 9 rows and 9 columns, all empty
-  at the start of each game.
+- **FR-001**: The game MUST be played on a board of 9 rows and 9 columns of squares, all
+  empty at the start of each game.
 - **FR-002**: The two marks MUST be X and O, and X MUST move first in every game.
 - **FR-003**: Players MUST alternate turns, placing exactly one mark per turn.
 - **FR-004**: A player MUST choose a square by entering, on one line, its row and then its
   column, each a number from 1 to 9, separated by a space or a comma (e.g. `4 7` or `4,7`
   is row 4, column 7). Row 1 is the top row and column 1 the leftmost column.
-- **FR-005**: The system MUST accept a move only onto an empty square within the grid. Any
+- **FR-005**: The system MUST accept a move only onto an empty square within the board. Any
   other entry, except the leave-game command (FR-018), MUST be rejected with a message
   saying why, leave the board unchanged, and ask the same player again.
-- **FR-006**: The system MUST draw the grid, showing every mark and the row and column
+- **FR-006**: The system MUST draw the board, showing every mark and the row and column
   numbers, at the start of the game and after every accepted move.
 - **FR-007**: Before each human move the system MUST say whose turn it is, naming the mark.
 
@@ -193,7 +195,7 @@ exits.
 - **FR-014**: At startup the system MUST show a start menu offering: play the computer,
   play a friend, quit.
 - **FR-015**: When a game ends, the system MUST show the result and offer: play again (same
-  mode, new empty grid) or return to the start menu.
+  mode, new empty board) or return to the start menu.
 - **FR-016**: Choosing "quit" from the start menu MUST end the program.
 - **FR-017**: An entry that is not one of the offered menu choices MUST be rejected with a
   message and the same menu shown again.
@@ -203,11 +205,11 @@ exits.
 - **FR-019**: After every computer move the system MUST state, in words, the row and column
   of the square the computer took, in addition to redrawing the board (FR-006).
 - **FR-020**: If input ends or the player interrupts the program at any prompt, the program
-  MUST end promptly with a short goodbye message and without an error trace.
+  MUST print a single goodbye line and end within 1 second, without an error trace.
 
 ### Key Entities
 
-- **Board**: the 9-by-9 grid of squares; each square is empty or holds one mark.
+- **Board**: the 9-by-9 arrangement of squares; each square is empty or holds one mark.
 - **Square**: one position on the board, identified by row (1–9) and column (1–9).
 - **Mark**: X or O; the symbol a player places.
 - **Player**: a side in a game, holding one mark; either a person at the keyboard or the
@@ -252,5 +254,6 @@ exits.
   "play the computer" starts again with the human as X (FR-013).
 - Out of scope (ConOps §4, future capabilities): a smarter computer opponent; a running
   score across games.
-- The ConOps glossary is TBD. This spec uses: **square** (not cell), **mark**, **line**,
-  **draw** (not tie). "Play again" in this spec is what the ConOps calls a rematch.
+- The ConOps glossary is TBD. This spec uses: **board** (not grid), **square** (not cell),
+  **mark**, **line**, **draw** (not tie) for the result. "Draw the board" means display it.
+  "Play again" in this spec is what the ConOps calls a rematch.

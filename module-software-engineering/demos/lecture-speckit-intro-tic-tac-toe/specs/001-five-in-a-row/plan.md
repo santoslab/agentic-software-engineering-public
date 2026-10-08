@@ -92,6 +92,8 @@ specs/001-five-in-a-row/
 
 ```text
 pyproject.toml                    # package metadata, console script, pytest dev group
+uv.lock                           # locked dev environment (committed)
+README.md                         # how to run the game and the tests
 src/five_in_a_row/
 ├── __init__.py
 ├── __main__.py                   # python -m five_in_a_row → cli.main()
@@ -111,11 +113,16 @@ src/five_in_a_row/
     └── render.py                 # board drawing and message text (C-5, C-10, C-12)
 
 tests/
-├── conftest.py                   # `req` marker + conformance-report plugin (R7)
+├── conftest.py                   # conformance-report plugin: records `req` tags, writes report (R7)
+├── conformance.py                # reads spec IDs from spec.md (used by conftest.py)
+├── positions.py                  # shared board positions and move sequences
+├── test_conformance.py           # checks the spec-ID reader against spec.md
 ├── test_architecture.py          # enforces the dependency rule (R3)
+├── test_manual_checks.py         # placeholders for manually checked criteria (SC-002)
 ├── engine/                       # evidence for contracts/engine.md
 ├── opponent/                     # evidence for contracts/opponent.md
 └── cli/                          # transcript tests for contracts/cli.md
+    └── conftest.py               # ScriptedOpponent fake and session helper
 
 reports/                          # generated; git-ignored
 └── conformance.md

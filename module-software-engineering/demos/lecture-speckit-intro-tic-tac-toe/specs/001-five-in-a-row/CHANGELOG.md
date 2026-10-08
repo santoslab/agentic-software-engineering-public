@@ -25,3 +25,9 @@ Records changes to `spec.md` and the reason for each, as required by the constit
   interrupts the program at any prompt, it ends promptly with a short goodbye and no error
   trace. Decided by the developer: accepted proposal P1 raised during `/speckit-plan`
   (research.md), which found the spec silent on this.
+- `/speckit-analyze` follow-up, decided by the developer:
+  - FR-020 and its edge case: "end promptly with a short goodbye message" replaced by
+    "print a single goodbye line and end within 1 second". Reason: the original wording had
+    no measure a test could fail (analysis A1).
+  - "Grid" replaced by "board" throughout; "board" added to the glossary. Reason: one term
+    for one concept, matching the contracts (analysis I3). No behavior change.

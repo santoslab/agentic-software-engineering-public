@@ -25,6 +25,10 @@ exit, including quit, end of input, and interrupt.
 opponent_factory: Callable[[], Opponent] = RandomOpponent) -> int`. The console script
 calls it with the real terminal streams.
 
+`run()` calls `opponent_factory()` once each time "Play the computer" is chosen from the
+start menu, and uses that opponent for every game of the series ("play again"), until the
+player returns to the start menu. It is never called in two-player games.
+
 ## 2. Start menu (FR-014, FR-016, FR-017)
 
 ```text
@@ -114,7 +118,8 @@ Choose 1 or 2:
 ## 5. End of input and interrupt (FR-020)
 
 - **C-17** If input ends (EOF) or the player interrupts (Ctrl-C) at any prompt, the
-  program prints a one-line goodbye and exits with status 0, without a traceback.
+  program prints a one-line goodbye and exits with status 0 within 1 second, without a
+  traceback.
 
 This rule implements FR-020, added to the spec when the developer accepted proposal P1
 ([research.md](../research.md#proposed-specification-corrections)).

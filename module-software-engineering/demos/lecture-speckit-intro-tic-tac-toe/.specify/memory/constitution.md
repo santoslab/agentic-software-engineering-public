@@ -1,35 +1,3 @@
-<!--
-Sync Impact Report
-==================
-Version change: (unratified template) → 1.0.0
-Source: ../ASE-seed-development-rules.md (seed development rules)
-
-Modified principles (template placeholder → new title):
-  - [PRINCIPLE_1_NAME] → I. Specification and Realization
-  - [PRINCIPLE_2_NAME] → II. Specification Before Realization
-  - [PRINCIPLE_3_NAME] → III. A Person Decides Which Side Changes
-  - [PRINCIPLE_4_NAME] → IV. Derived Documents Follow Governing Ones
-  - [PRINCIPLE_5_NAME] → V. Reports
-
-Added sections:
-  - Document Hierarchy (template SECTION_2) — inferred from Spec Kit's artifact chain,
-    not stated in the seed; review it.
-  - Records of Change (template SECTION_3) — collects the recording obligations that
-    Principles II and III impose, in one place; adds no new obligation except the
-    changelog location TODO below.
-  - Governance
-
-Removed sections: none
-
-Templates (not modified by this command; they read the constitution at runtime):
-  - .specify/templates/plan-template.md — "Constitution Check" gate will pick up I–V.
-  - .specify/templates/spec-template.md, tasks-template.md — no edits required.
-
-Follow-up TODOs:
-  - TODO(CHANGELOG_LOCATION): the seed requires a changelog entry when a specification
-    moves but does not say where the changelog lives.
--->
-
 # TicTacToe Constitution
 
 ## Core Principles
@@ -99,7 +67,8 @@ For the purposes of Principle IV, documents govern in this order, each governing
 below it:
 
 1. This constitution.
-2. Feature specifications (`specs/<feature>/spec.md`).
+2. Feature specifications (`specs/<feature>/spec.md`). Each specification's changelog
+   (`specs/<feature>/CHANGELOG.md`) is a record of its history, not a derived document.
 3. Documents derived from a specification: implementation plans (`plan.md`), research,
    data models, contracts, quickstarts, and task lists (`tasks.md`).
 4. Realizations: source code and the configuration that builds it.
@@ -118,7 +87,8 @@ The principles above require the following records:
 - When a specification/realization disagreement is resolved, the decision and its reason
   MUST be recorded: in the changelog if the specification changed, in the commit message
   if the realization changed.
-- The changelog location is TODO(CHANGELOG_LOCATION): not yet decided.
+- The specification changelog lives with the specification it records: each feature's
+  changelog is `specs/<feature>/CHANGELOG.md`, beside its `spec.md`.
 
 ## Governance
 
@@ -134,4 +104,4 @@ plan, task list, or agent instruction conflicts with it, the constitution wins.
   against Principles I–V before work begins, and any deviation MUST be justified in the
   plan's Complexity Tracking section.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-08 | **Last Amended**: 2026-10-08
+**Version**: 1.0.1 | **Ratified**: 2026-10-08 | **Last Amended**: 2026-10-08

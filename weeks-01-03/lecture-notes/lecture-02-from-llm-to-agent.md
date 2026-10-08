@@ -36,7 +36,7 @@ while True:
     # send to the model a string combining the system prompt, message history,
     #  ..and list of availabel tools
     response = model(system=SYSTEM_PROMPT, messages=messages, tools=TOOLS)
-    # add the model's reponse to the message history
+    # add the model's response to the message history
     messages.append(assistant_message(response))
     if response.stop_reason != "tool_use":
         break                                  # the model is done acting

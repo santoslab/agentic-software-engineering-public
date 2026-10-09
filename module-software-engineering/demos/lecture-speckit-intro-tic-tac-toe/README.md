@@ -18,6 +18,10 @@ git log --reverse --stat -- module-software-engineering/demos/lecture-speckit-in
 
 ## What is here
 
+- [`tutorial/speckit-walkthrough.md`](tutorial/speckit-walkthrough.md) — a student
+  tutorial for readers new to Spec Kit: how the tool is implemented, what `specify init`
+  installed, the greenfield workflow, and each step of the session below with its
+  prompt, the agent's report, and a walkthrough of the artifacts it produced.
 - [`demo-seeds/`](demo-seeds/) — the developer's inputs: the development rules given to
   `/speckit-constitution`, the concept-of-operations sketch given to `/speckit-specify`
   (a shorter variant of the Lecture 03 demo's `starter/CONOPS-sketch.md`), and the

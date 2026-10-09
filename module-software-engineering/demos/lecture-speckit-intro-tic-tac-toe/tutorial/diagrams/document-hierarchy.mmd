@@ -1,0 +1,39 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart TD
+    C["1. Constitution<br/>.specify/memory/constitution.md v1.0.1"]
+    S["2. Feature specification<br/>specs/001-five-in-a-row/spec.md"]
+    CL["CHANGELOG.md<br/>record of spec.md's history, not a derived document"]
+    subgraph D["3. Derived documents"]
+        direction LR
+        P["plan.md"]
+        R["research.md<br/>R1–R8, P1"]
+        DM["data-model.md"]
+        K["contracts/<br/>engine, opponent, cli"]
+        Q["quickstart.md"]
+        T["tasks.md<br/>T001–T040"]
+    end
+    subgraph RZ["4. Realization"]
+        direction LR
+        SRC["src/five_in_a_row/"]
+        TST["tests/<br/>evidence (Principle I)"]
+    end
+    REP["reports/conformance.md<br/>generated on every test run (Principle V)"]
+    C -- "governs" --> S
+    S -- "governs" --> D
+    D -- "governs" --> RZ
+    S -. "changes recorded in" .-> CL
+    TST -- "writes" --> REP
+    S -. "IDs read by tests/conformance.py" .-> REP
+    style C fill:#310066,color:#ffffff,stroke:#310066

@@ -1,0 +1,35 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    CON["/speckit-constitution<br/>→ .specify/memory/constitution.md"]
+    SPEC["/speckit-specify<br/>→ specs/NNN-name/spec.md,<br/>checklists/requirements.md, .specify/feature.json"]
+    CLA["/speckit-clarify<br/>→ spec.md, Clarifications section"]
+    PLAN["/speckit-plan<br/>→ plan.md, research.md, data-model.md,<br/>contracts/, quickstart.md"]
+    TASKS["/speckit-tasks<br/>→ tasks.md"]
+    ANA["/speckit-analyze<br/>→ report in chat (read-only)"]
+    IMPL["/speckit-implement<br/>→ src/, tests/, commits; tasks.md marked [X]"]
+    CHK["/speckit-checklist<br/>→ checklists/DOMAIN.md"]
+    CONV["/speckit-converge<br/>→ tasks.md: Phase N Convergence"]
+    ISS["/speckit-taskstoissues<br/>→ GitHub issues"]
+    CON --> SPEC --> CLA --> PLAN --> TASKS --> ANA --> IMPL
+    ANA -. "edits the developer approves" .-> SPEC
+    ANA -.-> PLAN
+    ANA -.-> TASKS
+    CHK -.-> PLAN
+    TASKS -.-> ISS
+    IMPL -.-> CONV
+    CONV -.-> IMPL
+    style CHK fill:#ffffff,stroke-dasharray: 5 5
+    style CONV fill:#ffffff,stroke-dasharray: 5 5
+    style ISS fill:#ffffff,stroke-dasharray: 5 5

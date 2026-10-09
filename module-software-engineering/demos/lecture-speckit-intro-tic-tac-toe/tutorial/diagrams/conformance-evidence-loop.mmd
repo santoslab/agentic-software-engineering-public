@@ -1,0 +1,29 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    SPEC["specs/001-five-in-a-row/spec.md<br/>FR-nnn, SC-nnn, numbered Given/When/Then,<br/>Edge Cases bullets"]
+    IDS["tests/conformance.py<br/>spec_ids(): FR-001…FR-020, SC-001…SC-006,<br/>US1-1…US3-6, EDGE-slug  (54 IDs)"]
+    TESTS["tests/**/test_*.py<br/>@pytest.mark.req(FR-008, US1-6)<br/>70 functions, 102 tests"]
+    MAN["tests/test_manual_checks.py<br/>SC-002 → pytest.skip(manual: …)"]
+    RUN["uv run pytest<br/>--strict-markers; req marker in pyproject.toml"]
+    PLUG["tests/conftest.py plugin<br/>collects req tags, records outcomes"]
+    REP["reports/conformance.md (git-ignored)<br/>per ID: tests and status<br/>pass · FAIL · manual · partial · no evidence · Unknown IDs"]
+    SPEC -- "regexes on bold IDs and headings" --> IDS
+    IDS --> PLUG
+    TESTS --> RUN
+    MAN --> RUN
+    RUN --> PLUG
+    PLUG -- "pytest_sessionfinish" --> REP
+    REP -. "a new FR with no tagged test shows as no evidence" .-> SPEC
+    style REP fill:#310066,color:#ffffff,stroke:#310066

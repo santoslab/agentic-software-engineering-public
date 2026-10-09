@@ -1,0 +1,33 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+sequenceDiagram
+    autonumber
+    actor Dev as Developer
+    participant CC as Claude Code (agent)
+    participant SK as .claude/skills/speckit-plan/SKILL.md
+    participant PY as .specify/scripts/python/setup_plan.py
+    participant FS as project files
+    Dev->>CC: /speckit-plan The plan should address the engine module, …
+    CC->>SK: load skill, substitute $ARGUMENTS
+    SK-->>CC: hook check (no extensions.yml), Outline, Phases, Completion Report
+    CC->>PY: python3 .specify/scripts/python/setup_plan.py --json
+    PY->>FS: read .specify/feature.json → specs/001-five-in-a-row
+    PY->>FS: copy templates/plan-template.md → plan.md (only if absent)
+    PY-->>CC: {"FEATURE_SPEC":…, "IMPL_PLAN":…, "FEATURE_DIR":…, "BRANCH":"001-five-in-a-row"}
+    CC->>FS: read spec.md, .specify/memory/constitution.md, plan.md (template)
+    CC->>FS: write research.md (Phase 0: R1–R8, proposal P1)
+    CC->>FS: write data-model.md, contracts/*.md, quickstart.md, then fill plan.md (Phase 1)
+    CC-->>Dev: completion report (transcript section 5) with open item P1
+    Dev->>CC: commit with message "SPECKIT tic tac toe - initial result of speckit-plan"
+    CC->>FS: git commit → ba62775

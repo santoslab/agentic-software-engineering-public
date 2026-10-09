@@ -1,0 +1,31 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    subgraph PKG["src/five_in_a_row/  (public API = each subpackage's __init__.py)"]
+        direction LR
+        CLI["cli<br/>app, parse, render<br/>the only module with terminal I/O"]
+        OPP["opponent<br/>Opponent protocol, RandomOpponent"]
+        ENG["engine<br/>Mark, Square, Board, GameState<br/>immutable values, no I/O"]
+    end
+    CLI --> OPP --> ENG
+    CLI --> ENG
+    ARCH["tests/test_architecture.py<br/>four tests parse imports with ast<br/>research.md R3; no req tag"]
+    TC["tests/cli/<br/>evidence for contracts/cli.md"]
+    TO["tests/opponent/<br/>evidence for contracts/opponent.md"]
+    TE["tests/engine/<br/>evidence for contracts/engine.md"]
+    ARCH -. "checks: nothing points back" .-> PKG
+    TC -.-> CLI
+    TO -.-> OPP
+    TE -.-> ENG
+    style ARCH fill:#310066,color:#ffffff,stroke:#310066

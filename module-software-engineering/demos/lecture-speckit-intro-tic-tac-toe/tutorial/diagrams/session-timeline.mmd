@@ -1,0 +1,27 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "flowchart": { "htmlLabels": false, "nodeSpacing": 40, "rankSpacing": 40 },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    I(["specify init<br/>578f523, 36 files"])
+    S1["1–2 constitution, two runs<br/>fe0a03f v1.0.0 · 572a959 v1.0.1"]
+    S3["3 specify<br/>595788a: spec.md, CHANGELOG.md, checklists/requirements.md"]
+    S4["4 clarify<br/>13792df: FR-018, FR-019, FR-004"]
+    S5["5 plan<br/>ba62775 seven plan files · 6047d29 P1 → FR-020<br/>fcc0c15 project .gitignore"]
+    S6["6 tasks<br/>932aea7: tasks.md, 40 tasks"]
+    S7["7–8 analyze, two runs<br/>6a014cf E1–E8 + analysis-report.md · 639e20b I7–I9"]
+    S9["9 implement, one commit per phase<br/>cbc22a8 · 4d6a2cd · e260ec0 · dc2d491 II(b) · b3a8f5a · 2dd9c89 · 5e4e610"]
+    PUB(["publication<br/>62bb29d seeds · b0fadc5 transcript · 19239cf · 4ff5293 · 1e55033"])
+    I --> S1 --> S3 --> S4 --> S5 --> S6 --> S7 --> S9 --> PUB
+    style I fill:#ffffff
+    style PUB fill:#ffffff

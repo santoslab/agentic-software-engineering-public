@@ -1,0 +1,36 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    CLI(["specify CLI (Spec Kit 1.1.1)<br/>specify init … --ai claude --script py"])
+    subgraph PROJ["project folder after init: 36 files"]
+        direction TB
+        SK[".claude/skills/speckit-*/SKILL.md<br/>10 skills, one per command"]
+        SCR[".specify/scripts/python/*.py<br/>common, check_prerequisites, setup_plan,<br/>setup_tasks, resolve_template, create_new_feature"]
+        TPL[".specify/templates/*.md<br/>spec, plan, tasks, checklist, constitution"]
+        MEM[".specify/memory/constitution.md"]
+        META[".specify/init-options.json, integration.json,<br/>integrations/*.manifest.json, workflows/"]
+    end
+    CC["Claude Code<br/>/speckit-COMMAND arguments"]
+    FJ[".specify/feature.json<br/>git-ignored pointer to the feature folder"]
+    FEAT["specs/001-five-in-a-row/<br/>spec, CHANGELOG, plan, research, data-model,<br/>contracts/, quickstart, tasks, checklists/"]
+    CLI -- "writes once" --> PROJ
+    CC -- "loads" --> SK
+    SK -- "python3 .specify/scripts/python/… --json" --> SCR
+    SCR -- "reads" --> TPL
+    SCR -- "reads / writes" --> FJ
+    SCR -- "one JSON line: FEATURE_DIR, IMPL_PLAN, …" --> CC
+    CC -- "reads" --> MEM
+    CC -- "reads and writes" --> FEAT
+    style CC fill:#310066,color:#ffffff,stroke:#310066
+    style CLI fill:#ffffff

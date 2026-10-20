@@ -12,8 +12,8 @@
 > classified with their mitigations). Responds
 > to the brief in `running-example.md`. The one open decision is the
 > progression (section 3); nothing in this document is built yet. Vocabulary
-> follows `../glossary.md` where the glossary has a term and proposes
-> additions (section 5) where it does not.
+> follows `../glossary.md`; the additions and amendments this design proposed
+> (section 5) were applied to the glossary on 2026-10-20.
 
 ## 0. What this document settles
 
@@ -167,7 +167,7 @@ holds.
 | **TR** | Traceable | Does every clause carry an identifier, and does every link resolve in both directions (story to requirement to test to task)? | a script over the identifiers | the trace matrix with no dangling links | any artifact changes |
 
 Intent has no row and no artifact. It lives in the stakeholders' minds and is
-consulted only through a person (section 5.1), which is why VAL is the one row
+consulted only through a person (*intent* in `../glossary.md`), which is why VAL is the one row
 of the ledger that no tool can regenerate, and why it can go stale on a
 *declaration* (a change of mind, recorded as a change request) when no file
 has changed.
@@ -193,7 +193,7 @@ name. An **algorithmic gate** is a program whose exit code decides (RQ's
 analyses, CONF's mechanical conjuncts, TR, and the syntactic part of SQ). An
 **approval gate** is a recorded human decision (VAL, the judgment part of SQ,
 the reviews and walkthroughs in CONF, the sign-off that closes a wave). This
-widens the glossary's current rule that a person cannot be a gate; the Lean
+widens the glossary's earlier rule that a person cannot be a gate; the Lean
 model's `establish` step with a human proof premise is exactly an approval
 gate.
 
@@ -843,114 +843,30 @@ verification plan (section 5.2).
 
 ## 5. Vocabulary alignment
 
-### 5.1 Glossary additions proposed
+### 5.1 Glossary additions (applied 2026-10-20)
 
-Each entry below would be added to `../glossary.md`; the Lean name is given
-where the model in `AgenticDev` has one.
-
-- **intent** (`HI`): what the stakeholders have in mind for the system. It
-  lives in their minds, is never fully written down, and is consulted only
-  through a person; there is no artifact that represents it. A *change of
-  mind* is the step in which it changes, and the process learns of one only
-  when a stakeholder declares it, which the process records as a change
-  request. Validation is the judgment that the specifications match it, and
-  only a person can make that judgment.
-- **purpose statement**: the one-to-two paragraph opening of the concept of
-  operations that says what the system is for. An engineering artifact, revised
-  with the stakeholders until agreed, and audited like the rest of the
-  document. It is the closest written thing to intent, and it is a
-  specification, not a record of intent.
-- **reference**: material that informs specifications but is not one: sketches,
-  research notes, the elicitation record. Not audited; no judgment is about it.
-- **elicitation record**: the stakeholders' verbatim words and the questions
-  and answers of elicitation, kept as reference and used as the source the
-  user stories cite. It enters the example only with the version that teaches
-  elicitation.
-- **verification method** (of a clause): one of *test*, *analysis*, *review*,
-  *walkthrough*, recorded on the clause (2.6). A clause is mechanical when its
-  method is test or analysis and a judgment clause when it is review or
-  walkthrough. For a judgment clause the attribute also records the verifier
-  kind, human or agent, from Lecture 01's three kinds of verifier. Replaces
-  the VER-2 table.
-- **verifier ladder**: the climb of one clause's verifier from a human (rung
-  1) to an agent (2) to a skill (3) to a program (4), at which point the
-  clause becomes mechanical (2.7). Validation does not climb.
-- **requirements coverage; structural coverage**: the two coverage objectives
-  of a testing-based verification: every mechanical clause has its tests, and
-  the suite exercises the code to the stated level. Verified is their
-  conjunction with every test passing and every judgment clause reviewed.
-- **verification plan**: the project-specific verification choices (methods
-  and techniques per clause group, environment, coverage objectives,
-  independence, timing, evidence), a process specification beside the build
-  plan. Until a project needs one, the standing CONF rules are the plan.
-- **product specification; process specification**: a specification of the
-  system being built, against which the code and its tests are verified; a
-  specification of the work, whose realization is the repository history and
-  whose verification is a hook or a reading of the log. The same four
-  questions apply to both (section 4).
-- **rule style**: the kind of a process rule, one of obligation, gate,
-  staleness, procedure, policy, form, change control (2.8). Every rule names
-  its style, the judgment it maintains, its decider, its evidence, and what
-  failure does.
-- **artifact**: anything under version control that a judgment is about: a
-  specification, the realization, a rule file, a plan, a report. Reference
-  material is versioned but no judgment is about it.
-- **development state** (`DevState`): the artifacts at a commit together with
-  the ledger.
-- **development-state judgment** (`Judgment`): one of the five claims in 2.1,
-  tracked commit by commit. Distinct from *judgment clause*, which stays as
-  defined.
-- **ledger** (`Ledger`): the table that states, at a named commit, which
-  judgments hold, on what evidence, and which are stale.
-- **establish; stale** (`Step.establish`; `Ledger.invalidate`): a judgment is
-  *established* when its evidence is produced and recorded; it goes *stale*
-  when an artifact it depends on changes, or, for VAL, when a stakeholder
-  declares a change of mind, and stays stale until re-established.
-- **development log**: the append-only record of what each task or commit did
-  and which judgments it touched.
-- **traceability**: the links between identified items in different artifacts,
-  in named forms: derivation (story to requirement), allocation (requirement to
-  part), verification (requirement to test), realization (task to commit),
-  change (change request to affected identifiers).
-- **plan; task; wave**: a build plan decomposes one build into tasks; tasks
-  are grouped into waves; each wave ends at a gate.
-- **gate**: widened to two kinds, *algorithmic* (a program's exit code) and
-  *approval* (a recorded human decision).
-- **realization quality**: the judgment that the realization lints and
-  type-checks, that its suite collects and follows the test discipline, and
-  that its structure is judged appropriate.
-- **governance**: the development rules, filed by the judgment they maintain.
-- **change request; change report**: the record that opens a change and the
-  record that closes it. A declared change of mind opens one.
-- **assurance**: the argument, from the ledger and the reports, that the
-  judgments hold. It is as strong as the mitigations against the threats to
-  each row's evidence (2.9).
-- **threat** (to a judgment): a way the evidence recorded for a judgment can
-  be present while the judgment does not hold. Five classes (2.9): a defective
-  reference, a wrong verifier, a scope narrower than the claim, stale or
-  unproduced evidence, and a shared mistake between author and verifier.
-- **mitigation**: the rule, procedure, or report field that closes a threat.
-  Every mitigation has a rule style.
-- **provenance** (of a ledger row): what the row records about its evidence:
-  which verifier and version, which artifact versions, which clauses were
-  decided. Lecture 01's three scope lines of RPT-2, moved onto the row.
-- **independence**: the requirement that the verifier of a clause not be the
-  author of the realization it verifies, or that an agent's result be
-  spot-checked by a person; recorded per clause group in the verification
-  plan.
-- **known-violation set**: inputs that a verifier must fail on, kept beside it
-  and run whenever it changes. The seeded gaps of the audit and the sabotage
-  that closes each version are instances; it is how a program at rung 4 is
-  verified.
-
-One existing entry would be amended. **Mechanical clause; judgment clause**
-now says a clause is mechanical "when a program can decide it from the
-artifact alone", which reads as static-only, while the game demo's VER-2 table
-counts unit tests as mechanical. The entry should say "when a program can
-decide it, by examining the artifact or by executing it", so that test and
-analysis both sit on the mechanical side.
+The entries this design proposed were added to `../glossary.md` on
+2026-10-20, and the glossary is now the home of their definitions; the Lean
+name is given there where the model in `AgenticDev` has one. The terms added
+are: artifact; assurance; change request and change report; development log;
+development state; development-state judgment; elicitation record; establish
+and stale; governance; independence; intent; known-violation set; ledger;
+mitigation; plan, task, and wave; product and process specification;
+provenance; purpose statement; realization quality; reference; requirements
+and structural coverage; rule style; threat; traceability; verification
+method; verification plan; verifier ladder. The existing entries for *audit*,
+*concept of operations*, *gate*, *mechanical clause; judgment clause*, and
+*validation* were amended as 5.2 recommends.
 
 ### 5.2 Conflicts found between the glossary, the catalog, the essay, and the brief
+
+The rows whose recommendation changes `../glossary.md` were applied on
+2026-10-20: the widened *gate*, the *mechanical clause* wording, *validation*
+covering every specification, *audit* as the activity whatever the judgment,
+and the five quality properties with traceability moved to TR. The rows that
+change the catalog (`../specification-kinds.md`: the glossary as a kind,
+*verification obligations*, *user categories*) wait for the build, as section
+6 says.
 
 | Conflict | Recommendation |
 |---|---|
@@ -1052,9 +968,9 @@ evolutions of the model, none required by the course:
   `LICENSING.md`.
 - **Documents to update when the first version is built:**
   `specification-kinds.md` (the new kinds, *user categories*, the verification
-  plan, and a "first needed by" column), `glossary.md` (the additions and the
-  amendment in 5.1), the `CLAUDE.md` demos index, the module README, and the
-  brief `running-example.md` (which already points here).
+  plan, and a "first needed by" column), the `CLAUDE.md` demos index, the
+  module README, and the brief `running-example.md` (which already points
+  here). The glossary was updated on 2026-10-20 and needs no further change.
 - **Document to create:** `process-rule-styles.md` at the repository root,
   beside `specification-kinds.md`, with the rule-style table, the template,
   the principles, the design grid, and one worked example per style from the
@@ -1062,7 +978,7 @@ evolutions of the model, none required by the course:
 
 ## 7. Coverage checklists
 
-### 7.1 Glossary terms, current and proposed, by the first version that illustrates each
+### 7.1 Glossary terms by the first version that illustrates each
 
 | Term | A | B | C | D | Illustrated by |
 |---|---|---|---|---|---|
@@ -1128,11 +1044,10 @@ evolutions of the model, none required by the course:
 ## 8. Open decisions
 
 1. **Which progression** (section 3), and whether to use the C0 prelude.
-2. **Whether to adopt the remaining glossary additions in 5.1 and the
-   resolutions in 5.2**, in particular the widened *gate* and the fifth
-   judgment TR. The entries for *intent*, *purpose statement*, *reference*,
-   *elicitation record*, *verification method*, *verification plan*, and the
-   two coverages, and the amendment to *mechanical clause*, are agreed.
+2. **The glossary**: settled 2026-10-20. The additions in 5.1 and the
+   glossary rows of 5.2, including the widened *gate* and the fifth judgment
+   TR, are applied to `../glossary.md`; the catalog rows of 5.2 wait for the
+   build.
 3. **Whether the audit log (F3) is part of the core**, which decides whether
    the concept of operations has an auditor user category with something to
    observe.

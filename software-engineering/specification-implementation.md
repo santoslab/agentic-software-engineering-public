@@ -15,6 +15,36 @@ These definitions are fairly abstract.  Examples of the specification/realizatio
 - what does it mean for the specification to be well-formed (internally consistent) and how could we check that?
 - what are ways that we assess if the realization R conforms to (satisfies) the properties of S?  What are the possible gaps in our confidence about R actually conforming to S?
 
+Basic issues that we must consider about the relationships between
+specifications (abstractions) and realizations (focusing on
+abstractions as "summary" or "contraint")
+ - An abstraction may contain a variety of information.  Some might
+   be purely "informative" (e.g., rationale, etc.) but some
+   information we may classify as "analyzeable".  For instance,
+   analyzeable elements of an abstraction are features that we expect
+   to be represented in the realization in some fashion (typically in
+   greater detail, or in a manner that is specific to a particular
+   implementation strategy).  For the abstraction to serve its purpose
+   as a constraint or as a summary, we must understand the
+   correspondence between the abstractions analyzeable features and
+   the their manifestation in the realization.   This starts with some
+   basic questions
+     - *where* is each feature of the abstraction sitting in the
+       code/realization, 
+     - *what are the boundaries/scope* of each feature in the
+       realization.  For example, when I am looking at the code, I
+       need to understand "for this particular section of the code, is
+       this something related to the abstraction that I must align, or
+       is this something where I am free to make a choice because the
+       abstraction is speaking about this particular aspect of my
+       code." (e.g., method API vs method body).
+
+Traceability is a general concept (dependence, derivation
+relationship, e.g., this test was derived from or "supports") this
+requirement.  (probably should enumerate various forms of traceability
+that we care about).
+
+
 ## Examples of Specifications and Realizations
 
 **Example: Requirements (specification) and an executable system (realization)**  This is the most well-known example of concept in software engineering.  Requirements capture abstract properties of system (e.g. it's desired functional behavior) and when we execute the system we observe the functionality documented in the requirements (we hope!)
@@ -130,6 +160,11 @@ Conformity assessment ("goodness" of the relationship between the realization an
      - experiments (specific cases, relying on generalization, induction)
 
 
+
+The        
+       
+
+
 Multiplicities - more than one realization meets a specification, can have many specifications associated with one realization
 
 
@@ -188,3 +223,18 @@ Activities
 
 Mechanical conformance checker, a correct generated tool that always produces compliant implementations.
 
+## Different Categories of Artifacts
+
+(seeds / sketches - not necessarily archiving)
+plans (project specific)
+specifications (specifications for project)
+development rules (process rules for the project) (app-independent)
+  - quality rules for specs
+  - quality rules for artifacts
+  - verification rules 
+  - process steps
+reporting & explaining
+development state (current state, wrt plan and specs pending issues) 
+  - pending tasks
+  - note that this where assurance case would generalize from
+project (artifacts)  

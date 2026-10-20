@@ -18,7 +18,7 @@ showing is recorded. The design behind the versions is
 | Development rules | `process/rules.md` (SQ-1, RQ-1, CONF-1, CONF-2, VAL-1, TR-1, WF-1, RPT-1) | how each judgment is established and when it must hold |
 | Reports | `reports/ledger.md`; `reports/dev-log.md`; `reports/walkthrough.md`; `reports/conformance.md` (generated) | the development state, readable without reading the code |
 | Technology | `pyproject.toml`, `uv.lock` | Python 3.12 or later; pytest, pytest-cov, ruff; managed by `uv` |
-| Support | `tools/gate.sh` (the gate command); `tools/walk.py` (walkthrough helper) | neither is a realization of a clause |
+| Support | `tools/gate.sh` (the gate command); `tools/walk.py` (walkthrough helper); `CLAUDE.md` (what an agent reads first) | none is a realization of a clause |
 
 ## The five judgments, at this version
 

@@ -13,6 +13,10 @@ the canonical list of specification forms are in
 | A1 | planned | unchanged | elicitation and the revised concept of operations, the glossary, EARS, fixtures, the audit and its skill, the trace matrix |
 | A2 | planned | `sanitize` stage and the pipeline | architecture, data format, interface contracts, the build plan, analysis and review as methods, the generated ledger |
 
+The in-class demonstration for Lecture 01 is scripted in
+`demo-script-lecture-01.md`, with a setup checklist and a segment-by-segment
+record of what to run and show.
+
 Each version is a self-contained snapshot. To compare two versions, use
 `diff -r v0 v1`. A replay script that turns the snapshots into a tagged git
 history is planned with A1.

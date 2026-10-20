@@ -6,6 +6,89 @@
 > relative to that directory unless they say otherwise. Vocabulary follows the
 > course glossary, `../../glossary.md`. Launches **Exercise 1**.
 
+## Purpose of this lecture
+
+This lecture identifies the basic entities of a managed development process
+and the relationships between them. The entities are three: the *intent* of
+the stakeholders, the *specifications* that state what the system must do,
+and the *realization*, the code and tests that are built to satisfy them.
+The relationships are five judgments: that the specifications are of good
+quality, that the realization is of good quality, that the realization
+conforms to the specifications, that the specifications describe what the
+stakeholders intend, and that every item in one artifact can be traced to
+the items in others that it depends on. A process is *managed*, in the sense
+used here, when the truth of those five judgments can be stated at any commit,
+with evidence, by someone who did not write the code. The lecture also names
+the records that make the state visible: a ledger of the judgments, a log of
+the work, and the reports each judgment produces.
+
+The reason to put these entities and relationships first, before any
+technique, is a shift in where human effort goes as agents take over the
+writing of code. Three stages of that shift are visible in the example and
+in the rest of the course.
+
+- *From engineering the code.* When an agent writes the code, the person no
+  longer spends most of their effort on it, and for a system of any size they
+  cannot read all of what the agent writes. Their effort has to go
+  somewhere that an agent cannot replace.
+- *To engineering and managing the development and assurance context.* That
+  somewhere is what the agent reads and what the person reads back: the
+  specifications that direct the work, the rules that say how it is checked,
+  the verification methods and the evidence they produce, and the records of
+  the current state. These are engineered artifacts in their own right. They
+  have quality criteria, they can be wrong, and they are maintained over the
+  life of the project.
+- *To engineering layered, composable abstractions.* The context is not one
+  document. It is a set of layers, each a summary of the one below it: a
+  concept of operations above the requirements, requirements above contracts
+  and tests, contracts above the code; and above all of these, rules that say
+  how each layer is checked against the next. The layering serves two readers
+  at once. It gives an agent direction at the layer it works in, with the
+  layers above as the standard its work is judged against. And it gives a
+  person explainability: they can read the system at the layer they need,
+  and trust the summary because conformance between layers is checked rather
+  than assumed.
+
+These concepts do not depend on the kind of system. A web service, an
+embedded controller, a data pipeline, and a set of documents all have
+stakeholders with intent, specifications that can be audited, realizations
+that can be verified against them, and a state that can be recorded. What
+varies between domains is which forms of specification are needed and which
+verification methods are available, and the lectures that follow give the
+details and the guidelines for choosing them. This lecture establishes the
+vocabulary and shows every concept on the smallest system that has all of
+them, so that each term can be pointed at in a file rather than described in
+the abstract.
+
+### Learning objectives
+
+By the end of this lecture, students should be able to:
+
+- Name the three entities and the five judgments, define each in the sense
+  the course glossary gives it, and point at the artifact in version A0 that
+  holds or evidences each.
+- Explain why intent has no artifact, what the purpose statement is instead,
+  and what follows for which judgments an agent can establish on its own.
+- Describe the clause as the unit of a specification, with its identifier,
+  verification method, and derivation; distinguish mechanical clauses from
+  judgment clauses; and say why the distinction matters when an agent writes
+  the code and the tests.
+- State the five specification-quality properties and check a small
+  specification against them by reading.
+- Explain why a passing test suite is not by itself a verification, and name
+  the four conditions of conformance in A0 together with the evidence for each.
+- Say what validation asks, who can answer it, and construct a case in which
+  every other judgment holds and validation fails.
+- Read a ledger row as a claim with evidence, provenance, and a condition
+  under which it goes stale, and say which rows a given change makes stale.
+- Explain what a gate is and why an algorithmic gate before each commit
+  matters when an agent is the one committing.
+- Read a development rule written in the template form and identify its
+  decider, its evidence, and what happens on failure.
+- Identify which elements of A0 can be set up directly in their own project
+  and which need adaptation, as the section "Applying this to your own
+  project" describes.
+
 ## The example: a message guard
 
 An organization keeps a protected enclave. The systems inside it produce
@@ -721,6 +804,92 @@ The work is large enough to need a plan with tasks and waves, and the ledger
 is generated by a tool rather than written by hand. Later versions add a
 change of policy, sessions with an ordering protocol, and a standard message
 format, each bringing the kind of specification it needs.
+
+## Applying this to your own project
+
+The example is small and the lecture is abstract, but most of what it shows
+can be set up in a project of any kind on the first day, and it is worth
+being explicit about which parts carry over as they are and which parts you
+will have to adapt.
+
+**What carries over directly.**
+
+- *The entities and the judgments.* Every project has stakeholders with
+  intent, specifications of some kind, and a realization, and the five
+  questions can be asked of any of them. Start a ledger on the first day, by
+  hand, with five rows; most will say "not established", and that is
+  information.
+- *A concept of operations.* You can always begin by working with the people
+  on your team, and with an agent, to write a concept of operations that has
+  the four elements shown here: a purpose statement that the stakeholders
+  agree to, a scope with the system boundary and the terms, the user
+  categories, and user stories with concrete examples. Agree on it before code
+  is written. It is the document that the validation sign-off will be given
+  on, and it is the first thing an agent should read.
+- *A requirements document.* You can always have one, and its clauses can
+  always carry an identifier, a verification method, and the story or term
+  each derives from. The method field is the one most often left out and the
+  one that pays back soonest, because it decides which clauses a program can
+  check at every commit.
+- *A statement of the technology.* Agents and auditors both need what
+  `pyproject.toml` provides here: the language and version, the tools and
+  their versions, and the one command that is the gate. Write it down even
+  when it seems obvious.
+- *Tests that cite clauses, and the two coverages.* As you build a test
+  suite, the question is not only whether the tests run and pass but whether
+  the suite supports a verification: does every mechanical clause have a
+  test, is every part of the code exercised, and is there a record for the
+  clauses a test cannot decide. Those three questions can be asked of any
+  suite in any language, and the first two can be answered by a program once
+  the tests cite clauses.
+- *A rules file.* The template fields, in particular the decider, the
+  evidence, and what happens on failure, apply to any rule about any process.
+  Start with one gate and the ledger, and add a rule the second time you find
+  yourself doing a check by hand.
+- *A sign-off, and provenance on every claim.* Find the person who can say
+  whether the system is the one they wanted, and get their decision on
+  record, named and dated. Record who or what produced every piece of
+  evidence and against which version.
+
+**What you will need to adapt.**
+
+- *The forms of specification.* A0 needs two. A system with several
+  components needs an architecture; one that stores or exchanges data needs a
+  data format; one with modes or a protocol needs a state machine; one with
+  an API needs interface contracts. The course's catalog of specification
+  kinds, `../../specification-kinds.md`, is the list to think through for your
+  system, and later lectures introduce each form with the version of the
+  example that first needs it.
+- *The verification methods.* A0 uses two, test and walkthrough. Your system
+  will likely need *analysis*, where a type checker, a schema validator, or a
+  static analysis decides a clause without running the code, and *review*,
+  where a reader decides a clause from the text. Each method brings its own
+  tools and its own form of evidence.
+- *The tooling.* The program that writes A0's conformance report reads one
+  particular clause format and one particular marker. The idea, that a
+  program derives requirements coverage from citations in the tests, carries
+  over to any language; the code does not. A project in another language will
+  need its own way to cite a clause from a test, its own coverage tool, and
+  its own gate command.
+- *The thresholds.* Complete branch coverage is the right requirement for
+  thirty lines of code. A larger system will set a level and justify it, and
+  the lecture that introduces the verification plan shows where such a
+  decision is recorded.
+- *The people.* In A0 one person plays both stakeholder roles. In a project
+  the roles are held by different people, some of whom are hard to reach, and
+  finding them early is part of writing the concept of operations.
+- *The records.* A ledger written by hand serves a small project; a larger
+  one generates it from the gate's outputs, as version A2 shows. Begin by
+  hand regardless, because the generated form is the hand-written form
+  automated.
+
+One skill underlies the adapted parts, and the next several lectures are
+designed to build it: phrasing your own criteria for specification quality,
+for realization quality, and for verification in a form that an agent can
+process. That form is the one the rules file uses, a statement with a named
+decider, named evidence, and a stated consequence of failure. A guideline
+that lacks those is something a person may follow; a guideline that has them
+is something an agent will follow and a person can check.
 
 ## Exercise 1
 

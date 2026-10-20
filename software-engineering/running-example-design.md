@@ -9,11 +9,13 @@
 > program; specification forms fall into a product and a process category,
 > and process rules come in seven styles; scenarios and tests are one concept
 > with two bindings; a ledger row is a claim, and the threats to a judgment are
-> classified with their mitigations). Responds
-> to the brief in `running-example.md`. The one open decision is the
-> progression (section 3); nothing in this document is built yet. Vocabulary
-> follows `../glossary.md`; the additions and amendments this design proposed
-> (section 5) were applied to the glossary on 2026-10-20.
+> classified with their mitigations). Responds to the brief in
+> `running-example.md`. The progression is decided (option A; section 8) and
+> version A0 is built under
+> `../module-ase-principles/demos/running-example-message-guard/v0/`; nothing
+> else is built yet. Vocabulary follows `../glossary.md`; the additions and
+> amendments this design proposed (section 5) were applied to the glossary on
+> 2026-10-20.
 
 ## 0. What this document settles
 
@@ -562,7 +564,7 @@ start.
 
 | Version | Capability | Specification forms introduced | Judgments and mechanisms introduced | Process artifacts and rules introduced |
 |---|---|---|---|---|
-| A0 | F1 | minimal concept of operations (purpose statement, scope, two user categories, three user stories with example messages, each story marked *walkthrough*); plain requirements with identifiers (REQ-0 message, REQ-1 to REQ-4, each marked *test*); test suite; technology (`pyproject.toml`) | all five rows, minimal: SQ by a person reading the clauses (ladder rung 1); RQ `ruff` and the suite collects; CONF as the aggregate: tests pass, requirements coverage from the markers and the conformance report, branch coverage from `pytest-cov`, the stories walked by a person (rung 1); VAL one sign-off on the concept of operations; TR markers resolve; every ledger row carries its provenance, and the closing sabotage is the first verification of a verifier (2.9) | `process/rules.md` with 8 rules, one per category (styles: obligation, gate); hand-written ledger from a provided template; dev log |
+| A0 | F1 | minimal concept of operations (purpose statement, scope, two user categories, three user stories with example messages, each story marked *walkthrough*); plain requirements with identifiers (REQ-0 message, REQ-1 to REQ-3, each marked *test*); test suite; technology (`pyproject.toml`) | all five rows, minimal: SQ by a person reading the clauses (ladder rung 1); RQ `ruff` and the suite collects; CONF as the aggregate: tests pass, requirements coverage from the markers and the conformance report, branch coverage from `pytest-cov`, the stories walked by a person (rung 1); VAL one sign-off on the concept of operations; TR markers resolve; every ledger row carries its provenance, and the closing sabotage is the first verification of a verifier (2.9) | `process/rules.md` with 8 rules, one per category (styles: obligation, gate); hand-written ledger from a provided template; dev log |
 | A1 | F1 (unchanged) | the concept of operations revised through elicitation with the stakeholders; the elicitation record (reference, not a specification); glossary; requirements rewritten in EARS; acceptance fixtures derived from the stories | SQ audit (consistency, EARS form, glossary discipline, story-to-requirement alignment, a method on every clause, a reason on every judgment clause) on six to eight seeded gaps, first by a person, then by the agent, then as the `/audit-spec` skill (ladder rungs 1 to 3 on the glossary-discipline check; the seeded gaps double as the audit's known-violation set: the person misses some, which is T1's capacity threat, the agent over-reports one, and the skill's first step is read-before-check); VAL walkthrough per user category and re-sign-off, since the revision made VAL stale; TR trace-matrix tool; CONF story tests over the fixtures (the story walkthrough climbs to a test; the sign-off is kept) | gap-list form; trace matrix report; 8 rules (styles added: procedure, form); first skill, `/audit-spec` (rung 3) |
 | A2 | F2 | architecture (stages, order, purity, allocation, integration contract); data format (ad hoc rules); interface contracts (pre- and postcondition per stage); build plan | RQ `mypy` and the test-discipline review; CONF gains *analysis* as a second method (the import rule for the architecture clauses, `mypy` for the signature part of the contracts, and a script for the glossary-discipline check, which reaches rung 4: review becomes analysis, and the script is verified on the A1 seeded gaps before it replaces the skill, T2) and *review* as a third (the allocation table as `review (agent)` with a human spot-check; the purpose statement's implementation-independence stays at rung 3); generated ledger, from exit codes at the named commit and never from completion notes (T4) | plan with tasks, waves, gates; dev log per task; 8 rules (WF-2 to WF-5, RQ-2, RQ-3, CONF-3, CONF-4; styles added: policy, staleness, the approval gate); `/ledger` skill |
 | A3 | F4 | change request and change report; workflow graph (the process as a state machine) | a declared change of mind makes VAL stale while every other row stays green; the specification change that follows makes the rest stale; impact analysis from the trace matrix; the old suite still passes after the requirement changed, and the staleness rule, not the suite, turns CONF red (T4) | branch per change; 4 rules (WF-6, WF-7, RPT-3, RPT-4; style added: change control) |
@@ -951,7 +953,7 @@ evolutions of the model, none required by the course:
 
 ## 6. Repository layout and reuse
 
-- **Location:** `module-software-engineering/demos/running-example-message-guard/`,
+- **Location:** `module-ase-principles/demos/running-example-message-guard/`,
   one snapshot directory per version (`v0/`, `v1/`, and so on), plus a
   `build-history.sh` that replays the snapshots into a tagged git repository so
   the dev log has a real `git log` behind it. Lecture notes link to a fixed
@@ -1043,7 +1045,25 @@ evolutions of the model, none required by the course:
 
 ## 8. Open decisions
 
-1. **Which progression** (section 3), and whether to use the C0 prelude.
+1. **Which progression**: settled 2026-10-20, option A. The first lecture
+   opens on a diagram of intent, the specifications, the realization, and the
+   five judgments, each illustrated by an A0 artifact; the later deep dives
+   (elicitation, the concept of operations, and EARS; testing, the two
+   coverages, and traceability) are A1 and the CONF machinery. A0 is built
+   first, under `../module-ase-principles/`, a new module kept beside
+   `module-software-engineering/` while that module is still taught. A1
+   follows once the elicitation procedure is redesigned: the grill-me skill
+   overwhelmed students with questions on the game and the note set, and Spec
+   Kit's clarify, at most five questions with options and a recommended
+   default, is the model. C0 is deferred, not rejected. Three adjustments
+   keep A0 self-sufficient: the domain terms are a section of the concept of
+   operations, the requirements stay plain with identifiers and methods, and
+   the first lecture runs two sabotages (CONF and VAL), the other three
+   waiting for the testing lecture, which tells the maturing of a suite into a
+   verification method by subtraction on A0 rather than by versions. The user
+   categories are the message sender and the security officer. A0 has REQ-0 to
+   REQ-3; a fourth requirement would have been implied by the other three,
+   which an audit would flag.
 2. **The glossary**: settled 2026-10-20. The additions in 5.1 and the
    glossary rows of 5.2, including the widened *gate* and the fifth judgment
    TR, are applied to `../glossary.md`; the catalog rows of 5.2 wait for the

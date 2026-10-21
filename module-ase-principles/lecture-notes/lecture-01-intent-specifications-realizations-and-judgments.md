@@ -173,7 +173,8 @@ By the end of this lecture, students should be able to:
 
 ## The example: a message guard
 
-Here is the story for our running example.
+Here is the story for our running example (found
+[here](../demos/running-example-message-guard) in the course repo).
 
 An organization keeps a protected enclave. The systems inside it produce
 messages of differing sensitivity, and some of those messages need to reach a

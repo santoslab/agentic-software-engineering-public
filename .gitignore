@@ -28,3 +28,5 @@ dist/
 .vscode/
 .idea/
 
+# PowerPoint lock files (created while a .pptx is open)
+~$*.pptx

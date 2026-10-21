@@ -1,14 +1,17 @@
 # Message guard demo, Lecture 01 — the five judgments on version A0
 
-The demonstration that runs through Lecture 01 of the ASE principles module.
+The shows how to demo the running example for Lecture 01 of the ASE 
+principles module.
+
 The repository is version A0 of the message guard, complete and green: one
 stage, `filter`, with its specifications, tests, rules, and reports. Nothing
 is built during class. The class is walked through the artifacts in the order
-of the lecture notes, the gate is run, the three stories are walked, and two
-judgments are broken to show which part of the repository notices. The slides
-show the same files and the same command output, so the room sees on the
-screen what the deck has already shown them; the point of running it live is
-that the output is produced in front of them, not pasted.
+of the lecture notes, the gate is run, the three user stories are walked, and two
+judgments are broken to show which parts of the development catch the
+problems.  The slides show the same files and the same command output, 
+so the room sees on the screen what the deck has already shown them;
+the point of running it live is that the output is produced in front
+of them, not pasted.
 
 **What governs the whole script.** Everything except the optional last segment
 is deterministic: shell commands over a fixed snapshot. Rehearse once anyway,

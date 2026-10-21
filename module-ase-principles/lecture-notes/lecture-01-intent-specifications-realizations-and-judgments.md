@@ -8,38 +8,110 @@
 
 ## Purpose of this lecture
 
-This lecture identifies the basic entities of a managed development process
-and the relationships between them. The entities are three: the *intent* of
-the stakeholders, the *specifications* that state what the system must do,
-and the *realization*, the code and tests that are built to satisfy them.
-The relationships are five judgments: that the specifications are of good
-quality, that the realization is of good quality, that the realization
-conforms to the specifications, that the specifications describe what the
-stakeholders intend, and that every item in one artifact can be traced to
-the items in others that it depends on. A process is *managed*, in the sense
-used here, when the truth of those five judgments can be stated at any commit,
-with evidence, by someone who did not write the code. The lecture also names
-the records that make the state visible: a ledger of the judgments, a log of
-the work, and the reports each judgment produces.
+This lecture identifies basic entities of a managed software development process
+and the relationships between them.  These concepts appear in some
+form (not necessarily using the same terminology) in a number of
+agent-oriented *specification-based development* frameworks such as
+[SpecKit](https://speckit.org), [OpenSpec](https://openspec.dev), [AWS
+Kiro](https://kiro.dev), and [BMAD](https://docs.bmad-method.org).
+It's also possible to use these concepts independently of the frameworks above
+just by configuring the agent-read markdown files for your harness
+appropriately.  
 
-The reason to put these entities and relationships first, before any
-technique, is a shift in where human effort goes as agents take over the
+*More generally, even though you may not a apply a
+rigorous spec-based development approach in all situations (e.g.,
+when doing rapid prototyping), it's worthwhile for every software
+developer to understand these concepts.  Moreover, as a good engineer 
+when you deliberately decide to reduce the rigor of your development in some way, you
+should have clear justification for this in your mind and understand the
+trade-offs*.
+
+The lecture unfolds by considering three basic entities that a developer needs to
+address in spec-driven development:
+- the *intent* of the stakeholders, 
+- the *specifications* that state what the system must do, and 
+- the *realization*, the code and tests that are built to satisfy them.
+
+Then the developer needs to consider the following properties and
+relationships between the entities (we use the technical term
+"judgments" for these): 
+ - the specifications are of good quality, 
+ - the realization is of good quality, 
+ - the realization conforms to the specifications, 
+ - the specifications describe what the stakeholders intend, and 
+ - every item in one artifact can be traced to the items in others 
+   that it depends on. 
+
+The entities and relationships, as we have described them, are very
+abstract.  In the rest of this lecture series, we will make them more
+concrete by considering various types of specifications, specific
+quality rules that we want to enforce, etc.   
+
+A process is *managed*, in the sense used here, when entities above
+are tracked in a source control system, and reviewed and updated in a
+way that aims to maintain the judgements above and to understand when
+a development step might cause a judgement to become false (triggering a need
+for further actions to move the judgements back to a true state). 
+
+All of these concepts reflect how we would like to be able to view a
+"snapshot" of our development artifacts, e.g., at a particular commit
+that closes out a set of tasks, is it the case that the relationships
+above hold?  A companion set of key abstract concepts will be
+introduced in later lectures to describe *evolution* of the 
+development state in terms of work steps (aka, work items, tasks),
+grouping and parallization of work steps, dependences between work
+steps, allocation of work steps to different agents and humans, the
+gating of work steps, etc.  
+
+The term "assurance" is used in software and system development to
+refer to the justified, evidence-based confidence that a product
+functions as intended and remains resilient against failures, defects, or cyber
+threats throughout its entire lifecycle.  While our focus is more
+narrow here (we don't really address is of cyber-threats, resiliency,
+etc.), we are interested in providing justified, evidence-based
+confidence that our system functions as intended - where the
+intentions are expressed through specifications - and that the 
+development artifacts are of a quality that will reduce inadvertent
+errors and help development carry forward successfully in the future.
+
+Given this emphasis on understanding the truth status of the
+judgements and being able to provide assurance, we will also aim for
+our process to maintain what we call an "assurance ledger".
+This is just a fancy way to describe a collection of 
+carefully maintained data that help us understand 
+the the status of the five types of judgments above.  This will be 
+augmented by a log of the work, and the reports each judgment produces.
+
+Why bother with all of this?  With agentic development, producing code
+and tests is no longer the problem -- agents can do both very fast and
+very well.  The challenge for developers now is *guiding* the agents
+(e.g., through specifications and constraints on work steps), on
+*understanding* the work the agents have accomplished (not necessarily
+all the details of the work, but understanding if they achieved the
+goals of development).
+
+In short, there is a shift in where human effort goes as agents take over the
 writing of code. Three stages of that shift are visible in the example and
 in the rest of the course.
-
 - *From engineering the code.* When an agent writes the code, the person no
   longer spends most of their effort on it, and for a system of any size they
-  cannot read all of what the agent writes. Their effort has to go
-  somewhere that an agent cannot replace.
-- *To engineering and managing the development and assurance context.* That
-  somewhere is what the agent reads and what the person reads back: the
-  specifications that direct the work, the rules that say how it is checked,
+  cannot read all of what the agent writes.  So what do they do? 
+  We still need human effort for tasks that cannot be completely 
+  replaced by agents. 
+- *To engineering and managing the development and assurance context.* 
+  Developers will increasing spend their time designing the
+  specifications that direct the agent work, the rules that say how it is checked,
   the verification methods and the evidence they produce, and the records of
   the current state. These are engineered artifacts in their own right. They
   have quality criteria, they can be wrong, and they are maintained over the
   life of the project.
-- *To engineering layered, composable abstractions.* The context is not one
-  document. It is a set of layers, each a summary of the one below it: a
+- *To engineering layered, composable abstractions.* The development
+  context is not just a single specification, markdown file, etc. 
+  Moreover, specifications themselves can be quite detailed.  It won't
+  be productive for developers to immediately start reading detailed 
+  specs when they want to understand the system.  We will see,
+  especially for large-scale systems, that we need a layered
+  specifications, each a summary of the one below it: a
   concept of operations above the requirements, requirements above contracts
   and tests, contracts above the code; and above all of these, rules that say
   how each layer is checked against the next. The layering serves two readers
@@ -55,10 +127,13 @@ stakeholders with intent, specifications that can be audited, realizations
 that can be verified against them, and a state that can be recorded. What
 varies between domains is which forms of specification are needed and which
 verification methods are available, and the lectures that follow give the
-details and the guidelines for choosing them. This lecture establishes the
-vocabulary and shows every concept on the smallest system that has all of
-them, so that each term can be pointed at in a file rather than described in
-the abstract.
+details and the guidelines for choosing them. 
+
+This lecture establishes the vocabulary and shows every concept on a
+very small system that has all of them, so that each concept can be
+illustrated with a concrete (though simple) development artifact.  We
+will several versions (named A0, A1, A2, ..) that we build out over
+time.  We start with A0 in this lecture.
 
 ### Learning objectives
 
@@ -67,12 +142,15 @@ By the end of this lecture, students should be able to:
 - Name the three entities and the five judgments, define each in the sense
   the course glossary gives it, and point at the artifact in version A0 that
   holds or evidences each.
-- Explain why intent has no artifact, what the purpose statement is instead,
-  and what follows for which judgments an agent can establish on its own.
-- Describe the clause as the unit of a specification, with its identifier,
-  verification method, and derivation; distinguish mechanical clauses from
-  judgment clauses; and say why the distinction matters when an agent writes
-  the code and the tests.
+- Explain why human intent has no development artifact, but why we
+  need to account for it explicitly in the development process. 
+- Describe how specifications often broken into small chunks called
+  "clauses", and how clauses are best formatted to support the broader
+  engineering effort.  This includes providing it with a unique identifier,
+  and indicating its verification method, and derivation. 
+  Students should be able to distinguish clauses that can be evaluated
+  mechanically from those that require human/agent judgment clauses; 
+  and say why the distinction matters when an agent writes the code and the tests.
 - State the five specification-quality properties and check a small
   specification against them by reading.
 - Explain why a passing test suite is not by itself a verification, and name
@@ -91,29 +169,37 @@ By the end of this lecture, students should be able to:
 
 ## The example: a message guard
 
+Here is the story for our running example.
+
 An organization keeps a protected enclave. The systems inside it produce
 messages of differing sensitivity, and some of those messages need to reach a
-less trusted network outside. The *message guard* sits on the boundary and
-decides, one message at a time, whether a message may leave. A message has two
-parts: a security level, which is one of Public, Restricted, or Critical, and a
-payload, which in this version is a single integer. In version A0 the guard has
+less trusted network outside. The *message guard* (our running
+example) sits on the boundary and decides, one message at a time, 
+whether a message may leave. A message has two parts: a security
+level, which is one of Public, Restricted, or Critical, and a payload,
+which in this version is a single integer. In version A0 the guard has
 one stage, called `filter`: a Critical message is dropped, and any other
 message passes unchanged.
 
 The example was chosen for three reasons. It is small: the file that does the
-work is ten lines, and every artifact in the version can be read in
-half an hour. Its shape is realistic: there is a boundary, a stakeholder who is
-responsible for what crosses it, and a wrong outcome (a Critical message
-leaving) that matters. And it grows: later versions add a second stage that
-changes payloads, a record of what was stopped, a change of policy, sessions
-with an ordering protocol, and a standard message format, and each of those
-additions needs a kind of specification that this version does not. (The guard
-is the Python counterpart of a guard built in the HAMR toolchain for seL4;
-students who go on to that material will meet the same requirements again in
-a different notation.)
+work in A0 is ten lines, and all the A0 artifacts can be read in
+half an hour. Its shape is realistic: 
+- there is a system boundary, 
+- a stakeholder who responsible for setting the policy (expressing the
+intent) for what messages get through the guard and inspecting that
+the policy is enforced, 
+- a stakeholder (a developer) who is responsible for implementing 
+system, 
+- a clear a wrong outcome (a Critical message leaving) that matters. 
 
-The version is a directory, `v0/`, and its contents fall into categories that
-this lecture will use throughout:
+It is also easy to grow the system to illustrate additional concepts: 
+later versions add a second stage that
+changes payloads, a record of what was stopped, a change of policy, sessions
+with an ordering protocol, and a standard message format.  Each
+additions needs a kind of specification that are not needed in the
+original version.  
+
+Here is a summary of the artifacts that appear in A0.  
 
 | Category | Files | Role |
 |---|---|---|
@@ -129,9 +215,11 @@ This lecture defines the entities in the first three rows and the five
 judgments that relate them, points at the file in A0 that holds each, and
 breaks two of the judgments to show which part of the repository notices.
 
-## The question the code cannot answer
+## The A0 guard implementation and some motivations regarding why specifications are needed
 
-Here is the whole of `guard/filter.py`:
+Let's start by looking at the core of our system implementation -- the
+code that actually decides whether messages should be passed or
+dropped.  Here is the whole of `guard/filter.py`:
 
 ```python
 """The filter stage: pass or drop a message by its security level (REQ-1 to REQ-3)."""
@@ -150,9 +238,7 @@ Is this code right? The question has no answer from the code alone, because
 the code does not say three things. It does not say what was asked for: which
 levels were meant to be stopped. It does not say what was promised: a statement
 of the guard's behavior that someone responsible agreed to. And it does not
-say whether the promise has been checked, by what, and when. The code would
-look exactly like this if the security officer had wanted Restricted messages
-stopped as well, and it would be wrong.
+say whether the promise has been checked, by what, and when. 
 
 This has always been true of code. It matters more when an agent writes the
 code, for a practical reason: an agent produces code quickly and in volume,
@@ -163,13 +249,22 @@ evidence is current. When those three things exist and can be trusted, a
 person can direct the work, review it, and take responsibility for a system
 whose code they have not read line by line. When they do not exist, the
 person is relying on the agent's own description of what it did, and an
-agent's description of its work is not evidence about the work. This lecture
-is about the three things: the artifacts that hold them and the judgments
-that say whether they hold.
+agent's description of its work is not trustworthy evidence about the
+work. 
+
+The purpose of this lecture is to illustrate an approach that allows
+human developers to still be able to have confidence in the system and
+to guide its development without having to write or understand all of
+the code.   The extent to which developers want to embrace *all* of
+what we are showing depends of the criticality of the system and the
+amont of trust that developers are willing to put in the agents. 
 
 ## Three entities and five judgments
 
-Diagram 1 in the slides shows the arrangement. There are three entities.
+![Basic Spec-driven Developemnt Entities and
+Judgements](figures/ase-principles-entities-judgements.png)
+
+The figure above shows the arrangement. There are three entities.
 *Intent* is what the stakeholders want; it has no file. The *specifications*
 are the documents in `specs/`. The *realization* is the code in `guard/` and
 the tests in `tests/`. Between and on these entities sit five judgments, each
@@ -184,7 +279,8 @@ commit:
 | **VAL**, validated | Do the specifications describe what the stakeholders intend? | a stakeholder of each user category signing the concept of operations (VAL-1) | the sign-off in `reports/walkthrough.md` |
 | **TR**, traceable | Does every clause carry an identifier, and does every link between artifacts resolve? | the markers and the "derived from" fields, read by a program and a person (TR-1) | the "Unknown identifiers" section of `reports/conformance.md` |
 
-Four terms describe the bookkeeping. An **artifact** is anything under
+Some additional terms are not directly reflected in the diagram. 
+An **artifact** is anything under
 version control that a judgment is about: a specification, the code, a rule
 file, a report. The **development state** is the artifacts at a commit
 together with the ledger. A **development-state judgment** is one of the five
@@ -210,13 +306,25 @@ lecture depends on it.
 
 Intent is what the stakeholders have in mind for the system. It lives in their
 minds and is never fully written down, for the ordinary reason that a person
-cannot enumerate everything they want from a system of any size, and would not
+cannot enumerate everything they expect from a system of any size, and would not
 recognize some of what they want until they saw a system that lacked it. The
-only way to consult intent is to ask a person: "is this what you want?", or
-"does this behavior match what you expected?".
+only way to consult intent is to ask a person: "is what I have written
+down what you want?", or "when we run the system, does this behavior match what you expected?".
 
-A0 therefore has no file called intent. What it has is the nearest written
-thing, the **purpose statement** that opens `specs/conops.md`:
+A0 therefore has no file called intent.  However, it illustrates the
+outcomes of steps that we take to try to summarize the shared
+understanding that the stakeholders currently have about the system.
+That shows up first in a specification document that is commonly
+called a "Concept of Operations" (ConOps). "Concept" indicates that the
+specification is high-level - it focuses on the overall concept and
+idea, not the details.  The "Operations" indicates that it describes
+how the system operates as a "black box" within a larger context that
+includes human users, other systems, and sometimes physical entities.
+The description is given in the form of what are called "user
+stories" or "operational scenarios".  The following lecture will 
+address the elements of a ConOps specification in greater detail.
+
+The ConOps starts with a **purpose statement** that opens `specs/conops.md`:
 
 > An organization keeps a protected enclave whose systems produce messages of
 > differing sensitivity, and it needs some of those messages to reach a less
@@ -224,33 +332,41 @@ thing, the **purpose statement** that opens `specs/conops.md`:
 > and decides, one message at a time, whether a message may leave. Nothing
 > leaves the enclave except through the guard.
 
-The purpose statement is an engineering artifact: a short text that the
+The purpose statement (and the entirety of the ConOps document) 
+is an engineering artifact: a short text that the
 stakeholders revised until they agreed with it, and that is audited like the
 rest of the document. It is not a transcript of what anyone said. The
 distinction matters because the two are treated differently: the purpose
 statement is a clause that other clauses derive from and that can be checked
-for consistency; a transcript is reference material that informs the writing
-but is not itself checked.
+for consistency; a transcript or other adhoc information is reference
+material that informs the writing but is not itself checked.
 
 The practical consequence for agentic development is that an agent has no
-access to intent except through a person. An agent can read every file in the
-repository and still not know that the security officer meant something
-other than what the specification says. That is why one of the five
+access to human intent except through a person. An agent can read every file in the
+repository and still not know that the security officer meant (what
+they had in their head) other than what the specification says. 
+That is why one of the five
 judgments, validation, is reserved to a person, and why the course keeps
 intent out of the diagram's set of artifacts rather than pretending a file
 could stand in for it.
 
-How the purpose statement and the stories were obtained from the stakeholders
-is the subject of the next lecture, which introduces elicitation on version
-A1. In A0 they are given as already agreed.
+How the purpose statement and the stories may obtained from the stakeholders
+is the subject of the next lecture, which introduces elicitation
+(interviews and other gathering of informal information to help form
+the high-level specifications) on version A1.   To keep the focus 
+on the entities themselves (rather than how they were obtained), in A0 
+they are given as already agreed.
 
 ## Specification
 
 A **specification** is a document that states, at a higher level than the
 artifact it governs, what the system must do. It fixes some properties and
-deliberately omits others; the omissions leave the realization free where the
-stakeholders do not care. Its clauses carry identifiers so that reports can
-cite them.
+deliberately omits others; the omissions leave the realization
+unconstrained for things that stakeholders do not care to force a
+choice.  There are many different forms of specifications.  Regardless
+of the form, we try to identify discrete units with unique identifiers
+for that other artifacts (e.g., other specs, requirements, tests,
+reports) can cite them and estabish cross-referencing and dependences.
 
 A0 has two specifications. `specs/conops.md`, the **concept of operations**,
 has five sections: the purpose statement; the scope and system boundary, with
@@ -259,8 +375,8 @@ sign-off. `specs/requirements.md` has four requirements. Together they are a
 *family*: two documents of different kinds that govern one system and must
 agree with each other.
 
-The unit of a specification is the **clause**. Here is one from each file, as
-it appears:
+The unit of a text-based specification is the **clause**. Here is one
+from each file, as it appears:
 
 > **US-1** · Method: walkthrough (human) · User category: message sender
 >
@@ -311,23 +427,28 @@ something a stakeholder said they wanted, and every story can be followed
 forward to the requirements that make it precise.
 
 Notice also what the specifications leave open. They say nothing about how a
-message reaches the guard, how its level was assigned, or what happens to a
+message reaches the guard , how its level was assigned, or what happens to a
 dropped message. Those are outside the system boundary stated in section 2 of
-the concept of operations. The realization is free there, and a later version
-that adds a record of dropped messages will have to add clauses, not reinterpret
-these.
+the concept of operations, and it is therefore not the responsibility
+of *this system*. The realization is unconstrained there.  A later
+version of the system will adds a record of dropped messages, and new
+clauses will be added to address that feature.
 
 ## Specification quality
 
 A specification can be wrong in ways that have nothing to do with the code.
 Two of its clauses can contradict each other, so that no realization could
-satisfy both. A clause can admit two readings, so that two verifiers would
+satisfy both (for example, one clause could imply that a message is
+dropped where another could imply that the same message is passed). 
+A clause can admit two readings, so that two verifiers would
 reach different verdicts on the same code. A clause can be missing, so that a
 whole behavior is unconstrained. Checking code against a specification with
 one of these defects gives a confident answer to the wrong question. The
-situation is worse with an agent than with a human developer, because an agent
-realizes what the text says, at speed, and will produce a passing test suite
-for either reading of an ambiguous clause.
+situation is worse with an agent than with a human developer.  Human
+developers often have some underlying intuition to help them "recover
+the true meaning" from bad requirements, but an agent form some very 
+literal interpretation of the text says, at speed, 
+and will produce a passing test suite for either reading of an ambiguous clause.
 
 The course names five properties of a good specification. Each is stated
 here with the place in A0 where it can be checked.
@@ -362,6 +483,10 @@ here with the place in A0 where it can be checked.
   and if there were a fourth level with no requirement, the document would be
   incomplete at its own level.
 
+There may be more conditions that are appropriate for some
+specifications.  The ones given above chosen because they are general
+enough to apply to almost any specification. 
+
 In A0 the SQ judgment is established in the simplest way: rule SQ-1 requires
 the properties, and a person read the seven clauses together and recorded the
 reading in the ledger. The ledger row says who read them and which clauses,
@@ -380,11 +505,13 @@ directly, and it is treated below.
 A **realization** is an artifact built to satisfy a specification. When the
 artifact is code the usual word is implementation; the general term is used
 because a test suite, a document, or a configuration can each be built to
-satisfy a specification, and because a realization need not be the only one.
+satisfy a specification.
+
+There may be many possible realizations to the same specification. 
 A different program in a different language that drops Critical messages and
 passes the rest would be another realization of the same two specifications.
 
-A0's realization is `guard/` and `tests/`. The code is two modules.
+A0's realization can be found in `guard/` and `tests/`. The code is two modules.
 `guard/message.py` defines the security level as an enumeration with exactly
 three members and the message as a frozen dataclass, and it rejects a message
 whose level is not a `SecurityLevel` or whose payload is not an integer;
@@ -420,12 +547,26 @@ def test_public_passes_unchanged():
 ```
 
 The marker `@pytest.mark.req("REQ-1")` is the citation. It serves three
-readers. A program can compute, from the markers, which clauses have tests
-and which do not. A person who sees this test fail knows which clause is in
+readers. A program that implements an assurance tool can compute, 
+from the markers, which clauses have tests and which do not. 
+A person who sees this test fail knows which clause is in
 question without reading the test body. And an agent that writes a test must
 say which clause the test is evidence for, which rules out the common failure
 of a test that exercises the code without claiming anything about it. A test
 that cites no clause is, under A0's rules, not allowed in the suite.
+Those rules can be relaxed -- a developer may find it useful to have a
+test that doesn't directly match a written requirement.   Note that
+may mean that the system is be constrained in someway that is not
+explicitly acknowledged -- which could be OK or undesireable depending
+on how rigorous you want to be.  In critical systems, this may be
+undesirable -- it could indicate that there is an implicit requirement
+that is not being acknowledged and utilized in other aspects of
+development and auditing.  Or it could indicate the system's behavior
+is specialized in ways that it shouldn't be -- making it less
+re-usable in other contexts that didn't want and didn't know about
+that restriction.  This is why many development regimes for critical
+systems require each test to be associated with a specification
+clause.
 
 **Realization quality** is the judgment that the realization is in a state
 where it can be checked at all. In A0 it has two parts, both decided by
@@ -439,7 +580,7 @@ set up its inputs by construction rather than by reaching into the code's
 internals. Those three are reviewed rather than computed in A0.
 
 Realization quality is kept separate from conformance for a reason that
-becomes visible on the ledger. A suite that does not collect produces no
+becomes visible on the ledger. A suite that does not compile produces no
 conformance evidence at all; a module with an undefined name may pass every
 test that does not reach the name. Checking the realization's own soundness
 first means that a conformance result, when it comes, is a result about code
@@ -449,24 +590,48 @@ that is at least runnable and a suite that at least ran.
 
 **Conformance** is the relationship between a specification S and a
 realization R that holds when R satisfies every property S states. It is a
-yes-or-no question about the pair, and properties S does not state are not
-part of it. **Verification** is the activity of trying to confirm that the
-relationship holds. The word *trying* is deliberate. A verification produces
-a result, and the result is evidence with a scope: which verifier produced
-it, against which version of the specification, over which clauses. Within
+yes-or-no question about the pair.  Properties S does not state are not
+part of the conformance check. 
+**Verification** is the activity of trying to confirm that the
+relationship holds. The word *trying* is deliberate.  Verification
+may initially fail.  Later, when the relationship if found to hold, 
+the realization is said to be **verified** (more precisely, to be
+**verified against S** or to **conform to S**).  It's also important
+to note some *versioning/scoping* issues -- and we need to be precise 
+about these.  We need to be able to say which version of the verifier
+the result,  against which version of the specification, over which clauses. Within
 that scope it can be trusted; outside it, it says nothing; and, as a later
 lecture will take up, even within it the verifier can be wrong.
 
 In A0, conformance is not one thing but four, and the reason is the central
 technical point of this lecture. A passing test suite, on its own,
-establishes only that the suite's own claims hold. When an agent has written
-both the code and the tests, a green suite can mislead in three ways. The
+establishes only that the suite's own tests hold -- it doesn't
+indicate if the tests are relevant to specs, explore enough of the
+code, etc.  Typically, when a human developer writes tests, the 
+human forms an understanding of the constraints/properties they are
+trying to enforce of the code.  Thus, if the human doesn't understand
+every last detail of the code, typically they at least understand
+their tests.  When an agent has written both the code and the tests,
+the human loses this avenue to understanding the system.  When an
+agent writes both code and tests, a green suite can mislead in three ways. The
 suite may contain no test for some clause, in which case the clause is
 unverified and the green run says nothing about it. The tests may exercise
 only part of the code, in which case the untested part may do anything. And
 the clauses that no test can decide, the stories, may simply have been
-skipped. The CONF judgment is therefore the conjunction of four conditions,
-each with its own evidence:
+skipped.  When these things happen, even though an agent is writing
+tests, confidence is lost in the system assurance.  For these reasons,
+an agent development process needs to include what might previously
+been considered "extra and unnecessary overhead" that was "only needed
+for critical systems".  This is an example of where one can *benefit*
+from the increase capacity of agents to produce code and tests but
+where one must *pay* by some effort re-directed to setting up rules,
+traceability frameworks, and other tooling to check the "goodness" of
+what agents are doing.  
+
+To account for the fact that verification is not just "the tests
+pass", abstractly, The CONF judgment for requirements-like
+specifications checked via testing actually has four conditions that
+all must hold, each with its own evidence:
 
 1. **Every test passes.** The run itself.
 2. **Requirements coverage.** Every clause whose method is *test* is cited by
@@ -555,8 +720,10 @@ That is as far as this lecture takes the point.
 **Validation** is the question whether the specifications describe what the
 stakeholders intend. It differs from verification in what it compares.
 Verification compares two artifacts, a specification and a realization, both
-of which are in the repository. Validation compares an artifact with what is
-in a person's mind, which is not. So validation can only be decided by a
+of which are in the repository. Validation compares an artifact (or
+the behavior of a running system in some context) with what is
+in a person's mind, which is not in the repository. 
+So validation can only be decided by a
 person, and the decision is recorded as a **sign-off**. A0's is in
 `reports/walkthrough.md`:
 
@@ -623,7 +790,7 @@ rejected before any test runs. The second part is read by a person as part of
 SQ-1.
 
 Traceability is given its own row for two reasons. It can be decided by a
-program, so it is cheap to keep established. And the other four rows depend on
+utility program, so it is cheap to keep established. And the other four rows depend on
 it clause by clause: a conformance report is only readable if its identifiers
 resolve, and an audit finding is only actionable if it names a clause. In
 agentic development the identifiers are the vocabulary shared by the person,
@@ -690,9 +857,11 @@ the history, the gate passed.
 
 ## Breaking it: conformance
 
-Each judgment in A0 has a sabotage that turns exactly its row red and shows
-which verifier notices. Two are run in this lecture; the README lists three
-more for the lecture on testing.
+To help solidy the intuition about the useful of the judgements the
+demo content for A0 is set up so that each judgment has a "sabotage" 
+that turns exactly its row red and shows which verifier notices. 
+Two are run in this lecture; the README lists three more for the
+lecture on testing.
 
 The first is a wrong realization. In `guard/filter.py`, change
 `SecurityLevel.CRITICAL` to `SecurityLevel.RESTRICTED`, so that Critical
@@ -772,11 +941,16 @@ learn where things stand.
 
 One observation about where effort goes. In A0 the code is under thirty lines.
 The specifications, rules, and reports are more than three hundred. That ratio is not
-a property of this small example; it reflects a shift in what a person does
+just a property of this small example; it reflects a shift in what a person does
 when an agent writes the code. The person's effort goes into saying what is
 wanted, deciding how it will be checked, and reading the evidence, because
 those are the parts an agent cannot do alone and the parts that make the
-agent's output something a person can stand behind.
+agent's output something a person can stand behind.  Of course, for
+this tiny example, the effort hardly seems worth it.  The point is
+that this approach will pay off (a) as systems scale, (b) as they use
+technologies that developers may not be expert in, (c) as the size of
+the human and agent team grows, (d) as we need more confidence in the
+development outcomes.
 
 In class, the lecture may close with one demonstration: an agent started in
 the A0 directory is asked what the system does and how it is known that the
@@ -789,7 +963,8 @@ is the agent's opinion of the code.
 
 Version A1 keeps the same system and improves the specifications. It shows
 how the purpose statement and the stories are obtained from stakeholders
-(elicitation), adds a glossary of the domain's terms as a specification of
+(elicitation) by the help of agents, 
+adds a glossary of the domain's terms as a specification of
 its own, rewrites the requirements in a structured natural-language form,
 derives fixtures from the stories so that a story can be checked by a test as
 well as by a walkthrough, and replaces the reading of the specifications with
@@ -807,7 +982,7 @@ format, each bringing the kind of specification it needs.
 
 ## Applying this to your own project
 
-The example is small and the lecture is abstract, but most of what it shows
+The example is small and the lecture concepts are abstract, but most of what it shows
 can be set up in a project of any kind on the first day, and it is worth
 being explicit about which parts carry over as they are and which parts you
 will have to adapt.
@@ -816,8 +991,9 @@ will have to adapt.
 
 - *The entities and the judgments.* Every project has stakeholders with
   intent, specifications of some kind, and a realization, and the five
-  questions can be asked of any of them. Start a ledger on the first day, by
-  hand, with five rows; most will say "not established", and that is
+  questions can be asked of any of them. Start a ledger (or some form 
+  of simpler reporting) on the first day, by hand, 
+  with five rows; most will say "not established", and that is
   information.
 - *A concept of operations.* You can always begin by working with the people
   on your team, and with an agent, to write a concept of operations that has
@@ -825,7 +1001,11 @@ will have to adapt.
   agree to, a scope with the system boundary and the terms, the user
   categories, and user stories with concrete examples. Agree on it before code
   is written. It is the document that the validation sign-off will be given
-  on, and it is the first thing an agent should read.
+  on, and it is the first thing an agent should read.  Note that user
+  stories have long been a foundational element of agile development
+  and have proven useful in many development styles.
+  They are not something that we made up, or something burdensome that
+  is arbitrarily being imposed on you.
 - *A requirements document.* You can always have one, and its clauses can
   always carry an identifier, a verification method, and the story or term
   each derives from. The method field is the one most often left out and the

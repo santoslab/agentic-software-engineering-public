@@ -1,8 +1,14 @@
 # Development Log: Message Guard
 
 Append-only. One entry per task, naming the files touched, the judgments
-touched, and the gate result (rule RPT-1). In this snapshot the whole of
-version A0 is one tag, v0; the replay script will give each entry its commit.
+touched, and the gate result (rule RPT-1). These entries describe the tasks
+leading to the completed A0 snapshot, not separate commits. In particular,
+entry 1 is not a specifications-only commit: that would violate CONF-1 and
+WF-1. A future snapshot replay may record the completed A0 as a single
+baseline commit and tag, but must not turn these entries into separate
+commits claimed to comply with A0's rules. No replayed history is asserted
+here. The limitations of this per-commit policy are a teaching point;
+checkpoint-specific rules are planned for A2.
 
 ## 1 · Write the specifications (2026-10-20)
 

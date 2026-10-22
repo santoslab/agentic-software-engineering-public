@@ -1081,6 +1081,18 @@ failure behavior.
 | WF-1 | Workflow gate supporting RQ, CONF, and TR | Before each commit, `tools/gate.sh` must succeed. It checks realization quality, the mechanical part of conformance, and test-citation validity—not all five judgments. |
 | RPT-1 | Reporting all five judgments | The dev log records each task and its gate result; at each commit, the ledger records the five judgments’ statuses, evidence, and provenance. Recording a judgment does not mean it is established. |
 
+There is a useful catch in these rules. Taken literally, CONF-1 and WF-1
+require a baseline implementation, passing tests, and working checks before
+the first commit: we cannot first commit just the specifications and then
+build the implementation. That is not generally desirable. Development
+rules themselves need to be examined and "debugged," just as product
+specifications do. A0 presents a completed snapshot; its development log
+records tasks, not a separate commit for each task. In A2 we will revisit
+the rules to allow intermediate commits while requiring designated
+judgments at acceptance checkpoints. Also, passing the automated gate is
+only part of following the rules: human-review and reporting obligations
+still apply.
+
 Each rule uses the same fields, making its scope, verifier, evidence, and
 response to failure explicit. Here is CONF-1, condensed:
 

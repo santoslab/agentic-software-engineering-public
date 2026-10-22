@@ -34,6 +34,15 @@ The ledger, `reports/ledger.md`, has one row per judgment with its evidence and
 its provenance. The gate, `tools/gate.sh`, decides the mechanical parts (RQ and
 the first three conjuncts of CONF) before any commit (WF-1).
 
+Taken literally, CONF-1 and WF-1 require the implementation, tests, and
+checking infrastructure before the first commit. This snapshot demonstrates
+the completed A0, not a sequence of independently committed construction
+tasks; `reports/dev-log.md` records those tasks without claiming a commit for
+each. This restriction is a teaching example of development rules that need
+to be "debugged." A2 will introduce intermediate commits and acceptance
+checkpoints. A passing script does not discharge the separate human-review
+and reporting obligations.
+
 ## Running it
 
 ```sh

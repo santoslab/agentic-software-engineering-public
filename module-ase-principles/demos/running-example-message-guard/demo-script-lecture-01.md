@@ -323,6 +323,14 @@ completed work need not be the same event: later, we will allow intermediate
 commits and require designated judgments at wave acceptance. What does not
 change is that the ledger must report the evidence honestly.
 
+**Teaching point:** taken literally, CONF-1 and WF-1 also prevent a
+specifications-only first commit: the implementation, passing tests, and
+checking infrastructure must already be in place. That is a limitation to
+notice, not a generally desirable development policy. We need to "debug"
+development rules too; A2 will address this. The three dev-log entries are
+tasks leading to the completed snapshot, not three separate commits. A
+passing script also does not replace the human-review and reporting duties.
+
 **Do (shell):** `cat CLAUDE.md`, then `head -20 reports/dev-log.md`.
 
 **Say:** the rules are a file because the agent reads it: `CLAUDE.md` tells

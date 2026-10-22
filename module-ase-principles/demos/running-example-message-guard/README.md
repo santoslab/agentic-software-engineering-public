@@ -19,7 +19,13 @@ record of what to run and show.
 
 Each version is a self-contained snapshot. To compare two versions, use
 `diff -r v0 v1`. A replay script that turns the snapshots into a tagged git
-history is planned with A1.
+history is planned with A1. A0's development-log entries describe tasks, not
+individual commits: its per-commit rules would prohibit a specifications-only
+first commit. Replay must start with the completed A0 snapshot as a baseline,
+not manufacture a separate compliant commit for each task. The resulting
+history would be a reconstruction from snapshots, not the original build
+history. A2 will revisit the rules to permit intermediate commits before
+acceptance checkpoints.
 
 Licensing follows the repository boundary (`LICENSING.md`): the specifications,
 rules, reports, and READMEs are instructional prose under CC BY 4.0; the code,

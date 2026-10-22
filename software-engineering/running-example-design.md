@@ -491,6 +491,17 @@ A scoped acceptance must not be reported as conformance of the entire
 product. A3 develops the more general workflow model. CF-15 records the A2
 implementation and teaching obligations.
 
+**A0 teaching limitation.** Taken literally, CONF-1 and WF-1 require the
+implementation, passing tests, and checking infrastructure before the first
+commit. A specifications-only first commit is not permitted. Lecture 1
+acknowledges this as a reason to examine and "debug" process rules, rather
+than introducing an initial-construction phase or a baseline-acceptance
+protocol in A0. Its log records tasks leading to a completed snapshot, not
+one commit per task. Keep this limitation explicit until A2 addresses it
+under CF-15. Also distinguish the automated gate's checks from the full set
+of applicable obligations: a passing script does not discharge SQ review,
+human trace review, or reporting duties.
+
 **The rule template.** Every rule carries the same fields, so a reader can see
 when one is complete. This example uses the simple per-commit policy; A2's
 rules name the applicable checkpoints instead:
@@ -1057,10 +1068,14 @@ Suggested evolutions of the model, none required by the course:
 ## 6. Repository layout and reuse
 
 - **Location:** `module-ase-principles/demos/running-example-message-guard/`,
-  one snapshot directory per version (`v0/`, `v1/`, and so on), plus a
-  `build-history.sh` that replays the snapshots into a tagged git repository so
-  the dev log has a real `git log` behind it. Lecture notes link to a fixed
-  snapshot; students can `diff -r v1 v2`.
+  one snapshot directory per version (`v0/`, `v1/`, and so on), plus a planned
+  `build-history.sh` that replays the snapshots into a tagged git repository.
+  Replay starts with the completed A0 as a baseline commit; its dev-log tasks
+  must not be represented as separate commits claimed to satisfy A0's rules.
+  Label replayed history as a reconstruction, not the original build history.
+  Later intermediate commits must follow the checkpoint policy applicable to
+  their version. Lecture notes link to a fixed snapshot; students can
+  `diff -r v1 v2`.
 - **Reuse:** adapt `tests/conftest.py` and `tests/conformance.py` from
   `module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/`
   (identifier patterns for `REQ-`, `US-`, `ARCH-`, `DATA-`, `IF-`; status
@@ -1424,8 +1439,10 @@ requirement.
 
 **Disposition:** Accepted design and teaching commitment, 2026-10-22.
 **Target:** A2 implementation and lecture; general workflow modeling in A3.
-**Completion:** Lecture 1 qualification added; A2 implementation and worked
-demonstration remain pending.
+**Completion:** Lecture 1 qualification and first-commit teaching remark
+added; A0 task/replay claims corrected. A2 implementation and worked
+demonstration remain pending. A0 retains its existing rules, without a new
+initial-construction phase or baseline-acceptance protocol.
 
 Use section 2.8's distinction between recording work, reporting judgments,
 and accepting work. Keep A0/A1's simple automated per-commit gate. In A2,
@@ -1462,6 +1479,15 @@ intermediate state does not establish its judgments.
    with this A2 sequence when building A2. Retain the existing A0 sequence
    under its stricter policy. Keep the detailed checkpoint lesson out of
    Lecture 1; A3 generalizes the two-level policy into a workflow graph.
+6. Address the initial-build case explicitly: the revised policy must permit
+   a specifications-only intermediate commit before implementation, tests,
+   or checking infrastructure are complete, without claiming CONF is
+   established. State how the process identifies an acceptance checkpoint
+   and records its decision, and show that incomplete work cannot pass it.
+   Check the human-review and reporting obligations as well as the automated
+   gate; a successful script is not evidence of compliance with every rule.
+   Use the A0 first-commit restriction to motivate testing the process rules
+   against plausible development sequences, not just testing the product.
 
 **Source:** section 2.8 and the Lecture 1 gate qualification and rule summary.
 This item changes workflow policy, not product behavior, and does not require

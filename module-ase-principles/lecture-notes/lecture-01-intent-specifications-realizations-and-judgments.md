@@ -1121,6 +1121,46 @@ drawn from `specs/`, `reports/conformance.md`, and `reports/ledger.md` is an
 answer a person could check; an answer drawn from reading `guard/filter.py`
 is the agent's opinion of the code.
 
+## Process, Reporting, and Assurance Tooling
+
+The reports and checks in this example did not appear automatically when we
+wrote the requirements. Someone had to decide what questions the reports
+should answer, what evidence they should contain, and what should happen
+when evidence is missing or a check fails. Someone also had to build the
+supporting programs: `tests/conformance.py` reads the identified specification
+clauses; `tests/conftest.py` connects test citations and results to the
+conformance report; and `tools/gate.sh` runs the prescribed checks. This is
+**process, reporting, and assurance tooling**: infrastructure that helps
+developers carry out the process and understand the evidence it produces.
+Designing and maintaining it is part of the engineering effort, alongside
+specifying and implementing the product.
+
+An agent can help build this infrastructure, but it needs goals and
+requirements for the infrastructure itself. Rather than asking only
+"generate a report," we might ask: "Read the identified clauses from these
+specification files, show the tests citing each test clause and their
+outcomes, identify missing evidence and invalid citations, and distinguish a
+partial run from a full run." We would then review the proposed report
+format and organization of the utilities, ask the agent to implement them,
+and check deliberately constructed cases where the report must reveal a
+problem. Later lectures will devote substantial attention to this process:
+specifying the tooling, prompting an agent to plan and build it, and checking
+that the resulting framework produces trustworthy, appropriately scoped
+evidence.
+
+In a company, this infrastructure need not be rebuilt independently for
+every application. Report formats, identifier conventions, reusable checking
+utilities, and workflow integration can be shared across a team or
+organization. A dedicated development-infrastructure or
+engineering-productivity team can maintain that common foundation, while
+product teams supply their specifications, tests, and project-specific
+configuration. This helps keep the development process consistent and
+spreads the maintenance effort across projects. Shared tooling still needs
+testing, versioning, and controlled updates: a reporting defect can
+otherwise give many teams the same misleading picture. In this course, we
+expose a small version of that infrastructure so you can understand both how
+to use it and how to direct an agent to build or adapt it.
+
 ## What is not here yet
 
 Version A1 keeps the same product behavior and improves its specifications

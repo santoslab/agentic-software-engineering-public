@@ -1431,3 +1431,72 @@ or explicitly records that it remains open, with any proposed product change
 handled separately.
 
 **Source:** [review section 7, question 4](../module-ase-principles/review-lecture-01-a0.md).
+
+### 9.6 Cross-version tooling construction and teaching
+
+#### CF-14 — Build the process, reporting, and assurance tooling explicitly
+
+**Disposition:** Accepted teaching commitment, 2026-10-22. **Applies to:** A1
+and A2 implementation and lectures. **Completion:** Lecture 1 acknowledgment
+added; future worked sessions and their evidence remain pending.
+
+Do not present reports, gates, and ledger utilities as infrastructure that
+appears automatically once product requirements have been written. Their
+goals, report formats, status meanings, failure behavior, and organization
+also require design and implementation. Teach students how to prompt an
+agent to build or adapt this infrastructure, review its proposed design, and
+check its behavior before relying on the evidence it produces.
+
+- **A1:** introduce requirements for the audit and trace reports. Show how
+  these requirements guide the agent's proposed artifact layout and
+  implementation, including what is read from specifications, what is
+  computed, and what still requires human judgment.
+- **A2:** reserve a substantial worked teaching session for constructing the
+  framework: report schemas, reusable utilities, gate integration, generated
+  ledger, and tests of the checking machinery. Show the actual sequence from
+  prompt to plan to implementation to deliberate-failure checks. Use the
+  existing CF-01, CF-08, and CF-09 scenarios where appropriate; resolve
+  proposed refinements such as CF-05 before treating them as required work.
+- **Shared ownership:** explain how a team or company can share report
+  formats, conventions, utility programs, and workflow integration, with a
+  dedicated infrastructure team maintaining the common foundation and product
+  teams supplying specifications, tests, and configuration. Include the need
+  for versioned releases and controlled updates: a shared reporting defect
+  can mislead multiple projects. This is an organizational model to explain,
+  not a requirement to build a company-wide platform for the course.
+
+**Completion check:** retain the prompts, approved tooling requirements,
+implementation tasks, example reports, and checks that expose missing or
+misleading evidence. The A1/A2 lecture plans must allocate explicit time for
+building and checking the tooling, not merely demonstrating its outputs.
+Record which utilities are reused and which are newly implemented. This
+adds a teaching focus to the existing progression, not new product behavior
+or an authorization to implement every proposed carry-forward item.
+
+**Provenance example for the worked teaching session:** A0's conformance
+helpers were adapted from the tic-tac-toe demo, where an agent built custom
+reporting utilities during the Spec Kit workflow. They were not installed
+as standard Spec Kit conformance-reporting utilities. The recorded chain is:
+
+1. The instructor's [seed development rules](../module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/demo-seeds/ASE-seed-development-rules.md)
+   supplied reporting goals, carried into Principle V of the project's
+   constitution.
+2. Planning decision [R7](../module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/specs/001-five-in-a-row/research.md#r7-conformance-evidence-and-reports-constitution-principles-i-and-v)
+   selected requirement markers, a pytest plugin, and a generated conformance
+   report with explicit missing-evidence results.
+3. [Tasks T004–T006](../module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/specs/001-five-in-a-row/tasks.md#evidence-tooling-constitution-principles-i-and-v-researchmd-r7)
+   specified the clause reader, its tests, and the report-writing plugin.
+4. Public commit `4d6a2cd`, dated 2026-10-08, introduced both helpers during
+   the foundational implementation phase. The [session transcript](../module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/specs/001-five-in-a-row/transcript/session-transcript.md)
+   records that phase under `/speckit-implement`; its original commit hash
+   `2ff1e1c` maps to the public hash in the demo README.
+5. [A0's development log, entry 2](../module-ase-principles/demos/running-example-message-guard/v0/reports/dev-log.md)
+   records adapting the plugin and adding the gate command. The A0 files
+   first appear in public commit `4a9d077`, dated 2026-10-20.
+
+Spec Kit supplied the planning/task/implementation workflow; the project's
+goals and the agent's design work supplied this particular reporting
+mechanism. Do not confuse Spec Kit's cross-artifact analysis report with the
+pytest-generated conformance evidence report.
+
+**Teaching introduction:** [Lecture 1, Process, Reporting, and Assurance Tooling](../module-ase-principles/lecture-notes/lecture-01-intent-specifications-realizations-and-judgments.md#process-reporting-and-assurance-tooling).

@@ -739,7 +739,18 @@ Also establish that A1's new audit/trace machinery must detect duplicate identif
 
 #### C. Judgment status and evidence dependencies — edits 5, 6, 7, 24
 
-Correct the ledger conventions that will be copied:
+**Status: resolved for the agreed Lecture 1/A1 preparation scope.** The resolution uses concise wording corrections and optional companion reading, rather than introducing detailed ledger-maintenance rules into the first lecture.
+
+The following changes have been applied:
+
+- **Lecture notes:** softened the ledger learning objective to emphasize why evidence needs renewal; distinguished established, stale, and not-established claims, with the record explaining incomplete checking versus a fresh failure; removed the fixed counts of affected rows and the “exactly one row red” sabotage claim. The sabotage explanation now distinguishes successful checks from failed behavioral tests and states that the commands update the conformance report, not the handwritten ledger. A failed check is described as a reason to investigate the specification, implementation, or checking machinery, not automatic proof of specification–implementation disagreement.
+- **Demo script:** updated Segments 5 and 7 to use the same high-level status explanation, identify CONF as not established after the behavioral failures, and make manual ledger maintenance explicit.
+- **Displayed and actual CONF row:** corrected both the lecture's condensed table and `demos/running-example-message-guard/v0/reports/ledger.md` to distinguish test evidence from coverage/citation analysis and include relevant changes to tests, verification tools, configuration, and environment among the reasons evidence needs renewal.
+- **Optional sidebar:** added [How a ledger evolves during development](lecture-notes/ledger-evolution-example.md) and linked it from the lecture notes. Its hypothetical history follows initial evidence establishment, a code edit, stale evidence, a fresh failure, repair, and successful commit checkpoints, then illustrates changed stakeholder intent and changed tests or checking tools. It distinguishes working states from commits and supported claims from guarantees of truth; it does not present the mock history as A0's actual development record.
+
+Markdown conversion and whitespace checks passed. Slides were intentionally left unchanged for later regeneration, and executable code was not changed. This resolves issue C's agreed scope; it does not claim that every location listed in the original cross-artifact edits 5, 6, 7, and 24 has been revised.
+
+The corrected conventions to carry into A1 are:
 
 - Test, verifier, and relevant configuration/environment changes can invalidate CONF evidence—not just specification and product-code changes.
 - “Stale,” “not yet checked,” and “checked and failed” must not be conflated.

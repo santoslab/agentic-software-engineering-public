@@ -8,9 +8,9 @@ themselves when the requirements were written. Each was specified, built or
 adapted, reviewed, and checked on inputs it must fail on, and each is
 maintained like any other engineered artifact. This catalog is where that
 work is recorded, so that a reader can set up the same tooling in their own
-project, or build infrastructure shared across several. A companion sidebar
-beside the module's Lecture 02 notes (planned, not yet written) will state
-the philosophy and the organization model at more length; this file is the
+project, or build infrastructure shared across several. The companion sidebar
+beside the module's Lecture 02 notes, *Tooling as engineering*, states the
+philosophy and the organization model at more length; this file is the
 inventory.
 
 **How to read a page.** Every page has the same seven headings: the tool's

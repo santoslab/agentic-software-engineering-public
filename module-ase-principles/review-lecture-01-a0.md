@@ -780,16 +780,25 @@ A1 makes A0's informal specification audit **structured and repeatable**, rather
 
 #### E. Specification quality and scope — edits 22, 23, 32
 
-Before designing A1's audit checklist and seeded defects:
+**Status: resolved for the agreed wording and A0 specification/rule alignment scope.** The revised explanations use concrete examples before stating the general principle: leaving an implementation algorithm open is deliberate freedom, excluding network transport respects the boundary, and omitting the Public-message behavior leaves an in-scope gap. The explanation also distinguishes the detail expected in a user story from that expected in a programming interface specification.
+
+- **Lecture notes:** broadened specification to selected properties of an artifact or process; distinguished the seven identified verification clauses from contextual specification text; retained and explained **reference material** as input to forming specifications; labeled the purpose quotation as an excerpt and the reproduced CONF-1 rule as condensed. The instructor's existing scope/context-assumptions wording is preserved, with the guard-bypass example added before its concluding sentence. Well-formedness and completeness explanations now identify their scope, and the traceability wording explicitly permits REQ-0's Terms-section reference.
+- **REQ-2 discussion (edit 13):** the notes, discussion question, demo introduction, and classroom prompt now distinguish its explicit value-equality requirement from a possible additional object-identity requirement. The example is no longer presented as an established ambiguity or a known defect for A1 to seed.
+- **Demo:** added the specification-versus-reference-material distinction, explained why the library cannot enforce the no-bypass assumption, and added the short transport-versus-Public-message completeness question.
+- **Displayed artifacts:** updated the ConOps introduction and labeled no bypass as a deployment assumption; aligned the requirements introduction and README with identified-clause scope and section-based derivation. SQ-1 now explicitly requires completeness for stated scope and abstraction level and review of contextual specification text; TR-1 permits REQ-0's section reference. The eight-rule structure is unchanged. Residual wording implying that every test must cite a clause was corrected in the notes and README.
+
+This resolution does not implement A1's parser robustness checks or structured audit. Slides remain deferred, and executable code and the bodies of the seven identified clauses are unchanged. Historical SQ evidence and stakeholder sign-off have not been rewritten to imply approval of the revised documents: a fresh review of the revised text, including completeness, and any required human approval remain to be recorded. The old evidence must not be treated as fresh evidence for this revision.
+
+The distinctions to preserve when designing A1's audit checklist and seeded defects are:
 
 - Explicitly include completeness **for the stated scope and abstraction level**.
 - Distinguish identified verification clauses from contextual specification material that still needs review.
 - Distinguish requirements from environmental assumptions.
 - Preserve the broader definition of specification: selected properties of an artifact or process, not exclusively executable system behavior.
 
-Otherwise A1 could encode the wrong audit criteria into its rules, forms, and skill.
+These distinctions prevent A1 from encoding the wrong audit criteria into its rules, forms, and skill.
 
-**Do not reuse the REQ-2 identity-versus-equality discussion as a known ambiguity without correcting it**—edit 13. The existing requirement explicitly requires equal field values; object identity is a possible new requirement, not an established omission.
+The corrected REQ-2 example requires equal field values; object identity is a possible new requirement, not an established omission. Carry that interpretation forward rather than reusing the superseded ambiguity prompt.
 
 ### 8.2. Handle these as part of building A1—not as a separate prerequisite project
 

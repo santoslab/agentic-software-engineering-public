@@ -1,8 +1,10 @@
 # Requirements: Message Guard (version A0)
 
-Version A0, agreed 2026-10-20. Each requirement carries an identifier, a
-verification method, and the clause of the concept of operations it derives
-from. Every requirement in this version is a mechanical clause with method
+Version A0. Each requirement carries an identifier, a verification method,
+and the story or specification section of the concept of operations it
+derives from; REQ-0 refers to the Terms section. Stakeholder sign-off is
+recorded separately in `reports/walkthrough.md`. Every requirement in this
+version is a mechanical clause with method
 *test*: a test in `tests/` cites it by marker, and the generated report
 `reports/conformance.md` shows which tests cite which clause.
 

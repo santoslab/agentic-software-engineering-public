@@ -1,16 +1,19 @@
 # Concept of Operations: Message Guard (version A0)
 
-Version A0, agreed 2026-10-20. Every clause below carries an identifier and a
-verification method. The user stories are judgment clauses, verified by a
-walkthrough; the requirements derived from them are in `requirements.md`.
+Version A0. The three user stories carry identifiers and verification
+methods. The purpose, scope, terms, and user-category descriptions provide
+context for interpreting them and are reviewed with them. The requirements
+derived from the stories and terms are in `requirements.md`. Stakeholder
+sign-off is recorded separately in `reports/walkthrough.md`.
 
 ## 1. Purpose
 
 An organization keeps a protected enclave whose systems produce messages of
 differing sensitivity, and it needs some of those messages to reach a less
 trusted network outside the enclave. The message guard sits on that boundary
-and decides, one message at a time, whether a message may leave. Nothing
-leaves the enclave except through the guard.
+and decides, one message at a time, whether a message may leave. Deployment
+assumption: messages leaving the enclave are routed through the guard;
+preventing bypass is outside this library's scope.
 
 In this version the decision rests on one thing, the security level marked on
 the message: a message marked Critical never leaves, and every other message

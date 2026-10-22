@@ -30,9 +30,9 @@ what the segments turn on; do not point them out before their segment.
 
 - **The gate is green and the ledger has five established rows.** Segment 4
   shows this; Segments 5 and 6 break it.
-- **REQ-2 says "unchanged" and the test decides it by equality.** The
-  specification-quality segment asks the room whether that is the only
-  reading. It is the one place where a reading is visibly a judgment.
+- **REQ-2 requires equal field values, not object identity.** Segment 2 asks
+  students to distinguish the existing requirement from a possible
+  additional constraint.
 - **Nothing in A0 can tell that Restricted messages were meant to be stopped.**
   Segment 6 constructs that scenario. There is no command for it; the whole
   point is that no command exists.
@@ -117,12 +117,14 @@ clauses*; *Specification quality on A0*.
 **Do (editor or shell):** `cat specs/conops.md`. Read the purpose statement
 aloud; it is two short paragraphs.
 
-**Say:** the nearest written thing to intent. The stakeholders revised it
-until they agreed; it is audited like any clause; it is not a transcript of
-what anyone said. How it was obtained is the next lecture. Scroll to the
-Terms, the two user categories, and the three stories; stop on US-1 and read
-its header line: identifier, method, user category. Every story is marked
-*walkthrough (human)*: a person exercises the guard and judges.
+**Say:** the purpose statement is part of the specification, not a transcript
+of stakeholder comments. Such notes are reference material used to develop
+the specification. Notice the boundary assumption: outgoing messages must
+be routed through the guard. This library decides what happens to a supplied
+message; it cannot enforce the network topology. The purpose, scope, and
+terms need review even though they do not have individual rows in the
+conformance report. Scroll to US-1: here is an identified clause, with its
+verification method and user category.
 
 **Do (shell):** `cat specs/requirements.md`.
 
@@ -132,14 +134,20 @@ walkthroughs to the stories. These assignments tell us what evidence to
 obtain; they do not mean story behavior cannot be tested. A1 will automate
 the behavioral examples while retaining stakeholder sign-off.
 
-**Ask the room:** REQ-2 says a Restricted message passes "unchanged". What does
-unchanged mean? Someone will say "same level, same payload"; someone may say
-"the same object". The test decides it by equality. Is that the only reading?
-Point at the Terms section, where *pass* is defined, and at REQ-0, which says a
-message has exactly two fields. In version A0, a person has performed an
-informal audit by reading the specifications together against the quality
-criteria and recording the finding. A1 introduces a structured audit
-procedure and gap report, with agent assistance.
+**Ask the room:** read all of REQ-2, including "the same level and the same
+payload." Does that require equal values or the same Python object? The test
+checks equality. If the stakeholders wanted object identity as well, where
+should that requirement be stated, and how would the test change?
+
+**Say:** review the actual wording before declaring a gap. An implementation
+choice that the specification leaves open is not automatically an ambiguity.
+In version A0, a person has performed an informal specification audit. A1
+introduces a structured procedure and gap report.
+
+**Ask the room:** would A0 be incomplete because it says nothing about network
+transport? No—the boundary excludes it. Would it be incomplete if it omitted
+what happens to Public messages? Yes—that is an in-scope case. Completeness
+is always relative to the stated scope and level.
 
 **Expected:** no surprises; these are static files. Keep this segment moving;
 the slides already carry the five quality properties, so name them against the

@@ -13,8 +13,8 @@ showing is recorded. The design behind the versions is
 | Category | Files | Role |
 |---|---|---|
 | Intent | none | lives with the stakeholders; consulted through the sign-off |
-| Specifications | `specs/conops.md` (purpose, scope and terms, user categories, user stories US-1 to US-3); `specs/requirements.md` (REQ-0 to REQ-3) | what the system must do; every clause has an identifier and a verification method |
-| Realization | `guard/` (the code); `tests/` (the suite, each test citing a clause) | what was built, and the executable claims about it |
+| Specifications | `specs/conops.md` (purpose, scope and terms, user categories, user stories US-1 to US-3); `specs/requirements.md` (REQ-0 to REQ-3) | seven identified verification clauses; contextual specification text is reviewed with them but has no individual conformance-report row |
+| Realization | `guard/` (the code); `tests/` (the suite, with optional clause citations) | what was built, and the executable claims about it; every clause assigned method test requires citing evidence |
 | Development rules | `process/rules.md` (SQ-1, RQ-1, CONF-1, CONF-2, VAL-1, TR-1, WF-1, RPT-1) | how each judgment is established and when it must hold |
 | Reports | `reports/ledger.md`; `reports/dev-log.md`; `reports/walkthrough.md`; `reports/conformance.md` (generated) | the development state, readable without reading the code |
 | Technology | `pyproject.toml`, `uv.lock` | Python 3.12 or later; pytest, pytest-cov, ruff; managed by `uv` |

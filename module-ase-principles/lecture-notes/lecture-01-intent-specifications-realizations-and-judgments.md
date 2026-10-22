@@ -284,7 +284,7 @@ commit:
 | **RQ**, realization quality | In A0, does the code lint and does the test suite collect without error? | `ruff`; `pytest --collect-only` (RQ-1) | exit codes, recorded in `reports/dev-log.md` |
 | **CONF**, conformance | Does the realization satisfy every clause of every specification? | the test suite, two coverage measures, and the walkthroughs (CONF-1, CONF-2) | `reports/conformance.md`; the coverage table; `reports/walkthrough.md` |
 | **VAL**, validated | Do the specifications describe what the stakeholders intend? | a stakeholder of each user category signing the concept of operations (VAL-1) | the sign-off in `reports/walkthrough.md` |
-| **TR**, traceable | Does every clause carry an identifier, and does every link between artifacts resolve? | the markers and the "derived from" fields, read by a program and a person (TR-1) | the "Unknown identifiers" section of `reports/conformance.md` |
+| **TR**, traceable | Do identified clauses have unique identifiers, and do the declared references between artifacts resolve? | the markers and the "derived from" fields, read by a program and a person (TR-1) | the "Unknown identifiers" section of `reports/conformance.md` |
 
 Some additional terms are not directly reflected in the diagram. 
 An **artifact** is anything under
@@ -332,21 +332,26 @@ The description is given primarily in the form of what are called "user
 stories" or "operational scenarios".  The following lecture will 
 address the elements of a ConOps specification in greater detail.
 
-A ConOps opens with a **purpose statement**. Here is the one in `specs/conops.md`:
+A ConOps opens with a **purpose statement**. Here is an excerpt from `specs/conops.md`:
 
 > An organization keeps a protected enclave whose systems produce messages of
 > differing sensitivity, and it needs some of those messages to reach a less
 > trusted network outside the enclave. The message guard sits on that boundary
-> and decides, one message at a time, whether a message may leave. Nothing
-> leaves the enclave except through the guard.
+> and decides, one message at a time, whether a message may leave. Deployment
+> assumption: messages leaving the enclave are routed through the guard;
+> preventing bypass is outside this library's scope.
 
 The purpose statement, like the rest of the ConOps, is an engineering
-artifact: text that the stakeholders revised until they agreed with it,
-and that is audited like the rest of the document. It is not a transcript of what anyone said. The
-distinction matters because the two are treated differently: the purpose
-statement is a clause that other clauses derive from and that can be checked
-for consistency; a transcript or other ad hoc information is reference
-material that informs the writing but is not itself checked.
+artifact: it is part of the specification and is reviewed for consistency
+with the rest of the document. In A0 it is contextual specification text,
+not one of the seven clauses with an individual verification method and
+conformance-report row. Elicitation notes, transcripts, and other background
+information are **reference material**: information used to develop the
+specification, not requirements merely because someone recorded it. For
+example, an interview note saying "we sometimes send Restricted messages"
+can prompt questions about when sending is allowed. The resulting agreed
+rule belongs in the specification; the note remains reference material that
+helps explain how the rule was developed.
 
 The practical consequence for agentic development is that an agent has no
 access to human intent except through a person. An agent can read every file in the
@@ -366,14 +371,45 @@ they are provided as an artifact already agreed on by the stakeholders.
 
 ## Specification
 
-A **specification** is a document that states, at a higher level than the
-artifact it governs, what the system must do. It fixes some properties and
-deliberately omits others; the omissions leave the realization
-unconstrained where the stakeholders do not care to force a
-choice.  There are many different forms of specifications.  Regardless
-of the form, we try to identify discrete units with unique identifiers
-so that other artifacts (e.g., other specs, requirements, tests,
-reports) can cite them and establish cross-referencing and dependences.
+A **specification** states selected properties that an artifact or process
+is required to satisfy. For A0, the product specifications describe the
+guard's required behavior; the development rules describe requirements on
+the development process. A specification fixes some properties and
+deliberately leaves others open. Leaving an implementation choice open is
+not necessarily an omission: it can allow different realizations to satisfy
+the same specification.
+
+To make that concrete, imagine asking someone to build the guard. You need
+to tell them that Critical messages must be dropped and Public messages must
+pass unchanged. You do not need to tell them whether to use an `if` statement
+or another suitable implementation. Both can be acceptable if they produce
+the required behavior. That is a deliberate freedom, not a missing
+requirement.
+
+Now ask two different questions about what the document leaves out. "How
+does a message travel across the network?" is outside A0's responsibility:
+the library receives a message already supplied by its caller. "What should
+the library do with a Public message?" is inside its responsibility. If the
+requirements omitted that case, the developer would have to guess. The first
+omission respects the **scope**, meaning the boundary of the work we are
+specifying; the second leaves a gap within it.
+
+The **level of detail** matters too. A user story describes the behavior a
+sender expects, while a later interface specification can describe exactly
+how a program calls the guard and receives its result. We do not expect a
+user story to specify every detail of that programming interface. We do
+expect each document to supply the information needed for its own purpose.
+
+In short, a specification identifies what is required within a stated scope,
+together with the context and assumptions needed to interpret those
+requirements. Completeness is relative to that scope and level of detail;
+it does not mean specifying everything. The scope, terms, and assumptions
+tell the reader how to understand the requirements and where their promises
+stop. We return to a concrete environmental assumption below.
+
+Specifications can take different forms. In text-based specifications,
+identifiers let requirements, tests, reports, and other artifacts refer
+precisely to the statements they depend on.
 
 A0 has two specifications. `specs/conops.md`, the **concept of
 operations** (already discussed above), 
@@ -383,8 +419,13 @@ sign-off. `specs/requirements.md` has four requirements. Together they are a
 *family*: two documents of different kinds that govern one system and must
 agree with each other.
 
-The unit of a text-based specification is the **clause**. Here is one
-from each file, as it appears:
+A **clause** is an individual statement within a specification. A0 gives
+seven clauses explicit identifiers and verification methods: three user
+stories and four requirements. These are the clauses listed individually
+in the conformance report. The purpose, scope, terms, and user-category
+descriptions also belong to the specifications and need review, but do not
+have individual conformance-report rows. Here is one identified clause from
+each file:
 
 > **US-1** · Method: walkthrough (human) · User category: message sender
 >
@@ -399,9 +440,10 @@ from each file, as it appears:
 > The filter drops every message whose security level is Critical: for such a
 > message it produces no output.
 
-Every clause carries an **identifier** and a **verification method**, and
-every requirement carries the clause it **derives from**. Each of the three
-has a job.
+Each of these seven identified clauses carries an **identifier** and a
+**verification method**. Each requirement also names the story or
+specification section it **derives from**. REQ-0 refers to the ConOps Terms
+section; REQ-1 through REQ-3 refer to stories. Each field has a job.
 
 The identifier is what a report cites. A person, an agent, and a program can
 each check REQ-1 and say so, and because they all name the same clause their
@@ -461,7 +503,7 @@ boundary of the system.  A later version of the system will add a
 record of dropped messages, and new clauses will be added to address
 that feature.
 
-Note that sometimes we do need to state where are called "context
+Note that sometimes we do need to state what are called "context
 assumptions" or "environmental assumptions".  These are properties of
 the environment that we expect to be true when the system is deployed
 in that context.  However, establishing that those assumptions hold
@@ -470,7 +512,17 @@ organization (the organization integrating the system into the
 context).  It is not the responsibility of the organization developing
 the system.  In fact, the developing organization typically doesn't
 even know all the possible contexts into which the system will be
-deployed.  We do not address the notion of context assumptions in this
+deployed.
+
+For example, the guard's use at an enclave boundary assumes that outgoing
+messages are routed through it. The Python filtering function cannot itself
+prevent another network path from bypassing it. Even if the function drops
+every Critical message it receives, a Critical message could leave by a path
+that never calls the function. Establishing that the deployed enclave has no
+such bypass requires evidence about the deployment, not just tests of the
+filtering function.
+
+We do not address the notion of context assumptions in this
 overview. 
 
 ## Specification quality
@@ -492,20 +544,17 @@ and will produce a passing test suite for either reading of an ambiguous clause.
 The course names five properties of a good specification. Each is stated
 here with the place in A0 where it can be checked.
 
-- **Well-formed.** Every clause has an identifier and a method, in a form a
-  program can read. In A0 the form is the header line `**REQ-1** · Method:
-  test`, and the program that writes the conformance report reads exactly that
-  line to learn which clauses exist.
-- **Unambiguous.** Each clause has one reading, so that a verifier reaches a
-  yes-or-no verdict. REQ-1 says what "drops" means in the same sentence: "it
-  produces no output". Consider REQ-2 in class: it says a Restricted message
-  passes "unchanged", and the test decides that with `filter_message(message)
-  == message`, equality of level and payload. Is that the only reading? A
-  reader who thinks of identity rather than equality, or of a message with
-  more fields than two, has a different one. A0's answer is that the term
-  *pass* in the concept of operations defines "unchanged" and that the message
-  has exactly two fields; whether that is enough is the kind of question the
-  next lecture's audit is built to ask.
+- **Well-formed.** Identified verification clauses follow the required
+  format, with unique identifiers and verification methods. A0's
+  conformance-report tool reads headers such as `**REQ-1** · Method: test`.
+  That accounts for the identified clauses; it does not replace reviewing
+  the surrounding purpose, scope, definitions, and assumptions.
+- **Unambiguous.** The wording and definitions should make the required
+  property clear. REQ-1 explains "drops" as producing no output. REQ-2
+  explains "unchanged" as producing a message with the same level and
+  payload. That requires value equality, not Python object identity.
+  Requiring the very same object would be an additional constraint, which
+  should be stated explicitly if intended.
 - **Internally consistent.** No two clauses contradict. REQ-1 to REQ-3 assign
   each of the three levels one outcome and do not overlap. A requirement that
   "every message is passed" would contradict REQ-1, and no realization could
@@ -515,12 +564,13 @@ here with the place in A0 where it can be checked.
   Restricted, Critical, pass, and drop are used in the same sense in both
   files; nothing in the requirements promises a behavior that a story
   contradicts.
-- **Complete for its level.** Completeness is relative to the abstraction the
-  specification has chosen. The concept of operations says nothing about
-  transport, and that is not incompleteness; the boundary excludes it. But
-  there are three levels and three requirements that say what happens to each,
-  and if there were a fourth level with no requirement, the document would be
-  incomplete at its own level.
+- **Complete for its stated scope and level.** Completeness asks whether the
+  specification addresses the properties needed at its chosen abstraction
+  level and within its boundary. A0 excludes transport, so it need not
+  specify transport behavior. It does need to say what happens for each of
+  its three security levels. Omitting the Public-message requirement would
+  leave an in-scope case unspecified. Conversely, leaving the implementation
+  algorithm open is not a completeness defect.
 
 Further properties may be appropriate for particular specifications.
 The five above were chosen because they are general enough to apply to
@@ -872,7 +922,9 @@ run in a chain: a story in the concept of operations, to the requirements that
 derive from it, to the tests that cite them by marker, to the rows of the
 conformance report, to the CONF row of the ledger that cites the report. Rule
 TR-1 requires that every marker name a clause the specifications define and
-that every "derived from" name a clause that exists. The first part is
+that every "derived from" reference identify an existing story or
+specification section, including REQ-0's reference to the ConOps Terms
+section. The first part is
 decided by the report-writing program, which lists any marker it cannot
 resolve under "Unknown identifiers" and fails the run; `pytest` itself is
 configured with `--strict-markers`, so a marker that was never declared is
@@ -1007,7 +1059,8 @@ run, which is its point.
 Everything above is governed by `process/rules.md`, which holds eight rules:
 one for each of the five judgments, with CONF having two, plus one for the
 workflow (the gate) and one for reports (the dev log and the ledger). Each is
-filed under the judgment it maintains and has the same fields. Here is CONF-1:
+filed under the judgment it maintains and has the same fields. Here is CONF-1,
+condensed:
 
 | Field | |
 |---|---|
@@ -1033,8 +1086,9 @@ The rules are a file in the repository, rather than a convention, because the
 agent reads the file. An agent started in this directory is told, through
 the project's instructions, to read `process/rules.md`, and from that point
 the person and the agent are following the same written process. When the
-agent adds a test it cites a clause because CONF-1 says so; when it finishes
-a task it records the gate result because RPT-1 says so. A process that lives
+agent adds evidence for a test clause, it records the citation required by
+CONF-1; additional tests may omit citations. When it finishes a task it
+records the gate result because RPT-1 says so. A process that lives
 in a person's habits cannot be followed by an agent, and a process that lives
 in the agent's prompt cannot be audited by a person; a process that is a file
 can be both followed and audited.
@@ -1191,9 +1245,11 @@ re-established each, and which could not be re-established without a person.
 
 ## Questions to think about
 
-1. REQ-2 says a Restricted message passes "unchanged", and the test decides it
-   by equality. Write down a reading of "unchanged" under which the test is
-   too weak, and say which artifact you would change to rule the reading out.
+1. REQ-2 requires an output message with the same level and payload as the
+   input. Does `filter_message(message) == message` distinguish equal values
+   from object identity? Which does REQ-2 require? If stakeholders
+   additionally required the very same object to be returned, what would
+   need to change in the specification and test?
 2. Write a change to `guard/filter.py` under which every test passes and every
    requirement has evidence, yet the gate is red. Say what the change does to
    a message that no test sends, and what that tells you about which of the

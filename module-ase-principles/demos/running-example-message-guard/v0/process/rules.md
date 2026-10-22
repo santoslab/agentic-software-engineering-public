@@ -13,8 +13,8 @@ Identifiers are never renumbered; an example in a rule comes from this system.
 |---|---|
 | Style | obligation |
 | Maintains | SQ |
-| When | at every commit; applies to every clause of every specification |
-| Statement | Every clause MUST carry a unique identifier and a verification method, and every requirement MUST name the clause of the concept of operations it derives from. No two clauses may contradict each other, and no clause may admit two readings. |
+| When | at every commit; applies to the specifications as a whole, including identified clauses and contextual specification text |
+| Statement | Every identified verification clause MUST carry a unique identifier and a verification method. Every requirement MUST identify the story or specification section it derives from. The specifications MUST be unambiguous, internally consistent, consistent with their companion specifications, and complete for their stated scope and abstraction level. Scope, terms, and environmental assumptions MUST be reviewed with the identified clauses. |
 | Decided by | review (human): a person reads the specifications together and records the reading in the ledger. The identifier and method parts are also read by `tests/conformance.py`, which lists the clauses it finds. |
 | Evidence | the SQ row of `reports/ledger.md` |
 | On failure | the clause is amended before any test cites it; the SQ row is not established |
@@ -79,7 +79,7 @@ Identifiers are never renumbered; an example in a rule comes from this system.
 | Style | obligation |
 | Maintains | TR |
 | When | at every commit; applies to every `req` marker and every "derived from" |
-| Statement | Every `req` marker MUST name a clause identifier that the specifications define, and every "derived from" MUST name a clause that exists. |
+| Statement | Every supplied `req` marker MUST name a clause identifier defined in the specifications. Every "derived from" reference MUST identify an existing story or specification section; A0 permits REQ-0's reference to the ConOps Terms section. |
 | Decided by | analysis: the plugin in `tests/conftest.py` lists unknown identifiers and fails the run; `--strict-markers` rejects a marker that is not declared. The "derived from" part is read by a person with SQ-1. |
 | Evidence | the "Unknown identifiers" section of `reports/conformance.md` |
 | On failure | the marker or the reference is corrected |

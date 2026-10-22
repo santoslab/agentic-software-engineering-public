@@ -1,0 +1,1085 @@
+From a0e062346cab79202b5202b45db53c7f072178b2 Mon Sep 17 00:00:00 2001
+From: A1 build <build@example.invalid>
+Date: Thu, 22 Oct 2026 11:43:36 -0500
+Subject: [PATCH] a1-trace: the trace tool, its known-violation cases, and the
+ gate's third step
+
+tools/trace.py resolves every declared link in both directions and writes reports/trace-matrix.md; tests/tooling/ holds a clean base family and twelve cases the tool must report a finding on; tools/gate.sh runs the tool last and prints a provenance header; rule TR-2 added, TR-1 and WF-1 amended; tooling/trace.md is the first catalog page. No specification changed. Gate green: 29 passed, 7 of 7, no findings.
+---
+ process/rules.md                              |  27 ++-
+ reports/conformance.md                        |   2 +-
+ reports/dev-log.md                            |  31 +++
+ reports/ledger.md                             |  13 ++
+ reports/trace-matrix.md                       |  47 ++++
+ tests/tooling/__init__.py                     |   0
+ tests/tooling/cases/base/README.md            |   1 +
+ tests/tooling/cases/base/citations.json       |  12 ++
+ .../cases/base/reference/elicitation.md       |   6 +
+ tests/tooling/cases/base/specs/conops.md      |   7 +
+ tests/tooling/cases/base/specs/glossary.md    |   3 +
+ .../tooling/cases/base/specs/requirements.md  |   9 +
+ tests/tooling/cases/base/specs/scenarios.json |  17 ++
+ .../cases/dangling-derived-from/expected.json |   7 +
+ .../specs/requirements.md                     |   9 +
+ .../cases/dangling-marker/citations.json      |  15 ++
+ .../cases/dangling-marker/expected.json       |   6 +
+ .../cases/dangling-scenario/expected.json     |   6 +
+ .../cases/dangling-scenario/specs/conops.md   |   7 +
+ .../cases/duplicate-identifier/expected.json  |   6 +
+ .../specs/requirements.md                     |  13 ++
+ .../cases/missing-method/expected.json        |   6 +
+ .../missing-method/specs/requirements.md      |   9 +
+ .../cases/missing-reason/expected.json        |   6 +
+ .../cases/missing-reason/specs/conops.md      |   7 +
+ .../cases/scenario-not-listed/expected.json   |   6 +
+ .../cases/scenario-not-listed/specs/conops.md |   7 +
+ .../story-without-requirement/expected.json   |   6 +
+ .../specs/requirements.md                     |   9 +
+ .../test-clause-without-test/citations.json   |   9 +
+ .../test-clause-without-test/expected.json    |   6 +
+ tests/tooling/cases/unknown-key/expected.json |   6 +
+ .../cases/unknown-key/specs/requirements.md   |   9 +
+ .../cases/unknown-method/expected.json        |   6 +
+ .../unknown-method/specs/requirements.md      |   9 +
+ .../cases/unknown-pattern/expected.json       |   6 +
+ .../unknown-pattern/specs/requirements.md     |   9 +
+ tests/tooling/test_trace.py                   |  46 ++++
+ tooling/trace.md                              | 102 +++++++++
+ tools/gate.sh                                 |   8 +-
+ tools/trace.py                                | 203 ++++++++++++++++++
+ 41 files changed, 712 insertions(+), 7 deletions(-)
+ create mode 100644 reports/trace-matrix.md
+ create mode 100644 tests/tooling/__init__.py
+ create mode 100644 tests/tooling/cases/base/README.md
+ create mode 100644 tests/tooling/cases/base/citations.json
+ create mode 100644 tests/tooling/cases/base/reference/elicitation.md
+ create mode 100644 tests/tooling/cases/base/specs/conops.md
+ create mode 100644 tests/tooling/cases/base/specs/glossary.md
+ create mode 100644 tests/tooling/cases/base/specs/requirements.md
+ create mode 100644 tests/tooling/cases/base/specs/scenarios.json
+ create mode 100644 tests/tooling/cases/dangling-derived-from/expected.json
+ create mode 100644 tests/tooling/cases/dangling-derived-from/specs/requirements.md
+ create mode 100644 tests/tooling/cases/dangling-marker/citations.json
+ create mode 100644 tests/tooling/cases/dangling-marker/expected.json
+ create mode 100644 tests/tooling/cases/dangling-scenario/expected.json
+ create mode 100644 tests/tooling/cases/dangling-scenario/specs/conops.md
+ create mode 100644 tests/tooling/cases/duplicate-identifier/expected.json
+ create mode 100644 tests/tooling/cases/duplicate-identifier/specs/requirements.md
+ create mode 100644 tests/tooling/cases/missing-method/expected.json
+ create mode 100644 tests/tooling/cases/missing-method/specs/requirements.md
+ create mode 100644 tests/tooling/cases/missing-reason/expected.json
+ create mode 100644 tests/tooling/cases/missing-reason/specs/conops.md
+ create mode 100644 tests/tooling/cases/scenario-not-listed/expected.json
+ create mode 100644 tests/tooling/cases/scenario-not-listed/specs/conops.md
+ create mode 100644 tests/tooling/cases/story-without-requirement/expected.json
+ create mode 100644 tests/tooling/cases/story-without-requirement/specs/requirements.md
+ create mode 100644 tests/tooling/cases/test-clause-without-test/citations.json
+ create mode 100644 tests/tooling/cases/test-clause-without-test/expected.json
+ create mode 100644 tests/tooling/cases/unknown-key/expected.json
+ create mode 100644 tests/tooling/cases/unknown-key/specs/requirements.md
+ create mode 100644 tests/tooling/cases/unknown-method/expected.json
+ create mode 100644 tests/tooling/cases/unknown-method/specs/requirements.md
+ create mode 100644 tests/tooling/cases/unknown-pattern/expected.json
+ create mode 100644 tests/tooling/cases/unknown-pattern/specs/requirements.md
+ create mode 100644 tests/tooling/test_trace.py
+ create mode 100644 tooling/trace.md
+ create mode 100644 tools/trace.py
+
+diff --git a/process/rules.md b/process/rules.md
+index 4807100..1075c79 100644
+--- a/process/rules.md
++++ b/process/rules.md
+@@ -123,21 +123,34 @@ the end of this file. An example in a rule comes from this system.
+ | Maintains | TR |
+ | When | at every commit; applies to every `req` marker, every `Derived from`, and every `Source` reference |
+ | Statement | Every supplied `req` marker MUST name a clause identifier defined in the specifications. Every `Derived from` reference MUST identify an existing story or existing glossary terms. Every `Source` reference MUST identify an entry of `reference/elicitation.md`. |
+-| Decided by | analysis: the plugin in `tests/conftest.py` lists unknown identifiers and fails the run; `--strict-markers` rejects a marker that is not declared. The `Derived from` and `Source` parts are read by a person with SQ-1. |
+-| Evidence | the "Unknown identifiers" section of `reports/conformance.md`; the TR row of the ledger for the parts read by a person |
++| Decided by | analysis: the plugin in `tests/conftest.py` lists unknown identifiers and fails the run; `--strict-markers` rejects a marker that is not declared; `tools/trace.py` (TR-2) resolves the `Derived from`, `Source`, and `Scenarios` references. |
++| Evidence | the "Unknown identifiers" section of `reports/conformance.md`; the findings section of `reports/trace-matrix.md` |
+ | On failure | the marker or the reference is corrected |
+ | Example | `@pytest.mark.req("REQ-2")` resolves to REQ-2 in `specs/requirements.md`; US-3's `Source: E-1` resolves to entry E-1 of the elicitation record |
+ 
++## TR-2 · The trace matrix
++
++| Field | |
++|---|---|
++| Style | form |
++| Maintains | TR |
++| When | at every commit; produced by `tools/trace.py` as the last step of the gate; read by whoever asks what a story, a requirement, or a test is connected to, and by the audit for its derivation check |
++| Statement | `reports/trace-matrix.md` MUST be regenerated at every commit and MUST carry: a header naming the tool's version, the files read, the number of tests collected and citing, and the repository state checked; the forward table (story to requirements to scenarios to tests); the backward tables (requirement to its derivation and tests; test to the clauses it cites); and a findings section listing every declared link that does not resolve, every story with no requirement, every requirement with no derivation, every test clause with no citing test, and every finding of the clause reader. The findings section MUST be empty. |
++| Decided by | analysis: the exit code of `uv run python tools/trace.py`, non-zero on any finding |
++| Evidence | `reports/trace-matrix.md` |
++| On failure | the gate is red; the reference, the clause, or the test is corrected; a link is never deleted to make the matrix clean |
++| Example | REQ-3 derived from US-2 instead of US-1: every link resolves, and the matrix reports "story without requirement at US-1" |
++
+ ## WF-1 · The gate stands before every commit
+ 
+ | Field | |
+ |---|---|
+ | Style | gate |
+-| Maintains | RQ and the mechanical part of CONF (and, through the plugin, TR) |
++| Maintains | RQ, the mechanical part of CONF, and TR |
+ | When | WHEN work would be committed |
+ | Statement | The gate command `tools/gate.sh` MUST exit 0 before the work is committed. |
+-| Decided by | analysis: the exit code of `tools/gate.sh`, which runs RQ-1's analyses and then `uv run pytest` with the conformance plugin and coverage |
+-| Evidence | the dev-log entry of the task records the run |
++| Decided by | analysis: the exit code of `tools/gate.sh`, which prints a provenance header (the date, the repository state, the tool versions), then runs RQ-1's analyses, `uv run pytest` with the conformance plugin and coverage, and `tools/trace.py` |
++| Evidence | the dev-log entry of the task records the run and copies the header |
+ | On failure | the commit is not made; the work is returned to the task |
+ | Example | the v0 gate run in dev-log entry 3 |
+ 
+@@ -192,3 +205,7 @@ the end of this file. An example in a rule comes from this system.
+   loader runs every scenario; the plugin fails on a reader finding and
+   labels a partial run) and CONF-2 (no record required while no clause has
+   method *walkthrough*).
++- **A1, commit a1-trace.** Added TR-2 (the trace matrix, decided by
++  `tools/trace.py`). Amended TR-1 (the reference parts are now decided by
++  the tool, not read by a person) and WF-1 (the gate runs the trace tool and
++  prints a provenance header).
+diff --git a/reports/conformance.md b/reports/conformance.md
+index 5f1615f..707a8e0 100644
+--- a/reports/conformance.md
++++ b/reports/conformance.md
+@@ -1,6 +1,6 @@
+ # Conformance Report: Message Guard
+ 
+-Generated 2026-10-22 11:41 by the plugin in `tests/conftest.py` from the clauses in `specs/conops.md`, `specs/requirements.md`, `specs/scenarios.json`, `specs/glossary.md`; 16 tests collected, 16 cite a clause.
++Generated 2026-10-22 11:41 by the plugin in `tests/conftest.py` from the clauses in `specs/conops.md`, `specs/requirements.md`, `specs/scenarios.json`, `specs/glossary.md`; 29 tests collected, 16 cite a clause.
+ 
+ **Scope**: full run.
+ 
+diff --git a/reports/dev-log.md b/reports/dev-log.md
+index 8334514..4b4c7ea 100644
+--- a/reports/dev-log.md
++++ b/reports/dev-log.md
+@@ -140,3 +140,34 @@ checkpoint-specific rules are planned for A2.
+   16 cite a clause, no unknown identifiers, no specification findings; scope
+   full run
+ - Commit: `a1-scenarios`
++
++## 8 · The trace tool; the gate grows a third step and a header; commit a1-trace (2026-10-22)
++
++- Task: write the trace tool's catalog page first (`tooling/trace.md`:
++  requirements T1 to T8, the prompt, the layout), then `tools/trace.py`
++  (links resolved in both directions from the clause reader's records and
++  the suite's own citations, collected in-process; `build()` pure so that it
++  can be tested without running the suite); the tool's known-violation set
++  `tests/tooling/` (a clean base family and twelve cases, one per finding
++  kind, with a parametrized test); `tools/gate.sh` runs the tool as its
++  third step and prints a provenance header. Rule TR-2 added; TR-1 and WF-1
++  amended. No specification changed, so no audit was due.
++- Files: `tools/trace.py`, `tools/gate.sh`, `tests/tooling/*`,
++  `tooling/trace.md`, `process/rules.md`, `reports/trace-matrix.md`
++  (generated), `reports/conformance.md` (regenerated)
++- Judgments touched: TR (now decided by the tool: every declared link
++  resolves; the person's reading of the link fields at a1-scenarios is
++  retired); RQ (29 tests collect, 13 of them the tooling tests, which cite no
++  clause and are accepted); CONF (29 passed; 7 of 7; 100 percent); SQ
++  unchanged; VAL still stale
++- Verified in a scratch copy for the catalog pages: the twelve cases and the
++  base pass; a wrong derivation (REQ-3 from US-2) gives "story without
++  requirement at US-1"; a dangling one (US-9) gives two findings; the gate
++  header reports HEAD and the number of changed paths
++- Gate: `tools/gate.sh` exit 0. Header: `gate: 2026-10-22 11:41 · HEAD
++  4a4f1b2, 5 changed or untracked path(s) · Python 3.14.7 · pytest 9.1.1 ·
++  pytest-cov 7.1.0 · ruff 0.17.1 · trace.py 1.0`. ruff all checks passed;
++  pytest 29 passed; branch coverage of `guard/` 100 percent; conformance 7
++  of 7 test clauses, 29 tests collected, 16 cite a clause; trace: every
++  declared link resolves, findings none
++- Commit: `a1-trace`
+diff --git a/reports/ledger.md b/reports/ledger.md
+index d936a51..0b937db 100644
+--- a/reports/ledger.md
++++ b/reports/ledger.md
+@@ -51,3 +51,16 @@ unchanged.
+ | CONF · conformance | established | tests: 16 passed; requirements coverage: 7 of 7 test clauses have passing evidence (`reports/conformance.md`, scope: full run), the three stories through their scenario tests; structural coverage: 100 percent of branches in `guard/`; judgment clauses: none in scope | tests: pytest 9.1.1; coverage and citation analysis: pytest-cov 7.1.0 and the plugin in `tests/conftest.py`, specifications and tests at a1-scenarios, realization at v0, clauses US-1 to US-3 and REQ-0 to REQ-3 | relevant specifications, code, tests, or verification tools/configuration/environment change |
+ | VAL · validated | **stale** | unchanged since a1-specs: the only sign-off names version A0 | as at a1-specs | re-established by the validation walkthrough and the A1 sign-off |
+ | TR · traceable | established | every marker resolves (16 markers, "Unknown identifiers: none"); every `Derived from`, `Source`, and `Scenarios` reference, and every scenario's `derived_from`, read by a person and resolving | analysis: the plugin at a1-scenarios; review (human): the build agent, 2026-10-22, for the link fields (the trace tool of the next commit takes these over) | any artifact changes |
++
++## At a1-trace (version A1, third commit, 2026-10-22)
++
++The trace tool, its cases, and the extended gate were added; no
++specification changed.
++
++| Judgment | Status | Evidence | Provenance | Goes stale when |
++|---|---|---|---|---|
++| SQ · specification quality | established | unchanged since a1-scenarios: no specification changed at this commit | as at a1-scenarios | any specification changes |
++| RQ · realization quality | established | `ruff check .` exit 0; `pytest --collect-only -q --no-cov` exit 0, 29 tests collected (13 of them the tooling tests, uncited) | analysis: ruff 0.17.1, pytest 9.1.1 on Python 3.14.7; `guard/` unchanged from v0; `tests/` and `tools/` extended | the code, the tests, or the tools change |
++| CONF · conformance | established | tests: 29 passed; requirements coverage: 7 of 7 test clauses (`reports/conformance.md`, scope: full run); structural coverage: 100 percent of branches in `guard/`; judgment clauses: none in scope | tests: pytest 9.1.1; coverage and citation analysis: pytest-cov 7.1.0 and the plugin, specifications at a1-scenarios, tests at a1-trace, realization at v0, clauses US-1 to US-3 and REQ-0 to REQ-3 | relevant specifications, code, tests, or verification tools/configuration/environment change |
++| VAL · validated | **stale** | unchanged since a1-specs | as at a1-specs | re-established by the validation walkthrough and the A1 sign-off |
++| TR · traceable | established | every declared link resolves in both directions: `reports/trace-matrix.md`, findings none (3 stories, 4 requirements, 6 scenarios, 3 source references, 16 citing tests); the twelve known-violation cases pass (`tests/tooling/`) | analysis: `tools/trace.py` 1.0, run by the gate on the pre-commit tree (header: HEAD 4a4f1b2, 5 changed paths), over every clause, scenario, entry, and citation; the tool verified on its cases at the same run | any linked artifact, or the tool, changes |
+diff --git a/reports/trace-matrix.md b/reports/trace-matrix.md
+new file mode 100644
+index 0000000..03e545a
+--- /dev/null
++++ b/reports/trace-matrix.md
+@@ -0,0 +1,47 @@
++# Trace Matrix: Message Guard
++
++Generated 2026-10-22 11:41 by `tools/trace.py` 1.0 from `specs/conops.md`, `specs/requirements.md`, `specs/scenarios.json`, `specs/glossary.md` and `reference/elicitation.md`; citations from 29 collected tests (16 cite a clause). Repository state: HEAD 4a4f1b2, 6 changed or untracked path(s).
++
++**Scope**: every declared link, in both directions. The tool decides whether a link resolves, not whether the linked texts agree; that review is rule SQ-2's.
++
++## Forward: story to requirements to scenarios to tests
++
++| Story | Source | Requirements | Scenarios | Tests citing the story | Tests citing its requirements |
++|---|---|---|---|---|---|
++| US-1 | E-3 | REQ-3 | SC-1, SC-2 | `test_scenarios.py::test_scenario[SC-1]`<br>`test_scenarios.py::test_scenario[SC-2]` | `test_filter.py::test_public_passes_unchanged` |
++| US-2 | E-3 | REQ-2 | SC-3, SC-4 | `test_scenarios.py::test_scenario[SC-3]`<br>`test_scenarios.py::test_scenario[SC-4]` | `test_filter.py::test_restricted_passes_unchanged` |
++| US-3 | E-1 | REQ-1 | SC-5, SC-6 | `test_scenarios.py::test_scenario[SC-5]`<br>`test_scenarios.py::test_scenario[SC-6]` | `test_filter.py::test_critical_is_dropped[-5]`<br>`test_filter.py::test_critical_is_dropped[0]`<br>`test_filter.py::test_critical_is_dropped[100]` |
++
++## Backward: requirement to its derivation and its tests
++
++| Requirement | Pattern | Derived from | Tests citing it |
++|---|---|---|---|
++| REQ-0 | ubiquitous | Glossary: message, security level, payload | `test_message.py::test_exactly_three_security_levels`<br>`test_message.py::test_level_must_be_a_security_level`<br>`test_message.py::test_message_does_not_change_after_creation`<br>`test_message.py::test_payload_must_be_an_integer`<br>`test_message.py::test_unknown_level_is_rejected` |
++| REQ-1 | event-driven | US-3 | `test_filter.py::test_critical_is_dropped[-5]`<br>`test_filter.py::test_critical_is_dropped[0]`<br>`test_filter.py::test_critical_is_dropped[100]` |
++| REQ-2 | event-driven | US-2 | `test_filter.py::test_restricted_passes_unchanged` |
++| REQ-3 | event-driven | US-1 | `test_filter.py::test_public_passes_unchanged` |
++
++## Backward: test to the clauses it cites
++
++| Test | Clauses |
++|---|---|
++| `test_filter.py::test_critical_is_dropped[-5]` | REQ-1 |
++| `test_filter.py::test_critical_is_dropped[0]` | REQ-1 |
++| `test_filter.py::test_critical_is_dropped[100]` | REQ-1 |
++| `test_filter.py::test_public_passes_unchanged` | REQ-3 |
++| `test_filter.py::test_restricted_passes_unchanged` | REQ-2 |
++| `test_message.py::test_exactly_three_security_levels` | REQ-0 |
++| `test_message.py::test_level_must_be_a_security_level` | REQ-0 |
++| `test_message.py::test_message_does_not_change_after_creation` | REQ-0 |
++| `test_message.py::test_payload_must_be_an_integer` | REQ-0 |
++| `test_message.py::test_unknown_level_is_rejected` | REQ-0 |
++| `test_scenarios.py::test_scenario[SC-1]` | US-1 |
++| `test_scenarios.py::test_scenario[SC-2]` | US-1 |
++| `test_scenarios.py::test_scenario[SC-3]` | US-2 |
++| `test_scenarios.py::test_scenario[SC-4]` | US-2 |
++| `test_scenarios.py::test_scenario[SC-5]` | US-3 |
++| `test_scenarios.py::test_scenario[SC-6]` | US-3 |
++
++## Findings
++
++None.
+diff --git a/tests/tooling/__init__.py b/tests/tooling/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/tests/tooling/cases/base/README.md b/tests/tooling/cases/base/README.md
+new file mode 100644
+index 0000000..4871b0f
+--- /dev/null
++++ b/tests/tooling/cases/base/README.md
+@@ -0,0 +1 @@
++The clean family every case overlays; it must produce no finding.
+diff --git a/tests/tooling/cases/base/citations.json b/tests/tooling/cases/base/citations.json
+new file mode 100644
+index 0000000..23ea1bf
+--- /dev/null
++++ b/tests/tooling/cases/base/citations.json
+@@ -0,0 +1,12 @@
++{
++  "tests/test_x.py::test_req0": [
++    "REQ-0"
++  ],
++  "tests/test_x.py::test_req1": [
++    "REQ-1"
++  ],
++  "tests/test_s.py::test_scenario[SC-1]": [
++    "US-1"
++  ],
++  "tests/test_u.py::test_uncited": []
++}
+diff --git a/tests/tooling/cases/base/reference/elicitation.md b/tests/tooling/cases/base/reference/elicitation.md
+new file mode 100644
+index 0000000..317ec84
+--- /dev/null
++++ b/tests/tooling/cases/base/reference/elicitation.md
+@@ -0,0 +1,6 @@
++# Elicitation Record (case family)
++
++### E-1 · to the sender
++
++Question: What do you expect?
++Answer (verbatim): "Unchanged."
+diff --git a/tests/tooling/cases/base/specs/conops.md b/tests/tooling/cases/base/specs/conops.md
+new file mode 100644
+index 0000000..672f6d8
+--- /dev/null
++++ b/tests/tooling/cases/base/specs/conops.md
+@@ -0,0 +1,7 @@
++# Concept of Operations (case family)
++
++**US-1** · Method: test · Scenarios: SC-1 · User category: sender · Validated by: walkthrough (human) · Source: E-1
++
++As a sender, when I send a message, I expect it to come out unchanged.
++
++Example: given (Public, 1), outputs (Public, 1).
+diff --git a/tests/tooling/cases/base/specs/glossary.md b/tests/tooling/cases/base/specs/glossary.md
+new file mode 100644
+index 0000000..56e2c06
+--- /dev/null
++++ b/tests/tooling/cases/base/specs/glossary.md
+@@ -0,0 +1,3 @@
++# Glossary (case family)
++
++- **message**: one unit of data.
+diff --git a/tests/tooling/cases/base/specs/requirements.md b/tests/tooling/cases/base/specs/requirements.md
+new file mode 100644
+index 0000000..a52b0b5
+--- /dev/null
++++ b/tests/tooling/cases/base/specs/requirements.md
+@@ -0,0 +1,9 @@
++# Requirements (case family)
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message
++
++The guard shall take one message.
++
++**REQ-1** · Method: test · Pattern: event-driven · Derived from: US-1
++
++When the filter is given a message, the filter shall pass it unchanged.
+diff --git a/tests/tooling/cases/base/specs/scenarios.json b/tests/tooling/cases/base/specs/scenarios.json
+new file mode 100644
+index 0000000..d400de9
+--- /dev/null
++++ b/tests/tooling/cases/base/specs/scenarios.json
+@@ -0,0 +1,17 @@
++{
++  "scenarios": [
++    {
++      "id": "SC-1",
++      "derived_from": "US-1",
++      "role": "sender",
++      "input": {
++        "level": "Public",
++        "payload": 1
++      },
++      "expected": {
++        "level": "Public",
++        "payload": 1
++      }
++    }
++  ]
++}
+diff --git a/tests/tooling/cases/dangling-derived-from/expected.json b/tests/tooling/cases/dangling-derived-from/expected.json
+new file mode 100644
+index 0000000..5e03041
+--- /dev/null
++++ b/tests/tooling/cases/dangling-derived-from/expected.json
+@@ -0,0 +1,7 @@
++{
++  "findings": [
++    "dangling reference",
++    "story without requirement"
++  ],
++  "why": "US-9 is not defined, and US-1 is left with no requirement"
++}
+diff --git a/tests/tooling/cases/dangling-derived-from/specs/requirements.md b/tests/tooling/cases/dangling-derived-from/specs/requirements.md
+new file mode 100644
+index 0000000..aa893a3
+--- /dev/null
++++ b/tests/tooling/cases/dangling-derived-from/specs/requirements.md
+@@ -0,0 +1,9 @@
++# Requirements (case family)
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message
++
++The guard shall take one message.
++
++**REQ-1** · Method: test · Pattern: event-driven · Derived from: US-9
++
++When the filter is given a message, the filter shall pass it unchanged.
+diff --git a/tests/tooling/cases/dangling-marker/citations.json b/tests/tooling/cases/dangling-marker/citations.json
+new file mode 100644
+index 0000000..3864a1e
+--- /dev/null
++++ b/tests/tooling/cases/dangling-marker/citations.json
+@@ -0,0 +1,15 @@
++{
++  "tests/test_x.py::test_req0": [
++    "REQ-0"
++  ],
++  "tests/test_x.py::test_req1": [
++    "REQ-1"
++  ],
++  "tests/test_s.py::test_scenario[SC-1]": [
++    "US-1"
++  ],
++  "tests/test_u.py::test_uncited": [],
++  "tests/test_x.py::test_req9": [
++    "REQ-9"
++  ]
++}
+diff --git a/tests/tooling/cases/dangling-marker/expected.json b/tests/tooling/cases/dangling-marker/expected.json
+new file mode 100644
+index 0000000..63e47a2
+--- /dev/null
++++ b/tests/tooling/cases/dangling-marker/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "dangling marker"
++  ],
++  "why": "a test cites REQ-9, which no specification defines"
++}
+diff --git a/tests/tooling/cases/dangling-scenario/expected.json b/tests/tooling/cases/dangling-scenario/expected.json
+new file mode 100644
+index 0000000..111a37d
+--- /dev/null
++++ b/tests/tooling/cases/dangling-scenario/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "dangling reference"
++  ],
++  "why": "SC-2 is not in scenarios.json"
++}
+diff --git a/tests/tooling/cases/dangling-scenario/specs/conops.md b/tests/tooling/cases/dangling-scenario/specs/conops.md
+new file mode 100644
+index 0000000..e2a60a7
+--- /dev/null
++++ b/tests/tooling/cases/dangling-scenario/specs/conops.md
+@@ -0,0 +1,7 @@
++# Concept of Operations (case family)
++
++**US-1** · Method: test · Scenarios: SC-1, SC-2 · User category: sender · Validated by: walkthrough (human) · Source: E-1
++
++As a sender, when I send a message, I expect it to come out unchanged.
++
++Example: given (Public, 1), outputs (Public, 1).
+diff --git a/tests/tooling/cases/duplicate-identifier/expected.json b/tests/tooling/cases/duplicate-identifier/expected.json
+new file mode 100644
+index 0000000..f64a0cb
+--- /dev/null
++++ b/tests/tooling/cases/duplicate-identifier/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "duplicate identifier"
++  ],
++  "why": "REQ-1 is defined twice; the reader keeps the first and reports the second"
++}
+diff --git a/tests/tooling/cases/duplicate-identifier/specs/requirements.md b/tests/tooling/cases/duplicate-identifier/specs/requirements.md
+new file mode 100644
+index 0000000..fb4fe67
+--- /dev/null
++++ b/tests/tooling/cases/duplicate-identifier/specs/requirements.md
+@@ -0,0 +1,13 @@
++# Requirements (case family)
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message
++
++The guard shall take one message.
++
++**REQ-1** · Method: test · Pattern: event-driven · Derived from: US-1
++
++When the filter is given a message, the filter shall pass it unchanged.
++
++**REQ-1** · Method: test · Pattern: ubiquitous · Derived from: US-1
++
++The filter shall pass it.
+diff --git a/tests/tooling/cases/missing-method/expected.json b/tests/tooling/cases/missing-method/expected.json
+new file mode 100644
+index 0000000..f7d3011
+--- /dev/null
++++ b/tests/tooling/cases/missing-method/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "malformed header"
++  ],
++  "why": "a header with an identifier and no Method is reported, not dropped (A0's reader dropped it silently)"
++}
+diff --git a/tests/tooling/cases/missing-method/specs/requirements.md b/tests/tooling/cases/missing-method/specs/requirements.md
+new file mode 100644
+index 0000000..322d7f8
+--- /dev/null
++++ b/tests/tooling/cases/missing-method/specs/requirements.md
+@@ -0,0 +1,9 @@
++# Requirements (case family)
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message
++
++The guard shall take one message.
++
++**REQ-1** · Pattern: event-driven · Derived from: US-1
++
++When the filter is given a message, the filter shall pass it unchanged.
+diff --git a/tests/tooling/cases/missing-reason/expected.json b/tests/tooling/cases/missing-reason/expected.json
+new file mode 100644
+index 0000000..c73706e
+--- /dev/null
++++ b/tests/tooling/cases/missing-reason/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "missing Reason"
++  ],
++  "why": "a judgment clause states why it is not mechanical"
++}
+diff --git a/tests/tooling/cases/missing-reason/specs/conops.md b/tests/tooling/cases/missing-reason/specs/conops.md
+new file mode 100644
+index 0000000..30f0f51
+--- /dev/null
++++ b/tests/tooling/cases/missing-reason/specs/conops.md
+@@ -0,0 +1,7 @@
++# Concept of Operations (case family)
++
++**US-1** · Method: walkthrough (human) · Scenarios: SC-1 · User category: sender · Validated by: walkthrough (human) · Source: E-1
++
++As a sender, when I send a message, I expect it to come out unchanged.
++
++Example: given (Public, 1), outputs (Public, 1).
+diff --git a/tests/tooling/cases/scenario-not-listed/expected.json b/tests/tooling/cases/scenario-not-listed/expected.json
+new file mode 100644
+index 0000000..735df6c
+--- /dev/null
++++ b/tests/tooling/cases/scenario-not-listed/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "scenario not listed"
++  ],
++  "why": "SC-1 derives from US-1, but US-1 does not list it"
++}
+diff --git a/tests/tooling/cases/scenario-not-listed/specs/conops.md b/tests/tooling/cases/scenario-not-listed/specs/conops.md
+new file mode 100644
+index 0000000..81a8f34
+--- /dev/null
++++ b/tests/tooling/cases/scenario-not-listed/specs/conops.md
+@@ -0,0 +1,7 @@
++# Concept of Operations (case family)
++
++**US-1** · Method: test · User category: sender · Validated by: walkthrough (human) · Source: E-1
++
++As a sender, when I send a message, I expect it to come out unchanged.
++
++Example: given (Public, 1), outputs (Public, 1).
+diff --git a/tests/tooling/cases/story-without-requirement/expected.json b/tests/tooling/cases/story-without-requirement/expected.json
+new file mode 100644
+index 0000000..324a96c
+--- /dev/null
++++ b/tests/tooling/cases/story-without-requirement/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "story without requirement"
++  ],
++  "why": "every requirement resolves, but nothing derives from US-1"
++}
+diff --git a/tests/tooling/cases/story-without-requirement/specs/requirements.md b/tests/tooling/cases/story-without-requirement/specs/requirements.md
+new file mode 100644
+index 0000000..417699b
+--- /dev/null
++++ b/tests/tooling/cases/story-without-requirement/specs/requirements.md
+@@ -0,0 +1,9 @@
++# Requirements (case family)
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message
++
++The guard shall take one message.
++
++**REQ-1** · Method: test · Pattern: event-driven · Derived from: Glossary: message
++
++When the filter is given a message, the filter shall pass it unchanged.
+diff --git a/tests/tooling/cases/test-clause-without-test/citations.json b/tests/tooling/cases/test-clause-without-test/citations.json
+new file mode 100644
+index 0000000..487dcb7
+--- /dev/null
++++ b/tests/tooling/cases/test-clause-without-test/citations.json
+@@ -0,0 +1,9 @@
++{
++  "tests/test_x.py::test_req1": [
++    "REQ-1"
++  ],
++  "tests/test_s.py::test_scenario[SC-1]": [
++    "US-1"
++  ],
++  "tests/test_u.py::test_uncited": []
++}
+diff --git a/tests/tooling/cases/test-clause-without-test/expected.json b/tests/tooling/cases/test-clause-without-test/expected.json
+new file mode 100644
+index 0000000..53083a3
+--- /dev/null
++++ b/tests/tooling/cases/test-clause-without-test/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "test clause without a citing test"
++  ],
++  "why": "REQ-0 has method test and no test cites it; the plugin reports the same gap as 'no evidence'"
++}
+diff --git a/tests/tooling/cases/unknown-key/expected.json b/tests/tooling/cases/unknown-key/expected.json
+new file mode 100644
+index 0000000..0c78adb
+--- /dev/null
++++ b/tests/tooling/cases/unknown-key/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "unknown key"
++  ],
++  "why": "'Owner' is not a field of a REQ clause"
++}
+diff --git a/tests/tooling/cases/unknown-key/specs/requirements.md b/tests/tooling/cases/unknown-key/specs/requirements.md
+new file mode 100644
+index 0000000..950bff4
+--- /dev/null
++++ b/tests/tooling/cases/unknown-key/specs/requirements.md
+@@ -0,0 +1,9 @@
++# Requirements (case family)
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message
++
++The guard shall take one message.
++
++**REQ-1** · Method: test · Pattern: event-driven · Derived from: US-1 · Owner: bob
++
++When the filter is given a message, the filter shall pass it unchanged.
+diff --git a/tests/tooling/cases/unknown-method/expected.json b/tests/tooling/cases/unknown-method/expected.json
+new file mode 100644
+index 0000000..aed40d6
+--- /dev/null
++++ b/tests/tooling/cases/unknown-method/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "unknown method"
++  ],
++  "why": "'inspection' is not one of the four methods"
++}
+diff --git a/tests/tooling/cases/unknown-method/specs/requirements.md b/tests/tooling/cases/unknown-method/specs/requirements.md
+new file mode 100644
+index 0000000..b859946
+--- /dev/null
++++ b/tests/tooling/cases/unknown-method/specs/requirements.md
+@@ -0,0 +1,9 @@
++# Requirements (case family)
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message
++
++The guard shall take one message.
++
++**REQ-1** · Method: inspection · Pattern: event-driven · Derived from: US-1
++
++When the filter is given a message, the filter shall pass it unchanged.
+diff --git a/tests/tooling/cases/unknown-pattern/expected.json b/tests/tooling/cases/unknown-pattern/expected.json
+new file mode 100644
+index 0000000..9f66890
+--- /dev/null
++++ b/tests/tooling/cases/unknown-pattern/expected.json
+@@ -0,0 +1,6 @@
++{
++  "findings": [
++    "unknown pattern"
++  ],
++  "why": "'eventual' is not an EARS pattern"
++}
+diff --git a/tests/tooling/cases/unknown-pattern/specs/requirements.md b/tests/tooling/cases/unknown-pattern/specs/requirements.md
+new file mode 100644
+index 0000000..5335c36
+--- /dev/null
++++ b/tests/tooling/cases/unknown-pattern/specs/requirements.md
+@@ -0,0 +1,9 @@
++# Requirements (case family)
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message
++
++The guard shall take one message.
++
++**REQ-1** · Method: test · Pattern: eventual · Derived from: US-1
++
++When the filter is given a message, the filter shall pass it unchanged.
+diff --git a/tests/tooling/test_trace.py b/tests/tooling/test_trace.py
+new file mode 100644
+index 0000000..95aa185
+--- /dev/null
++++ b/tests/tooling/test_trace.py
+@@ -0,0 +1,46 @@
++"""The trace tool's known-violation set: inputs it must report a finding on (rule TR-2; CF-06).
++
++Each directory under ``cases/`` overlays one or two files on ``cases/base/`` (a minimal, clean
++family of specifications) and states in ``expected.json`` which finding kinds the tool must
++report. ``base`` itself must produce no finding. These tests cite no clause: they are tests of a
++verifier, not evidence for a product requirement, and the suite accepts them uncited (rule TR-1).
++"""
++
++import json
++import shutil
++from pathlib import Path
++
++import pytest
++
++from tests.conformance import read
++from tools.trace import build
++
++CASES = Path(__file__).resolve().parent / "cases"
++BASE = CASES / "base"
++
++
++def _overlay(case: Path, target: Path) -> None:
++    shutil.copytree(BASE, target, dirs_exist_ok=True)
++    for path in case.rglob("*"):
++        if path.is_file() and path.name != "expected.json":
++            destination = target / path.relative_to(case)
++            destination.parent.mkdir(parents=True, exist_ok=True)
++            shutil.copy(path, destination)
++
++
++def _run(case: Path, tmp_path: Path):
++    _overlay(case, tmp_path)
++    citations = {k: tuple(v) for k, v in json.loads((tmp_path / "citations.json").read_text()).items()}
++    specs = read(tmp_path / "specs", tmp_path / "reference" / "elicitation.md")
++    _, findings = build(specs, citations)
++    return sorted({f.kind for f in findings})
++
++
++def test_base_is_clean(tmp_path):
++    assert _run(BASE, tmp_path) == []
++
++
++@pytest.mark.parametrize("case", sorted(p for p in CASES.iterdir() if p.is_dir() and p.name != "base"), ids=lambda p: p.name)
++def test_case_reports_expected_findings(case, tmp_path):
++    expected = json.loads((case / "expected.json").read_text())
++    assert _run(case, tmp_path) == sorted(expected["findings"]), expected.get("why")
+diff --git a/tooling/trace.md b/tooling/trace.md
+new file mode 100644
+index 0000000..274e3b6
+--- /dev/null
++++ b/tooling/trace.md
+@@ -0,0 +1,102 @@
++# The trace tool: `tools/trace.py`
++
++## Goal
++
++Resolve every declared link between the specifications and the suite, in
++both directions, and report the ones that do not resolve: story to
++requirements to scenarios to tests, and back. Rule TR-2 names it; it climbs
++the "derived from" check from a person (A0's TR-1, "read by a person with
++SQ-1") to a program. It decides links only. Whether a requirement says what
++its story says, or a test's assertions check its clause, still needs a
++reader (rule SQ-2's audit and A2's test-discipline review).
++
++## Requirements
++
++Written before the tool was built (the A1 plan's section 9.3).
++
++- **T1 Inputs.** The clause headers of `specs/conops.md` and
++  `specs/requirements.md` through `tests/conformance.py`; the scenarios of
++  `specs/scenarios.json`; the glossary terms of `specs/glossary.md`; the
++  `E-n` entries of `reference/elicitation.md`; the suite's citations,
++  obtained by collecting the suite in-process with a small plugin that
++  gathers the `req` markers (no second marker parser).
++- **T2 Output.** `reports/trace-matrix.md` with a header (tool version, files
++  read, number of tests collected and citing, the repository state: HEAD
++  and whether the working tree was clean), the forward table, the two
++  backward tables, a findings section, and a scope line.
++- **T3 Findings**, each with the identifier and the location: dangling
++  `Derived from`, `Scenarios`, `Source`, or marker; a scenario not listed by
++  its story; a story with no requirement; a requirement with no story or
++  glossary derivation; a *test* clause with no citing test (reported here as
++  a link, while the plugin reports its outcome); and every finding of the
++  clause reader (duplicate identifier, malformed header, unknown method,
++  key, or pattern, missing Reason).
++- **T4 Exit code** non-zero if the findings section is not empty; zero
++  otherwise.
++- **T5 No judgment.** The tool never decides whether a link is semantically
++  right.
++- **T6 Determinism.** Same inputs, same report, except the date line and
++  the repository state.
++- **T7 Verified** on `tests/tooling/cases/`: one directory per finding kind
++  with the expected findings, and a clean base that must produce none.
++- **T8 Runs** as `uv run python tools/trace.py` from the snapshot root and
++  is the last step of `tools/gate.sh`.
++
++## The prompt
++
++New in A1. The tool was written by the build agent working from T1 to T8
++and the plan's layout decisions; no separate prompt-to-agent exchange took
++place in this build, so the prompt below is the one a developer would hand
++to an agent to reproduce the work, and the "approved layout" is the layout
++actually built and reviewed against the points in the next section.
++
++> Here are the requirements T1 to T8 for a trace tool and the clause reader
++> `tests/conformance.py` it must use. Before writing code, propose: what is
++> read and from where; what is computed; the report's sections; the finding
++> kinds as a fixed vocabulary; and the list of cases under
++> `tests/tooling/cases/` that the tool must report a finding on, one per
++> kind. Wait for my approval of that layout, then implement, then run the
++> cases.
++
++Approved layout: `read()` in the clause reader returns clauses, scenarios,
++glossary terms, elicitation entries, and syntactic findings; `trace.py`
++adds `link_findings()` (the link checks of T3), `build()` (pure: specs and
++citations in, report text and findings out, so that the cases can call it
++without running pytest), `collect_citations()` (an in-process
++`pytest.main(["--collect-only", ...], plugins=[collector])` with the
++terminal reporter disabled), and `main()`. The finding vocabulary is the
++set of kind strings in both modules; the cases are the twelve directories
++listed on [tooling-tests.md](tooling-tests.md).
++
++## Review points
++
++Citations come from pytest's own collection, so the tool and the plugin can
++never disagree about what a test cites; every finding carries a file and
++line or an identifier; the forward and backward tables are built from the
++same records; a story with no requirement is a finding even though every
++link resolves; `build()` has no side effects, which is what makes T7
++possible; the tool never reads the ledger or the dev log.
++
++## Deliberate-failure checks
++
++`uv run pytest tests/tooling` runs the base and the twelve cases. Two
++sabotages on the real specifications, both observed on 2026-10-22: changing
++REQ-3's derivation to `US-2` (every link resolves; the finding is "story
++without requirement at US-1"), and to `US-9` (two findings: the dangling
++reference and the story it left behind).
++
++## Adapting it to your project
++
++Project-specific: the clause reader it uses; the citation mechanism (another
++framework's markers, or a comment convention read by the tool); the link
++kinds (allocation to a component arrives in A2). Carries over as an idea: a
++link vocabulary declared on the clauses, a tool that resolves it both ways,
++findings as a fixed vocabulary with cases, and a report that says its scope.
++
++## Making it shared infrastructure
++
++Share it together with the clause reader and the header format they both
++read (see [clause-reader.md](clause-reader.md)); the link vocabulary is the
++part an organization fixes once. Version the finding vocabulary: a project's
++dev log cites finding kinds, and renaming one silently changes what old
++entries mean.
+diff --git a/tools/gate.sh b/tools/gate.sh
+index ec4d225..7a970c2 100755
+--- a/tools/gate.sh
++++ b/tools/gate.sh
+@@ -1,8 +1,14 @@
+ #!/bin/sh
+ # The gate command named by rule WF-1: realization quality (ruff, collection), then the
+ # conformance aggregate (every test passes; requirements coverage, by the plugin in
+-# tests/conftest.py; structural coverage, by pytest-cov). Exit 0 is green.
++# tests/conftest.py; structural coverage, by pytest-cov), then traceability (every declared link
++# resolves, by tools/trace.py). Exit 0 is green. The header line records what was checked and by
++# which versions (the hand convention for provenance, catalog page tooling/gate.md).
+ set -e
+ cd "$(dirname "$0")/.."
++head=$(git rev-parse --short HEAD 2>/dev/null || echo "no repository")
++dirty=$(git status --porcelain 2>/dev/null | grep -c . || true)
++echo "gate: $(date '+%Y-%m-%d %H:%M') · HEAD $head, $dirty changed or untracked path(s) · $(uv run python --version) · $(uv run pytest --version 2>&1 | head -1) · pytest-cov $(uv run python -c 'import importlib.metadata as m; print(m.version("pytest-cov"))') · $(uv run ruff --version) · trace.py 1.0"
+ uv run ruff check .
+ uv run pytest
++uv run python tools/trace.py
+diff --git a/tools/trace.py b/tools/trace.py
+new file mode 100644
+index 0000000..64e6b6d
+--- /dev/null
++++ b/tools/trace.py
+@@ -0,0 +1,203 @@
++"""Trace matrix: resolve every declared link between the specifications and the suite (rule TR-2).
++
++    uv run python tools/trace.py          writes reports/trace-matrix.md; exit 1 on any finding
++
++The matrix runs forward (story -> requirements -> scenarios -> tests) and backward (requirement ->
++story; test -> clauses). A link that does not resolve, a story with no requirement, a requirement
++with no derivation, a test clause with no citing test, and every finding of the clause reader are
++listed under "Findings", and the exit code is non-zero if that list is not empty. The tool decides
++links only: whether a requirement says what its story says, or whether a test's assertions check
++its clause, still needs a reader. Its requirements, the prompt that produced it, and the cases it
++must fail on are on the catalog page ``tooling/trace.md``.
++"""
++
++from __future__ import annotations
++
++import subprocess
++import sys
++from datetime import datetime
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(ROOT))
++
++from tests.conformance import ELICITATION, SPECS_DIR, Finding, Specs, read
++
++VERSION = "1.0"
++REPORT = ROOT / "reports" / "trace-matrix.md"
++Citations = dict[str, tuple[str, ...]]  # test nodeid -> clause identifiers it cites
++
++
++def collect_citations(root: Path = ROOT) -> Citations:
++    """Collect the suite without running it and return every test's citations."""
++    import pytest
++
++    class Collector:
++        def __init__(self) -> None:
++            self.tags: Citations = {}
++
++        def pytest_collection_modifyitems(self, items):
++            for item in items:
++                self.tags[item.nodeid] = tuple(i for m in item.iter_markers("req") for i in m.args)
++
++    collector = Collector()
++    args = ["--collect-only", "--no-cov", "-p", "no:cacheprovider", "-p", "no:terminal", str(root / "tests")]
++    code = pytest.main(args, plugins=[collector])
++    if code != 0:
++        raise SystemExit(f"trace: the suite did not collect (pytest exit {code}); run `uv run pytest` first")
++    return collector.tags
++
++
++def link_findings(specs: Specs, citations: Citations) -> list[Finding]:
++    """Every declared link that does not resolve, in both directions."""
++    findings: list[Finding] = []
++    stories = {c.id for c in specs.clauses.values() if c.family == "US"}
++    scenario_ids = {s.id for s in specs.scenarios}
++    derived: dict[str, list[str]] = {}
++    for clause in specs.clauses.values():
++        where = f"{clause.file}:{clause.line} {clause.id}"
++        for ref in clause.refs("Derived from"):
++            if ref not in specs.clauses:
++                findings.append(Finding("dangling reference", where, f"Derived from {ref}, which is not defined"))
++            derived.setdefault(ref, []).append(clause.id)
++        for term in clause.glossary_refs():
++            if term not in specs.glossary:
++                findings.append(Finding("dangling reference", where, f"Derived from glossary term {term!r}, not defined"))
++        if clause.family == "REQ" and not clause.refs("Derived from") and not clause.glossary_refs():
++            findings.append(Finding("requirement without derivation", where, "no story or glossary term"))
++        for ref in clause.refs("Scenarios"):
++            if ref not in scenario_ids:
++                findings.append(Finding("dangling reference", where, f"Scenarios names {ref}, which is not in scenarios.json"))
++        for ref in clause.refs("Source"):
++            if ref not in specs.entries:
++                findings.append(Finding("dangling reference", where, f"Source {ref} is not an entry of the elicitation record"))
++    for story in sorted(stories):
++        if not derived.get(story):
++            findings.append(Finding("story without requirement", story, "no requirement derives from it"))
++    for scenario in specs.scenarios:
++        where = f"scenarios.json {scenario.id}"
++        story = specs.clauses.get(scenario.derived_from)
++        if story is None or story.family != "US":
++            findings.append(Finding("dangling reference", where, f"derived_from {scenario.derived_from} is not a story"))
++        elif scenario.id not in story.refs("Scenarios"):
++            findings.append(Finding("scenario not listed", where, f"{story.id} does not list it in its Scenarios field"))
++    cited: set[str] = set()
++    for nodeid, ids in citations.items():
++        for ident in ids:
++            cited.add(ident)
++            if ident not in specs.clauses:
++                findings.append(Finding("dangling marker", nodeid, f"cites {ident}, which is not defined"))
++    for clause in specs.clauses.values():
++        if clause.method == "test" and clause.id not in cited:
++            findings.append(Finding("test clause without a citing test", clause.id, "no test cites it"))
++    return findings
++
++
++def _repository_state(root: Path) -> str:
++    try:
++        head = subprocess.run(
++            ["git", "rev-parse", "--short", "HEAD"], cwd=root, capture_output=True, text=True, check=False
++        )
++        if head.returncode != 0:
++            return "not a git repository"
++        status = subprocess.run(
++            ["git", "status", "--porcelain"], cwd=root, capture_output=True, text=True, check=False
++        )
++        dirty = len([line for line in status.stdout.splitlines() if line.strip()])
++        return f"HEAD {head.stdout.strip()}, " + ("clean working tree" if dirty == 0 else f"{dirty} changed or untracked path(s)")
++    except FileNotFoundError:
++        return "git not available"
++
++
++def _short(nodeid: str) -> str:
++    return nodeid.removeprefix("tests/")
++
++
++def _tests_citing(ident: str, citations: Citations) -> str:
++    tests = sorted(_short(n) for n, ids in citations.items() if ident in ids)
++    return "<br>".join(f"`{t}`" for t in tests) or "—"
++
++
++def build(specs: Specs, citations: Citations, state: str = "not recorded") -> tuple[str, list[Finding]]:
++    """Return the report text and every finding (the reader's and the links')."""
++    findings = list(specs.findings) + link_findings(specs, citations)
++    stories = [c for c in specs.clauses.values() if c.family == "US"]
++    requirements = [c for c in specs.clauses.values() if c.family == "REQ"]
++    by_story: dict[str, list[str]] = {}
++    for req in requirements:
++        for ref in req.refs("Derived from"):
++            by_story.setdefault(ref, []).append(req.id)
++    scen_by_story: dict[str, list[str]] = {}
++    for s in specs.scenarios:
++        scen_by_story.setdefault(s.derived_from, []).append(s.id)
++    files = ", ".join(f"`specs/{f}`" for f in specs.files)
++    cited = sum(1 for ids in citations.values() if ids)
++    lines = [
++        "# Trace Matrix: Message Guard",
++        "",
++        (
++            f"Generated {datetime.now():%Y-%m-%d %H:%M} by `tools/trace.py` {VERSION} from {files} and "
++            f"`reference/elicitation.md`; citations from {len(citations)} collected tests ({cited} cite a "
++            f"clause). Repository state: {state}."
++        ),
++        "",
++        (
++            "**Scope**: every declared link, in both directions. The tool decides whether a link resolves, "
++            "not whether the linked texts agree; that review is rule SQ-2's."
++        ),
++        "",
++        "## Forward: story to requirements to scenarios to tests",
++        "",
++        "| Story | Source | Requirements | Scenarios | Tests citing the story | Tests citing its requirements |",
++        "|---|---|---|---|---|---|",
++    ]
++    for story in stories:
++        reqs = by_story.get(story.id, [])
++        req_tests = sorted({_short(n) for n, ids in citations.items() if any(r in ids for r in reqs)})
++        lines.append(
++            f"| {story.id} | {', '.join(story.refs('Source')) or '—'} | {', '.join(reqs) or '—'} | "
++            f"{', '.join(scen_by_story.get(story.id, [])) or '—'} | {_tests_citing(story.id, citations)} | "
++            f"{'<br>'.join(f'`{t}`' for t in req_tests) or '—'} |"
++        )
++    lines += [
++        "",
++        "## Backward: requirement to its derivation and its tests",
++        "",
++        "| Requirement | Pattern | Derived from | Tests citing it |",
++        "|---|---|---|---|",
++    ]
++    for req in requirements:
++        lines.append(
++            f"| {req.id} | {req.fields.get('Pattern', '—')} | {req.fields.get('Derived from', '—')} | "
++            f"{_tests_citing(req.id, citations)} |"
++        )
++    lines += ["", "## Backward: test to the clauses it cites", "", "| Test | Clauses |", "|---|---|"]
++    for nodeid in sorted(citations):
++        if citations[nodeid]:
++            lines.append(f"| `{_short(nodeid)}` | {', '.join(citations[nodeid])} |")
++    lines += ["", "## Findings", ""]
++    if findings:
++        lines += [f"- {f}" for f in findings]
++    else:
++        lines.append("None.")
++    lines.append("")
++    return "\n".join(lines), findings
++
++
++def main() -> int:
++    specs = read(SPECS_DIR, ELICITATION)
++    citations = collect_citations(ROOT)
++    text, findings = build(specs, citations, _repository_state(ROOT))
++    REPORT.parent.mkdir(exist_ok=True)
++    REPORT.write_text(text, encoding="utf-8")
++    if findings:
++        for finding in findings:
++            print(f"trace: {finding}")
++        print(f"trace: {len(findings)} finding(s), see {REPORT.relative_to(ROOT)}")
++        return 1
++    print(f"trace: every declared link resolves; matrix in {REPORT.relative_to(ROOT)}")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+-- 
+2.55.0
+

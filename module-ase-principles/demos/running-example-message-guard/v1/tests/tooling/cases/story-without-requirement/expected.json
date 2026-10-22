@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "story without requirement"
+  ],
+  "why": "every requirement resolves, but nothing derives from US-1"
+}

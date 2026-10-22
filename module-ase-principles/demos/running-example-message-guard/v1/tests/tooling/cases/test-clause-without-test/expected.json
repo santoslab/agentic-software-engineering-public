@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "test clause without a citing test"
+  ],
+  "why": "REQ-0 has method test and no test cites it; the plugin reports the same gap as 'no evidence'"
+}

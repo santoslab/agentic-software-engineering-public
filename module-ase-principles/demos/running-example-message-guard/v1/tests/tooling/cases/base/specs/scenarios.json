@@ -1,0 +1,17 @@
+{
+  "scenarios": [
+    {
+      "id": "SC-1",
+      "derived_from": "US-1",
+      "role": "sender",
+      "input": {
+        "level": "Public",
+        "payload": 1
+      },
+      "expected": {
+        "level": "Public",
+        "payload": 1
+      }
+    }
+  ]
+}

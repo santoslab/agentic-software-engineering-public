@@ -1,0 +1,15 @@
+{
+  "tests/test_x.py::test_req0": [
+    "REQ-0"
+  ],
+  "tests/test_x.py::test_req1": [
+    "REQ-1"
+  ],
+  "tests/test_s.py::test_scenario[SC-1]": [
+    "US-1"
+  ],
+  "tests/test_u.py::test_uncited": [],
+  "tests/test_x.py::test_req9": [
+    "REQ-9"
+  ]
+}

@@ -19,8 +19,14 @@
 
 > Review follow-up: updated 2026-10-21 with the agreed test-citation and
 > ledger-evidence conventions and the version-specific handoff in section 9.
-> A1 and later versions remain unbuilt; recording a decision is not evidence
-> that its implementation is complete.
+> Recording a decision is not evidence that its implementation is complete.
+>
+> A1 built 2026-10-22 under
+> `../module-ase-principles/demos/running-example-message-guard/v1/`, from
+> the plan `running-example-a1-plan-fable.md`; its four commits replay with
+> `build-history.sh`. Section 9's A1 items carry their completion evidence
+> below. A2 and later versions remain unbuilt. The rule-style handout the
+> design proposed exists as `../process-rule-styles.md`.
 
 **For the agent building a version:** read section 9's shared constraints and
 the items applicable to that version before planning. Include applicable
@@ -1173,7 +1179,10 @@ Suggested evolutions of the model, none required by the course:
    follows once the elicitation procedure is redesigned: the grill-me skill
    overwhelmed students with questions on the game and the note set, and Spec
    Kit's clarify, at most five questions with options and a recommended
-   default, is the model. C0 is deferred, not rejected. Three adjustments
+   default, is the model. (Done 2026-10-22: the redesigned procedure is the
+   `/elicit` skill of A1, modeled on clarify with a concept-of-operations
+   taxonomy and a verbatim record under reference; A1 is built.) C0 is
+   deferred, not rejected. Three adjustments
    keep A0 self-sufficient: the domain terms are a section of the concept of
    operations, the requirements stay plain with identifiers and methods, and
    the first lecture runs two sabotages (CONF and VAL), the other three
@@ -1249,6 +1258,11 @@ when a test clause has no citing test, and an overall gate failure when an
 uncited test fails. These are checks of the evidence machinery, not new
 product requirements.
 
+**A1 completion (2026-10-22):** all four demonstrated and scripted on
+`v1/tooling/conformance-plugin.md` ("Deliberate-failure checks") and in
+`v1/README.md` ("Breaking the verifiers"); the tooling tests under
+`v1/tests/tooling/` cite no clause and are accepted by the suite.
+
 **Source:** [review section 8.1.B](../module-ase-principles/review-lecture-01-a0.md),
 which supersedes the original mandatory-citation proposal in edit 3.
 
@@ -1271,6 +1285,12 @@ these directly).
 lecture claims for these distinctions. Include assertion adequacy in the
 planned A2 test-discipline review; a valid citation alone is not its result.
 
+**A1 completion (2026-10-22):** the conformance report's legend says a
+citation declares intended support and does not establish that the
+assertions check the clause; the trace matrix's scope line says the tool
+decides links, not meaning; the ledger's tables call every row a supported,
+fallible claim. Assertion adequacy remains A2's.
+
 **Source:** [review section 8.1.A and B](../module-ase-principles/review-lecture-01-a0.md).
 
 #### CF-03 — Ledger intuition and progression scope
@@ -1288,6 +1308,11 @@ policy change, an audit log, or a new no-message input API into its baseline.
 **Completion check:** the A1 diff preserves product behavior, its lecture and
 reports use the agreed distinctions, and the demo accurately identifies
 which files update automatically. The A2 build addresses CF-08 and CF-09.
+
+**A1 completion (2026-10-22):** `guard/` is byte-identical between v0 and
+v1 (`diff -r v0/guard v1/guard` is empty); the ledger is handwritten, with
+tables at a1-specs (VAL stale) and v1; `v1/README.md` has a table of which
+files a run generates and which are written by hand.
 
 **Source:** [review sections 8.1.C and 8.2](../module-ase-principles/review-lecture-01-a0.md).
 The linked [ledger evolution sidebar](../module-ase-principles/lecture-notes/ledger-evolution-example.md)
@@ -1312,6 +1337,12 @@ Signature checking must not be described as deciding stakeholder intent.
 validation records remain distinguishable, and the lecture explains how
 passing fixture tests can coexist with a stakeholder rejecting the stories.
 
+**A1 completion (2026-10-22):** every scenario of `v1/specs/scenarios.json`
+carries `derived_from` and its story lists it; the behavioral evidence is
+the loader's rows in `reports/conformance.md`, the validation decision is
+`v1/reports/validation.md`; sabotage 9 in `v1/README.md` is the
+scenarios-pass-and-the-officer-declines case, for the lecture to use.
+
 **Source:** sections 3 and 4A;
 [review section 8.1.D](../module-ase-principles/review-lecture-01-a0.md).
 
@@ -1331,6 +1362,13 @@ optional reporting enhancement, not a requirement to eliminate uncited tests.
 **Proposed completion check:** run a selected subset and inspect its saved
 report; its scope must remain apparent when read without terminal output.
 An aggregate consumer must not treat it as a successful full run.
+
+**Disposition and A1 completion (2026-10-22):** accepted in its minimal
+form only: the saved conformance report carries a scope line ("full run" or
+"partial run (tests were deselected); not evidence for CONF"), and the trace
+matrix a scope line of its own. Counts of cited and uncited tests are shown
+in the report header; aggregate-consumer behavior is deferred to A2's ledger
+generator.
 
 **Source:** [review section 8.1.B and edit 8](../module-ase-principles/review-lecture-01-a0.md).
 
@@ -1353,6 +1391,16 @@ expected findings, document parser scope, and review the expected findings
 for the planned six to eight audit gaps. This strengthens the planned audit;
 it does not require a separate A0 parser rewrite before starting A1.
 
+**Disposition and A1 completion (2026-10-22):** accepted. The clause reader
+reports a malformed header, an unknown method, key, or pattern, a duplicate
+identifier, and a missing reason as findings; `v1/tests/tooling/cases/`
+holds a clean base and twelve cases with expected findings; the parser's
+scope is on `v1/tooling/clause-reader.md`. The seeded gaps were reviewed:
+seven, each a genuine defect; the REQ-2 identity question appears only as the
+ad-hoc audit's rejected over-report (`v1/reports/audit-02-agent.md`, item
+10). The skill's own run on the drafts found four unseeded defects of the
+build's setup, which is what a known-violation set is for.
+
 **Source:** [review sections 8.1.B and E](../module-ase-principles/review-lecture-01-a0.md).
 
 #### CF-07 — Reproducible evidence identity
@@ -1374,6 +1422,15 @@ identifies a claim; it is not a substitute for retained execution evidence.
 find the corresponding outputs for a checkpoint without relying on an agent
 completion message. Document how pre-commit evidence identifies the checked
 state without requiring a report to contain its own eventual commit hash.
+
+**Disposition and A1 completion (2026-10-22):** accepted as a hand
+convention for A1, with the mechanism deferred to A2. In practice: the gate
+prints a header naming the date, HEAD, the number of changed or untracked
+paths, and the versions of every tool; the dev-log entry of each commit
+copies it; the ledger's provenance column cites the entry. For A2, the
+checked working tree is identified before the commit exists by its tree
+hash (`git write-tree` on a temporary index), which the generated ledger
+records and later compares. The explanation is section 9.5 of the A1 plan.
 
 **Source:** [review section 8.2 and edits 9–10](../module-ase-principles/review-lecture-01-a0.md).
 
@@ -1546,6 +1603,13 @@ change rather than silently altering the unchanged A1 baseline.
 or explicitly records that it remains open, with any proposed product change
 handled separately.
 
+**Resolved in A1 (2026-10-22):** the `/elicit` skill excluded the question
+in all three evaluation runs as answered by the repository (REQ-0 says
+integer) with the residue an implementation matter; the glossary entry
+*payload* records that the specification does not constrain how a language
+represents integers, and the elicitation record's "Not asked" section says
+why. No product change.
+
 **Source:** [review section 7, question 4](../module-ase-principles/review-lecture-01-a0.md).
 
 ### 9.6 Cross-version tooling construction and teaching
@@ -1583,11 +1647,22 @@ check its behavior before relying on the evidence it produces.
 
 **Completion check:** retain the prompts, approved tooling requirements,
 implementation tasks, example reports, and checks that expose missing or
-misleading evidence. The A1/A2 lecture plans must allocate explicit time for
-building and checking the tooling, not merely demonstrating its outputs.
-Record which utilities are reused and which are newly implemented. This
-adds a teaching focus to the existing progression, not new product behavior
-or an authorization to implement every proposed carry-forward item.
+misleading evidence. Record which utilities are reused and which are newly
+implemented. This adds a teaching focus to the existing progression, not
+new product behavior or an authorization to implement every proposed
+carry-forward item.
+
+**Amended 2026-10-22:** no lecture time is allocated to building the
+tooling (the instructor's decision). Instead each version carries a **tool
+catalog**: in A1, `v1/tooling/README.md` (one table of every assurance tool
+with its goal) and one page per tool with its goal, requirements, the prompt
+that produced it (verbatim for a tool new in A1, guidance for one inherited
+from A0, with the provenance chain below), review points, deliberate-failure
+checks, how to adapt it to another project, and how to make it shared
+infrastructure. A sidebar beside the Lecture 02 notes states the philosophy
+and tabulates the tools. The A1 bullet above is met by the catalog; the
+"shared ownership" paragraph is the sidebar's and the catalog pages' last
+section.
 
 **Provenance example for the worked teaching session:** A0's conformance
 helpers were adapted from the tic-tac-toe demo, where an agent built custom

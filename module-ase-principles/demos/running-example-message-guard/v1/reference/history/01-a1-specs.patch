@@ -1,0 +1,1809 @@
+From edb4c1c506c5ffb5147f98d34233b858a851d3fc Mon Sep 17 00:00:00 2001
+From: A1 build <build@example.invalid>
+Date: Thu, 22 Oct 2026 11:31:25 -0500
+Subject: [PATCH] a1-specs: elicitation, glossary, EARS requirements, three
+ audits, two skills, five rules
+
+The concept of operations revised through /elicit (reference/elicitation.md, E-1 to E-5); the terms promoted to specs/glossary.md; REQ-0 to REQ-3 rewritten in EARS with a Pattern field; the pre-audit draft (reference/drafts/) audited by an agent with an ad-hoc prompt and by /audit-spec, every gap ruled, amendments applied; rules SQ-2, SQ-3, SQ-4, WF-2, RPT-2 added and SQ-1, TR-1, RPT-1 amended; the ledger at a1-specs (VAL stale). The realization is unchanged; the gate is A0's and is green.
+---
+ .claude/skills/audit-spec/SKILL.md            |  79 ++++++++++
+ .claude/skills/audit-spec/agents/openai.yaml  |   3 +
+ .claude/skills/audit-spec/checklist.md        |  88 +++++++++++
+ .../skills/audit-spec/gap-report-template.md  |  39 +++++
+ .claude/skills/elicit/SKILL.md                | 104 +++++++++++++
+ .claude/skills/elicit/agents/openai.yaml      |   3 +
+ .claude/skills/elicit/question-format.md      |  49 ++++++
+ .claude/skills/elicit/record-template.md      |  39 +++++
+ .claude/skills/elicit/taxonomy.md             |  22 +++
+ CLAUDE.md                                     |  14 +-
+ process/rules.md                              | 107 +++++++++++--
+ reference/drafts/README.md                    |  28 ++++
+ reference/drafts/conops.md                    | 122 +++++++++++++++
+ reference/drafts/glossary.md                  |  41 +++++
+ reference/drafts/requirements.md              |  37 +++++
+ reference/elicitation.md                      | 145 ++++++++++++++++++
+ reference/prompts/02-ears-rewrite.md          |  24 +++
+ reference/prompts/03-audit-adhoc.md           |  17 ++
+ reports/audit-01-human.md                     |  43 ++++++
+ reports/audit-02-agent.md                     |  63 ++++++++
+ reports/audit-03-skill.md                     |  92 +++++++++++
+ reports/conformance.md                        |   2 +-
+ reports/dev-log.md                            |  67 ++++++++
+ reports/ledger.md                             |  19 +++
+ reports/walkthrough.md                        |  20 +++
+ specs/conops.md                               | 129 ++++++++++------
+ specs/glossary.md                             |  42 +++++
+ specs/requirements.md                         |  45 +++---
+ 28 files changed, 1393 insertions(+), 90 deletions(-)
+ create mode 100644 .claude/skills/audit-spec/SKILL.md
+ create mode 100644 .claude/skills/audit-spec/agents/openai.yaml
+ create mode 100644 .claude/skills/audit-spec/checklist.md
+ create mode 100644 .claude/skills/audit-spec/gap-report-template.md
+ create mode 100644 .claude/skills/elicit/SKILL.md
+ create mode 100644 .claude/skills/elicit/agents/openai.yaml
+ create mode 100644 .claude/skills/elicit/question-format.md
+ create mode 100644 .claude/skills/elicit/record-template.md
+ create mode 100644 .claude/skills/elicit/taxonomy.md
+ create mode 100644 reference/drafts/README.md
+ create mode 100644 reference/drafts/conops.md
+ create mode 100644 reference/drafts/glossary.md
+ create mode 100644 reference/drafts/requirements.md
+ create mode 100644 reference/elicitation.md
+ create mode 100644 reference/prompts/02-ears-rewrite.md
+ create mode 100644 reference/prompts/03-audit-adhoc.md
+ create mode 100644 reports/audit-01-human.md
+ create mode 100644 reports/audit-02-agent.md
+ create mode 100644 reports/audit-03-skill.md
+ create mode 100644 specs/glossary.md
+
+diff --git a/.claude/skills/audit-spec/SKILL.md b/.claude/skills/audit-spec/SKILL.md
+new file mode 100644
+index 0000000..b9b7562
+--- /dev/null
++++ b/.claude/skills/audit-spec/SKILL.md
+@@ -0,0 +1,79 @@
++---
++name: audit-spec
++description: >-
++  Audits the specifications of this repository for specification quality by
++  the fixed procedure of rule SQ-2: read every specification in full, check
++  within each document, between documents, and by executing the examples,
++  then report every gap in the gap-list form of rule RPT-2 and stop for the
++  developer's rulings. Use only when the developer explicitly asks for an
++  audit of the specifications. Not for amending a specification, not for
++  eliciting one, not for reviewing code or tests.
++argument-hint: "[optional: the specification files to audit, default all of specs/]"
++disable-model-invocation: true
++allowed-tools: Read Grep Glob
++---
++
++# Audit the specifications
++
++Version 1.1. The scope is `$ARGUMENTS` (if empty, every file under `specs/`).
++
++The specifications are the reference that every test, every conformance
++report, and the stakeholders' sign-off rest on. A defect in them gives a
++confident answer to the wrong question, and an agent that writes code and
++tests from them will realize either reading of an ambiguous clause. This
++skill finds the gaps; the developer rules on every one of them. The skill
++never amends a file.
++
++## 1. Read everything first
++
++Read, in full and before the first check: every file under `specs/`
++(including `specs/glossary.md` and `specs/scenarios.json`), and
++`process/rules.md`. If `reference/elicitation.md` exists, read it too: it is
++not audited, but it says what a stakeholder meant, which a ruling may need.
++Checking from memory of an earlier read is the characteristic failure of an
++agent verifier; reading first is how this procedure guards against it. If
++the repository's rules name checks this skill does not (an SQ rule added
++after version 1.0), apply those too and cite them.
++
++## 2. Check within each document
++
++Apply the "within a document" items of [checklist.md](checklist.md) to each
++specification on its own: well-formed clause headers, the declared EARS
++pattern against the sentence, every domain term defined once in the
++glossary and used in that sense, a reason on every judgment clause, no
++unquantified adjective where a definition or a number is needed, nothing in
++a purpose statement that only a builder would see.
++
++## 3. Check between documents
++
++Apply the "between documents" items: every story has at least one
++requirement and every requirement derives from a story or a glossary term;
++no two clauses contradict, in one document or across two; one term means one
++thing everywhere; each scenario agrees with the example of the story it
++derives from; assumptions are stated as assumptions and not as requirements;
++a want recorded as deferred has no requirement deriving from it; every file,
++rule, and record entry a specification names exists at this commit.
++
++## 4. Check by execution
++
++For every story example and every scenario, decide from the clauses what the
++output must be and compare it with the stated expectation. Where the
++realization exists, you may also run `uv run python tools/walk.py LEVEL
++PAYLOAD` (it needs the developer's permission); a disagreement between the
++run and the expectation is a finding about the pair, not evidence of which
++one is wrong.
++
++## 5. Report and stop
++
++Write the report in the form of [gap-report-template.md](gap-report-template.md):
++the header with this skill's version as the auditor; every checklist item
++with *pass* or the gap identifiers it produced, so that the report says what
++was checked and not only what was found; then one numbered gap per finding,
++with the location (clause identifier or section), the check, the text
++quoted exactly, and one proposed resolution. One gap holds one question; an
++item that bundles two is split. Then **stop** and ask for rulings. Do not
++amend any file, and do not re-run after amendments unless asked.
++
++Two findings are not gaps, and the checklist says why: an implementation
++choice the specification deliberately leaves open, and a deployment
++assumption that is stated as an assumption.
+diff --git a/.claude/skills/audit-spec/agents/openai.yaml b/.claude/skills/audit-spec/agents/openai.yaml
+new file mode 100644
+index 0000000..1d755f6
+--- /dev/null
++++ b/.claude/skills/audit-spec/agents/openai.yaml
+@@ -0,0 +1,3 @@
++# Codex ignores SKILL.md's disable-model-invocation; this is its equivalent.
++policy:
++  allow_implicit_invocation: false
+diff --git a/.claude/skills/audit-spec/checklist.md b/.claude/skills/audit-spec/checklist.md
+new file mode 100644
+index 0000000..9e2434e
+--- /dev/null
++++ b/.claude/skills/audit-spec/checklist.md
+@@ -0,0 +1,88 @@
++# Audit checklist (rule SQ-2; skill version 1.1)
++
++Every item is applied and reported, as *pass* or as the gaps it produced.
++Cite items as C-1 to C-14. (Version 1.0 cited them as A-1 to A-14, which
++collided with the assumption identifiers A-1, A-2 of the concept of
++operations; audit 03 noticed, and 1.1 renamed them.) The judgment each item
++maintains is SQ unless the item says otherwise.
++
++## Within a document
++
++- **C-1 Well-formed header.** Every identified clause is one line of the form
++  `**ID** · Method: <value> · <Key>: <value> ...`; the identifier is unique
++  across all specifications; the method is one of *test*, *analysis*,
++  *review (human)*, *review (agent)*, *walkthrough (human)*, *walkthrough
++  (agent)*; every key is one the format defines (`Method`, `Pattern`,
++  `Derived from`, `Scenarios`, `Validated by`, `Source`, `User category`,
++  `Reason`). A header with an identifier and no method is a gap, not an
++  omission. (Mechanical at rung 4: `tests/conformance.py` reports the same
++  findings; the audit still lists them.)
++- **C-2 EARS form.** Every requirement declares a `Pattern` and has that
++  pattern's shape: *ubiquitous* "The <subject> shall <response>";
++  *event-driven* "When <trigger>, the <subject> shall <response>";
++  *state-driven* "While <state>, the <subject> shall <response>";
++  *unwanted-behavior* "If <condition>, then the <subject> shall <response>";
++  *optional-feature* "Where <feature>, the <subject> shall <response>";
++  *complex* a combination of the above. The subject is the stage or the
++  guard; the verb is "shall"; passive voice with no subject is a gap.
++- **C-3 Glossary discipline.** Every domain term used in a specification is
++  defined exactly once in `specs/glossary.md` and used only in its defined
++  sense; no other specification defines a term. A term used in a story and
++  absent from the glossary is a gap; a term defined twice is a gap.
++- **C-4 Unambiguous.** Two careful readers could not disagree whether a
++  behavior satisfies the clause. An unquantified adjective ("sensitive",
++  "large", "promptly") where a definition or a number is needed is a gap.
++  **Not a gap:** an implementation choice the clause deliberately leaves
++  open. REQ-2's "unchanged" requires equal values; whether the very same
++  object is returned is left open on purpose, and asking for object
++  identity would be a new requirement, not a resolution of an ambiguity.
++- **C-5 Judgment clauses state why.** Every clause whose method is *review*
++  or *walkthrough* carries a `Reason` saying what a program cannot decide
++  about it, or why it is not decided by a program at this commit. Apply the
++  item to whatever the tree holds; if no clause has such a method, report
++  *pass, no clause in scope*.
++- **C-6 Implementation-independent purpose and stories.** Nothing in the
++  purpose statement, the scope, the user categories, or the stories names a
++  language, a library, a data structure, or anything only a builder would
++  see. This check has a ceiling: a reader decides it, and a program cannot;
++  the repository records that at rung 3.
++- **C-7 Complete for the stated scope and level.** Every case inside the
++  boundary has a clause (each security level has an outcome); nothing
++  outside the boundary is specified; leaving an algorithm open is not
++  incompleteness.
++
++## Between documents
++
++- **C-8 Derivation both ways.** Every story has at least one requirement
++  deriving from it; every requirement derives from a story or from glossary
++  terms; every scenario derives from a story and is listed in that story's
++  `Scenarios` field; a story's `Source` entries are answers given by a
++  stakeholder of the story's own user category. (Mechanical at rung 4 for
++  the link part: `tools/trace.py`.)
++- **C-9 No contradiction.** No two clauses, in one document or across two,
++  assign the same input different outcomes or promise what another
++  forbids. Read clauses that touch the same property side by side, word for
++  word.
++- **C-10 One term, one sense.** The same word means the same thing in every
++  document; a definition that differs between the glossary and a document
++  is a gap in the document.
++- **C-11 Assumptions are not requirements.** Anything the deploying
++  organization must ensure (routing, assignment of markings, authentication)
++  is stated as an assumption in the scope section, never as a requirement
++  with a verification method. **Not a gap:** an assumption stated as an
++  assumption.
++- **C-12 Deferred wants stay deferred.** A want the concept of operations
++  records as deferred has no requirement, story clause, or scenario that
++  promises it.
++- **C-13 References resolve.** Every file, rule, and record entry a
++  specification names exists in the tree at this commit. (Added in 1.1:
++  audit 03 found two forward references under rule SQ-1 with no item to
++  cite.)
++
++## By execution
++
++- **C-14 Examples and scenarios agree with their clauses.** For every story
++  example and every scenario, the expected output follows from the clauses;
++  a disagreement is a gap about the pair (example, clause), reported without
++  deciding which side is wrong. Each scenario's input and expectation are
++  the story's example, or a further instance the story's wording covers.
+diff --git a/.claude/skills/audit-spec/gap-report-template.md b/.claude/skills/audit-spec/gap-report-template.md
+new file mode 100644
+index 0000000..43c93c3
+--- /dev/null
++++ b/.claude/skills/audit-spec/gap-report-template.md
+@@ -0,0 +1,39 @@
++# Gap report (the gap-list form of rule RPT-2)
++
++```markdown
++# Audit <NN>: <specifications audited> (version <N>)
++
++| Field | |
++|---|---|
++| Audit | <NN> |
++| Date | <YYYY-MM-DD> |
++| Auditor | <a person: name and role · an agent: model, ad-hoc prompt · a skill: /audit-spec <version>, model> |
++| Audited | <files and the version or state audited, e.g. the working tree before commit a1-specs> |
++| Checks applied | <C-1 to C-14 of checklist.md <version>, or the rule identifiers the repository names> |
++| Read first | <the files read in full before the first check> |
++
++## Checks
++
++| Check | Result |
++|---|---|
++| C-1 Well-formed header | pass · or: G-3 |
++| ... | ... |
++
++## Gaps
++
++| Gap | Location | Check | Quoted | Proposed resolution | Ruling | Amendment |
++|---|---|---|---|---|---|---|
++| G-1 | <clause id or file §section> | C-3 | "<text exactly as written>" | <one concrete proposal> | open | |
++| G-2 | ... | ... | ... | ... | open | |
++
++Searched: within each document · between documents · by execution.
++
++**Rulings needed on G-1 to G-n.** Reply per gap: accept the proposal, rule
++otherwise, reject with a reason, or defer.
++```
++
++The ruling column takes one of: *accepted* (the proposal stands), *ruled:
++<text>* (a different resolution), *rejected: <reason>* (not a gap), or
++*deferred: <where>* (kept as a want or a backlog item). The amendment column
++names what changed (a clause identifier, a section, a glossary term) once the
++ruling is applied. The auditor leaves both columns to the person who rules.
+diff --git a/.claude/skills/elicit/SKILL.md b/.claude/skills/elicit/SKILL.md
+new file mode 100644
+index 0000000..3897788
+--- /dev/null
++++ b/.claude/skills/elicit/SKILL.md
+@@ -0,0 +1,104 @@
++---
++name: elicit
++description: >-
++  Elicits or revises a concept of operations with its stakeholders by the
++  clarify method: scan the document for what it does not settle, ask the
++  stakeholders at most five questions, one at a time, each with options and a
++  recommended answer, record every answer verbatim in the elicitation record,
++  and apply each answer to the section it affects. Use only when the developer
++  explicitly asks to elicit or revise a concept of operations. Not for writing
++  requirements, not for auditing a specification, not for explaining what a
++  concept of operations is.
++argument-hint: "[path to the concept of operations, default specs/conops.md] [optional focus]"
++disable-model-invocation: true
++allowed-tools: Read Grep Glob
++---
++
++# Elicit: a concept of operations from its stakeholders
++
++Version 1.0. The document is `$ARGUMENTS` (if empty, `specs/conops.md`); any
++words after the path are the focus the developer wants covered first.
++
++A concept of operations is the governing specification: every requirement,
++scenario, and test derives from it, and it is the document a stakeholder
++signs. A guess written into it becomes a requirement nobody decided, and a
++question put to a stakeholder costs their attention. So this skill asks few
++questions, asks them well, records the answers in the stakeholders' own
++words, and changes the document only in the way an answer says.
++
++## 1. Read before asking
++
++Read, in full: the concept of operations; `specs/glossary.md` if it exists;
++`reference/elicitation.md` if it exists (earlier questions are not asked
++again); and `process/rules.md`, whose rule WF-2 governs this procedure. If
++the repository has its own elicitation rule or record form, that rule and
++form are the authority and this skill's bundled files are the fallback.
++
++## 2. Scan the document
++
++Rate each category of [taxonomy.md](taxonomy.md) as Clear, Partial, or
++Missing for this document. Keep the map internal; print it only if no
++question will be asked. A fact the repository answers (a file, a rule, an
++earlier answer) is looked up, never asked: asking a stakeholder what the
++repository already says wastes the one resource this procedure spends.
++
++## 3. Build the queue
++
++From the Partial and Missing categories, draft candidate questions and keep
++at most five, ranked by impact times uncertainty: an answer that would change
++a story, a term, an assumption, or the system boundary outranks one that
++would only polish wording. Each question must be answerable with a letter
++from two to five options, or with at most five words. Exclude questions about
++implementation, technology, or task order; exclude anything already answered.
++Never reveal the queue; a stakeholder sees one question at a time.
++
++## 4. Ask one question at a time
++
++Address each question to a named user category of the document ("to the
++security officer"), since the answer is theirs to give and the record will
++say who gave it. Write the question exactly as [question-format.md](question-format.md)
++says: a full interrogative, one "Why it matters" sentence, the recommended
++option first with its reason, the options table, the reply line. Wait for the
++answer. A reply of "yes" or "recommended" takes the recommendation; an
++ambiguous reply gets one short disambiguation that does not count as a new
++question. Stop when the queue is empty, when the stakeholder says "done" or
++"stop", or after the fifth question.
++
++## 5. Record, then apply, after every accepted answer
++
++Immediately after an answer is accepted:
++
++1. Append an entry to `reference/elicitation.md` in the form of
++   [record-template.md](record-template.md), under the next free identifier
++   `E-n`: the question as asked, why it mattered, the options and the
++   recommended one, the answer **verbatim** (quote the stakeholder; do not
++   paraphrase), who answered in which role, when, and the consequences
++   (which sections, stories, assumptions, wants, or terms the answer changes).
++   The record is reference material: it is where the stakeholders' words
++   live, and it is never a specification.
++2. Apply the answer to the part of the document it affects, and nowhere
++   else: a sentence of the purpose; an assumption in the scope section; a
++   user category's "observes" line; a story and its example; a deferred
++   want; a glossary entry in `specs/glossary.md`. Replace contradicted text
++   rather than adding beside it; leave no sentence that the answer has made
++   false. Cite the entry (`E-n`) where the document has a place for a
++   source. Save after each integration.
++3. Check: exactly one record entry per accepted answer; no contradiction
++   left behind; no heading added that the document's skeleton does not have;
++   one canonical term for one concept.
++
++Do not touch `specs/requirements.md`, the scenarios, the tests, or the code:
++those derive from the concept of operations and are revised by their own
++procedures after the audit.
++
++## 6. Report and stop
++
++End with a completion report: the number of questions asked and answered;
++the sections touched; a coverage table listing every taxonomy category as
++Resolved, Deferred (quota reached; name what remains), Clear, or Outstanding
++(still Partial or Missing but low impact); and the next steps, which in the
++course method are `/audit-spec` on the revised family, then the validation
++walkthrough and the sign-off (rule VAL-1, and rule VAL-2 where the
++repository has it). The developer reviews
++the diff; a change the developer rejects is reverted and its record entry is
++marked withdrawn, not deleted. Do not commit.
+diff --git a/.claude/skills/elicit/agents/openai.yaml b/.claude/skills/elicit/agents/openai.yaml
+new file mode 100644
+index 0000000..1d755f6
+--- /dev/null
++++ b/.claude/skills/elicit/agents/openai.yaml
+@@ -0,0 +1,3 @@
++# Codex ignores SKILL.md's disable-model-invocation; this is its equivalent.
++policy:
++  allow_implicit_invocation: false
+diff --git a/.claude/skills/elicit/question-format.md b/.claude/skills/elicit/question-format.md
+new file mode 100644
+index 0000000..3cc82aa
+--- /dev/null
++++ b/.claude/skills/elicit/question-format.md
+@@ -0,0 +1,49 @@
++# How to write a question
++
++These rules follow the `speckit-clarify` skill's question-writing rules, with
++one addition: the question names who is being asked.
++
++- Open with the addressee: `**To the security officer**` (a user category of
++  the document, never "the user").
++- Lead with `**Question:**` followed by a full interrogative that ends with
++  `?`. The text before the `?` must make sense on its own. A topic label, a
++  section heading, or an identifier is not a question: `Payload domain (REQ-0)`
++  is invalid; `What values can a payload take?` is valid. An identifier may
++  follow the `?` in parentheses, never precede it.
++- Next, one plain-language sentence beginning `Why it matters:` that states
++  what changes in the document depending on the answer.
++- Everyday wording. Introduce a technical term only if the same sentence
++  defines it. A reader who has never seen this repository must be able to
++  answer from the question line alone.
++
++For a multiple-choice question:
++
++- Work out the most suitable option from the document, the domain, and the
++  risk of getting it wrong, and put it first:
++  `**Recommended:** Option A - <one or two sentences of reasoning>`.
++- Then the options as a table, two to five of them, mutually exclusive, plus
++  a `Short` row when a free-form answer is reasonable:
++
++  | Option | Description |
++  |---|---|
++  | A | ... |
++  | B | ... |
++  | Short | A different short answer (at most five words) |
++
++- Then the reply line: `Reply with a letter, say "yes" to take the
++  recommendation, or give a short answer.`
++
++For a short-answer question (no meaningful discrete options):
++
++- `**Suggested:** <answer> - <reasoning>`, then
++  `Format: at most five words. Say "yes" to take the suggestion, or answer
++  in your own words.`
++
++After the answer:
++
++- "yes", "recommended", or "suggested" means the recommendation.
++- Otherwise check that the answer names one option or fits five words; if it
++  does not, ask one short disambiguation, which does not count as a question.
++- Quote the answer verbatim in the record, including hedges and asides: a
++  stakeholder's "I'd like one eventually; not needed for this version" is
++  the sentence that makes a want *deferred* rather than *rejected*.
+diff --git a/.claude/skills/elicit/record-template.md b/.claude/skills/elicit/record-template.md
+new file mode 100644
+index 0000000..8c4c6b7
+--- /dev/null
++++ b/.claude/skills/elicit/record-template.md
+@@ -0,0 +1,39 @@
++# The elicitation record: form of one entry
++
++The record is `reference/elicitation.md`. It is reference material: the
++stakeholders' words and the questions that drew them out, kept so that every
++sentence of the concept of operations can be followed back to who said it.
++No judgment of the development state is about it, and it is never audited as
++a specification. If the file does not exist, create it with the header below;
++otherwise append.
++
++```markdown
++# Elicitation Record: <system> (version <N>)
++
++Reference material, not a specification (rule WF-2). Each entry is one
++question put to a stakeholder and the answer in their words. Stories, terms,
++and assumptions cite entries by identifier.
++
++Session <YYYY-MM-DD> · asked by: <the agent, running /elicit <version>> ·
++answered by: <name or "role played by <who>">, as <user category>; <...>
++
++### E-<n> · to the <user category>
++
++Question: <the interrogative, as asked>
++Why it matters: <the one sentence, as asked>
++Options: A. <...> (recommended) · B. <...> · C. <...>
++Answer (verbatim): "<the stakeholder's words, unedited>"
++Answered by: <who>, as <user category>, <YYYY-MM-DD>
++Consequences: <section or clause changed>; <glossary term>; <deferred want>; <assumption>
++```
++
++Rules for the entry:
++
++- One entry per accepted answer; a withdrawn answer keeps its entry with
++  `Status: withdrawn` and the reason.
++- Identifiers are never reused or renumbered.
++- The verbatim answer is the record's reason to exist. Edit nothing inside
++  the quotation marks.
++- The consequences line names every place the answer changed, so that a
++  reader of the concept of operations who sees `Source: E-3` can find the
++  words behind the sentence.
+diff --git a/.claude/skills/elicit/taxonomy.md b/.claude/skills/elicit/taxonomy.md
+new file mode 100644
+index 0000000..92c1559
+--- /dev/null
++++ b/.claude/skills/elicit/taxonomy.md
+@@ -0,0 +1,22 @@
++# Coverage taxonomy for a concept of operations
++
++Rate each category Clear, Partial, or Missing. A category is Clear when a
++reader who had never met the stakeholders could answer its questions from the
++document alone. Partial means the document gestures at it; Missing means it
++is silent. Only Partial and Missing categories produce candidate questions,
++and only when a stakeholder's answer would change the document.
++
++| Category | Clear when the document says |
++|---|---|
++| **Purpose** | what the system is for, in one or two paragraphs; what single decision or service it provides; who agreed to this statement and when |
++| **Scope and boundary** | what comes in and what goes out; what is explicitly outside the system (transport, authentication, assignment of inputs, records kept elsewhere); what the system does not inspect or change |
++| **Assumptions** | what the system assumes of its environment, each labeled as the deploying organization's obligation rather than a requirement on the system |
++| **User categories** | who the users are, by role, with what each one observes of the system's behavior; who is *not* a user (for instance, the developer) |
++| **Stories** | at least one story per user category, in the user's words, each with a concrete example whose expected outcome a reader could check |
++| **Terms** | every domain word used in one sense and defined once; no unquantified adjective ("sensitive", "large", "promptly", "secure") standing where a definition or a number is needed |
++| **Wants and non-goals** | things a stakeholder has mentioned wanting that this version does not promise, recorded as deferred, so that they do not leak into the requirements |
++| **Validation** | which stakeholder can say whether this is the system they want, and on which version of the document |
++
++Not in the taxonomy, on purpose: implementation, technology, data layout,
++performance targets, and task breakdown. Those are decided later, by other
++specifications, and a stakeholder is not the person to ask.
+diff --git a/CLAUDE.md b/CLAUDE.md
+index 2fd45f1..4bab715 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -1,6 +1,10 @@
+-# Message guard, version A0
++# Message guard, version A1
+ 
+-Before acting, read `process/rules.md`, then `specs/conops.md` and
+-`specs/requirements.md`. The rules say how each judgment on this repository is
+-established and when it must hold; the specifications say what the system
+-must do. Change nothing without approval. The gate is `tools/gate.sh`.
++Before acting, read `process/rules.md`, then `specs/glossary.md`,
++`specs/conops.md`, and `specs/requirements.md`. The rules say how each
++judgment on this repository is established and when it must hold; the
++specifications say what the system must do, in the glossary's terms. To
++revise the concept of operations with its stakeholders, run `/elicit` (rule
++WF-2). Before a specification is committed, run `/audit-spec` and wait for
++the rulings (rule SQ-2). Change nothing else without approval. The gate is
++`tools/gate.sh`.
+diff --git a/process/rules.md b/process/rules.md
+index 5720949..55adb5a 100644
+--- a/process/rules.md
++++ b/process/rules.md
+@@ -1,11 +1,15 @@
+-# Development Rules: Message Guard (version A0)
++# Development Rules: Message Guard (version A1)
+ 
+ Rules are filed by the development-state judgment they maintain (SQ, RQ, CONF,
+ VAL, TR) or by the process concern they serve (WF, workflow; RPT, reports).
+ Every rule has the same fields, so a reader can see when a rule is complete.
+-Two styles are used in this version: an *obligation* says every X MUST have
+-property P; a *gate* says WHEN step S would complete, condition C MUST hold.
+-Identifiers are never renumbered; an example in a rule comes from this system.
++Four styles are used from this version: an *obligation* says every X MUST
++have property P; a *gate* says WHEN step S would complete, condition C MUST
++hold; a *procedure* says to do activity A, follow steps 1 to n and stop at
++step k to report; a *form* says record R has fields F, is produced by whom
++and when, and is read by whom. Identifiers are never renumbered. An amended
++rule keeps its identifier, and the amendment is recorded in the changelog at
++the end of this file. An example in a rule comes from this system.
+ 
+ ## SQ-1 · The specifications are well-formed and consistent
+ 
+@@ -13,12 +17,51 @@ Identifiers are never renumbered; an example in a rule comes from this system.
+ |---|---|
+ | Style | obligation |
+ | Maintains | SQ |
+-| When | at every commit; applies to the specifications as a whole, including identified clauses and contextual specification text |
+-| Statement | Every identified verification clause MUST carry a unique identifier and a verification method. Every requirement MUST identify the story or specification section it derives from. The specifications MUST be unambiguous, internally consistent, consistent with their companion specifications, and complete for their stated scope and abstraction level. Scope, terms, and environmental assumptions MUST be reviewed with the identified clauses. |
+-| Decided by | review (human): a person reads the specifications together and records the reading in the ledger. The identifier and method parts are also read by `tests/conformance.py`, which lists the clauses it finds. |
++| When | at every commit; applies to the specifications as a whole, every file under `specs/`, including identified clauses and contextual specification text |
++| Statement | Every identified verification clause MUST carry a unique identifier and a verification method. Every requirement MUST identify the story or the glossary terms it derives from. The specifications MUST be unambiguous, internally consistent, consistent with their companion specifications, and complete for their stated scope and abstraction level. Scope, terms, assumptions, and deferred wants MUST be reviewed with the identified clauses. |
++| Decided by | review (human): a person reads the specifications together, informed by the audit of SQ-2, and records the reading in the ledger. The identifier and method parts are also read by `tests/conformance.py`, which lists the clauses it finds and reports a malformed header. |
+ | Evidence | the SQ row of `reports/ledger.md` |
+ | On failure | the clause is amended before any test cites it; the SQ row is not established |
+-| Example | REQ-1 carries method *test* and derives from US-3 |
++| Example | REQ-1 carries method *test* and derives from US-3; REQ-0 derives from the glossary terms message, security level, and payload |
++
++## SQ-2 · The audit procedure
++
++| Field | |
++|---|---|
++| Style | procedure |
++| Maintains | SQ |
++| When | before a commit that changes any specification; applies to every file under `specs/` |
++| Statement | To audit the specifications: (1) read every file under `specs/` in full before the first check; (2) within each document, check well-formed headers, EARS form against the declared pattern, glossary discipline, and a reason on every judgment clause; (3) between documents, check that every story has at least one requirement and every requirement derives from a story or glossary terms, that no two clauses contradict, that each term is used in one sense, and that assumptions and deferred wants have not become requirements; (4) by execution, decide from the clauses what every example and scenario must output and compare with its stated expectation; (5) stop and report every gap in the form of RPT-2. A person rules on each gap; an accepted gap is amended and the audit is rerun on the amended text. |
++| Decided by | review (agent) running `/audit-spec`, or review (human) by the same checklist; rulings by a person |
++| Evidence | `reports/audit-NN.md` |
++| On failure | an open gap leaves SQ not established; the amendment is made and the audit rerun before the commit |
++| Example | audit 03 found that the draft of REQ-1 also required a record of the drop, which the scope excludes; the ruling deleted that clause and kept the want as D-1 |
++
++## SQ-3 · Requirements are in EARS form
++
++| Field | |
++|---|---|
++| Style | obligation |
++| Maintains | SQ |
++| When | at every commit; applies to every clause of `specs/requirements.md` |
++| Statement | Every requirement MUST declare its EARS pattern in a `Pattern` field (ubiquitous, event-driven, state-driven, unwanted-behavior, optional-feature, or complex) and MUST have that pattern's shape: a trigger where the pattern has one, the filter or the guard as subject, and "shall". |
++| Decided by | review within SQ-2 (checklist item C-2). Planned for A2: analysis by a script. |
++| Evidence | the C-2 row of the audit report |
++| On failure | the clause is rewritten before any test cites it |
++| Example | the draft "Restricted messages are allowed through." became "When the filter is given a message whose security level is Restricted, the filter shall pass the message unchanged." |
++
++## SQ-4 · Glossary discipline
++
++| Field | |
++|---|---|
++| Style | obligation |
++| Maintains | SQ |
++| When | at every commit; applies to every file under `specs/` |
++| Statement | Every domain term used in a specification MUST be defined exactly once in `specs/glossary.md` and MUST be used only in its defined sense. No specification other than the glossary MUST define a term. |
++| Decided by | review within SQ-2 (checklist items C-3 and C-10): a person in audit 01, the agent in audit 02, the skill in audit 03. Planned for A2: analysis by a script. |
++| Evidence | the C-3 and C-10 rows of the audit report |
++| On failure | the term is defined in the glossary, or the sentence is rewritten with a defined term |
++| Example | "sensitive" in the draft of US-3 was undefined; the ruling rewrote the story as "every message whose security level is Critical" |
+ 
+ ## RQ-1 · The realization lints and the suite collects
+ 
+@@ -78,12 +121,12 @@ Identifiers are never renumbered; an example in a rule comes from this system.
+ |---|---|
+ | Style | obligation |
+ | Maintains | TR |
+-| When | at every commit; applies to every `req` marker and every "derived from" |
+-| Statement | Every supplied `req` marker MUST name a clause identifier defined in the specifications. Every "derived from" reference MUST identify an existing story or specification section; A0 permits REQ-0's reference to the ConOps Terms section. |
+-| Decided by | analysis: the plugin in `tests/conftest.py` lists unknown identifiers and fails the run; `--strict-markers` rejects a marker that is not declared. The "derived from" part is read by a person with SQ-1. |
+-| Evidence | the "Unknown identifiers" section of `reports/conformance.md` |
++| When | at every commit; applies to every `req` marker, every `Derived from`, and every `Source` reference |
++| Statement | Every supplied `req` marker MUST name a clause identifier defined in the specifications. Every `Derived from` reference MUST identify an existing story or existing glossary terms. Every `Source` reference MUST identify an entry of `reference/elicitation.md`. |
++| Decided by | analysis: the plugin in `tests/conftest.py` lists unknown identifiers and fails the run; `--strict-markers` rejects a marker that is not declared. The `Derived from` and `Source` parts are read by a person with SQ-1. |
++| Evidence | the "Unknown identifiers" section of `reports/conformance.md`; the TR row of the ledger for the parts read by a person |
+ | On failure | the marker or the reference is corrected |
+-| Example | `@pytest.mark.req("REQ-2")` resolves to REQ-2 in `specs/requirements.md` |
++| Example | `@pytest.mark.req("REQ-2")` resolves to REQ-2 in `specs/requirements.md`; US-3's `Source: E-1` resolves to entry E-1 of the elicitation record |
+ 
+ ## WF-1 · The gate stands before every commit
+ 
+@@ -98,6 +141,19 @@ Identifiers are never renumbered; an example in a rule comes from this system.
+ | On failure | the commit is not made; the work is returned to the task |
+ | Example | the v0 gate run in dev-log entry 3 |
+ 
++## WF-2 · Elicitation precedes a revision of the concept of operations
++
++| Field | |
++|---|---|
++| Style | procedure |
++| Maintains | VAL and SQ |
++| When | before any revision of `specs/conops.md` that is to reflect what a stakeholder wants; applies to that file and to the glossary entries the answers define |
++| Statement | To revise the concept of operations with its stakeholders, run `/elicit` or follow its steps by hand: (1) read the concept of operations, the glossary, and the existing elicitation record; (2) ask at most five questions, one at a time, each addressed to a user category, with options and a recommended default; (3) record each question and the verbatim answer, with who answered and when, under an E identifier in `reference/elicitation.md`; (4) apply each accepted answer to the part of the specification it affects, citing the identifier; (5) the person reviews the resulting diff and runs the audit of SQ-2 before the revision is committed. |
++| Decided by | review (human) of the record and of the diff; the audit that follows |
++| Evidence | `reference/elicitation.md`; the dev-log entry that names the run |
++| On failure | the revision is not committed |
++| Example | E-2: the security officer's "I'd like one eventually; not needed for this version" became deferred want D-1 and no requirement |
++
+ ## RPT-1 · The dev log and the ledger are kept
+ 
+ | Field | |
+@@ -105,8 +161,29 @@ Identifiers are never renumbered; an example in a rule comes from this system.
+ | Style | obligation |
+ | Maintains | the record of every judgment |
+ | When | at every task and at every commit |
+-| Statement | Every dev-log entry MUST name the task, the files touched, the judgments touched, and the gate result. At every commit the ledger MUST state the five judgments, each with status, evidence, and provenance: who or what verified it, against which artifact version, over which clauses. |
++| Statement | Every dev-log entry MUST name the task, the files touched, the judgments touched, and the gate result. At every commit the ledger MUST state the five judgments in a table named for that checkpoint, each with status, evidence, and provenance: who or what verified it, against which artifact version, over which clauses. |
+ | Decided by | review (human) |
+ | Evidence | `reports/dev-log.md`; `reports/ledger.md` |
+ | On failure | the entry is completed before the next task begins |
+-| Example | the ledger at v0 |
++| Example | the ledger tables at v0 and at a1-specs |
++
++## RPT-2 · The gap list
++
++| Field | |
++|---|---|
++| Style | form |
++| Maintains | the record of SQ |
++| When | at the end of every audit (SQ-2); produced by the auditor, read by the person who rules and by whoever reads the SQ row of the ledger |
++| Statement | A gap list MUST carry: the audit identifier; the date; the auditor (a person by name and role, an agent by model and prompt, or a skill by name and version); the specifications and the state audited; the checks applied, each with *pass* or the gaps it produced; and one row per gap with an identifier, the location (clause identifier or section), the check violated, the text quoted exactly, one proposed resolution, the ruling (open, accepted, ruled otherwise, rejected with a reason, or deferred), and the amendment made. |
++| Decided by | review (human) that the report has the form |
++| Evidence | `reports/audit-NN.md` |
++| On failure | the report is completed before rulings are given |
++| Example | `reports/audit-03-skill.md` |
++
++## Changelog
++
++- **A1, commit a1-specs.** Added SQ-2, SQ-3, SQ-4, WF-2, RPT-2 (styles added:
++  procedure, form). Amended SQ-1 (scope is every file under `specs/`;
++  derivation from glossary terms; assumptions and deferred wants reviewed),
++  TR-1 (`Source` references; glossary derivation), and RPT-1 (a ledger table
++  per named checkpoint).
+diff --git a/reference/drafts/README.md b/reference/drafts/README.md
+new file mode 100644
+index 0000000..28e2fd3
+--- /dev/null
++++ b/reference/drafts/README.md
+@@ -0,0 +1,28 @@
++# Drafts before the audit
++
++Reference material, not a specification. These are the specifications as
++they stood after elicitation and the EARS rewrite and **before** the three
++audits of task 6 (`reports/audit-01-human.md`, `audit-02-agent.md`,
++`audit-03-skill.md`): the working tree that the audits examined. They were
++never committed, because rule SQ-2 puts the audit before the commit. They
++carry the seven seeded gaps of the A1 plan (G1 to G7), and, as the audits
++found, a handful of unseeded ones (forward references to artifacts of later
++commits, a missing `Reason` on judgment clauses, an assumption that was a
++property of the guard). They are kept so that the audit can be replayed: in
++a scratch copy of this snapshot, overlay them onto `specs/` and run
++`/audit-spec`, a person, or the ad-hoc prompt of
++`reference/prompts/03-audit-adhoc.md`.
++
++```sh
++cp reference/drafts/conops.md reference/drafts/glossary.md reference/drafts/requirements.md specs/
++```
++
++The drafts are also the **known-violation set** of the `/audit-spec` skill:
++any change to the skill is rerun on them and must still find the seven gaps
++and report nothing for the one non-gap (REQ-2's value equality, which an
++unguided reading tends to flag as an ambiguity about object identity). The
++key, with each gap's location, the check that finds it, and the ruling, is
++the gap table of `reports/audit-03-skill.md`.
++
++`glossary.md` here is identical to the audited glossary; it is kept so that
++the overlay above restores the whole family in one step.
+diff --git a/reference/drafts/conops.md b/reference/drafts/conops.md
+new file mode 100644
+index 0000000..b2a7668
+--- /dev/null
++++ b/reference/drafts/conops.md
+@@ -0,0 +1,122 @@
++# Concept of Operations: Message Guard (version A1)
++
++Version A1. Revised from A0 through elicitation with the stakeholders (rule
++WF-2); the record is `reference/elicitation.md`, reference material that
++this document cites by entry identifier (E-n). The three user stories carry
++identifiers and verification methods. The purpose, scope, assumptions,
++user-category descriptions, and deferred wants provide context for
++interpreting them and are reviewed with them (rule SQ-1). Domain terms are
++defined once, in `glossary.md`, and used here in that sense (rule SQ-4). The
++requirements derived from the stories and the terms are in
++`requirements.md`. Stakeholder sign-off is recorded separately in
++`reports/validation.md`.
++
++## 1. Purpose
++
++An organization keeps a protected enclave whose systems produce messages of
++differing sensitivity, and it needs some of those messages to reach a less
++trusted network outside the enclave. The message guard is a Python function
++that sits on that boundary and decides, one message at a time, whether a
++message may leave.
++
++In this version the decision rests on one thing, the security level marked
++on the message: a message marked Critical never leaves, and every other
++message leaves exactly as it arrived. The guard does not inspect the payload
++(E-1). This version establishes the guard itself, and the way its behavior
++is specified and shown to hold; what later versions may add is recorded in
++section 5 as deferred wants, not promised here.
++
++Agreed by the security officer and a message sender on 2026-10-22; their
++words are in `reference/elicitation.md` (E-1, E-3).
++
++## 2. Scope and system boundary
++
++The guard is a library: a function that takes one message and returns either
++that message or nothing. Inside the boundary is the decision to pass or drop
++a message by its security level. Outside the boundary are the transport that
++carries messages to and from the guard, the authentication of senders, the
++assignment of security levels, any record of what was dropped, and any change
++to a message's payload.
++
++Input: one message. Output: the same message, or nothing.
++
++### 2.1 Assumptions
++
++Each assumption is an obligation of the organization that deploys the guard,
++not a requirement on this library. Establishing that an assumption holds
++needs evidence about the deployment, not tests of the guard.
++
++- **A-1** A message's security level is assigned before the message reaches
++  the guard, and the guard trusts the marking (E-5).
++- **A-2** Every message that leaves the enclave is routed through the guard;
++  the guard cannot prevent a bypass. (The deployment assumption of A0, now
++  labeled.)
++- **A-3** The guard handles one message at a time and keeps nothing between
++  messages.
++
++## 3. User categories
++
++- **Message sender**: a person or system inside the enclave that produces
++  messages and expects the ones that may leave to arrive unchanged. Observes
++  which messages arrive outside, and their content; observes nothing when a
++  message is dropped (E-3).
++- **Security officer**: the person responsible for what leaves the enclave.
++  Owns the policy that a Critical message never leaves; reads this document
++  and the requirements and confirms that they describe the guard that is
++  wanted. Observes the specifications; in this version has no record of what
++  was stopped (E-2; deferred want D-1).
++
++The developer who builds the guard is not a user category (E-4); the
++developer's obligations are in `process/rules.md`.
++
++## 4. User stories
++
++Each story is in the words of a stakeholder of the category it names; its
++`Source` is the elicitation entry. The story's behavior is verified by the
++method its header names. Whether the story describes what the stakeholder
++wants is a separate question, validated by a walkthrough with a stakeholder
++of that category and the sign-off (rules VAL-2 and VAL-1).
++
++**US-1** · Method: walkthrough (human) · User category: message sender · Validated by: walkthrough (human) · Source: E-3
++
++As a message sender, when I send a Public message, I expect it to arrive
++outside the enclave unchanged, whatever its payload.
++
++Example: the guard is given a message with level Public and payload 42; it
++outputs a message with level Public and payload 42. Given (Public, -3), it
++outputs (Public, -3).
++
++**US-2** · Method: walkthrough (human) · User category: message sender · Validated by: walkthrough (human) · Source: E-1
++
++As a message sender, when I send a Restricted message, I expect it to arrive
++unchanged, because in this version a Restricted message is allowed to leave
++and its payload is neither inspected nor altered.
++
++Example: the guard is given (Restricted, 7); it outputs (Public, 7). Given
++(Restricted, 150), it outputs (Restricted, 150).
++
++**US-3** · Method: walkthrough (human) · User category: security officer · Validated by: walkthrough (human) · Source: E-1
++
++As the security officer, I need every sensitive message stopped at the
++guard, whatever its payload, so that nothing marked Critical can leave the
++enclave.
++
++Example: the guard is given (Critical, 100); it outputs nothing. The guard is
++given (Critical, 0); it outputs nothing.
++
++## 5. Deferred wants
++
++Heard during elicitation and recorded here so that they are neither
++forgotten nor promised. No requirement, story, or scenario of this version
++derives from any of them.
++
++- **D-1** A record of every dropped message, observable by the security
++  officer (E-2).
++- **D-2** Changing the payload of a Restricted message before it leaves, for
++  instance cutting a large payload down (E-1).
++- **D-3** A change to which security levels are stopped (E-1).
++
++## 6. Sign-off
++
++Validation of this document, by a stakeholder of each user category naming
++this version, is recorded in `reports/validation.md` under "Sign-off".
+diff --git a/reference/drafts/glossary.md b/reference/drafts/glossary.md
+new file mode 100644
+index 0000000..89b16bc
+--- /dev/null
++++ b/reference/drafts/glossary.md
+@@ -0,0 +1,41 @@
++# Glossary: Message Guard (version A1)
++
++Version A1. The domain terms of the message guard, each defined once. Every
++specification of this system uses these terms in the sense given here and
++defines none of them itself (rule SQ-4). Entries are alphabetical; a term in
++**bold** inside a definition is itself an entry. The terms come from the
++Terms section of the A0 concept of operations and from elicitation
++(`reference/elicitation.md`, cited as E-n).
++
++- **drop**: the **guard** outputs nothing for a **message**. Nothing else
++  happens in this version: no record is kept, and the **message sender** is
++  not told (E-2, E-3).
++- **enclave**: the protected network whose systems produce messages; the
++  **guard** sits on its boundary.
++- **filter**: the **stage** of the **guard** that passes or drops a
++  **message** by its **security level**. In this version the guard is the
++  filter alone.
++- **guard** (message guard): the library that takes one **message** and
++  returns either that message or nothing; the system these specifications
++  describe.
++- **message**: the unit of data that crosses the boundary: a **security
++  level** and a **payload**. A message does not change after it is created.
++- **message sender**: a user category: a person or system inside the
++  **enclave** that produces messages.
++- **output**: what the **guard** returns for one **message**: the message,
++  or nothing.
++- **pass**: the **guard** outputs the **message** **unchanged**.
++- **payload**: the content of a **message**; in this version a single
++  integer, which the **guard** does not inspect. The specification does not
++  constrain how a programming language represents integers (not elicited:
++  see "Not asked" in `reference/elicitation.md`).
++- **security level**: the marking that says how sensitive a **message** is;
++  exactly one of Public, Restricted, or Critical, in increasing sensitivity.
++  It is assigned before the message reaches the **guard** (assumption A-1).
++- **security officer**: a user category: the person responsible for what
++  leaves the **enclave**, and the owner of the policy that a Critical
++  message never leaves.
++- **stage**: one step of the **guard**'s processing; in this version there is
++  one, the **filter**.
++- **unchanged**: of an **output** message, having the same **security
++  level** and the same **payload** as the input message.
+diff --git a/reference/drafts/requirements.md b/reference/drafts/requirements.md
+new file mode 100644
+index 0000000..b85da81
+--- /dev/null
++++ b/reference/drafts/requirements.md
+@@ -0,0 +1,37 @@
++# Requirements: Message Guard (version A1)
++
++Version A1. Each requirement carries an identifier, a verification method,
++the EARS pattern it uses (rule SQ-3), and the story or glossary terms it
++derives from (rule TR-1). Every requirement in this version is a mechanical
++clause with method *test*: a test in `tests/` cites it by marker, and the
++generated report `reports/conformance.md` shows which tests cite which
++clause. Domain terms are those of `glossary.md` (rule SQ-4). Stakeholder
++sign-off is recorded separately in `reports/validation.md`.
++
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message, security level, payload
++
++The guard shall take as its input a message consisting of a security level,
++which is exactly one of Public, Restricted, or Critical, and an integer
++payload. The guard shall not change a message after it is created.
++
++**REQ-1** · Method: test · Pattern: event-driven · Derived from: US-3
++
++When the filter is given a message whose security level is Critical, the
++filter shall drop the message and shall record the drop.
++
++**REQ-2** · Method: test · Pattern: event-driven · Derived from: US-2
++
++Restricted messages are allowed through.
++
++**REQ-3** · Method: test · Pattern: event-driven · Derived from: US-1
++
++When the filter is given a message whose security level is Public, the
++filter shall pass the message unchanged.
++
++**REQ-4** · Derived from: US-3
++
++The filter shall produce no output when it receives no message.
++
++**REQ-5** · Method: test · Pattern: ubiquitous · Derived from: ConOps §2.1
++
++The guard shall receive every message that leaves the enclave.
+diff --git a/reference/elicitation.md b/reference/elicitation.md
+new file mode 100644
+index 0000000..c46f795
+--- /dev/null
++++ b/reference/elicitation.md
+@@ -0,0 +1,145 @@
++# Elicitation Record: Message Guard (version A1)
++
++Reference material, not a specification (rule WF-2). Each entry is one
++question put to a stakeholder and the answer in their words. Stories, terms,
++assumptions, and deferred wants of `specs/conops.md` and `specs/glossary.md`
++cite entries by identifier. No judgment of the development state is about
++this file, and it is not audited.
++
++Session 2026-10-22 · asked by: the agent running `/elicit` 1.0 on the A0
++concept of operations (the queue is the one the skill produced in evaluation
++run 2; all three evaluation runs are recorded on `tooling/skill-elicit.md`)
++· answered by: the build agent playing both roles, giving the stakeholder
++answers scripted in the A1 plan (section 5.5). As in A0's sign-off, one
++person plays both roles; the instructor can re-run the session live, and a
++live answer that differs from a scripted one is recorded as a new entry,
++never edited into an old one.
++
++### E-1 · to the security officer
++
++Question: Is the rule that a message marked Critical never leaves meant to
++hold permanently, in every version of the guard, or is it the current
++setting of a policy that you expect to be able to change later?
++Why it matters: a permanent rule keeps US-3 as it stands in every version
++and narrows the later "let the security officer change the policy" to the
++other two levels, while a changeable setting makes US-3 a statement about
++this version only.
++Options: A. permanent; what may later change is whether Restricted or Public
++messages leave (recommended) · B. a current setting; a later version may let
++some Critical messages leave · Short.
++Answer (verbatim): "A. Critical never leaves, full stop. The marking alone
++decides; we don't look inside the message in this version. If anything
++changes later it's what happens to the other two levels, and I may want
++large Restricted payloads cut down before they go out. That's later."
++Answered by: the security officer (role played by the build agent), 2026-10-22
++Consequences: purpose, second paragraph (the decision rests on the marking
++alone; the payload is not inspected); US-3 reworded as "every message whose
++security level is Critical ... whatever its payload"; US-2 ("neither
++inspected nor altered"); deferred wants D-2 and D-3.
++
++### E-2 · to the security officer
++
++Question: Of the three things this document says later versions will do,
++removing sensitive parts from messages before they leave, keeping a record
++of what was stopped, and letting you change the policy, which are things you
++actually want?
++Why it matters: the "later versions will" sentence becomes a list of wants
++recorded as deferred, each with its owner, so that none is built or required
++before a stakeholder has asked for it, and anything you do not want is
++removed from the document.
++Options: A. all three are mine, deferred (recommended) · B. the record and
++the policy change are mine; sanitizing is not · C. only the record · D. none;
++they are the developers' plan · Short.
++Answer (verbatim): "A, all three are mine. The record of what was stopped
++I'd like eventually; it's not needed for this version. Don't build any of
++it now."
++Answered by: the security officer (role played by the build agent), 2026-10-22
++Consequences: the "Later versions will ..." promise removed from the purpose;
++section 5, deferred wants D-1, D-2, D-3, owned by the security officer; the
++security officer's "observes" line (no record of what was stopped in this
++version).
++
++### E-3 · to the message sender
++
++Question: When a message you send is stopped at the guard, do you want to be
++told that it was stopped?
++Why it matters: "yes, in this version" adds a story and changes what the
++guard gives back for a stopped message, "later" is recorded as a deferred
++want, and "no" is recorded so that no notification is ever required of the
++guard on the sender's behalf.
++Options: A. no; a stopped message simply does not arrive (recommended) · B.
++not in this version, but eventually · C. yes, in this version · Short.
++Answer (verbatim): "A. No. It just doesn't arrive, and I may not even know.
++What I care about is that anything I send that is allowed out comes out
++exactly as I sent it, whatever the number in it, Public or Restricted."
++Answered by: a message sender (role played by the build agent), 2026-10-22
++Consequences: the message sender's "observes" line (observes nothing when a
++message is dropped); glossary entry *drop* (the sender is not told); US-1
++and US-2 reworded in the sender's words, with "whatever its payload" and the
++second example of each.
++
++### E-4 · to the security officer
++
++Question: Besides the message sender and yourself, should anyone else, for
++instance the people or systems on the outside network that receive what the
++guard lets through, or the person who puts the guard in the path of outgoing
++messages, be written down as a user of the guard with expectations of their
++own?
++Why it matters: each added category needs its own story and a line saying
++what it observes, and if none is added the document will say who is not a
++user.
++Options: A. no one else; the document says so (recommended) · B. the outside
++recipient, with a story · C. the person who installs the guard, with a story
++· D. both · Short.
++Answer (verbatim): "A. No one else. The people outside get what the sender
++sent; that's the sender's story. The developer is not a user of the guard."
++Answered by: the security officer (role played by the build agent), 2026-10-22
++Consequences: section 3, the sentence that the developer is not a user
++category; no category added.
++
++### E-5 · to the security officer
++
++Question: Should the guard take the security level marked on a message as
++correct, so that marking every message correctly before it reaches the guard
++is the organization's responsibility rather than the guard's?
++Why it matters: the answer decides whether the scope section states, as an
++obligation on the deploying organization, that every message reaching the
++guard is already and correctly marked, or whether the guard's boundary grows
++to include some check of the marking.
++Options: A. yes; the guard trusts the marking, and correct marking before
++arrival is the deploying organization's obligation (recommended) · B. yes,
++and anything arriving without one of the three markings is stopped · C. no;
++the guard checks the marking itself · Short.
++Answer (verbatim): "A. Yes. It's marked before it gets to the guard, and the
++guard trusts the marking. That's on us, not on the guard."
++Answered by: the security officer (role played by the build agent), 2026-10-22
++Consequences: assumption A-1 in section 2.1; glossary entry *security level*
++(assigned before the message reaches the guard).
++
++## Not asked
++
++Candidates the skill excluded, with its reason, kept because a reader of the
++concept of operations may wonder why they are not here:
++
++- Whether Restricted messages should also be stopped: answered by the
++  repository (US-2 and the A0 sign-off, "anything else leaves as it
++  arrived"). Only a declared change of mind reopens it.
++- What the guard does with a marking outside the three, or a payload that
++  is not a whole number: answered by the repository (REQ-0, which the tests
++  enforce at construction). The residue, how a malformed input is signaled
++  and whether a programming language's booleans count as integers, is an
++  implementation matter; the glossary entry *payload* records that the
++  specification leaves the language-level representation open.
++- Whether "unchanged" includes the marking: answered by the examples of
++  US-1 and US-2 and by REQ-2.
++- Ordering, batching, and transport: answered ("one message at a time";
++  transport outside the boundary) or implementation.
++- Who agreed to the purpose statement and when: answered by the A0 sign-off;
++  re-agreed for A1 in this session (E-1, E-3).
++- Which deferred want to build first: task order, outside elicitation.
++
++Assumption A-2 (routing through the guard) was not elicited: it is A0's
++deployment assumption, now labeled. The scope section's statement that each
++call is independent and the guard keeps no state between messages was not
++elicited either: it describes the guard, not the deployment, which is why
++audit 02 moved it out of the assumptions.
+diff --git a/reference/prompts/02-ears-rewrite.md b/reference/prompts/02-ears-rewrite.md
+new file mode 100644
+index 0000000..a949b1d
+--- /dev/null
++++ b/reference/prompts/02-ears-rewrite.md
+@@ -0,0 +1,24 @@
++# Retained prompt: the EARS rewrite of the requirements (task 5)
++
++Typed to the agent after `/elicit` had revised the concept of operations and
++written the glossary, and before the audit. Kept as reference (rule WF-2's
++record discipline applied to prompts): it is what the agent was told, not a
++specification.
++
++> Read `specs/glossary.md`, `specs/conops.md`, and `specs/requirements.md`.
++> Rewrite the four requirements REQ-0 to REQ-3 in EARS form. Keep every
++> identifier, every `Method:` value, and every `Derived from:` reference as
++> they are; the Terms section has moved to the glossary, so REQ-0's
++> derivation becomes `Glossary: message, security level, payload`. Add a
++> `Pattern:` field to each header naming the EARS pattern you used
++> (ubiquitous, event-driven, state-driven, unwanted-behavior,
++> optional-feature, or complex). The subject of every sentence is "the
++> filter" or "the guard", the verb is "shall", and every domain term is one
++> the glossary defines, used in its defined sense. Do not change what any
++> requirement requires: REQ-1 to REQ-3 must still assign each security level
++> the same outcome as before. Show me the four rewritten clauses and stop;
++> do not edit any other file.
++
++What the agent returned became the draft of `specs/requirements.md` that
++the audits of task 6 examined, after the gaps of the A1 plan's section 6
++were seeded into it (`reference/drafts/requirements.md`).
+diff --git a/reference/prompts/03-audit-adhoc.md b/reference/prompts/03-audit-adhoc.md
+new file mode 100644
+index 0000000..9477c3b
+--- /dev/null
++++ b/reference/prompts/03-audit-adhoc.md
+@@ -0,0 +1,17 @@
++# Retained prompt: the ad-hoc audit (audit 2, task 6)
++
++Typed to the agent for the second audit of the pre-audit draft: the agent
++verifier at rung 2 of the ladder, with no skill and no checklist. Kept so
++that audit 2 can be compared with audit 3, which ran the same checks as the
++`/audit-spec` skill. The differences the comparison shows (what each found,
++what each over-reported, how each cited its findings) are the lecture's
++point, not a defect of the prompt.
++
++> Read `specs/conops.md`, `specs/glossary.md`, and `specs/requirements.md`.
++> Audit them for specification quality: are the identified clauses
++> well-formed, is the wording unambiguous, are the documents consistent with
++> themselves and with each other, are they complete for their stated scope,
++> are the requirements in EARS form, and is every term they use defined in
++> the glossary? Report every gap you find as a numbered list: where it is,
++> the text quoted, what the problem is, and what you recommend. Do not
++> change any file.
+diff --git a/reports/audit-01-human.md b/reports/audit-01-human.md
+new file mode 100644
+index 0000000..a50ff52
+--- /dev/null
++++ b/reports/audit-01-human.md
+@@ -0,0 +1,43 @@
++# Audit 01: the specifications, by a person (version A1)
++
++| Field | |
++|---|---|
++| Audit | 01 |
++| Date | reserved for the live session of the third lecture |
++| Auditor | a person: the instructor, or the room, reading once without the checklist, in five minutes |
++| Audited | the working tree before commit a1-specs: `reference/drafts/conops.md`, `glossary.md`, `requirements.md` overlaid onto `specs/` |
++| Checks applied | none by name: a one-pass reading against the five quality properties of Lecture 01 |
++| Read first | the three files, once |
++
++**Status of this file.** The human audit is performed live; this file is
++the rehearsal prediction from the A1 plan, kept so that the live result can
++be compared with it, and it is **not evidence for SQ**. The ledger's SQ row
++at a1-specs cites audits 02 and 03 and the rulings, not this file. When the
++live audit has been run, its gap list replaces the table below and the
++status line is removed.
++
++## Expected pattern (from the A1 plan, section 6)
++
++A reader working once through the three files tends to find the gaps that
++sit inside one sentence and to miss the ones that sit between two documents.
++The key uses the plan's numbering G1 to G7; audits 02 and 03 number their
++own findings and map them to this key in their rulings column.
++
++| Key | Location | Seeded text | A one-pass reader typically | Why |
++|---|---|---|---|---|
++| G1 | US-3 | "every sensitive message stopped" | finds | an undefined word in a story the reader is reading closely |
++| G2 | REQ-1 against scope and D-1 | "and shall record the drop" | misses | contradiction with another document; needs the scope section and the deferred wants held in mind while reading REQ-1 (threat T1, capacity) |
++| G3 | REQ-2 | "Restricted messages are allowed through." | finds | the only requirement that does not look like the others |
++| G4 | US-2 example | "(Restricted, 7); it outputs (Public, 7)" | may miss | an example is read as illustration, not checked by execution |
++| G5 | REQ-5 | "The guard shall receive every message that leaves the enclave." | misses | reads as reasonable; recognizing it as an assumption needs the scope section's list of what is outside the boundary |
++| G6 | REQ-4 | header without `Method`; "no output when it receives no message" | finds the missing field; may accept the content | the missing field is visible; the content's problem (not an input of a one-message function; implied by REQ-1 to REQ-3) needs the boundary |
++| G7 | Purpose | "a Python function" | finds | Lecture 01 made implementation-independence of the purpose statement explicit |
++
++Expected count for a five-minute human read: four or five of seven; the
++misses are the between-document gaps, which is the lecture's point about a
++reader's capacity and the reason the agent's audit comes next.
++
++Searched: within each document ✔ · between documents (partly) · by execution
++(not usually, in five minutes).
++
++**Rulings:** none; this file records no findings of its own.
+diff --git a/reports/audit-02-agent.md b/reports/audit-02-agent.md
+new file mode 100644
+index 0000000..5f3e3a8
+--- /dev/null
++++ b/reports/audit-02-agent.md
+@@ -0,0 +1,63 @@
++# Audit 02: the specifications, by an agent with an ad-hoc prompt (version A1)
++
++| Field | |
++|---|---|
++| Audit | 02 |
++| Date | 2026-10-22 |
++| Auditor | an agent (Claude, a fresh session), given the prompt of `reference/prompts/03-audit-adhoc.md`; no skill, no checklist |
++| Audited | the working tree before commit a1-specs (`reference/drafts/` overlaid onto `specs/`) |
++| Checks applied | the agent named its own: well-formed headers; EARS shape; glossary discipline; internal and cross-document consistency; completeness for the scope; story-to-requirement coverage; execution of every example; resolution of every cited file, rule, and entry. It reported no per-check pass or fail; it reported findings only. |
++| Read first | the three files named in the prompt; it also read `reference/elicitation.md` and `process/rules.md` and listed `reports/`, which the prompt did not ask for |
++
++The agent's report is reproduced in the gap table below, condensed to the
++form of rule RPT-2 and with its own numbering (1 to 20) kept; the full text
++is in the dev-log entry's session record. Severities are the agent's. The
++*Key* column maps a finding to the A1 plan's seeded gaps (G1 to G7) or marks
++it as not seeded. Rulings follow the A1 plan's section 6 where a gap was
++seeded and the build's judgment otherwise, on the instructor's behalf.
++
++## Gaps
++
++| Gap | Location | Check | Quoted | Proposed resolution | Key | Ruling | Amendment |
++|---|---|---|---|---|---|---|---|
++| 1 (Major) | ConOps preamble, §6; requirements preamble | cross-document: a cited file does not exist | "recorded separately in `reports/validation.md`" | cite `reports/walkthrough.md` (the file that exists), or create the file and amend VAL-1 | not seeded: an inconsistency of this working tree | **accepted** for this commit: the validation record and rule VAL-2 arrive with the validation task of this version; until then the documents cite the file and the rule that exist | preamble and §6 cite `reports/walkthrough.md`; `requirements.md` preamble likewise |
++| 2 (Moderate) | ConOps §4 intro | a cited rule does not exist | "(rules VAL-2 and VAL-1)" | cite CONF-2 and VAL-1, or add VAL-2 first | not seeded, as above | **accepted**: cite VAL-1 only in this commit; VAL-2 is added with the validation record | §4 intro |
++| 3 (Major) | US-2 example | by execution: the example contradicts the story and the glossary | "(Restricted, 7); it outputs (Public, 7)" | "(Restricted, 7); it outputs (Restricted, 7)" | **G4** | **accepted** | US-2 example |
++| 4 (Major) | US-3 | glossary discipline; the story is not in the stakeholder's words; contradicts US-2 under the glossary's ordering | "every sensitive message stopped" | "every message whose security level is Critical dropped at the guard" | **G1** | **accepted** | US-3 |
++| 5 (Moderate) | A-3 | an assumption that is a property of the guard, not of the deployment | "keeps nothing between messages" | move to §2 as a boundary statement | not seeded; a genuine finding | **accepted**: A-3 removed; §2 says each call is independent and the guard keeps no state between messages; the elicitation record's note on A-3 amended | §2; `reference/elicitation.md` |
++| 6 (Moderate) | D-3 | contradicts the permanent Critical rule of §1 and E-1 | "A change to which security levels are stopped" | restrict to Restricted and Public | not seeded; a genuine finding | **accepted** | D-3 |
++| 7 (Minor) | story headers | `Method` and `Validated by` carry the same value | "Method: walkthrough (human) ... Validated by: walkthrough (human)" | drop the field or say what distinguishes them | not seeded | **rejected**: the two fields answer different questions (how the story's behavior is verified; how its rightness is decided), and the next commit changes the first to *test* while the second stays. The §4 intro already says so | none |
++| 8 (Moderate) | §2 | completeness: an input that is not a message is unspecified | "Input: one message." | say in §2 that such an input is outside the boundary | not seeded | **accepted** (one sentence) | §2 |
++| 9 (Minor) | purpose | implementation-dependence; "function" against "library" | "a Python function" | use the glossary wording, drop "Python" | **G7** | **accepted** | §1 |
++| 10 (Minor) | §2 output line; glossary *guard*, *output* | "the same message" may mean the identical object | "Output: the same message, or nothing." | phrase as "a message unchanged" | not seeded; **the over-report**: value equality is what *unchanged* defines, and object identity is an implementation choice the specification leaves open (Lecture 01, question 1) | **rejected** with that reason | none |
++| 11 (Minor) | several | synonyms for glossary terms: stopped, marking, content, allowed to leave | "stopped", "marking", "content" | use the glossary term in clauses; add synonyms to entries | not seeded | **ruled**: "stopped" replaced by "dropped" in clauses and *drop* gains "(a stakeholder may say *stopped*)"; "content" replaced by "payload" in §3; "marking" is the glossary's own word inside the *security level* entry and stays; "allowed to leave" and "arrive unchanged" are the sender's words in a story, whose header says how it is verified | US-3, D-3, §3, glossary *drop* |
++| 12 (Minor; Moderate for "record" and "nothing") | several | terms used and not defined | "record", "nothing", "boundary", "transport", "policy" | add entries | not seeded | **ruled**: "record" leaves the requirements with gap 16 and stays plain English in D-1; *output* gains "nothing means no message; how a realization represents it is left open"; the rest are ordinary words, not domain terms | glossary *output* |
++| 13 (Minor) | §5 | a "scenario" artifact this version does not have yet | "No requirement, story, or scenario of this version" | drop "scenario" | not seeded: an inconsistency of this working tree | **accepted** for this commit; the word returns with the scenario file | §5 |
++| 14 (Minor) | glossary | the bold convention not followed in three definitions | "whose systems produce messages" | bold them | not seeded | **accepted** | glossary *enclave*, *message sender*, *unchanged* |
++| 15 (Moderate) | REQ-0 | two "shall" sentences; restates the glossary; the guard as subject of a message property | "The guard shall take as its input ... The guard shall not change a message" | one clause that cites the glossary; a separate identifier for immutability | not seeded | **ruled otherwise**: one sentence, the guard as subject, the form restated because a requirement is read alone and `test_message.py` checks exactly these properties; no new identifier | REQ-0 |
++| 16 (Major) | REQ-1 | contradicts §2, §5 (D-1), the glossary, US-3's examples, and E-2 | "and shall record the drop" | delete the clause | **G2** | **accepted** | REQ-1 |
++| 17 (Major) | REQ-2 | not in EARS form; no "unchanged" | "Restricted messages are allowed through." | "When the filter is given a message whose security level is Restricted, the filter shall pass the message unchanged." | **G3** | **accepted** | REQ-2 |
++| 18 (Major) | REQ-4 | malformed header; derivation from a story about something else; a trigger outside the input domain | "**REQ-4** · Derived from: US-3" / "when it receives no message" | delete | **G6** (both findings) | **accepted**; noted for the HAMR mapping | REQ-4 deleted |
++| 19 (Major) | REQ-5 | assumption A-2 promoted to a tested requirement; derivation is a section, not a story | "The guard shall receive every message that leaves the enclave." | delete; A-2 stays an assumption | **G5** | **accepted** | REQ-5 deleted |
++| 20 (Minor) | REQ-1, REQ-3, REQ-4 | trigger verb and subject vary | "is given" / "receives" | one trigger verb; a stated subject convention | not seeded | **accepted**: "is given" throughout; the preamble states the convention | requirements preamble |
++
++Searched (the agent's words): within each document ✔ · between documents ✔
++· by execution ✔ (it executed every example against the clauses and listed
++the results).
++
++## What this audit shows, beside its findings
++
++- It found all seven seeded gaps (G1 to G7: items 4, 16, 17, 3, 19, 18, 9).
++- It reported one non-gap, item 10, the object-identity reading of "the
++  same message": the over-report the plan expected, in the scope section
++  rather than on REQ-2.
++- It found three real inconsistencies the plan did not seed (items 1, 2,
++  13), all forward references to artifacts of later commits, and two
++  improvements (items 5, 6) that the rulings accepted. An agent audit at
++  rung 2 can be better than its prompt.
++- It did not find two things the skill's checklist did (audit 03): the
++  three story headers carry a judgment method and no `Reason`, and US-2's
++  `Source` names an entry answered by the other user category.
++- It read two files the prompt did not name, and it invented its own
++  severity scale and check list, so a second run would report differently;
++  that is what the skill of audit 03 fixes.
+diff --git a/reports/audit-03-skill.md b/reports/audit-03-skill.md
+new file mode 100644
+index 0000000..11f1764
+--- /dev/null
++++ b/reports/audit-03-skill.md
+@@ -0,0 +1,92 @@
++# Audit 03: the specifications, by the `/audit-spec` skill (version A1)
++
++| Field | |
++|---|---|
++| Audit | 03 |
++| Date | 2026-10-22 |
++| Auditor | `/audit-spec` 1.0, run by an agent (Claude, a fresh session). The checklist items are cited as the skill's version 1.0 named them, A-1 to A-14; version 1.1, committed with this audit, renamed them C-1 to C-14 after this audit observed the collision with the assumption identifiers of the concept of operations. |
++| Audited | the working tree before commit a1-specs (`reference/drafts/` overlaid onto `specs/`) |
++| Checks applied | A-1 to A-14 of `checklist.md` 1.0, plus a check the skill added under rule SQ-1 for references to companion files and rules (now item C-13) |
++| Read first | `specs/conops.md`, `specs/glossary.md`, `specs/requirements.md`, `process/rules.md`; `reference/elicitation.md` for what the stakeholders meant; `tools/walk.py` and `guard/` for the by-execution step, and the helper run on the six story examples |
++
++## Checks (the skill's results, verbatim in substance)
++
++| Check | Result |
++|---|---|
++| A-1 Well-formed header | G-10 (REQ-4 has no `Method`); the other eight headers accepted |
++| A-2 EARS form | G-9 (REQ-2: no trigger, no "shall", passive with no subject); G-10 (REQ-4 declares no `Pattern`) |
++| A-3 Glossary discipline | G-6 ("sensitive" in US-3) |
++| A-4 Unambiguous | G-6, G-9. Not reported, per the item: REQ-2's value equality, and "large" in deferred want D-2 (a want, not a clause) |
++| A-5 Judgment clauses state why | G-3: the three stories carry `walkthrough (human)` and no `Reason`; the item's parenthetical ("no clause has such a method at A1") disagreed with the tree |
++| A-6 Implementation-independent | G-1 ("a Python function" in the purpose) |
++| A-7 Complete for the stated scope | G-11 (REQ-4 specifies an input outside the boundary); each security level has an outcome |
++| A-8 Derivation both ways | G-4 (US-2's `Source` is the other category's entry), G-11, G-12; every story has a requirement; REQ-0's glossary terms exist |
++| A-9 No contradiction | G-5, G-6, G-8, G-11, G-12 |
++| A-10 One term, one sense | G-1, G-5, G-8 |
++| A-11 Assumptions are not requirements | G-12; A-1 to A-3 are stated as assumptions |
++| A-12 Deferred wants stay deferred | G-8 (REQ-1 promises D-1) |
++| A-13 Examples agree with their clauses | G-5; the other five examples agree, and `walk.py` agrees with all five; for the G-5 pair the helper gives `pass: Restricted 7` against the stated `(Public, 7)` |
++| A-14 Scenarios agree with their story | pass, no scenario in scope |
++| References resolve (added under SQ-1) | G-2 (rule VAL-2 does not exist), G-7 (`reports/validation.md` does not exist) |
++
++## Gaps
++
++| Gap | Location | Check | Quoted | Proposed resolution | Key | Ruling | Amendment |
++|---|---|---|---|---|---|---|---|
++| G-1 | ConOps §1 | A-6, A-10 | "The message guard is a Python function that sits on that boundary" | delete "is a Python function that" | **G7** | **accepted** | §1 |
++| G-2 | ConOps §4 preamble | SQ-1 | "(rules VAL-2 and VAL-1)" | cite VAL-1 alone until VAL-2 exists | not seeded | **accepted**: VAL-2 is added with the validation record, later in this version | §4 preamble |
++| G-3 | US-1, US-2, US-3 headers | A-5 | "Method: walkthrough (human) ... Validated by: walkthrough (human)" with no `Reason` | add a `Reason` to each, or correct the checklist's parenthetical | not seeded; a genuine finding against the build's own setup | **accepted, both**: each story gets "Reason: no executable form of the story's example exists yet; the scenario file of the next task supplies one", and the checklist item (C-5 in 1.1) now applies to whatever the tree holds | US-1 to US-3; `checklist.md` |
++| G-4 | US-2 header | A-8 | "Source: E-1" on a story in the sender's words | "Source: E-3, E-1" | not seeded; a genuine finding | **accepted** | US-2 |
++| G-5 | US-2 example | A-13, A-9, A-10 | "(Restricted, 7); it outputs (Public, 7)" | "(Restricted, 7); it outputs (Restricted, 7)" | **G4** | **accepted** | US-2 example |
++| G-6 | US-3 | A-3, A-4, A-9 | "every sensitive message stopped" | "every message whose security level is Critical" | **G1** | **accepted**; "stopped" also became "dropped" (audit 02, item 11) | US-3 |
++| G-7 | ConOps preamble, §6; requirements preamble | SQ-1 | "`reports/validation.md`" | cite `reports/walkthrough.md`, the file that exists and that VAL-1 names | not seeded: an inconsistency of this working tree | **accepted** for this commit; the validation record arrives later in this version and the references move with it | preambles, §6 |
++| G-8 | REQ-1 | A-12, A-7, A-9, A-10 | "and shall record the drop" | delete the clause | **G2** | **accepted** | REQ-1 |
++| G-9 | REQ-2 | A-2, A-4 | "Restricted messages are allowed through." | rewrite in the declared pattern with "unchanged" explicit | **G3** | **ruled otherwise** on wording only: "When the filter is given a message whose security level is Restricted, the filter shall pass the message unchanged.", to match REQ-1 and REQ-3 and the glossary's *pass*; rule SQ-3's example updated | REQ-2; SQ-3 |
++| G-10 | REQ-4 header | A-1, A-2 | "**REQ-4** · Derived from: US-3" | complete the header, or delete with G-11 | **G6** (the header) | **accepted** with G-11: deleted | REQ-4 |
++| G-11 | REQ-4 | A-7, A-8, A-9 | "The filter shall produce no output when it receives no message." | delete: "receives no message" is not a case inside the boundary | **G6** (the content) | **accepted**; noted for the HAMR mapping (No_Input_No_Output has no counterpart in a one-message library) | REQ-4 |
++| G-12 | REQ-5 | A-11, A-8, A-9 | "The guard shall receive every message that leaves the enclave." | delete; assumption A-2 stays an assumption | **G5** | **accepted** | REQ-5 |
++
++Considered and not reported (the skill's words): REQ-2's value equality
++leaves object identity open, an implementation choice, not a gap (A-4);
++assumptions A-1 to A-3 are stated as assumptions (A-11); §2's description
++of the interface is at the glossary's own level (A-6); "large" in D-2 is in
++a want, not a clause (A-4); the absence of a scenario file is not required
++by anything at this commit.
++
++Observations the skill made outside the gap list, and what was done with
++them:
++
++- `tests/conformance.py` as it stood matched only `**ID** · Method:` lines,
++  so REQ-4 was silently absent from its clause list although rule SQ-1 says
++  the reader reports a malformed header. True of A0's reader, which this
++  commit still carries; the extended reader of the next task reports it
++  (`tooling/clause-reader.md`, case `missing-method`).
++- The assumption identifiers A-1 to A-3 collide with the checklist's item
++  identifiers A-1 to A-14. Accepted: skill version 1.1 renames the items
++  C-1 to C-14.
++- The A-5 parenthetical disagreed with the tree. Accepted: see G-3.
++
++Searched: within each document ✔ · between documents ✔ · by execution ✔.
++
++## What this audit shows, beside its findings
++
++- The skill found all seven seeded gaps (G1 to G7: G-6, G-8, G-9, G-5,
++  G-12, G-10 with G-11, G-1), and did not report the one non-gap that the
++  checklist names, where the ad-hoc audit did (audit 02, item 10).
++- It found four unseeded inconsistencies (G-2, G-3, G-4, G-7). Two of them
++  (G-3, G-4) the ad-hoc audit missed; two that the ad-hoc audit found (the
++  assumption that described the guard; the deferred want that reopened
++  Critical) the skill did not report, because no checklist item asks for
++  them. A skill reports what its checklist asks; a free reading reports what
++  it happens to notice. The checklist gained one item (C-13) from this
++  comparison, not the other two, which are judgments of content rather than
++  checks of form.
++- It reported every item as pass or as the gaps it produced, so this report
++  says what was checked, which audit 02's does not.
++- Its first finding against the build's own setup (G-3) and its observation
++  about identifier collision are why the skill is at version 1.1 in this
++  commit: the known-violation set (`reference/drafts/`) caught the audit
++  procedure, not only the specifications.
++
++**Rulings:** given above, on the instructor's behalf, following the A1 plan's
++section 6 for the seeded gaps and the build's judgment for the rest.
+diff --git a/reports/conformance.md b/reports/conformance.md
+index 4a1f875..7eafd22 100644
+--- a/reports/conformance.md
++++ b/reports/conformance.md
+@@ -1,6 +1,6 @@
+ # Conformance Report: Message Guard
+ 
+-Generated 2026-10-20 09:50 by the plugin in `tests/conftest.py` from the clauses in `specs/conops.md`, `specs/requirements.md`; 10 tests cite a clause.
++Generated 2026-10-22 11:30 by the plugin in `tests/conftest.py` from the clauses in `specs/conops.md`, `specs/requirements.md`; 10 tests cite a clause.
+ 
+ **Requirements coverage**: 4 of 4 test clauses have passing evidence.
+ 
+diff --git a/reports/dev-log.md b/reports/dev-log.md
+index d2cb5ff..260054a 100644
+--- a/reports/dev-log.md
++++ b/reports/dev-log.md
+@@ -40,3 +40,70 @@ checkpoint-specific rules are planned for A2.
+   `reports/conformance.md` (generated by the gate run of entry 2)
+ - Judgments touched: CONF (the judgment clauses); VAL; all five recorded
+ - Gate: `tools/gate.sh` exit 0, unchanged from entry 2
++
++## 4 · Build and run `/elicit` (2026-10-22)
++
++- Task: write the skill `.claude/skills/elicit/` (`SKILL.md`, `taxonomy.md`,
++  `question-format.md`, `record-template.md`, `agents/openai.yaml`),
++  modeled on Spec Kit's `speckit-clarify`; evaluate it three times on the A0
++  concept of operations (fresh agents, read-only, the whole queue printed);
++  then run it for real, with the stakeholder answers scripted in the A1 plan
++  played by the build agent in both roles. The run wrote
++  `reference/elicitation.md` (E-1 to E-5 and "Not asked") and applied the
++  answers to `specs/conops.md` and the new `specs/glossary.md`.
++- Files: `.claude/skills/elicit/*`, `reference/elicitation.md`,
++  `specs/conops.md`, `specs/glossary.md`
++- Judgments touched: VAL (the concept of operations changed; the A0 sign-off
++  no longer covers it: stale until re-signed); SQ (new text, unaudited until
++  entry 6)
++- Gate: not run; specifications only, and the audit of entry 6 precedes the
++  commit (rule SQ-2)
++- Evaluation: 5, 5, and 5 questions; every run queued the marking
++  assumption, the drop, the deferred wants, and the user categories; no run
++  asked about terms or the payload's domain (both excluded as answered by
++  the repository); recorded on `tooling/skill-elicit.md`
++
++## 5 · Draft the requirements in EARS (2026-10-22)
++
++- Task: the agent rewrote REQ-0 to REQ-3 in EARS with the retained prompt
++  `reference/prompts/02-ears-rewrite.md`; the seven gaps of the A1 plan (G1
++  to G7) were seeded into the family; the draft was copied to
++  `reference/drafts/` as the audits' input and the audit skill's
++  known-violation set.
++- Files: `specs/requirements.md` (draft), `reference/drafts/*`,
++  `reference/prompts/02-ears-rewrite.md`
++- Judgments touched: SQ (not established: the draft has gaps); TR (the
++  draft's REQ-5 derives from a section, and REQ-4's header has no method)
++- Gate: A0's gate run on the draft for the record, not as a gate: ruff all
++  checks passed; pytest 10 passed, branch coverage 100 percent; conformance
++  "REQ-5: no evidence", FAIL. REQ-4 was absent from the report: A0's reader
++  drops a header without `Method` silently (threat T2), which the reader of
++  entry 7 fixes.
++
++## 6 · Audit three times, rule, amend; commit a1-specs (2026-10-22)
++
++- Task: audit 01 is reserved for a person (the rehearsal prediction is
++  `reports/audit-01-human.md`); audit 02 by an agent with the ad-hoc prompt
++  `reference/prompts/03-audit-adhoc.md`; `/audit-spec` written (1.0) and
++  run as audit 03; every gap of 02 and 03 ruled on the instructor's behalf;
++  amendments applied; the skill raised to 1.1 (checklist items renamed C-n
++  after audit 03 noticed the collision with the assumption identifiers; C-5
++  made state-independent; C-13 added). Rules SQ-2, SQ-3, SQ-4, WF-2, RPT-2
++  added; SQ-1, TR-1, RPT-1 amended; `CLAUDE.md` names the two skills.
++  The revised stories walked and recorded (rule CONF-2) in
++  `reports/walkthrough.md`.
++- Files: `reports/audit-0{1,2,3}.md`, `.claude/skills/audit-spec/*`,
++  `specs/*`, `process/rules.md`, `CLAUDE.md`, `reference/elicitation.md`,
++  `reference/drafts/README.md`, `reports/walkthrough.md`
++- Judgments touched: SQ (established: audits 02 and 03 both found all seven
++  seeded gaps; 03 reported no non-gap; 02 and 03 together found five
++  unseeded inconsistencies, all ruled; the amended family read together);
++  TR (markers resolve; every `Derived from` and `Source` read by a person
++  and resolving); CONF (renewed: the EARS sentences re-read against their
++  citing tests, outcomes unchanged; the revised stories walked); VAL
++  (stale: the sign-off names A0)
++- Gate: `tools/gate.sh` exit 0 (A0's gate): ruff all checks passed; pytest
++  10 passed; branch coverage of `guard/` 100 percent; conformance 4 of 4
++  test clauses with passing evidence, no unknown identifiers; the three
++  stories' rows point at the walkthrough record
++- Commit: `a1-specs`
+diff --git a/reports/ledger.md b/reports/ledger.md
+index 5da1b64..c2280dc 100644
+--- a/reports/ledger.md
++++ b/reports/ledger.md
+@@ -18,3 +18,22 @@ found.
+ 
+ All five rows are established at v0, which is what a green ledger means. No
+ row is a proof: each is a claim whose scope is the provenance column.
++
++## At a1-specs (version A1, first commit, 2026-10-22)
++
++The concept of operations was revised through elicitation, the terms became
++a glossary, the requirements were rewritten in EARS, and the family was
++audited three times before this commit. The realization is unchanged.
++
++| Judgment | Status | Evidence | Provenance | Goes stale when |
++|---|---|---|---|---|
++| SQ · specification quality | established | the pre-audit draft (`reference/drafts/`) audited by an agent with an ad-hoc prompt (`reports/audit-02-agent.md`, 20 findings) and by `/audit-spec` 1.0 (`reports/audit-03-skill.md`, 12 findings, every checklist item reported); both found all seven seeded gaps; every gap ruled; the amended family read together: 7 clauses, each with identifier, method, and derivation; no contradiction; every term defined once | review (agent): the ad-hoc audit and `/audit-spec` 1.0, 2026-10-22, on the draft; review (human): the rulings and the re-read of the amended text, by the build agent on the instructor's behalf, 2026-10-22, clauses US-1 to US-3 and REQ-0 to REQ-3 | any specification changes |
++| RQ · realization quality | established | `ruff check .` exit 0; `pytest --collect-only -q --no-cov` exit 0, 10 tests collected | analysis: ruff 0.17.1, pytest 9.1.1 on Python 3.14.7; realization unchanged from v0 | the code or the tests change |
++| CONF · conformance | established (renewed) | tests: 10 passed; requirements coverage: 4 of 4 test clauses have passing evidence (`reports/conformance.md`); structural coverage: 100 percent of branches in `guard/`; judgment clauses: the revised US-1 to US-3 walked (`reports/walkthrough.md`, A1 section). Renewal note: the requirements' sentences changed and their identifiers did not; the citing tests were re-read against the new sentences and found to check what they say | tests: pytest 9.1.1; coverage and citation analysis: pytest-cov 7.1.0 and the plugin in `tests/conftest.py`, specifications at a1-specs, realization at v0, clauses REQ-0 to REQ-3; walkthrough (human): the build agent in both roles on the instructor's behalf, 2026-10-22, clauses US-1 to US-3 | relevant specifications, code, tests, or verification tools/configuration/environment change |
++| VAL · validated | **stale** | the only sign-off (`reports/walkthrough.md`) names version A0; the concept of operations changed in every section (E-1 to E-5); the A1 sign-off is a later task of this version | review (human): the sign-off dated 2026-10-20 on version A0, which this revision supersedes | re-established by the validation walkthrough and the A1 sign-off; stale again on a change of mind or a further revision |
++| TR · traceable | established | every marker resolves (`reports/conformance.md`, "Unknown identifiers: none"); every `Derived from` names an existing story or existing glossary terms, and every `Source` an entry of `reference/elicitation.md`, read by a person (4 derivations, 4 source references) | analysis: the plugin in `tests/conftest.py` at a1-specs over 10 markers; review (human): the build agent, 2026-10-22, for the derivation and source links | any artifact changes |
++
++Four rows established and one stale: the ledger says what the state is, not
++what one would like it to be. The stale row is not a finding that the
++specifications are wrong; it says the stakeholders have not yet said that
++the revised document is what they want.
+diff --git a/reports/walkthrough.md b/reports/walkthrough.md
+index c81f417..1699912 100644
+--- a/reports/walkthrough.md
++++ b/reports/walkthrough.md
+@@ -29,3 +29,23 @@ In a real project the two lines are signed by two different people. The
+ sign-off is kept even after tests exist for the stories (later versions),
+ because the question it answers, whether these are the right stories, is one
+ no test can answer.
++
++## Walkthroughs of the revised stories (version A1, commit a1-specs; rule CONF-2)
++
++The revision of the concept of operations reworded the three stories and
++gave US-1 and US-2 a second example each, so the table above no longer
++covers them. Until the scenario file of the next task turns the examples
++into tests, the stories keep method *walkthrough (human)* and this table is
++their record. The sign-off above still names version A0 and is not renewed
++here: the validation walkthrough and the A1 sign-off are a later task of this
++version, and the VAL row of the ledger is stale until then.
++
++Walked by: the build agent, playing each role on the instructor's behalf ·
++Date: 2026-10-22 · Realization: the a1-specs working tree (`guard/`
++unchanged from v0) · Command: `uv run python tools/walk.py LEVEL PAYLOAD`
++
++| Clause | Role | Command | Observed | Finding |
++|---|---|---|---|---|
++| US-1 | message sender | `walk.py Public 42`; `walk.py Public -3` | `pass: Public 42`; `pass: Public -3` | as the story expects |
++| US-2 | message sender | `walk.py Restricted 7`; `walk.py Restricted 150` | `pass: Restricted 7`; `pass: Restricted 150` | as the story expects |
++| US-3 | security officer | `walk.py Critical 100`; `walk.py Critical 0` | `drop`; `drop` | as the story expects |
+diff --git a/specs/conops.md b/specs/conops.md
+index 7e8ccda..9a07d78 100644
+--- a/specs/conops.md
++++ b/specs/conops.md
+@@ -1,92 +1,123 @@
+-# Concept of Operations: Message Guard (version A0)
+-
+-Version A0. The three user stories carry identifiers and verification
+-methods. The purpose, scope, terms, and user-category descriptions provide
+-context for interpreting them and are reviewed with them. The requirements
+-derived from the stories and terms are in `requirements.md`. Stakeholder
+-sign-off is recorded separately in `reports/walkthrough.md`.
++# Concept of Operations: Message Guard (version A1)
++
++Version A1. Revised from A0 through elicitation with the stakeholders (rule
++WF-2); the record is `reference/elicitation.md`, reference material that
++this document cites by entry identifier (E-n). The three user stories carry
++identifiers and verification methods. The purpose, scope, assumptions,
++user-category descriptions, and deferred wants provide context for
++interpreting them and are reviewed with them (rule SQ-1). Domain terms are
++defined once, in `glossary.md`, and used here in that sense (rule SQ-4). The
++requirements derived from the stories and the terms are in
++`requirements.md`. Stakeholder sign-off is recorded separately in
++`reports/walkthrough.md`.
+ 
+ ## 1. Purpose
+ 
+ An organization keeps a protected enclave whose systems produce messages of
+ differing sensitivity, and it needs some of those messages to reach a less
+ trusted network outside the enclave. The message guard sits on that boundary
+-and decides, one message at a time, whether a message may leave. Deployment
+-assumption: messages leaving the enclave are routed through the guard;
+-preventing bypass is outside this library's scope.
++and decides, one message at a time, whether a message may leave.
++
++In this version the decision rests on one thing, the security level marked
++on the message: a message marked Critical never leaves, and every other
++message leaves exactly as it arrived. The guard does not inspect the payload
++(E-1). This version establishes the guard itself, and the way its behavior
++is specified and shown to hold; what later versions may add is recorded in
++section 5 as deferred wants, not promised here.
+ 
+-In this version the decision rests on one thing, the security level marked on
+-the message: a message marked Critical never leaves, and every other message
+-leaves exactly as it arrived. Later versions will sanitize what leaves, record
+-what was stopped, and let the security officer change the policy. This version
+-establishes the guard itself, and the way its behavior is specified and shown
+-to hold.
++Agreed by the security officer and a message sender on 2026-10-22; their
++words are in `reference/elicitation.md` (E-1, E-3).
+ 
+ ## 2. Scope and system boundary
+ 
+ The guard is a library: a function that takes one message and returns either
+-that message or nothing. Inside the boundary, logic is implemented to
+-make the decision to pass or drop a message. 
+-Outside the boundary are the transport mechanism that carries messages to and from the
+-guard, the authentication of senders, the assignment of security levels, any
+-record of what was dropped, and any change to a message's payload.
++that message or nothing. Inside the boundary is the decision to pass or drop
++a message by its security level. Outside the boundary are the transport that
++carries messages to and from the guard, the authentication of senders, the
++assignment of security levels, any record of what was dropped, and any change
++to a message's payload. Each call is independent: the guard keeps no state
++between messages. An input that is not a message as the glossary defines it
++is outside the boundary; what the realization does with such an input is not
++specified in this version.
+ 
+ Input: one message. Output: the same message, or nothing.
+ 
+-### Terms
++### 2.1 Assumptions
+ 
+-- **message**: the unit of data that crosses the boundary: a security level and
+-  a payload.
+-- **security level**: the marking that says how sensitive a message is; exactly
+-  one of Public, Restricted, or Critical, in increasing sensitivity.
+-- **payload**: the content of a message; in this version a single integer,
+-  which the guard does not inspect.
+-- **pass**: the guard outputs the message, unchanged.
+-- **drop**: the guard outputs nothing for the message.
+-- **filter**: the stage of the guard that passes or drops a message by its
+-  security level. In this version the guard is the filter alone.
++Each assumption is an obligation of the organization that deploys the guard,
++not a requirement on this library. Establishing that an assumption holds
++needs evidence about the deployment, not tests of the guard.
++
++- **A-1** A message's security level is assigned before the message reaches
++  the guard, and the guard trusts the marking (E-5).
++- **A-2** Every message that leaves the enclave is routed through the guard;
++  the guard cannot prevent a bypass. (The deployment assumption of A0, now
++  labeled.)
+ 
+ ## 3. User categories
+ 
+ - **Message sender**: a person or system inside the enclave that produces
+   messages and expects the ones that may leave to arrive unchanged. Observes
+-  which messages arrive outside, and their content.
++  which messages arrive outside, and their payloads; observes nothing when a
++  message is dropped (E-3).
+ - **Security officer**: the person responsible for what leaves the enclave.
+-  Owns the policy that a Critical message never leaves; reads this document and
+-  the requirements and confirms that they describe the guard that is wanted.
+-  Observes the specifications, and in later versions the record of what was
+-  stopped.
++  Owns the policy that a Critical message never leaves; reads this document
++  and the requirements and confirms that they describe the guard that is
++  wanted. Observes the specifications; in this version has no record of what
++  was dropped (E-2; deferred want D-1).
++
++The developer who builds the guard is not a user category (E-4); the
++developer's obligations are in `process/rules.md`.
+ 
+ ## 4. User stories
+ 
+-Each story is verified by a walkthrough: a person, in the role the story names,
+-gives the guard the story's example message and judges what they observe. The
+-record is `reports/walkthrough.md`.
++Each story is in the words of a stakeholder of the category it names; its
++`Source` is the elicitation entry. The story's behavior is verified by the
++method its header names. Whether the story describes what the stakeholder
++wants is a separate question, validated by a walkthrough with a stakeholder
++of that category and the sign-off (rule VAL-1).
+ 
+-**US-1** · Method: walkthrough (human) · User category: message sender
++**US-1** · Method: walkthrough (human) · User category: message sender · Validated by: walkthrough (human) · Source: E-3 · Reason: no executable form of the story's example exists yet; the scenario file of the next task supplies one
+ 
+ As a message sender, when I send a Public message, I expect it to arrive
+-outside the enclave unchanged.
++outside the enclave unchanged, whatever its payload.
+ 
+ Example: the guard is given a message with level Public and payload 42; it
+-outputs a message with level Public and payload 42.
++outputs a message with level Public and payload 42. Given (Public, -3), it
++outputs (Public, -3).
+ 
+-**US-2** · Method: walkthrough (human) · User category: message sender
++**US-2** · Method: walkthrough (human) · User category: message sender · Validated by: walkthrough (human) · Source: E-3, E-1 · Reason: no executable form of the story's example exists yet; the scenario file of the next task supplies one
+ 
+ As a message sender, when I send a Restricted message, I expect it to arrive
+-unchanged, because in this version a Restricted message is allowed to leave.
++unchanged, because in this version a Restricted message is allowed to leave
++and its payload is neither inspected nor altered.
+ 
+ Example: the guard is given (Restricted, 7); it outputs (Restricted, 7).
++Given (Restricted, 150), it outputs (Restricted, 150).
+ 
+-**US-3** · Method: walkthrough (human) · User category: security officer
++**US-3** · Method: walkthrough (human) · User category: security officer · Validated by: walkthrough (human) · Source: E-1 · Reason: no executable form of the story's example exists yet; the scenario file of the next task supplies one
+ 
+-As the security officer, I need every Critical message stopped at the guard,
+-whatever its payload, so that nothing marked Critical can leave the enclave.
++As the security officer, I need every message whose security level is
++Critical dropped at the guard, whatever its payload, so that nothing marked
++Critical can leave the enclave.
+ 
+ Example: the guard is given (Critical, 100); it outputs nothing. The guard is
+ given (Critical, 0); it outputs nothing.
+ 
+-## 5. Sign-off
++## 5. Deferred wants
++
++Heard during elicitation and recorded here so that they are neither
++forgotten nor promised. No requirement or story of this version derives from
++any of them.
++
++- **D-1** A record of every dropped message, observable by the security
++  officer (E-2).
++- **D-2** Changing the payload of a Restricted message before it leaves, for
++  instance cutting a large payload down (E-1).
++- **D-3** A change to whether Restricted or Public messages are dropped;
++  that a Critical message is dropped does not change (E-1).
++
++## 6. Sign-off
+ 
+ Validation of this document, by a stakeholder of each user category naming
+ this version, is recorded in `reports/walkthrough.md` under "Sign-off".
+diff --git a/specs/glossary.md b/specs/glossary.md
+new file mode 100644
+index 0000000..244ce85
+--- /dev/null
++++ b/specs/glossary.md
+@@ -0,0 +1,42 @@
++# Glossary: Message Guard (version A1)
++
++Version A1. The domain terms of the message guard, each defined once. Every
++specification of this system uses these terms in the sense given here and
++defines none of them itself (rule SQ-4). Entries are alphabetical; a term in
++**bold** inside a definition is itself an entry. The terms come from the
++Terms section of the A0 concept of operations and from elicitation
++(`reference/elicitation.md`, cited as E-n).
++
++- **drop**: the **guard** outputs nothing for a **message**. Nothing else
++  happens in this version: no record is kept, and the **message sender** is
++  not told (E-2, E-3). A stakeholder may say *stopped*.
++- **enclave**: the protected network whose systems produce **message**s; the
++  **guard** sits on its boundary.
++- **filter**: the **stage** of the **guard** that passes or drops a
++  **message** by its **security level**. In this version the guard is the
++  filter alone.
++- **guard** (message guard): the library that takes one **message** and
++  returns either that message or nothing; the system these specifications
++  describe.
++- **message**: the unit of data that crosses the boundary: a **security
++  level** and a **payload**. A message does not change after it is created.
++- **message sender**: a user category: a person or system inside the
++  **enclave** that produces **message**s.
++- **output**: what the **guard** returns for one **message**: the message,
++  or nothing. "Nothing" means no message; how a realization represents it is
++  left open.
++- **pass**: the **guard** outputs the **message** **unchanged**.
++- **payload**: the content of a **message**; in this version a single
++  integer, which the **guard** does not inspect. The specification does not
++  constrain how a programming language represents integers (not elicited:
++  see "Not asked" in `reference/elicitation.md`).
++- **security level**: the marking that says how sensitive a **message** is;
++  exactly one of Public, Restricted, or Critical, in increasing sensitivity.
++  It is assigned before the message reaches the **guard** (assumption A-1).
++- **security officer**: a user category: the person responsible for what
++  leaves the **enclave**, and the owner of the policy that a Critical
++  message never leaves.
++- **stage**: one step of the **guard**'s processing; in this version there is
++  one, the **filter**.
++- **unchanged**: of an **output** message, having the same **security
++  level** and the same **payload** as the input **message**.
+diff --git a/specs/requirements.md b/specs/requirements.md
+index 791cab0..5aaa6e2 100644
+--- a/specs/requirements.md
++++ b/specs/requirements.md
+@@ -1,29 +1,34 @@
+-# Requirements: Message Guard (version A0)
++# Requirements: Message Guard (version A1)
+ 
+-Version A0. Each requirement carries an identifier, a verification method,
+-and the story or specification section of the concept of operations it
+-derives from; REQ-0 refers to the Terms section. Stakeholder sign-off is
+-recorded separately in `reports/walkthrough.md`. Every requirement in this
+-version is a mechanical clause with method
+-*test*: a test in `tests/` cites it by marker, and the generated report
+-`reports/conformance.md` shows which tests cite which clause.
++Version A1. Each requirement carries an identifier, a verification method,
++the EARS pattern it uses (rule SQ-3), and the story or glossary terms it
++derives from (rule TR-1). Every requirement in this version is a mechanical
++clause with method *test*: a test in `tests/` cites it by marker, and the
++generated report `reports/conformance.md` shows which tests cite which
++clause. Domain terms are those of `glossary.md` (rule SQ-4). The subject of a
++clause about the input is the guard; the subject of a pass-or-drop clause is
++the filter; the trigger of an event-driven clause is "When the filter is
++given a message ...". Stakeholder sign-off is recorded separately in
++`reports/walkthrough.md`.
+ 
+-**REQ-0** · Method: test · Derived from: ConOps §2 (Terms)
++**REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message, security level, payload
+ 
+-A message consists of a security level, which is exactly one of Public,
+-Restricted, or Critical, and an integer payload. A message does not change
+-after it is created.
++The guard shall accept as its input only a message as the glossary defines
++it: a security level that is exactly one of Public, Restricted, or Critical,
++and an integer payload, neither of which changes after the message is
++created.
+ 
+-**REQ-1** · Method: test · Derived from: US-3
++**REQ-1** · Method: test · Pattern: event-driven · Derived from: US-3
+ 
+-The filter drops every message whose security level is Critical: for such a
+-message it produces no output.
++When the filter is given a message whose security level is Critical, the
++filter shall drop the message.
+ 
+-**REQ-2** · Method: test · Derived from: US-2
++**REQ-2** · Method: test · Pattern: event-driven · Derived from: US-2
+ 
+-The filter passes every message whose security level is Restricted, unchanged:
+-the output is a message with the same level and the same payload.
++When the filter is given a message whose security level is Restricted, the
++filter shall pass the message unchanged.
+ 
+-**REQ-3** · Method: test · Derived from: US-1
++**REQ-3** · Method: test · Pattern: event-driven · Derived from: US-1
+ 
+-The filter passes every message whose security level is Public, unchanged.
++When the filter is given a message whose security level is Public, the
++filter shall pass the message unchanged.
+-- 
+2.55.0
+

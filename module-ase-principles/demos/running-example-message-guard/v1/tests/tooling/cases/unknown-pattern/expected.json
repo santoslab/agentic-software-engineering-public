@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "unknown pattern"
+  ],
+  "why": "'eventual' is not an EARS pattern"
+}

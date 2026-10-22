@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "scenario not listed"
+  ],
+  "why": "SC-1 derives from US-1, but US-1 does not list it"
+}

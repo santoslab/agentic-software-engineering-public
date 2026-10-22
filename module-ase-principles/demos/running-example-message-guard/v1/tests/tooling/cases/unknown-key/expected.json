@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "unknown key"
+  ],
+  "why": "'Owner' is not a field of a REQ clause"
+}

@@ -1,0 +1,7 @@
+{
+  "findings": [
+    "dangling reference",
+    "story without requirement"
+  ],
+  "why": "US-9 is not defined, and US-1 is left with no requirement"
+}

@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "dangling marker"
+  ],
+  "why": "a test cites REQ-9, which no specification defines"
+}

@@ -109,6 +109,11 @@ Project 1 brief; PU the project unit (Stages B to E); E the essay only.
 | 13 | Architecture (module split) | parts, boundaries, allowed dependencies | AUD-1–7 | reading; a dependency check where one is written | mostly | L03, P1, E |
 | 14 | Technology and platform | named languages, versions, libraries, tools | AUD-1–7 | dependency and build files; provenance by judgment | no | P1, PU, E |
 | 15 | Development process | steps, gates, hand-offs, reporting forms | its own mechanism (DEV-3, RPT-3); AUD-1–7 | the repository's history; the gate (VER-4); hooks | yes | L01–L06, PU |
+| 16 | Glossary / domain model (the message guard's `specs/glossary.md`) | the vocabulary every specification uses in one sense; later, entities and attributes | AUD-1–7; the running example's SQ-4 | a reader within the audit; a script for the mechanical part (A2) | yes | the ASE principles module, version A1 |
+
+The design of the running example (`software-engineering/running-example-design.md`,
+section 4) gives, for each kind, the capability of that example that first
+needs it.
 
 ### The entry template
 
@@ -145,7 +150,8 @@ verification question.
 the note set (purpose, the system, roles, operations, conformance, change
 management) and the full nine-section skeleton for the games (scope; current
 situation; justification for and nature of the changes; the concept for the
-proposed system with its objectives, policies, modes, user classes, and
+proposed system with its objectives, policies, modes, user categories (the
+skeleton's "user classes"), and
 environment; scenarios; summary of impacts; analysis; future capabilities;
 glossary). Operations are written with a precondition and a postcondition
 stated from the user's side; scenarios are written in the user's words.
@@ -172,7 +178,12 @@ technical specifications holds — that is the other kinds' job.
 `module-software-engineering/demos/lecture-03-game-demo/reference/CONOPS.md`
 (the full skeleton); the Reversi sketch students receive,
 `module-software-engineering/student-materials/reversi-starter/CONOPS-sketch.md`;
-the concept of operations you write for your knowledge base in Project 0.
+the concept of operations you write for your knowledge base in Project 0;
+the running example's
+`module-ase-principles/demos/running-example-message-guard/v1/specs/conops.md`,
+with its four essential parts (an agreed purpose statement, the scope with its
+assumptions, the user categories, the stories with their examples) and its
+deferred wants, revised through elicitation (`reference/elicitation.md`).
 General: the concept of operations for a hospital's bed-management system —
 who books a bed, what the ward clerk sees, what happens when no bed is free —
 written so that a nurse can read it and say whether it is the system they
@@ -183,6 +194,57 @@ need.
 **In the course.** Lecture 02 ("The concept of operations: a specification of
 purpose"); Lecture 03 ("A concept of operations for a program"); Lecture 05
 ("Learning Reversi from its concept of operations sketch"); demonstrated.
+
+### Glossary / domain model
+
+**Fixes / leaves open.** The vocabulary: each domain term defined once, so
+that every other specification uses it in that sense and defines none
+itself. Later it grows into a domain model (entities, attributes,
+relationships) and then into a data format. It leaves open everything about
+behavior: a glossary says what a *payload* is, not what the guard does with
+one.
+
+**Typical forms.** An alphabetical list of `**term**: definition` entries,
+each term's source noted (an elicitation entry, an earlier document), with
+bold for a term that is itself an entry. In the game examples the glossary
+is a section of the concept of operations (AUDCON-4); the running example
+promotes it to a document of its own from version A1, because three
+specifications and a scenario file share it.
+
+**Place in the specification family.** Cross-cutting: every specification
+must agree with it (AUD-3; the running example's rule SQ-4, glossary
+discipline), and the data format, when it arrives, refines it. A requirement
+may derive from glossary terms rather than from a story (the running
+example's REQ-0).
+
+**Audited by.** AUD-1 to AUD-7 for the document itself; SQ-4 for the
+discipline across the family: every domain term used in a specification is
+defined exactly once here and used only in that sense; a term defined twice,
+or defined elsewhere, is a gap. An unquantified adjective in a story
+("sensitive", "large") is a gap of the story, not of the glossary.
+
+**Used in verification.** Verifier: a reader within the audit (a person,
+then an agent, then a skill, in the running example's A1); a script in A2
+for the mechanical part (every term defined once; every marked term in every
+specification resolves). Clauses: the entries are not verification clauses;
+the discipline is an SQ obligation. A pass establishes that the family uses
+one vocabulary; it does not establish that the definitions are right, which
+is a validation question answered through the concept of operations.
+
+**Examples.** Course:
+`module-ase-principles/demos/running-example-message-guard/v1/specs/glossary.md`
+(thirteen terms of the message guard); the Terms section of the A0 concept of
+operations it grew from; §9 of the game's `CONOPS.md`. General: the data
+dictionary of a database design; the Definitions clause of a standard, which
+every later clause relies on.
+
+**Survives a port?** Yes, unchanged.
+
+**In the course.** The running example from version A1, demonstrated: the
+glossary-discipline check is the one SQ check whose verifier climbs the
+ladder in plain view (a person, an agent, a skill, then a script). Lecture 03
+of the software-engineering module, as a section of the concept of
+operations.
 
 ## B. Behavior
 
@@ -636,7 +698,10 @@ contract with its users.
 the shared fixtures of the project unit,
 `weeks-04-07/student-materials/fixtures/scenarios.json`; the Reversi shape in
 `project-1-reversi-brief.md` §3.1, with the pass and early-end scenarios its
-   §3.3 requires.
+   §3.3 requires; the running example's
+`module-ase-principles/demos/running-example-message-guard/v1/specs/scenarios.json`,
+six scenarios derived from three stories, each citing its story, with the
+file's assumptions, governance, and blind spots stated inside it.
 General: the published test vectors for a cryptographic hash function, which
 every implementation in every language must reproduce.
 
@@ -810,9 +875,10 @@ names that are not kinds. Here is how each relates to the catalog.
   the specification of its port (the project unit) — is a *role* an artifact
   can play, not a kind; the fixtures entry says how the role works.
 - **Not kinds:** the sketch (a draft of the concept of operations),
-  `BACKLOG.md` (deferred questions, DEV-6), the glossary (a section of the
-  concept of operations, AUDCON-4), and a plan (a process specification for one
-  build, DEV-9).
+  `BACKLOG.md` (deferred questions, DEV-6), and a plan (a process specification
+  for one build, DEV-9). The glossary was listed here as a section of the
+  concept of operations (AUDCON-4); the running example promotes it to a kind
+  of its own from version A1 (entry 16), and the catalog now follows.
 
 ## Mapping to the S/R essay
 

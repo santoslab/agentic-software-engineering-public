@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "duplicate identifier"
+  ],
+  "why": "REQ-1 is defined twice; the reader keeps the first and reports the second"
+}

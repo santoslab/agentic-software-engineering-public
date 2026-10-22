@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "malformed header"
+  ],
+  "why": "a header with an identifier and no Method is reported, not dropped (A0's reader dropped it silently)"
+}

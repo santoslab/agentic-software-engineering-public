@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "dangling reference"
+  ],
+  "why": "SC-2 is not in scenarios.json"
+}

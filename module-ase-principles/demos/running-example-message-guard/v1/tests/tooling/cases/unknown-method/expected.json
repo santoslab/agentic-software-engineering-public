@@ -1,0 +1,6 @@
+{
+  "findings": [
+    "unknown method"
+  ],
+  "why": "'inspection' is not one of the four methods"
+}

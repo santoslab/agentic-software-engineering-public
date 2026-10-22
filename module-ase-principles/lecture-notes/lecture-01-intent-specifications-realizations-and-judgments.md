@@ -86,7 +86,7 @@ the status of the five types of judgments above.  This will be
 augmented by a log of the work, and the reports each judgment produces.
 
 Why bother with all of this?  With agentic development, producing code
-and tests is no longer the problem -- agents can do both very fast and
+and tests is no longer the bottleneck -- agents can do both very fast and
 very well.  The challenge for developers now is *guiding* the agents
 (e.g., through specifications and constraints on work steps), and
 *understanding* the work the agents have accomplished (not necessarily
@@ -246,8 +246,10 @@ levels were meant to be stopped. It does not say what was promised: a statement
 of the guard's behavior that someone responsible agreed to. And it does not
 say whether the promise has been checked, by what, and when. 
 
-This has always been true of code. It matters more when an agent writes the
-code, for a practical reason: an agent produces code quickly and in volume,
+This has always been true of code in critical systems, i.e., the
+authority is the requirements document (the specification) not the
+code.  This view now becomes relevant in even for non-critical systems 
+when agents write code, for a practical reason: an agent produces code quickly and in volume,
 and the person directing the work does not read all of it. For a system of
 any size they cannot. What that person reads instead is the specification,
 the evidence that the code conforms to it, and the record of whether that
@@ -255,7 +257,7 @@ evidence is current. When those three things exist and can be trusted, a
 person can direct the work, review it, and take responsibility for a system
 whose code they have not read line by line. When they do not exist, the
 person is relying on the agent's own description of what it did, and an
-agent's description of its work is not trustworthy evidence about the
+agent's description is not trustworthy evidence about the
 work. 
 
 The purpose of this lecture is to illustrate an approach that lets
@@ -313,19 +315,20 @@ Intent is what the stakeholders have in mind for the system. It lives in their
 minds and is never fully written down, for the ordinary reason that a person
 cannot enumerate everything they expect from a system of any size, and would not
 recognize some of what they want until they saw a system that lacked it. The
-only way to consult intent is to ask a person: "is what I have written
-down what you want?", or "when we run the system, does this behavior match what you expected?".
+only way to consult intent is to ask a person: "is what is written
+down (e.g., in the specification) what you want?", or "when we run the
+system, does this behavior match what you expected?".
 
 A0 therefore has no file called intent.  However, it illustrates the
 outcomes of steps that we take to try to summarize the shared
 understanding that the stakeholders currently have about the system.
-That shows up first in a specification document that is commonly
+This shows up first in a specification document that is commonly
 called a "Concept of Operations" (ConOps). "Concept" indicates that the
 specification is high-level -- it focuses on the overall concept and
 idea, not the details.  The "Operations" indicates that it describes
 how the system operates as a "black box" within a larger context that
 includes human users, other systems, and sometimes physical entities.
-The description is given in the form of what are called "user
+The description is given primarily in the form of what are called "user
 stories" or "operational scenarios".  The following lecture will 
 address the elements of a ConOps specification in greater detail.
 
@@ -359,7 +362,7 @@ is the subject of the next lecture, which introduces elicitation
 (interviews and other ways of gathering the informal information that
 shapes the high-level specifications) on version A1.   To keep the focus 
 on the entities themselves (rather than how they were obtained), in A0 
-they are given as already agreed.
+they are provided as an artifact already agreed on by the stakeholders.
 
 ## Specification
 
@@ -372,7 +375,8 @@ of the form, we try to identify discrete units with unique identifiers
 so that other artifacts (e.g., other specs, requirements, tests,
 reports) can cite them and establish cross-referencing and dependences.
 
-A0 has two specifications. `specs/conops.md`, the **concept of operations**,
+A0 has two specifications. `specs/conops.md`, the **concept of
+operations** (already discussed above), 
 has five sections: the purpose statement; the scope and system boundary, with
 a list of terms; the user categories; the user stories; and a pointer to the
 sign-off. `specs/requirements.md` has four requirements. Together they are a
@@ -402,8 +406,8 @@ has a job.
 The identifier is what a report cites. A person, an agent, and a program can
 each check REQ-1 and say so, and because they all name the same clause their
 reports can be compared. Without identifiers a finding is "the thing about
-Critical messages", which two readers may locate differently and a program
-cannot locate at all.
+Critical messages", which two readers may locate differently and an
+audit tool program cannot locate at all.
 
 The method says how the clause is verified and therefore who can verify it.
 In A0 two methods are in use. A clause marked *test* is decided by a program:
@@ -417,12 +421,12 @@ than in the verifier's head, because the choice has consequences that others
 need to see. A mechanical clause can be checked at every commit by a program
 that nobody has to remember to run. A judgment clause costs a person's
 attention every time it is checked. When an agent is writing the code and the
-tests, one wants as many clauses as possible to be mechanical, and the method
+tests, one wants as many clauses as possible to be mechanically checkable, and the method
 field is where that pressure is recorded and where a clause that cannot be
 made mechanical is marked as such rather than silently left unchecked. Later
-versions add two more methods, *analysis* for properties a program decides by
-examining the artifact rather than running it, and *review* for properties a
-reader decides from the text.
+versions add two more methods, *analysis* for properties a program
+(e.g., a static analysis tool)decides by examining the artifact
+rather than running it, and *review* for properties a reader decides from the text.
 
 The "derived from" field links a requirement to the story or term it refines.
 It is what makes the two documents a family rather than two files that happen
@@ -434,9 +438,22 @@ Notice also what the specifications leave open. They say nothing about how a
 message reaches the guard, how its level was assigned, or what happens to a
 dropped message. Those are outside the system boundary stated in section 2 of
 the concept of operations, and they are therefore not the responsibility
-of *this system*. The realization is unconstrained there.  A later
-version of the system will add a record of dropped messages, and new
-clauses will be added to address that feature.
+of *this system*. The realization is unconstrained outside the
+boundary of the system.  A later version of the system will add a
+record of dropped messages, and new clauses will be added to address
+that feature.
+
+Note that sometimes we do need to state where are called "context
+assumptions" or "environmental assumptions".  These are properties of
+the environment that we expect to be true when the system is deployed
+in that context.  However, establishing that those assumptions hold
+when the system is deployed is the responsibility of deploying
+organization (the organization integrating the system into the
+context).  It is not the responsibility of the organization developing
+the system.  In fact, the developing organization typically doesn't
+even know all the possible contexts into which the system will be
+deployed.  We do not address the notion of context assumptions in this
+overview. 
 
 ## Specification quality
 
@@ -515,16 +532,25 @@ There may be many possible realizations of the same specification.
 A different program in a different language that drops Critical messages and
 passes the rest would be another realization of the same two specifications.
 
-A0's realization can be found in `guard/` and `tests/`. The code is two modules.
-`guard/message.py` defines the security level as an enumeration with exactly
-three members and the message as a frozen dataclass, and it rejects a message
+A0's realization can be found in `guard/` and `tests/`. The code in
+`guard/` consists of two modules. `guard/message.py` defines the
+security level as an enumeration with exactly three members and the 
+message as a frozen dataclass, and it rejects a message
 whose level is not a `SecurityLevel` or whose payload is not an integer;
 that is REQ-0 made concrete. `guard/filter.py` is the function shown at the
 start of the lecture.
 
-The test suite is a realization too, of a particular kind: an **executable
-specification**, in which each test is a claim about one clause and cites
-it. Here is `tests/test_filter.py`:
+Though it is often considered part of the realization because it is
+code and it must be aligned with specification documents like ConOps
+and Requirements, the test suite can also be viewed as a
+specification: it is an **executable specification**, in which each
+test is a claim the output(s) that may be produced when the system is
+given specific input(s).  Moreover, to provide evidence of conformance
+to the higher-level specification, one choses input output pairs that 
+address behaviors described by specific specification clauses.  To
+make the association of a test to one or more specification clauses
+clear, the test documentation and or meta-data cites the associated
+clause identifier(s). Here is `tests/test_filter.py`:
 
 ```python
 import pytest
@@ -550,15 +576,17 @@ def test_public_passes_unchanged():
     assert filter_message(message) == message
 ```
 
-The marker `@pytest.mark.req("REQ-1")` is the citation. It serves three
-readers. A program that implements an assurance tool can compute, 
+The marker `@pytest.mark.req("REQ-1")` is an example of a citation
+(and a part of the broader traceability framework -- it enables a test
+to be traced back to a clause (and vice versa)).  The citation serves three
+"readers". A program that implements an traceability tool can compute, 
 from the markers, which clauses have tests and which do not. 
 A person who sees this test fail knows which clause is in
-question without reading the test body. And an agent that writes a test must
+question without reading the test body. And an agent that writes a test *should*
 say which clause the test is evidence for, which rules out the common failure
-of a test that exercises the code without claiming anything about it. A test
-that cites no clause is, under A0's rules, not allowed in the suite.
-Those rules can be relaxed -- a developer may find it useful to have a
+of a test that exercises the code without claiming anything about it.
+A0's rules do allow a test that has no cited clause.  
+developer may find it useful to have a
 test that doesn't directly match a written requirement.   Note that
 this may mean that the system is constrained in some way that is not
 explicitly acknowledged -- which could be OK or undesirable depending
@@ -571,6 +599,31 @@ re-usable in other contexts that didn't want and didn't know about
 that restriction.  This is why many development regimes for critical
 systems require each test to be associated with a specification
 clause.
+
+There is another subtlety regarding the actual semantic alignment of the
+cited clause and test: just because the test cites a clause doesn't
+guarantee that the actual test implementation itself (i.e., the assertion in the
+test, the comparison to an expected result, or even the test input) 
+has a meaning that is related the meaning of the clause.
+It is possible that the test body itself is written incorrectly.
+In short, a citation only declares *intended* support for a clause. 
+Checking true **semantic alignment** between tests and
+cited natural language requirements clauses is a challenging problem.
+One can get approximate assessments of semantic alignment via human or
+agentic review (sometimes supported by formal methods tools).  
+For simplicity, the assurance framework in this lecture and in the A0
+example will focus only on establishing appropriate
+citations/traceability; however, we must keep in mind that this
+semantic alignment gap exists in our assurance arguments.
+
+To summary A0's testing rules, every clause assigned "verification by
+test" must be cited by at least
+one test, and every test citing that clause must pass for its test
+evidence to be accepted. Tests may have no clause citations. Every
+supplied citation must identify a clause defined in the
+specifications. A valid citation declares an intended evidence
+relationship; it does not establish that the test adequately checks
+the clause.
 
 **Realization quality** is the judgment that the realization is in a state
 where it can be checked at all. In A0 it has two parts, both decided by
@@ -624,7 +677,7 @@ only part of the code, in which case the untested part may do anything. And
 the clauses that no test can decide, the stories, may simply have been
 skipped.  When any of these happens, the green suite gives confidence that
 nothing has earned.  For these reasons,
-an agent development process needs to include what might previously
+an agent development process needs to include steps that might previously
 have been considered "extra and unnecessary overhead" that was "only needed
 for critical systems".  This is an example of where one can *benefit*
 from the increased capacity of agents to produce code and tests but
@@ -695,7 +748,14 @@ Required test coverage of 100% reached. Total coverage: 100.00%
 Rules CONF-1 and CONF-2 state the four conditions; the CONF row of the ledger
 cites all four pieces of evidence.
 
-Asking who decided each condition introduces a distinction the course will
+As noted earlier, the regime with its four conditions 
+above still doesn't address the issue of
+semantic alignment between a test and its cited clauses.  So even when
+the above conditions hold, the semantic alignment gap may lead to 
+situations where code mismatches with specifications are not detected.
+However, the regime does gives us a method for obtaining greater confidence.
+
+Asking who decided each condition above introduces a distinction the course will
 use repeatedly. The first three were decided by programs: `pytest`, the
 report-writing plugin, `pytest-cov`. The fourth was decided by a person. The
 course names three kinds of **verifier**. A *human verifier* reads the
@@ -704,19 +764,29 @@ decide any clause, including a judgment clause, and it is slow and only as
 reliable as its attention. An *agent verifier* is asked to check and report;
 it can also decide judgment clauses, costs tokens, and may give different
 results on two runs. An *algorithmic verifier* is a program; it is
-deterministic, immediate, and free to run, decides only mechanical clauses,
-and because it returns an exit code it can stand in front of a commit. A0
-uses the first and the third. The second enters in A1, when an agent is asked
+deterministic, immediate, and free to run, but it decides only mechanical clauses.
+A0 uses the first and the third. The second enters in A1, when an agent is asked
 to audit the specification, and the question of how a check moves from a
 person to an agent to a program is a thread through the whole module.
 
 Finally, what a green CONF does not establish. It does not establish that
 the clauses are the right clauses; that is validation. And it does not
-establish that the verifiers are correct: a test can assert the wrong thing,
-a plugin can misread a marker, a coverage tool can be misconfigured. The
-ledger records which verifier produced each piece of evidence partly so that,
-when a verifier is later found to be wrong, the claims it made can be found.
-That is as far as this lecture takes the point.
+establish that the verifiers are correct: a test can assert the wrong
+thing (the semantic alignment problem), a plugin can misread a marker, 
+a coverage tool can be misconfigured, and even obtaining 100% branch
+coverage doesn't mean that the test suite has explored all possible
+execution behaviors of the system.  *Thus, each method discussed so
+far has a failure mode*, and compentent engineer needs to understand
+the possible failure modes to how to effectively construct an
+assurance approach that gives appropriate effectiveness/cost
+tradeoffs.  The ledger records which verifier produced each piece of evidence partly so that,
+when a verifier is later found to be wrong (a failure mode is
+exhibited), the claims it made can be found and re-examined.
+In short, passing the prescribed verification checks establishes a 
+**fallible, scoped conformance claim**, not proof of correctness.
+That is as far as this lecture takes the point.  This issue 
+of the "trustworthiness of a verifier" is generally considered as
+part of the more technically challenging concept of an assurance case.
 
 ## Validation
 

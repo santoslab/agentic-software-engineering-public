@@ -317,6 +317,12 @@ from this system. A rule with no decider is a wish; a rule with no failure
 behavior leaves a red result with nowhere to go. Eight rules in A0, two
 styles.
 
+**Say:** in A0, we require the automated checks to pass before every commit.
+That is our simple checkpoint policy. Saving intermediate work and accepting
+completed work need not be the same event: later, we will allow intermediate
+commits and require designated judgments at wave acceptance. What does not
+change is that the ledger must report the evidence honestly.
+
 **Do (shell):** `cat CLAUDE.md`, then `head -20 reports/dev-log.md`.
 
 **Say:** the rules are a file because the agent reads it: `CLAUDE.md` tells

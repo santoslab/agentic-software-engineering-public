@@ -457,8 +457,43 @@ control answers the shared mistake between author and verifier, and procedure
 answers the limits of a reader. The threat table names the style of each
 mitigation, which gives a student a second way to find the rule they need.
 
+**Recording work, reporting judgments, and accepting work.**
+
+A commit can record an intermediate development state; it need not mean that
+the work is ready for acceptance. There is a useful distinction here:
+
+- **Recording work:** an intermediate state may have unmet obligations.
+- **Reporting judgments:** the ledger must accurately describe what is
+  established, stale, or not established.
+- **Accepting work:** the judgments designated by the checkpoint policy must
+  be established with applicable evidence.
+
+Relaxing the first does not weaken the other two. Permission to commit
+failing tests does not make CONF established; it means that establishing CONF
+is not a condition for that particular commit. Similarly, stale evidence
+must not be presented as current merely because the process permits work to
+continue.
+
+When checks run and when their results block advancement are separate
+decisions. Checks may run after every commit to provide feedback, while their
+results become acceptance conditions at selected checkpoints. Each checkpoint
+identifies the work being accepted, the required judgments and their scope,
+the evidence needed, and who or what decides whether work may proceed. These
+conditions are declared before the work begins, not improvised after a check
+fails. Rules distinguish obligations that apply throughout development from
+conditions required only at designated checkpoints; their *When* fields make
+that distinction explicit.
+
+A0 and A1 use a simple policy: the automated gate must pass before every
+commit. A2 introduces intermediate commits within a planned wave, followed
+by an acceptance gate requiring the judgments designated for that wave.
+A scoped acceptance must not be reported as conformance of the entire
+product. A3 develops the more general workflow model. CF-15 records the A2
+implementation and teaching obligations.
+
 **The rule template.** Every rule carries the same fields, so a reader can see
-when one is complete:
+when one is complete. This example uses the simple per-commit policy; A2's
+rules name the applicable checkpoints instead:
 
 ```
 ID          CONF-2
@@ -614,7 +649,7 @@ systematic test-discipline review enter in A2.
 |---|---|---|---|---|
 | A0 | F1 | minimal concept of operations (purpose statement, scope, two user categories, three user stories with example messages, each story marked *walkthrough*); plain requirements with identifiers (REQ-0 message, REQ-1 to REQ-3, each marked *test*); test suite; technology (`pyproject.toml`) | all five rows, minimal: SQ by a person reading the clauses (ladder rung 1); RQ `ruff` and the suite collects; CONF as the aggregate: tests pass, requirements coverage from the markers and the conformance report, branch coverage from `pytest-cov`, the stories walked by a person (rung 1); VAL one sign-off on the concept of operations; TR markers resolve; every ledger row carries its provenance, and the closing sabotage is the first verification of a verifier (2.9) | `process/rules.md` with 8 rules, one per category (styles: obligation, gate); hand-written ledger from a provided template; dev log |
 | A1 | F1 (unchanged) | the concept of operations revised through elicitation with the stakeholders; the elicitation record (reference, not a specification); glossary; requirements rewritten in EARS; acceptance fixtures derived from the stories | SQ audit (consistency, EARS form, glossary discipline, story-to-requirement alignment, a method on every clause, a reason on every judgment clause) on six to eight seeded gaps, first by a person, then by the agent, then as the `/audit-spec` skill (ladder rungs 1 to 3 on the glossary-discipline check; the seeded gaps double as the audit's known-violation set: the person misses some, which is T1's capacity threat, the agent over-reports one, and the skill's first step is read-before-check); VAL walkthrough per user category and re-sign-off, since the revision made VAL stale; TR trace-matrix tool; CONF story tests over the fixtures (the story walkthrough climbs to a test; the sign-off is kept) | gap-list form; trace matrix report; 8 rules (styles added: procedure, form); first skill, `/audit-spec` (rung 3) |
-| A2 | F2 | architecture (stages, order, purity, allocation, integration contract); data format (ad hoc rules); interface contracts (pre- and postcondition per stage); build plan | RQ `mypy` and the test-discipline review; CONF gains *analysis* as a second method (the import rule for the architecture clauses, `mypy` for the signature part of the contracts, and a script for the glossary-discipline check, which reaches rung 4: review becomes analysis, and the script is verified on the A1 seeded gaps before it replaces the skill, T2) and *review* as a third (the allocation table as `review (agent)` with a human spot-check; the purpose statement's implementation-independence stays at rung 3); generated ledger, from exit codes at the named commit and never from completion notes (T4) | plan with tasks, waves, gates; dev log per task; 8 rules (WF-2 to WF-5, RQ-2, RQ-3, CONF-3, CONF-4; styles added: policy, staleness, the approval gate); `/ledger` skill |
+| A2 | F2 | architecture (stages, order, purity, allocation, integration contract); data format (ad hoc rules); interface contracts (pre- and postcondition per stage); build plan | RQ `mypy` and the test-discipline review; CONF gains *analysis* as a second method (the import rule for the architecture clauses, `mypy` for the signature part of the contracts, and a script for the glossary-discipline check, which reaches rung 4: review becomes analysis, and the script is verified on the A1 seeded gaps before it replaces the skill, T2) and *review* as a third (the allocation table as `review (agent)` with a human spot-check; the purpose statement's implementation-independence stays at rung 3); generated ledger, from exit codes at the named commit and never from completion notes (T4) | plan with tasks, waves, gates, and checkpoint-specific obligations: intermediate commits may have unmet judgments, while wave acceptance requires designated judgments for its declared scope (CF-15); revise inherited per-commit requirements accordingly, rather than merely adding a wave gate; dev log per task; 8 rules (WF-2 to WF-5, RQ-2, RQ-3, CONF-3, CONF-4; styles added: policy, staleness, the approval gate); `/ledger` skill |
 | A3 | F4 | change request and change report; workflow graph (the process as a state machine) | a declared change of mind makes VAL stale while the unchanged artifacts can still agree; the subsequent specification revision makes affected evidence stale; impact analysis uses the declared trace links without assuming they capture every dependency; the old suite still passes after the requirement changed, but stale CONF evidence cannot support the revised claim (T4) | branch per change; 4 rules (WF-6, WF-7, RPT-3, RPT-4; style added: change control) |
 | A4 | F5 | state machine (table and diagram); message sequence chart; **verification plan**, the first project-specific one: transition coverage as a second realization-coverage objective, and the ladder rung, the independence requirement, and how the verifier is verified, for every clause group | trace tests with transition coverage; table-driven or generated session module; the verification results reviewed against the plan; the deep dive on threats to a judgment (2.9): this version's sabotage is of a verifier, the import analysis made to ignore `from` imports, and its known-violation set catches it | 3 rules (CONF-5 transition coverage; CONF-6 independence; WF-8 the verification plan precedes its tests); the verification plan bundles the project's policies and procedures |
 | A5 | F6 | schema or IDL for the message | schema validation at ingress; the generator as the conformance argument | none |
@@ -952,7 +987,7 @@ Where the game demo's verification rules go in this design:
 |---|---|
 | VER-1 verifiers and scope | the "established by" column of the ledger; the *who decides* axis of 2.6 |
 | VER-2 mechanical and judgment clauses, the table | the verification method on each clause (2.6); an SQ rule that every clause carries one |
-| VER-3 when verification runs | WF rules: the gate before every commit, the whole ledger at every wave end |
+| VER-3 when verification runs | WF rules: A0/A1 require the automated gate before every commit; A2 separates intermediate checks from wave-acceptance gates requiring designated judgments for a declared scope |
 | VER-4 the gate | the algorithmic gate: CONF's mechanical conjuncts together with RQ's analyses |
 | VER-5 coverage policy | CONF's structural-coverage objective, a standing CONF rule; a verification plan when project-specific |
 | VER-6 test discipline | RQ (a test can fail; assertion adequacy; setup discipline) and TR (every supplied clause citation resolves; citations are optional for tests); CONF requires citing evidence for every clause assigned method test |
@@ -977,12 +1012,20 @@ verifies the verifier" at rung 4 (T2).
 
 ### 5.3 Where the Lean model and the example meet
 
-The example instantiates the Lean model directly. `HI` has no artifact: it is
+The simple example maps to the Lean model as follows. `HI` has no artifact: it is
 what the stakeholders have in mind, and `updateHI` is a change of mind, which
 the process records as a change request. `specs/` is `S`; `guard/` and
 `tests/` are `R`; the four Lean judgments are SQ, RQ, CONF, VAL, with
 `Verification s r` read as the aggregate of 2.1; the ledger is `Ledger`; a
-task's commit is a `Step`. The coarse dependency sketch "a specification change
+task's commit is a `Step` in this simple mapping. This correspondence does
+not require every repository commit in a richer workflow to be an acceptance
+checkpoint. A later model could represent intermediate commits explicitly
+and require designated judgments only at acceptance transitions, or abstract
+the intermediate commits within a step representing an accepted transition.
+These are modeling choices, not claims that the existing model already
+implements A2's checkpoint policy.
+
+The coarse dependency sketch "a specification change
 invalidates CONF, VAL, SQ, TR; a code change invalidates RQ, CONF, TR; a declared change of mind
 invalidates VAL only" illustrates the intended dependency idea. It is not a
 complete implementation rule: the course evidence model also accounts for
@@ -1051,7 +1094,7 @@ Suggested evolutions of the model, none required by the course:
 | family of specifications | A0 | B1 | C2 | D1 | several `specs/*.md`; audited together for consistency from A1 / B1 / C2 / D2 |
 | gate (algorithmic) | A0 | B2 | C1 | D0 | the gate command in WF-1 |
 | gate (approval) | A2 | B3 | C4 | D1 | the sign-off that closes a wave |
-| invariant | A0, A2 | B2, B3 | C1, C4 | D0, D1 | per commit: the gate passes; per wave: the ledger is green |
+| invariant | A0, A2 | B2, B3 | C1, C4 | D0, D1 | A0/A1: the automated gate passes before each commit; A2: designated judgments are established before wave acceptance |
 | mechanical clause; judgment clause | A0 | B0 | C1 | D0 | the verification method on each clause: mechanical = test or analysis, judgment = review or walkthrough |
 | verification method (of a clause) | A0 | B0 | C1 | D0 | *test* and *walkthrough* first; *analysis* and *review* from A2 / B3 / C4 / D1 |
 | requirements coverage; structural coverage | A0 | B2 | C1 | D0 | the conformance report's "no evidence" rows; the coverage report |
@@ -1376,6 +1419,53 @@ versus object identity as a possible discussion example, not a new identity
 requirement.
 
 **Source:** [review section 8.1.B, consequence 2](../module-ase-principles/review-lecture-01-a0.md).
+
+#### CF-15 — Checkpoint-specific judgment obligations
+
+**Disposition:** Accepted design and teaching commitment, 2026-10-22.
+**Target:** A2 implementation and lecture; general workflow modeling in A3.
+**Completion:** Lecture 1 qualification added; A2 implementation and worked
+demonstration remain pending.
+
+Use section 2.8's distinction between recording work, reporting judgments,
+and accepting work. Keep A0/A1's simple automated per-commit gate. In A2,
+allow intermediate commits within a planned wave to contain incomplete work
+or failing checks, while requiring designated judgments before wave
+acceptance and integration. The ledger must accurately report established,
+stale, and not-established judgments throughout; permission to record an
+intermediate state does not establish its judgments.
+
+**Completion checks:**
+
+1. The build plan declares each acceptance checkpoint, the work and scope it
+   covers, the required judgments and evidence, and who or what decides
+   whether acceptance is permitted. Distinguish when checks run from when
+   their results block advancement. Do not present scoped acceptance as
+   whole-product conformance.
+2. Explicitly revise WF-1 and the inherited obligations' *When* fields and
+   failure behavior where necessary. Merely adding a wave gate leaves the
+   old per-commit prohibitions in force. Keep reporting obligations in force
+   during intermediate work; identify which other obligations continue to
+   apply throughout development.
+3. Demonstrate a new sanitizer specification and contracts, affected evidence
+   becoming stale, a commit with failing tests before implementation, and
+   an attempt at wave acceptance that is blocked. Then implement the behavior,
+   obtain the required evidence and reviews, and demonstrate successful
+   acceptance. Preserve the intermediate ledger findings rather than
+   retroactively marking those states established.
+4. Coordinate the implementation with CF-08's aggregate results and CF-09's
+   status/dependency semantics, CF-12's representation and enforcement
+   choices, and CF-14's tooling-construction lesson. Record whether the gate
+   is prescribed or automatically enforced; do not imply an enforcement
+   mechanism that has not been implemented.
+5. Extend the [ledger-evolution sidebar](../module-ase-principles/lecture-notes/ledger-evolution-example.md)
+   with this A2 sequence when building A2. Retain the existing A0 sequence
+   under its stricter policy. Keep the detailed checkpoint lesson out of
+   Lecture 1; A3 generalizes the two-level policy into a workflow graph.
+
+**Source:** section 2.8 and the Lecture 1 gate qualification and rule summary.
+This item changes workflow policy, not product behavior, and does not require
+a Lean model extension or a full workflow engine.
 
 ### 9.4 A3 and later change management
 

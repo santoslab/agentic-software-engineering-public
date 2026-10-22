@@ -1000,9 +1000,16 @@ front of a step so that the step cannot complete unless the condition holds.
 This one is an *algorithmic* gate: a program decides, and the decision is an
 exit code. The course also names *approval gates*, where proceeding requires
 a recorded human decision. A0 requires stakeholder sign-off before VAL is
-established. A2 introduces approval gates at the end of planned waves of
-work; these are distinct from the algorithmic check required before each
-commit.
+established.
+
+In version A0, requiring the automated gate before every commit gives us a
+simple, visible checkpoint. This is a process choice, not a requirement of
+Git or of specification-driven development. A larger workflow may allow
+intermediate commits containing incomplete work, while requiring particular
+judgments before a development wave is accepted or changes are merged into a
+shared branch. The ledger must still describe the current evidence honestly.
+In A2, we will return to how these checkpoints are chosen, including approval
+gates that require a recorded human decision.
 
 In A0, WF-1 prescribes running the gate before committing and recording its
 result. The script does not itself prevent someone from committing without
@@ -1057,11 +1064,25 @@ run, which is its point.
 
 ## The development rules
 
-Everything above is governed by `process/rules.md`, which holds eight rules:
-one for each of the five judgments, with CONF having two, plus one for the
-workflow (the gate) and one for reports (the dev log and the ledger). Each is
-filed under the judgment it maintains and has the same fields. Here is CONF-1,
-condensed:
+Everything above is governed by `process/rules.md`, which holds eight rules.
+Six concern the five judgments, with two rules contributing to CONF. The
+remaining two govern the workflow and its records. The table summarizes
+their roles in A0; the rule files give their full conditions, evidence, and
+failure behavior.
+
+| Rule | Judgment or concern | What the rule requires in A0 |
+|---|---|---|
+| SQ-1 | Specification quality | At each commit, the specifications must be well-formed, unambiguous, consistent, and complete for their stated scope and level of detail. A person reviews them together. |
+| RQ-1 | Realization quality | At each commit, the code and supporting programs must pass the lint checks, and the test suite must collect without error. |
+| CONF-1 | Conformance: test evidence | At each commit, every clause assigned to testing must have a citing test, every citing test must pass, and the suite must achieve 100% branch coverage of `guard/`. |
+| CONF-2 | Conformance: walkthrough evidence | Before CONF is recorded as established, every clause assigned to a walkthrough must have a record of who checked it, against which version, what was observed, and the finding. |
+| VAL-1 | Validation | Before VAL is recorded as established, a stakeholder from each user category must sign off on the identified version of the concept of operations. |
+| TR-1 | Traceability | At each commit, every supplied test citation and every “derived from” reference must identify an existing clause or specification section. Tests may omit citations. |
+| WF-1 | Workflow gate supporting RQ, CONF, and TR | Before each commit, `tools/gate.sh` must succeed. It checks realization quality, the mechanical part of conformance, and test-citation validity—not all five judgments. |
+| RPT-1 | Reporting all five judgments | The dev log records each task and its gate result; at each commit, the ledger records the five judgments’ statuses, evidence, and provenance. Recording a judgment does not mean it is established. |
+
+Each rule uses the same fields, making its scope, verifier, evidence, and
+response to failure explicit. Here is CONF-1, condensed:
 
 | Field | |
 |---|---|

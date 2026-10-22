@@ -237,9 +237,12 @@ tools/gate.sh; echo "exit $?"
 **Say:** four tests fail: the three cases for REQ-1 and the one for REQ-2.
 Read the plugin's lines: `REQ-1: FAIL`, `REQ-2: FAIL`. Point at the coverage
 table: still 100 percent. Coverage says which code ran, not whether it was
-right. The row that turned red is CONF and the verifier that caught it is the
-test suite; SQ, VAL, and TR are untouched, because no specification changed
-and every identifier still resolves.
+right. The tests expose a conformance failure. After the code change, we
+need fresh evidence for claims that depend on the code. Lint, collection,
+and the clause-citation checks still pass, but the behavioral tests fail.
+The conformance report records that result; the handwritten ledger does not
+update automatically. We would record CONF as not established for this
+changed state.
 
 **Do (shell):** `grep -E "REQ-[12]" reports/conformance.md` to show the two
 FAIL rows in the report, then restore:
@@ -249,11 +252,10 @@ git checkout -- guard/filter.py
 tools/gate.sh > /dev/null; echo "exit $?"
 ```
 
-**Say:** a failed check reports a fact about the pair: the specification and
-the realization disagree. It does not say which side is wrong. Here the code
-moved back. In other cases the specification is amended, and the decision is
-made by a person and recorded; the dev log is A0's record, and the fuller
-machinery arrives in version A3.
+**Say:** the checks pass again after restoring the code. A failed check tells
+us to investigate; it does not, by itself, tell us whether the specification,
+implementation, or checking machinery needs correction. Here we know the
+cause because we deliberately changed the code.
 
 `[fallback capture]` the gate output with the two FAIL lines and the 100
 percent coverage table, in case the live run is interrupted.
@@ -294,11 +296,13 @@ the rules are a file, and where the effort goes*.
 
 **Do (editor):** `reports/ledger.md`, the CONF row.
 
-**Say:** four parts: the status, the evidence named precisely enough to find,
-the provenance (which verifier and version, which artifacts at which version,
-which clauses), and what makes the row stale. Provenance is what separates
-evidence from a description of evidence: "pytest 9.1.1 exited 0 at v0" can be
-rerun; "all tests pass" in an agent's completion message cannot.
+**Say:** read this row as a claim with supporting evidence: what was checked,
+who or what checked it, and which development state it concerns.
+"Established" means the required evidence supports the claim. "Stale" means
+a relevant change requires renewed checking—not necessarily that the system
+is wrong. If checking is incomplete or finds a problem, the claim is not
+established, and the record explains why. A0 keeps this table by hand; later
+versions help maintain it automatically.
 
 **Do (shell):** `grep -A 11 "^## CONF-1" process/rules.md`.
 

@@ -161,8 +161,8 @@ By the end of this lecture, students should be able to:
   the four conditions of conformance in A0 together with the evidence for each.
 - Say what validation asks, who can answer it, and construct a case in which
   every other judgment holds and validation fails.
-- Read a ledger row as a claim with evidence, provenance, and a condition
-  under which it goes stale, and say which rows a given change makes stale.
+- Read a ledger row as a claim supported by recorded evidence, and explain
+  why a relevant change can make that evidence stale and require renewed checking.
 - Explain what a gate is and why an algorithmic gate before each commit
   matters when an agent is the one committing.
 - Read a development rule written in the template form and identify its
@@ -878,16 +878,27 @@ The CONF row at v0, condensed:
 
 | Judgment | Status | Evidence | Provenance | Goes stale when |
 |---|---|---|---|---|
-| CONF | established | tests: 10 passed; requirements coverage 4 of 4 test clauses; branch coverage 100 percent of `guard/`; US-1 to US-3 walked | analysis: pytest 9.1.1 with pytest-cov 7.1.0 and the plugin in `tests/conftest.py`, specifications and realization at v0, clauses REQ-0 to REQ-3; walkthrough (human): the instructor as sender and as security officer, 2026-10-20, clauses US-1 to US-3 | a specification or the code changes |
+| CONF | established | tests: 10 passed; requirements coverage 4 of 4 test clauses; branch coverage 100 percent of `guard/`; US-1 to US-3 walked | tests: pytest 9.1.1; coverage and citation analysis: pytest-cov 7.1.0 and the plugin in `tests/conftest.py`, specifications and realization at v0, clauses REQ-0 to REQ-3; walkthrough (human): the instructor as sender and as security officer, 2026-10-20, clauses US-1 to US-3 | relevant specifications, code, tests, or verification tools/configuration/environment change |
 
 A row has four parts, and each is there for a reason.
 
-The **status** is established or stale. A judgment is *established* when its
-evidence has been produced and recorded. It goes *stale* when an artifact it
-depends on changes, and stays stale until it is re-established. The last
-column says, for each row, what change would do that; a specification change
-makes four rows stale, a code change three, and a stakeholder's declared
-change of mind one.
+The **status** tells us whether we currently have the evidence required to
+support the claim. A judgment is *established* when the required checks and
+reviews have succeeded and their evidence has been recorded. It becomes
+*stale* when a relevant change means that the earlier evidence is no longer
+sufficient for the current development state. Stale does not mean the system
+is wrong; it means the claim needs renewed checking. A judgment may also be
+*not established* because the checking has not yet been completed or has found
+a problem; the record should explain which.
+
+For this lecture, the important idea is simple: evidence has a scope and a
+lifetime. Changes to specifications, code, tests, or the checking tools can
+require renewed evidence. Later versions develop the rules for deciding what
+must be checked again.
+
+For an optional worked example, see [How a ledger evolves during
+development](ledger-evolution-example.md), which follows evidence being
+established, becoming stale, and being renewed.
 
 The **evidence** is what was produced: a report, a run, a record. It is named
 precisely enough to be found.
@@ -930,10 +941,10 @@ the history, the gate passed.
 
 ## Breaking it: conformance
 
-To help solidify the intuition about the usefulness of the judgments, the
-demo content for A0 is set up so that each judgment has a "sabotage" 
-that turns exactly its row red and shows which verifier notices. 
-Two are run in this lecture; the README lists three more for the
+The A0 demos deliberately introduce problems to show what different checks
+can—and cannot—detect. A change can affect more than one judgment; these
+examples emphasize the particular problem each demonstration reveals. Two
+are discussed in this lecture, and the README lists three more for the
 lecture on testing.
 
 The first is a wrong realization. In `guard/filter.py`, change
@@ -952,18 +963,23 @@ Four tests fail: the three parametrized cases for REQ-1 and the one for REQ-2.
 The conformance report shows those two clauses as **FAIL** and the other two
 as pass. Branch coverage is still 100 percent, which is worth pointing out:
 coverage is a property of which code ran, not of whether it was right. The
-verifier that caught the change is the test suite, and the row that turned
-red is CONF; SQ, VAL, and TR are untouched, because no specification changed
-and every link still resolves. Restore the file and the gate is green again.
+tests expose a conformance failure: the changed implementation does not
+satisfy REQ-1 and REQ-2. Changing the code requires renewed evidence for
+claims that depend on it. Here, the rerun still passes lint and collection
+and finds no broken clause citations, but the behavioral tests fail. The
+specifications and stakeholder agreement have not changed.
 
-A failed conformance check reports a fact about the pair: the specification
-and the realization do not agree. It does not say which side is wrong. Here
-the specification is right and the code was changed, so the code moves back.
-In other cases the realization is what the stakeholders want and the
-specification stated it badly, and the specification is amended. Deciding
-which side moves is an engineering decision made by a person and recorded; in
-A0 the record is the entry in `reports/dev-log.md`, and the fuller machinery
-of amendments and change requests arrives in version A3.
+In A0, these commands update the conformance report, not the handwritten
+ledger. A ledger entry for the changed state would record that CONF is not
+established and point to the failing results. Restoring the code and
+rerunning the gate makes the automated checks pass again.
+
+A failed check signals a discrepancy or an unmet evidence obligation. We
+investigate the specification, implementation, and checking machinery to
+determine the cause. In this demonstration, the deliberate code edit caused
+the failure, so we restore the code. Other failures can require correcting
+the specification, the tests, or the checking setup. The decision and its
+rationale belong in the development record.
 
 The second sabotage, validation, was described above and has no command to
 run, which is its point.

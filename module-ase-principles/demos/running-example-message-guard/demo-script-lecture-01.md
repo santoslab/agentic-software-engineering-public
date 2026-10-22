@@ -127,20 +127,19 @@ its header line: identifier, method, user category. Every story is marked
 **Do (shell):** `cat specs/requirements.md`.
 
 **Say:** four requirements, each with an identifier, a method, and what it
-derives from. Read REQ-1's header line and point at *Method: test* and
-*Derived from: US-3*: a program will decide this clause, and it traces back to
-the officer's story. The method is on the clause rather than in the verifier's
-head because the choice has consequences other people need to see: a test
-clause is checked at every commit by a program nobody has to remember to run;
-a walkthrough clause costs a person's attention each time.
+derives from. REQ-1 is assigned tests and derives from US-3. A0 assigns human
+walkthroughs to the stories. These assignments tell us what evidence to
+obtain; they do not mean story behavior cannot be tested. A1 will automate
+the behavioral examples while retaining stakeholder sign-off.
 
 **Ask the room:** REQ-2 says a Restricted message passes "unchanged". What does
 unchanged mean? Someone will say "same level, same payload"; someone may say
 "the same object". The test decides it by equality. Is that the only reading?
 Point at the Terms section, where *pass* is defined, and at REQ-0, which says a
-message has exactly two fields. Whether that settles it is the kind of
-question the audit in the next lecture is built to ask; today, a person read
-the seven clauses together and recorded the reading in the ledger (rule SQ-1).
+message has exactly two fields. In version A0, a person has performed an
+informal audit by reading the specifications together against the quality
+criteria and recording the finding. A1 introduces a structured audit
+procedure and gap report, with agent assistance.
 
 **Expected:** no surprises; these are static files. Keep this segment moving;
 the slides already carry the five quality properties, so name them against the
@@ -187,10 +186,11 @@ passing evidence. Three programs, three conditions.
 
 **Do (shell):** `cat reports/conformance.md`.
 
-**Say:** one row per clause, read from the specifications by the plugin, not
-from a hand-kept list. The four requirements show their tests and *pass*; the
-three stories show *walkthrough: see reports/walkthrough.md*, because no test
-decides them. Requirements coverage, 4 of 4. Unknown identifiers, none.
+**Say:** one row per identified clause, read from the specifications by the
+plugin. The four requirements show their tests and results. The stories
+point to the walkthrough record because A0 assigns them that method; this
+test run does not decide those walkthrough findings. Requirements coverage,
+4 of 4. Unknown identifiers, none.
 
 **Do (shell):** the three walkthroughs, live, in the roles the stories name:
 
@@ -207,12 +207,12 @@ message sender, US-1"; "as the security officer, US-3". The outputs are the
 
 **Do (shell):** `cat reports/walkthrough.md`.
 
-**Say:** the table the room just reproduced, and below it the sign-off: who,
-in which role, when, on which version. The walkthrough did two jobs at once.
-When the officer walked US-3 and saw `drop`, two questions were answered:
-does the system behave as the story says, and is the story what the officer
-wants. The first is conformance of a judgment clause; the second is
-validation, and it is the one judgment no program can make.
+**Say:** the table records the observed behavior and whether it matches each
+story. The sign-off below records a different decision: whether the stories
+describe the guard the stakeholders want. One session can support both
+activities, but seeing the expected output does not automatically supply
+approval. A1 automates the behavioral examples; it does not automate
+stakeholder agreement.
 
 **Expected:** the gate takes under five seconds after the first `uv sync`.
 **If it goes differently:** a non-zero exit here means the setup checklist was

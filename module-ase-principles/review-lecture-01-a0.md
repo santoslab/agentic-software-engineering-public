@@ -761,13 +761,22 @@ The ledger can remain handwritten. Automated ledger generation should stay in A2
 
 #### D. The boundary between behavioral checking and validation — edits 11, 21, 25, 40
 
-This is probably the most important conceptual preparation for the next lecture:
+**Status: resolved for the agreed Lecture 1 notes and demo scope.** The approved wording changes have been applied, including the instructor's request to retain the attention-cost motivation for automation and make human walkthroughs concrete.
+
+- **Methods and walkthrough intuition:** the notes now explain a walkthrough as a person supplying inputs or selecting operations, observing the response, and comparing it with the story. A0's assignment of human walkthroughs does not make the stories' behavioral examples inherently untestable. The text retains the point that a judgment clause assigned to a person consumes that person's attention each time, motivating mechanically checkable clauses when agents produce code and tests; it also says not to weaken properties merely to automate them.
+- **Behavioral evidence versus approval:** the notes and demo distinguish observations supporting conformance from stakeholder sign-off supporting validation. A1's fixture tests automate behavioral examples, not stakeholder agreement. The verifier explanation separates producing evidence from authority to approve a result, and discussion question 3 now permits mixed evidence and asks why checking a signature does not replace validation.
+- **Audit and review progression:** A0's specification reading is described as an informal audit that becomes structured in A1. The demo uses “In version A0,” not “Today.” The RQ overview and explanation limit A0's recorded checks to lint and collection; systematic test-discipline review remains in A2. The A1/A2 preview and project-transfer guidance use the same distinctions.
+- **Gates:** the notes distinguish human approval gates at A2 wave boundaries from algorithmic checks before commits. They also clarify that A0 prescribes running the gate but its script does not itself enforce commit blocking.
+
+Slides remain deferred for regeneration; executable code and A0's verification-method assignments were not changed. The separate REQ-2 equality-versus-identity discussion (edit 13) remains outside this resolution. The [design handoff's CF-04](../software-engineering/running-example-design.md) continues to govern the future A1 implementation; resolving the teaching text does not establish that A1 has been built.
+
+The conceptual distinction to preserve is:
 
 > A1 automates behavioral checks previously demonstrated through walkthroughs; it does not automate deciding whether the stories express the stakeholders' intent.
 
-Preserve the distinction between checking an implementation against a story and approving the story itself. Human approval can be a gate; algorithmic execution is not what makes something a gate.
+Checking an implementation against a story and approving the story itself are distinct activities. Human approval can be a gate; algorithmic execution is not what makes something a gate.
 
-Also describe A1 as making A0's informal specification audit **structured and repeatable**, not as replacing “mere reading” with an entirely different activity. Keep the planned systematic test-discipline review in A2.
+A1 makes A0's informal specification audit **structured and repeatable**, rather than replacing “mere reading” with an entirely different activity. The planned systematic test-discipline review remains in A2.
 
 #### E. Specification quality and scope — edits 22, 23, 32
 

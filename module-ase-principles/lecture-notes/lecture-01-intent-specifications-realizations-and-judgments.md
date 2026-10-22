@@ -281,7 +281,7 @@ commit:
 | Judgment | The question it answers | Established in A0 by | Evidence in A0 |
 |---|---|---|---|
 | **SQ**, specification quality | Are the specifications well-formed, unambiguous, consistent with themselves and with each other, and complete for their level? | a person reading the two specifications together (rule SQ-1) | the SQ row of `reports/ledger.md` |
-| **RQ**, realization quality | Does the code lint, and does the test suite collect and follow the test discipline? | `ruff`; `pytest --collect-only` (RQ-1) | exit codes, recorded in `reports/dev-log.md` |
+| **RQ**, realization quality | In A0, does the code lint and does the test suite collect without error? | `ruff`; `pytest --collect-only` (RQ-1) | exit codes, recorded in `reports/dev-log.md` |
 | **CONF**, conformance | Does the realization satisfy every clause of every specification? | the test suite, two coverage measures, and the walkthroughs (CONF-1, CONF-2) | `reports/conformance.md`; the coverage table; `reports/walkthrough.md` |
 | **VAL**, validated | Do the specifications describe what the stakeholders intend? | a stakeholder of each user category signing the concept of operations (VAL-1) | the sign-off in `reports/walkthrough.md` |
 | **TR**, traceable | Does every clause carry an identifier, and does every link between artifacts resolve? | the markers and the "derived from" fields, read by a program and a person (TR-1) | the "Unknown identifiers" section of `reports/conformance.md` |
@@ -409,24 +409,42 @@ reports can be compared. Without identifiers a finding is "the thing about
 Critical messages", which two readers may locate differently and an
 audit tool program cannot locate at all.
 
-The method says how the clause is verified and therefore who can verify it.
-In A0 two methods are in use. A clause marked *test* is decided by a program:
-a test in the suite cites it and either passes or fails. A clause marked
-*walkthrough* is decided by a person, who exercises the system along the
-scenario and judges what they observe. The course calls a clause
-**mechanical** when a program can decide it and a **judgment clause** when it
-needs a reader; in A0 the four requirements are mechanical and the three
-stories are judgment clauses. The method is recorded on the clause, rather
-than in the verifier's head, because the choice has consequences that others
-need to see. A mechanical clause can be checked at every commit by a program
-that nobody has to remember to run. A judgment clause costs a person's
-attention every time it is checked. When an agent is writing the code and the
-tests, one wants as many clauses as possible to be mechanically checkable, and the method
-field is where that pressure is recorded and where a clause that cannot be
-made mechanical is marked as such rather than silently left unchecked. Later
-versions add two more methods, *analysis* for properties a program
-(e.g., a static analysis tool)decides by examining the artifact
-rather than running it, and *review* for properties a reader decides from the text.
+The method records how evidence for the clause is to be obtained. A0 uses
+two methods. For a clause marked *test*, a program executes examples and
+checks assertions intended to support the clause. For a clause marked
+*walkthrough (human)*, a person exercises the system along a scenario and
+judges the observed behavior. For example, the person acts as a message
+sender, supplies a Restricted message with payload 7 through the walkthrough
+helper, observes the guard's output, and compares it with the story's
+expectation. In a system with a user interface, a walkthrough might involve
+entering data or selecting an operation and observing the resulting display
+or system response. It involves using the system, not merely reading the
+story.
+
+The course distinguishes **mechanical** checks, performed by an algorithm,
+from checks of **judgment clauses**, which require human or agent judgment.
+A0 assigns tests to the four requirements and human walkthroughs to the
+three stories. That assignment does not mean that story behavior is
+inherently untestable: A1 introduces fixture-based tests for the stories'
+behavioral examples. Whether the stories describe what the stakeholders want
+remains a separate validation question.
+
+Recording the method makes the expected evidence visible. A judgment clause
+assigned to a person costs that person's attention every time it is checked.
+When an agent is writing the code and tests, we therefore want as many
+clauses as possible to be mechanically checkable, so that checks can be
+repeated as the artifacts change without requiring a fresh human reading
+each time. This is a reason to make properties precise and develop suitable
+checks, not to weaken a property merely to make it easy to automate. The
+method field also makes the remaining judgment-based work explicit rather
+than leaving it silently unchecked.
+
+Automated checks can be run repeatedly through the gate; judgment-based
+checks need a designated reviewer and a recorded finding. Later versions
+introduce *analysis*, such as a static check of an artifact, and *review*, in
+which a human or agent examines artifacts against stated criteria. The method
+identifies the checking activity; the development rules identify who is
+authorized to perform it or approve its result.
 
 The "derived from" field links a requirement to the story or term it refines.
 It is what makes the two documents a family rather than two files that happen
@@ -508,14 +526,13 @@ Further properties may be appropriate for particular specifications.
 The five above were chosen because they are general enough to apply to
 almost any specification. 
 
-In A0 the SQ judgment is established in the simplest way: rule SQ-1 requires
-the properties, and a person read the seven clauses together and recorded the
-reading in the ledger. The ledger row says who read them and which clauses,
-which is the pattern every row follows. The next lecture replaces the reading
-with an audit: a procedure, run by a person and then by an agent, over a
-specification that has gaps placed in it on purpose, and it introduces the
-form in which gaps are reported and ruled on. That is the deep treatment of
-specification quality; this lecture establishes only what the judgment asks.
+In A0, SQ is supported by an informal human audit: a person reads the
+specifications together against the quality criteria and records the finding
+in the ledger. A1 makes this audit more structured, with a procedure and a
+form for reporting gaps. A person, then an agent, then an agent following a
+packaged skill applies the procedure to specifications containing deliberately
+seeded gaps. The change is in the structure and repeatability of the audit,
+not in whether reading the specifications counts as an audit.
 
 A sixth property, traceability, is sometimes listed with these five. The
 course tracks it as its own judgment, TR, because a program can check it
@@ -630,11 +647,11 @@ where it can be checked at all. In A0 it has two parts, both decided by
 programs: `ruff check` finds a class of mistakes (unused names, undefined
 names, syntax that will not run) more cheaply than any test would, and
 `pytest --collect-only` confirms that every test file imports and every
-marker is declared. Rule RQ-1 names both commands. The suite is also held to a
-test discipline, stated in the course's development rules: a test must be
-able to fail, must assert no more loosely than the clause it cites, and must
-set up its inputs by construction rather than by reaching into the code's
-internals. Those three are reviewed rather than computed in A0.
+marker is declared. Rule RQ-1 names both commands. These checks do not
+establish that the tests adequately check their cited clauses. A2 adds a
+systematic test-discipline review, including whether assertions can expose a
+defect and whether they provide appropriate evidence for the clauses they
+cite. A0's recorded RQ checks are limited to lint and test collection.
 
 Realization quality is kept separate from conformance for a reason that
 becomes visible on the ledger. A suite that does not compile produces no
@@ -725,9 +742,11 @@ all must hold, each with its own evidence:
    by some test, not that the test checked anything useful on that path. But
    a branch that no test took is a place where the code can do anything
    without the suite noticing, and the measure finds those places cheaply.
-4. **Every judgment clause has been walked.** The three stories cannot be
-   decided by a test in this version. Each was exercised by a person, in the
-   role the story names, and the record is a table in `reports/walkthrough.md`:
+4. **Every clause assigned a walkthrough has its record.** A0 assigns human
+   walkthroughs to the three stories. Each was exercised by a person in the
+   role the story names, and the observations and findings are recorded in
+   `reports/walkthrough.md`. The behavioral examples can also be automated,
+   as A1 will demonstrate.
 
    | Clause | Role | Command | Observed | Finding |
    |---|---|---|---|---|
@@ -755,19 +774,17 @@ the above conditions hold, the semantic alignment gap may lead to
 situations where code mismatches with specifications are not detected.
 However, the regime does gives us a method for obtaining greater confidence.
 
-Asking who decided each condition above introduces a distinction the course will
-use repeatedly. The first three were decided by programs: `pytest`, the
-report-writing plugin, `pytest-cov`. The fourth was decided by a person. The
-course names three kinds of **verifier**. A *human verifier* reads the
-specification and the realization and works through the clauses; it can
-decide any clause, including a judgment clause, and it is slow and only as
-reliable as its attention. An *agent verifier* is asked to check and report;
-it can also decide judgment clauses, costs tokens, and may give different
-results on two runs. An *algorithmic verifier* is a program; it is
-deterministic, immediate, and free to run, but it decides only mechanical clauses.
-A0 uses the first and the third. The second enters in A1, when an agent is asked
-to audit the specification, and the question of how a check moves from a
-person to an agent to a program is a thread through the whole module.
+These checks also illustrate different kinds of **verifier**. A0 uses
+algorithmic verifiers for its tests and coverage checks, and a human verifier
+for the story walkthroughs. A1 adds agent-assisted review of the
+specifications. Humans and agents can examine artifacts and make judgments;
+algorithms apply programmed checks. Each can miss defects in different ways.
+
+Moving a check from a person to an agent or algorithm changes how evidence
+is produced. It does not automatically transfer authority to approve the
+result. In particular, an agent can help prepare and review the stories, but
+stakeholder approval that they express the intended system remains a human
+decision.
 
 Finally, what a green CONF does not establish. It does not establish that
 the clauses are the right clauses; that is validation. And it does not
@@ -810,14 +827,14 @@ person, and the decision is recorded as a **sign-off**. A0's is in
 The sign-off names who signed, in which role, when, and which version of
 which document. Rule VAL-1 requires one from each user category.
 
-The walkthrough table shown above does double duty, and the two duties should
-be kept apart in thought even though one activity serves both. When the
-security officer walks US-3 and sees `drop`, two questions are answered at
-once: does the system behave as the story says (a conformance question about
-a judgment clause), and is the story what the officer wants (a validation
-question). A different officer, walking the same story and seeing the same
-output, might answer the first question yes and the second no, and that is
-exactly the case the next paragraph constructs.
+A walkthrough can support two distinct activities. First, the stakeholder
+compares the observed behavior with the story: does the implementation behave
+as specified? Second, the stakeholder considers the story itself: does it
+describe the behavior they want? The observations and findings support
+conformance; the separately recorded sign-off supports validation. Seeing
+the expected output does not by itself answer the second question. A1
+automates checks of the behavioral examples, but retains stakeholder approval
+of the stories.
 
 Suppose the security officer had meant that Restricted messages must be
 stopped as well, and that the person who wrote the concept of operations had
@@ -928,16 +945,17 @@ requirement and the report-writing plugin, so it decides RQ and the three
 mechanical conditions of CONF in one step. A **gate** is a condition placed in
 front of a step so that the step cannot complete unless the condition holds.
 This one is an *algorithmic* gate: a program decides, and the decision is an
-exit code. The course also names *approval* gates, where the condition is a
-recorded human decision; A0's sign-off is a human decision but does not stand
-in front of a commit, and the first approval gate in that position arrives
-with the build plan in version A2.
+exit code. The course also names *approval gates*, where proceeding requires
+a recorded human decision. A0 requires stakeholder sign-off before VAL is
+established. A2 introduces approval gates at the end of planned waves of
+work; these are distinct from the algorithmic check required before each
+commit.
 
-The reason to have a gate at all, rather than a rule that says to run the
-checks, is that an agent commits often and a rule that depends on someone
-remembering is a rule that will be skipped. A gate makes the checks a
-property of every commit, which is to say an invariant: at every commit in
-the history, the gate passed.
+In A0, WF-1 prescribes running the gate before committing and recording its
+result. The script does not itself prevent someone from committing without
+running it. Hooks or required CI checks can enforce such a policy
+automatically; here, the distinction is between the required check and the
+mechanism that enforces its use.
 
 ## Breaking it: conformance
 
@@ -1050,24 +1068,20 @@ is the agent's opinion of the code.
 
 ## What is not here yet
 
-Version A1 keeps the same system and improves the specifications. It shows
-how the purpose statement and the stories are obtained from stakeholders
-(elicitation) with the help of agents, 
-adds a glossary of the domain's terms as a specification of
-its own, rewrites the requirements in a structured natural-language form,
-derives fixtures from the stories so that a story can be checked by a test as
-well as by a walkthrough, and replaces the reading of the specifications with
-an audit that finds gaps placed in the specification on purpose, first by a
-person, then by an agent, then as a packaged skill. The next two lectures
-cover that material.
+Version A1 keeps the same product behavior and improves its specifications
+and evidence. It introduces agent-assisted elicitation, a domain glossary,
+requirements in EARS form, and acceptance fixtures derived from the stories.
+Fixture-based tests automate checks of the behavioral examples; stakeholder
+validation and sign-off remain separate. A0's informal specification audit
+becomes a structured procedure, demonstrated first by a person, then by an
+agent, then through a packaged skill. The next two lectures cover that
+material.
 
-Version A2 adds the second stage, `sanitize`, and with it the first
-specifications of structure: an architecture with two stages in a fixed
-order, a definition of the message's format, and contracts between the stages.
-The work is large enough to need a plan with tasks and waves, and the ledger
-is generated by a tool rather than written by hand. Later versions add a
-change of policy, sessions with an ordering protocol, and a standard message
-format, each bringing the kind of specification it needs.
+Version A2 adds the `sanitize` stage, architecture, message-format
+specifications, and contracts between stages. It also adds systematic
+test-discipline review, a build plan with tasks and waves, approval gates at
+wave boundaries, and a generated ledger. Later versions introduce policy
+change, sessions with an ordering protocol, and a standard message format.
 
 ## Applying this to your own project
 
@@ -1104,13 +1118,12 @@ will have to adapt.
   `pyproject.toml` provides here: the language and version, the tools and
   their versions, and the one command that is the gate. Write it down even
   when it seems obvious.
-- *Tests that cite clauses, and the two coverages.* As you build a test
-  suite, the question is not only whether the tests run and pass but whether
-  the suite supports a verification: does every mechanical clause have a
-  test, is every part of the code exercised, and is there a record for the
-  clauses a test cannot decide. Those three questions can be asked of any
-  suite in any language, and the first two can be answered by a program once
-  the tests cite clauses.
+- *Clause-linked evidence and coverage.* Ask whether each clause has the
+  evidence required by its assigned method, whether structural coverage meets
+  the chosen objective, and whether the necessary reviews or walkthroughs are
+  recorded. Tests are one method; analysis is another. Citation checks can
+  account for declared links, but do not establish that the linked evidence
+  adequately checks the clause. Additional tests may omit clause citations.
 - *A rules file.* The template fields, in particular the decider, the
   evidence, and what happens on failure, apply to any rule about any process.
   Start with one gate and the ledger, and add a rule the second time you find
@@ -1185,10 +1198,11 @@ re-established each, and which could not be re-established without a person.
    requirement has evidence, yet the gate is red. Say what the change does to
    a message that no test sends, and what that tells you about which of the
    four conformance conditions found it.
-3. For each of the five rows at v0, say whether the evidence was produced by a
-   program or a person. For each row a person produced, say what would have
-   to be written down before a program could produce it instead, and whether
-   anything is lost if it is.
+3. For each ledger row in A0, identify which evidence is program-produced,
+   person-produced, or mixed. Which parts could be automated by specifying
+   inputs, checking rules, and expected outcomes? Which still require judgment
+   or stakeholder approval? Explain why checking that a sign-off exists does
+   not replace validation.
 
 ## Before next meeting
 

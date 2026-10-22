@@ -17,6 +17,20 @@
 > amendments this design proposed (section 5) were applied to the glossary on
 > 2026-10-20.
 
+> Review follow-up: updated 2026-10-21 with the agreed test-citation and
+> ledger-evidence conventions and the version-specific handoff in section 9.
+> A1 and later versions remain unbuilt; recording a decision is not evidence
+> that its implementation is complete.
+
+**For the agent building a version:** read section 9's shared constraints and
+the items applicable to that version before planning. Include applicable
+**accepted** items in the implementation plan. In the completion report,
+identify the evidence satisfying each item and list unresolved questions or
+proposed deferrals. **Proposed** items are not authorization to expand the
+version's scope; obtain approval before treating them as additional required
+work. Use this document for current design decisions and the linked review
+for rationale, not as a competing set of implementation instructions.
+
 ## 0. What this document settles
 
 The brief asks for a running example that teaches agentic software
@@ -42,7 +56,10 @@ an auditor can read without reading the code. This document settles:
    Lean model in `AgenticDev` (section 5);
 6. where the example lives and what existing code it reuses (section 6);
 7. coverage checklists showing that every glossary term and every form appears
-   in every progression (section 7).
+   in every progression (section 7);
+8. implementation constraints and version-specific carry-forward items from
+   review, distinguishing accepted decisions from proposals and open questions
+   (section 9).
 
 ### 0.1 What the earlier attempts taught
 
@@ -152,8 +169,10 @@ which it uses.
 
 ### 2.1 Five development-state judgments
 
-A *development-state judgment* is a claim about the current artifacts whose
-truth is tracked commit by commit. These five are the rows of the ledger in
+A *development-state judgment* is a claim about the current development state
+whose supporting evidence and status are tracked at recorded checkpoints.
+An established judgment is a supported, fallible claim, not proof that the
+claim is true. These five are the rows of the ledger in
 every version. Four are the Lean model's judgments (`specOK`, `realOK`,
 `verified`, `validated`) under course names; the fifth is the brief's
 "overarching" traceability, given its own row because it is mechanically
@@ -163,10 +182,10 @@ holds.
 | ID | Judgment | Question it answers | Established by | Evidence recorded in the ledger | Goes stale when |
 |---|---|---|---|---|---|
 | **SQ** | Specification quality | Is each specification well-formed, unambiguous, internally consistent, complete for its level, and consistent with its companion specifications? Does every clause carry a verification method, and does every judgment clause say why it is not mechanical? | an audit: an agent applies the SQ rules and a person rules on each gap; later, scripts for the syntactic parts (identifiers unique, EARS pattern, glossary terms, a method on every clause) | the audit report with zero open gaps; script exit codes | any specification changes |
-| **RQ** | Realization quality | Does the realization lint and type-check, does its test suite collect cleanly and follow the test discipline (a test can fail; it asserts tighter than its clause, never looser; direct assignment for setup only), and is its structure judged appropriate? | analysis: `ruff`, `mypy`, `pytest --collect-only`; a review for the test discipline and the structure | the commands and their exit codes; the review record | code or tests change |
-| **CONF** | Conformance (verified) | Does the realization satisfy every clause of every specification? For a testing-based method this is four things together: every test passes; every mechanical clause has the tests or analyses its method demands (requirements coverage); the suite exercises the code to the stated structural coverage; every judgment clause has a recorded review or walkthrough | tests and analyses that cite clauses; the two coverage objectives; reviews and walkthroughs for judgment clauses; later contracts, trace tests with transition coverage, schema validation | the test run; the generated conformance report (requirements coverage); the coverage report (structural coverage); the review and walkthrough records | a specification or the code changes |
+| **RQ** | Realization quality | Does the realization lint and type-check, does its test suite collect cleanly and follow the test discipline (a test can fail; a citing test's assertions adequately check its clause; direct assignment for setup only), and is its structure judged appropriate? | analysis: `ruff`, `mypy`, `pytest --collect-only`; a review for the test discipline and the structure | the commands and their exit codes; the review record | code or tests change |
+| **CONF** | Conformance (verified) | Does the realization satisfy the specification clauses in scope? The standing evidence obligations are: the required suite passes; each clause has the evidence its assigned method demands; structural coverage meets the stated objective; judgment clauses have the required review or walkthrough records. These support a scoped claim, not a proof of conformance | tests and analyses that cite clauses; the two coverage objectives; reviews and walkthroughs for judgment clauses; later contracts, trace tests with transition coverage, schema validation | the test run; the generated conformance report (requirements coverage); the coverage report (structural coverage); the review and walkthrough records | relevant specifications, code, tests, or verification tools/configuration/environment change |
 | **VAL** | Validated | Do the specifications describe what the stakeholders have in mind? | a person walks the user stories and their example messages against the running system and signs off | a sign-off line: who, when, which specification version | a stakeholder declares a change of mind, or the concept of operations or a specification changes |
-| **TR** | Traceable | Does every clause carry an identifier, and does every link resolve in both directions (story to requirement to test to task)? | a script over the identifiers | the trace matrix with no dangling links | any artifact changes |
+| **TR** | Traceable | Do identified clauses have unique identifiers, and do the declared links resolve (story to requirement to test to task)? Links can be followed in either direction; not every test must have a clause link | identifier/reference checks, automated where supported and otherwise reviewed | the trace matrix and reference-check findings, with no dangling declared links | relevant linked artifacts or reference-checking machinery change |
 
 Intent has no row and no artifact. It lives in the stakeholders' minds and is
 consulted only through a person (*intent* in `../glossary.md`), which is why VAL is the one row
@@ -174,12 +193,32 @@ of the ledger that no tool can regenerate, and why it can go stale on a
 *declaration* (a change of mind, recorded as a change request) when no file
 has changed.
 
-A test suite on its own establishes only that its own claims hold. The CONF
-row says what more is needed before a suite counts as a verification: the two
-coverages, requirements coverage (every mechanical clause claimed) and
-structural coverage (every part of the code exercised), bracket the suite from
-both sides, and "verified" is the conjunction. Section 2.5 generalizes this to
-every verification method.
+A passing test suite records that its assertions passed on the executed
+cases. The CONF row adds evidence obligations, not a guarantee of correctness:
+requirements coverage accounts for clauses, while structural coverage
+accounts for the code exercised at the chosen coverage level. Section 2.5
+generalizes these obligations to other verification methods.
+
+**Test citations are optional; clause coverage is not.** Every clause assigned
+verification by test must be cited by at least one test, and every test citing
+that clause must pass for its test evidence to be accepted. Every supplied
+citation must resolve to a defined clause identifier. Tests may omit citations
+and still remain subject to the gate's test-execution policy. A citation
+declares intended support; review of the assertions is needed to assess
+whether the test actually supports the clause. Uncited tests may contribute
+to structural coverage. Neither a valid citation nor branch coverage proves
+test adequacy (CF-01 and CF-02 in section 9).
+
+**Ledger status concerns current support.** Established means the required
+checks and reviews succeeded and their evidence was recorded. Stale means a
+relevant change makes earlier evidence insufficient for the current state;
+it does not mean that a defect has been found. Not established can mean that
+checking is incomplete or that a current check found a problem; the finding
+must distinguish these cases. A failed check calls for investigation of the
+specification, realization, verifier, and environment. Changes can affect
+multiple judgments, and successful reruns can renew some evidence while
+other obligations remain unmet. Detailed maintenance belongs with A2's
+generated ledger, not Lecture 1 (CF-03 and CF-09).
 
 Every entry in the evidence column carries its **provenance**: which verifier
 and which version of it, which version of each artifact it examined, and which
@@ -255,25 +294,28 @@ stronger.
 
 ### 2.5 The shape of a verification method
 
-Whatever the method, a verification has four parts, and it is sound only when
-all four are present: a **verifier**; a **specification-coverage objective**
+Whatever the method, the verification process accounts for four parts:
+a **verifier**; a **specification-coverage objective**
 (did we check every clause the method is responsible for); a
 **realization-coverage objective** (did we exercise every part of the
-realization the method is responsible for); and **evidence** of each.
+realization the method is responsible for); and **evidence** of each. Meeting
+these obligations supports the scoped claim; it does not by itself establish
+that the verifier is sound or that its assertions adequately express the
+specification.
 
 | Method | Verifier | Specification coverage | Realization coverage | Evidence |
 |---|---|---|---|---|
-| requirements-based testing | the test suite | every mechanical clause has its tests (requirements coverage) | branch coverage to the stated level (structural coverage) | the test run; the conformance report; the coverage report |
+| requirements-based testing | the test suite | every clause assigned method test has citing tests (citation-based requirements coverage); assertion adequacy is reviewed separately | branch coverage to the stated level (structural coverage) | the test run; the conformance report; the coverage report |
 | trace tests on a state machine | the trace suite | every transition exercised (transition coverage) | branch coverage of the session module | the trace run; the transition report |
 | import analysis for an architecture | the import rule | every constraint checked | every module examined | the analysis run |
-| walkthrough of a concept of operations | a person | every story walked | every user-visible operation exercised | the sign-off |
+| walkthrough of a concept of operations | a person | every story walked | every user-visible operation exercised | the behavioral walkthrough record; separate stakeholder sign-off for validation |
 
 Requirements coverage is a coverage metric over the specification, as branch
-coverage is one over the code. Passing tests establish only that the suite's
-own claims hold; the two coverages are what make a suite a verification. The
-standing CONF rules state the objectives for every version; a project-specific
-verification plan (section 4) states them when a project's choices go beyond
-the standing rules.
+coverage is one over the code. Passing tests and satisfying both coverage
+objectives fulfill prescribed evidence obligations, not a proof of all
+required behavior. The standing CONF rules state the objectives for every
+version; a project-specific verification plan (section 4) states them when a
+project's choices go beyond the standing rules.
 
 ### 2.6 The verification method of each clause
 
@@ -562,12 +604,18 @@ The first version shows all five ledger rows on a one-function system; each
 later version deepens one or two of them. Specifications precede code from the
 start.
 
+Read these rows together with section 9. A1 preserves A0's product behavior;
+the exercise's negative-payload policy change is not the A1 baseline. Fixture
+tests automate behavioral evidence for the stories, not stakeholder approval
+of those stories. The ledger remains handwritten through A1; generation and
+systematic test-discipline review enter in A2.
+
 | Version | Capability | Specification forms introduced | Judgments and mechanisms introduced | Process artifacts and rules introduced |
 |---|---|---|---|---|
 | A0 | F1 | minimal concept of operations (purpose statement, scope, two user categories, three user stories with example messages, each story marked *walkthrough*); plain requirements with identifiers (REQ-0 message, REQ-1 to REQ-3, each marked *test*); test suite; technology (`pyproject.toml`) | all five rows, minimal: SQ by a person reading the clauses (ladder rung 1); RQ `ruff` and the suite collects; CONF as the aggregate: tests pass, requirements coverage from the markers and the conformance report, branch coverage from `pytest-cov`, the stories walked by a person (rung 1); VAL one sign-off on the concept of operations; TR markers resolve; every ledger row carries its provenance, and the closing sabotage is the first verification of a verifier (2.9) | `process/rules.md` with 8 rules, one per category (styles: obligation, gate); hand-written ledger from a provided template; dev log |
 | A1 | F1 (unchanged) | the concept of operations revised through elicitation with the stakeholders; the elicitation record (reference, not a specification); glossary; requirements rewritten in EARS; acceptance fixtures derived from the stories | SQ audit (consistency, EARS form, glossary discipline, story-to-requirement alignment, a method on every clause, a reason on every judgment clause) on six to eight seeded gaps, first by a person, then by the agent, then as the `/audit-spec` skill (ladder rungs 1 to 3 on the glossary-discipline check; the seeded gaps double as the audit's known-violation set: the person misses some, which is T1's capacity threat, the agent over-reports one, and the skill's first step is read-before-check); VAL walkthrough per user category and re-sign-off, since the revision made VAL stale; TR trace-matrix tool; CONF story tests over the fixtures (the story walkthrough climbs to a test; the sign-off is kept) | gap-list form; trace matrix report; 8 rules (styles added: procedure, form); first skill, `/audit-spec` (rung 3) |
 | A2 | F2 | architecture (stages, order, purity, allocation, integration contract); data format (ad hoc rules); interface contracts (pre- and postcondition per stage); build plan | RQ `mypy` and the test-discipline review; CONF gains *analysis* as a second method (the import rule for the architecture clauses, `mypy` for the signature part of the contracts, and a script for the glossary-discipline check, which reaches rung 4: review becomes analysis, and the script is verified on the A1 seeded gaps before it replaces the skill, T2) and *review* as a third (the allocation table as `review (agent)` with a human spot-check; the purpose statement's implementation-independence stays at rung 3); generated ledger, from exit codes at the named commit and never from completion notes (T4) | plan with tasks, waves, gates; dev log per task; 8 rules (WF-2 to WF-5, RQ-2, RQ-3, CONF-3, CONF-4; styles added: policy, staleness, the approval gate); `/ledger` skill |
-| A3 | F4 | change request and change report; workflow graph (the process as a state machine) | a declared change of mind makes VAL stale while every other row stays green; the specification change that follows makes the rest stale; impact analysis from the trace matrix; the old suite still passes after the requirement changed, and the staleness rule, not the suite, turns CONF red (T4) | branch per change; 4 rules (WF-6, WF-7, RPT-3, RPT-4; style added: change control) |
+| A3 | F4 | change request and change report; workflow graph (the process as a state machine) | a declared change of mind makes VAL stale while the unchanged artifacts can still agree; the subsequent specification revision makes affected evidence stale; impact analysis uses the declared trace links without assuming they capture every dependency; the old suite still passes after the requirement changed, but stale CONF evidence cannot support the revised claim (T4) | branch per change; 4 rules (WF-6, WF-7, RPT-3, RPT-4; style added: change control) |
 | A4 | F5 | state machine (table and diagram); message sequence chart; **verification plan**, the first project-specific one: transition coverage as a second realization-coverage objective, and the ladder rung, the independence requirement, and how the verifier is verified, for every clause group | trace tests with transition coverage; table-driven or generated session module; the verification results reviewed against the plan; the deep dive on threats to a judgment (2.9): this version's sabotage is of a verifier, the import analysis made to ignore `from` imports, and its known-violation set catches it | 3 rules (CONF-5 transition coverage; CONF-6 independence; WF-8 the verification plan precedes its tests); the verification plan bundles the project's policies and procedures |
 | A5 | F6 | schema or IDL for the message | schema validation at ingress; the generator as the conformance argument | none |
 | A6 (optional) | F7 or F8 | policy table as data; non-linear architecture | configuration validation; merge-semantics tests | none |
@@ -694,15 +742,19 @@ state machine, where the first project-specific objective appears, or at A3
 beside the workflow graph.
 
 Whichever option is chosen, each version should end with a **"break it"**
-demonstration: one sabotage per judgment introduced in that version, showing
-exactly that ledger row turning red and which verifier catches it: a
+demonstration emphasizing the judgments introduced in that version and which
+verifiers reveal a problem. A change can affect more than one judgment;
+distinguish initially stale evidence from fresh failing results. Examples are a
 contradictory requirement for SQ; a lint error for RQ; for CONF, `filter`
 passing a Critical message (a test fails), and then a test deleted so that one
 clause has no evidence while every remaining test passes and branch coverage
 barely moves (the requirements-coverage conjunct fails, which is the lesson of
 the game demo's VER-8); for VAL, a concept of operations and a requirement
 that pass every check while a stakeholder withholds the sign-off, since
-nothing but the sign-off catches it; a removed marker for TR.
+nothing in the automated behavioral checks catches the mismatch; an invalid
+clause citation for TR. Removing a citation is not itself a TR violation:
+tests may be uncited, although removing a clause's last citing test leaves a
+CONF coverage gap.
 
 The sabotage is also the first verification of the verifier (2.9): a verifier
 that has never been seen to fail has not been verified, and the ledger row it
@@ -759,9 +811,10 @@ behavior it checks is one the requirement demands, but the requirement demands
 behaviors the set never checks. Conformance by scenarios is sound for failure
 (a failing scenario is a real nonconformance, if the scenario is right) and
 incomplete for success (passing is not conformance). That incompleteness is
-why the CONF row carries two coverages: requirements coverage says every
-universal clause has been instantiated at least once, and structural coverage
-says the instantiations reached every part of the code. The "slice" has a
+why the CONF row carries two coverages: citation-based requirements coverage
+says every test clause has citing evidence, and structural coverage reports
+which code structures the suite exercised. Neither establishes that the
+assertions adequately instantiate the clauses. The "slice" has a
 classical name, the equivalence class: a good scenario set takes one
 representative per class and the boundaries between classes, which is why
 REQ-5 is written as 5a, 5b, and 5c.
@@ -784,11 +837,12 @@ the output). The two forms differ in how much they bind.
 | Governance | specification side: never edited to make a test pass; a wrong expectation is a gap about the pair (fixture, specification) | realization side: edited under the test discipline |
 | Serves as an oracle | yes: two realizations passing the same file; the plain one specifies the clever one | tied to one realization |
 
-So a fixture is a refinement of the requirement that is still
-interface-independent, and a test is a further refinement bound to one
-realization. Both are executable specifications of slices at different depths
-of the same chain, requirement to scenario to test, and the trace matrix
-records the chain.
+So an acceptance fixture is intended to refine the requirement while remaining
+interface-independent, and its implementing test binds the scenario to a
+realization. Review must establish whether those refinements are faithful;
+the trace matrix records the declared requirement-to-scenario-to-test chain,
+not proof of its semantic correctness. Additional implementation-detail or
+regression tests may be uncited and need not belong to that chain.
 
 If the system had one realization in one language and no stakeholder who
 reads, the test suite alone would do and the fixtures would be a duplicate.
@@ -797,8 +851,10 @@ Three things make the fixture form earn its place in the example:
 - **It is the bridge from validation to verification.** The scenarios are
   derived from the user stories and are the one executable artifact a
   stakeholder can read and sign. On the ladder of 2.7 they are where a human
-  walkthrough becomes a test while the sign-off stays human, which is why they
-  enter with the revision of the concept of operations rather than later.
+  walkthrough's behavioral checks become tests while approval of the stories
+  remains a separate human judgment. Checking that a signature exists does
+  not automate validation. Fixtures therefore enter with the revision of the
+  concept of operations rather than later.
 - **They outlive the realization.** The HAMR example is the same system in
   Rust; a port and any second realization pass the same file. The published
   test vectors of a hash function are the industrial version.
@@ -808,8 +864,8 @@ Three things make the fixture form earn its place in the example:
   side, so "never edited to pass" has a clean home, and the lesson that a
   wrong expectation is a gap and not a bug has a clean example.
 
-The test suite earns its place because it is the verifier: only it can be a
-gate, only it can reach inside the interface, and only it can state a property
+The test suite earns its place as an executable verifier: it can participate
+in an algorithmic gate, reach inside the interface, and state a property
 over sampled inputs, which is as close as a test gets to the requirement's
 universal form. One line for the lecture follows: a test suite does not stop
 being an under-approximation when it is large, a property-based test narrows
@@ -899,7 +955,7 @@ Where the game demo's verification rules go in this design:
 | VER-3 when verification runs | WF rules: the gate before every commit, the whole ledger at every wave end |
 | VER-4 the gate | the algorithmic gate: CONF's mechanical conjuncts together with RQ's analyses |
 | VER-5 coverage policy | CONF's structural-coverage objective, a standing CONF rule; a verification plan when project-specific |
-| VER-6 test discipline | RQ (a test can fail; tighter never looser; setup only) and TR (every test cites a clause) |
+| VER-6 test discipline | RQ (a test can fail; assertion adequacy; setup discipline) and TR (every supplied clause citation resolves; citations are optional for tests); CONF requires citing evidence for every clause assigned method test |
 | VER-7 fixtures are never edited to pass | a WF rule: governance of executable specifications |
 | VER-8 coverage is not conformance | CONF defined as the aggregate; both coverages gated and both reported |
 | AUD-14 obligations map both ways | TR (every link resolves) and CONF's requirements-coverage objective; the conformance report's "no evidence" rows |
@@ -926,10 +982,14 @@ what the stakeholders have in mind, and `updateHI` is a change of mind, which
 the process records as a change request. `specs/` is `S`; `guard/` and
 `tests/` are `R`; the four Lean judgments are SQ, RQ, CONF, VAL, with
 `Verification s r` read as the aggregate of 2.1; the ledger is `Ledger`; a
-task's commit is a `Step`. The rule "a specification change invalidates CONF,
-VAL, SQ, TR; a code change invalidates RQ, CONF, TR; a declared change of mind
-invalidates VAL only" is `Judgment.dependsOn` written out. Suggested
-evolutions of the model, none required by the course:
+task's commit is a `Step`. The coarse dependency sketch "a specification change
+invalidates CONF, VAL, SQ, TR; a code change invalidates RQ, CONF, TR; a declared change of mind
+invalidates VAL only" illustrates the intended dependency idea. It is not a
+complete implementation rule: the course evidence model also accounts for
+tests, verifier versions, relevant configuration/environment, and a verifier
+later found defective. Use section 2.1 and CF-09 for the practical ledger
+semantics rather than inferring an exact invalidation matrix from this sketch.
+Suggested evolutions of the model, none required by the course:
 
 1. a fifth judgment, `traced`, depending on `s` and `r`;
 2. clause-level granularity, with `S` a set of identified clauses so that
@@ -938,7 +998,7 @@ evolutions of the model, none required by the course:
    wave; a gate is a `Policy` required at the wave's last state;
 4. ledger rows that record provenance (which verifier, which specification
    version, when) and keep a *stale* status rather than being deleted, as the
-   generated `ledger.md` does;
+   planned generated `ledger.md` will do;
 5. evidence that can be wrong, which is the model's own roadmap (its items on
    actors, richer dashboard entries, and unsound assessments): `establish`
    carries evidence rather than a proof; each verifier has a soundness
@@ -1086,3 +1146,275 @@ evolutions of the model, none required by the course:
    the mitigations; or a standalone lecture after it, which would also be the
    place to re-cut Lecture 01's six-item list into the five classes. Until
    then the lecture's list stands and is cited.
+
+## 9. Implementation constraints and carry-forward items from review
+
+This is the implementation handoff for the chosen Option A progression.
+The [A0/Lecture 1 review](../module-ase-principles/review-lecture-01-a0.md)
+retains findings, discussion, superseded proposals, and rationale. This
+section records what should carry forward without requiring the next agent
+to reconstruct decisions from that history. It does not approve all 41
+original review edits.
+
+**Disposition and completion are different.** Accepted means a governing
+decision or an existing design commitment; proposed means an improvement
+awaiting approval; open question means a choice still needs resolution.
+Acceptance is not evidence of implementation. A completion check below is a
+future obligation for an accepted item, or a proposed check if the item is
+not yet accepted. A1 and later implementation evidence is still pending.
+Later versions inherit earlier accepted constraints unless an explicit
+decision supersedes them; do not read only the target version's subsection.
+
+Keep identifiers stable. When a proposal is accepted, update its disposition
+and the governing design text together. When a version is built, retain the
+item and link its completion evidence and remaining work. A resolution in
+Lecture 1 does not close the corresponding A1/A2 implementation work. These
+IDs organize the build handoff; they are not new `process/rules.md` rules and
+do not increase the progression's rule budget.
+
+### 9.1 Shared constraints
+
+#### CF-01 — Optional test citations
+
+**Disposition:** Accepted. **Applies from:** A1 onward; preserves the agreed
+A0 policy in section 2.1.
+
+Tests may omit clause citations. Each clause assigned method *test* needs
+citing evidence; supplied citations must resolve, and all citing tests must
+pass for the clause's test evidence to be accepted. Uncited tests remain
+subject to the suite's execution policy and may contribute to branch
+coverage. Do not invent requirement links merely to make every test traced.
+
+**Completion check:** demonstrate acceptance of an otherwise valid suite with
+an uncited passing test, rejection of an invalid citation, a coverage gap
+when a test clause has no citing test, and an overall gate failure when an
+uncited test fails. These are checks of the evidence machinery, not new
+product requirements.
+
+**Source:** [review section 8.1.B](../module-ase-principles/review-lecture-01-a0.md),
+which supersedes the original mandatory-citation proposal in edit 3.
+
+#### CF-02 — Evidence supports a fallible claim
+
+**Disposition:** Accepted. **Applies from:** A1 onward, in code/report wording
+and the associated lectures.
+
+Keep citation-based requirements coverage, structural coverage, and assertion
+adequacy distinct. Passing prescribed checks supports a scoped CONF claim,
+not proof of all required behavior. A failed check requires investigation;
+the defect may be in the specification, implementation, verifier, or setup.
+
+**Completion check:** review generated report labels, audit explanations, and
+lecture claims for these distinctions. Include assertion adequacy in the
+planned A2 test-discipline review; a valid citation alone is not its result.
+
+**Source:** [review section 8.1.A and B](../module-ase-principles/review-lecture-01-a0.md).
+
+#### CF-03 — Ledger intuition and progression scope
+
+**Disposition:** Accepted. **Applies from:** A1 onward; automation enters A2.
+
+Use the status meanings in section 2.1. Distinguish stale evidence from a
+fresh failure or unfinished checking, and do not promise one affected row
+per change. Product behavior checked with pytest is test evidence; analysis
+of citations and coverage is a separate aggregation step. Keep the A1 ledger
+handwritten and the early lecture explanation high level. Preserve A1's
+unchanged product behavior: do not import Exercise 1's negative-payload
+policy change, an audit log, or a new no-message input API into its baseline.
+
+**Completion check:** the A1 diff preserves product behavior, its lecture and
+reports use the agreed distinctions, and the demo accurately identifies
+which files update automatically. The A2 build addresses CF-08 and CF-09.
+
+**Source:** [review sections 8.1.C and 8.2](../module-ase-principles/review-lecture-01-a0.md).
+The linked [ledger evolution sidebar](../module-ase-principles/lecture-notes/ledger-evolution-example.md)
+is an optional teaching aid, not an actual execution history or a complete
+dependency algorithm. Issue C is resolved for Lecture 1; future automation
+is not thereby implemented.
+
+### 9.2 A1 implementation and lecture
+
+#### CF-04 — Behavioral fixtures do not automate validation
+
+**Disposition:** Accepted; clarification of the existing Option A plan.
+**Applies from:** A1 onward.
+
+Acceptance fixtures supply behavioral examples derived from stories. Their
+tests check the implementation against those examples; stakeholder agreement
+that the stories express the intended system remains separate. Retain the
+per-user-category validation and fresh sign-off after specification revision.
+Signature checking must not be described as deciding stakeholder intent.
+
+**Completion check:** the fixtures trace to stories, behavioral results and
+validation records remain distinguishable, and the lecture explains how
+passing fixture tests can coexist with a stakeholder rejecting the stories.
+
+**Source:** sections 3 and 4A;
+[review section 8.1.D](../module-ase-principles/review-lecture-01-a0.md).
+
+#### CF-05 — Partial-run evidence and report scope
+
+**Disposition:** Proposed. **Target:** A1 reporting; carry forward to A2's
+ledger generator if accepted.
+
+Label deselected/partial runs explicitly in saved reports, not only terminal
+output. Prevent their use as evidence that the full verification obligations
+were met. Preserve the distinction between clause-linked results, overall
+suite results, and the gate result. Counts of cited and uncited tests are an
+optional reporting enhancement, not a requirement to eliminate uncited tests.
+
+**Proposed completion check:** run a selected subset and inspect its saved
+report; its scope must remain apparent when read without terminal output.
+An aggregate consumer must not treat it as a successful full run.
+
+**Source:** [review section 8.1.B and edit 8](../module-ase-principles/review-lecture-01-a0.md).
+
+#### CF-06 — Audit and trace-input robustness
+
+**Disposition:** Proposed. **Target:** A1, after defining its clause formats.
+
+Make duplicate identifiers, malformed clause declarations, and unsupported
+verification methods visible audit/trace findings rather than silent
+omissions. Define which contextual text is audited without being an
+identified verification clause. Check completeness for the stated scope and
+level, and distinguish assumptions from requirements. Review the seeded
+gaps for genuine defects: the current REQ-2 requires equal field values, so
+object identity must not be presented as an existing obligation it omits.
+
+**Proposed completion check:** retain small malformed-input cases with
+expected findings, document parser scope, and review the expected findings
+for the planned six to eight audit gaps. This strengthens the planned audit;
+it does not require a separate A0 parser rewrite before starting A1.
+
+**Source:** [review sections 8.1.B and E](../module-ase-principles/review-lecture-01-a0.md).
+
+#### CF-07 — Reproducible evidence identity
+
+**Disposition:** Proposed implementation refinement of the existing provenance
+requirement. **Target:** A1 records and A2 automation.
+
+Record the checked source revision and relevant working-tree state, the
+tests/verifier/configuration used, and retained run outputs. Do not infer a
+Git tag from the snapshot directory name `v0/`. If the replay mechanism in
+section 6 creates tags, verify their existence before citing them. Provenance
+identifies a claim; it is not a substitute for retained execution evidence.
+
+**Proposed completion check:** a reviewer can identify the actual inputs and
+find the corresponding outputs for a checkpoint without relying on an agent
+completion message. Document how pre-commit evidence identifies the checked
+state without requiring a report to contain its own eventual commit hash.
+
+**Source:** [review section 8.2 and edits 9–10](../module-ase-principles/review-lecture-01-a0.md).
+
+### 9.3 A2 implementation and lecture
+
+#### CF-08 — Aggregate results in the generated ledger
+
+**Disposition:** Accepted; follows CF-01 and the existing requirement to use
+actual run results. **Applies from:** A2.
+
+The ledger generator must consider the required suite/gate results and
+human evidence, not merely green clause rows. An uncited test failure can
+leave all clause-linked rows green while pytest and the overall gate fail.
+The generator must not establish aggregate CONF from that clause table.
+
+**Completion check:** demonstrate an uncited failing test with otherwise
+passing clause-linked evidence. Show the failed suite/gate result and the
+resulting ledger finding. Also demonstrate that missing required walkthrough
+or validation evidence is not supplied by an automated passing result.
+
+**Source:** [review section 8.1.B, consequence 3](../module-ase-principles/review-lecture-01-a0.md).
+
+#### CF-09 — Ledger dependencies and status transitions
+
+**Disposition:** Accepted semantics; representation remains an open question
+under CF-12. **Applies from:** A2 automation.
+
+Account for relevant specifications, product code, tests, verifiers,
+configuration, and environment when determining whether evidence remains
+current. Use established, stale, and not-established meanings from section
+2.1; explain whether a not-established finding is incomplete checking or a
+current failure. Preserve historical evidence without presenting it as
+current. Do not turn the simplified Lean dependency sketch into an exhaustive
+implementation rule.
+
+**Completion check:** exercise a code edit before rerun, a fresh failing run,
+a successful renewal, and a test/verifier change without a product-code
+change. Show the checked artifact identities and the reason for each status.
+Keep this detailed demonstration out of the required Lecture 1 explanation.
+
+**Source:** [review section 8.1.C](../module-ase-principles/review-lecture-01-a0.md)
+and the [ledger sidebar](../module-ase-principles/lecture-notes/ledger-evolution-example.md).
+
+#### CF-10 — Uncited tests and unofficial requirements
+
+**Disposition:** Proposed addition to the already planned test-discipline
+review. **Target:** A2.
+
+Review the justification for expectations in uncited tests. They may protect
+implementation choices, expose missing requirements, or impose unintended
+product restrictions. Their existence does not decide the product contract;
+do not force artificial citations as the remedy.
+
+**Proposed completion check:** record the disposition of a representative
+uncited implementation-detail test, explaining why its expectation should
+remain, change, or become a proposed requirement. Use REQ-2's value equality
+versus object identity as a possible discussion example, not a new identity
+requirement.
+
+**Source:** [review section 8.1.B, consequence 2](../module-ase-principles/review-lecture-01-a0.md).
+
+### 9.4 A3 and later change management
+
+#### CF-11 — Limits of trace-based impact analysis
+
+**Disposition:** Proposed workflow safeguard; the limitation itself follows
+from optional citations. **Target:** A3 and later.
+
+Treat the trace matrix's affected-test set as a starting set, not a complete
+dependency analysis. Uncited tests can encode an old policy and require
+revision. Retain a full-suite checkpoint rather than assuming that running
+only tests linked to changed requirements is sufficient.
+
+**Proposed completion check:** use a policy-change scenario with an affected
+uncited test. The change report identifies the limitation and records the
+full-suite result and the test expectation's disposition.
+
+**Source:** [review section 8.1.B, consequence 1](../module-ase-principles/review-lecture-01-a0.md).
+
+### 9.5 Open choices to resolve when relevant
+
+#### CF-12 — Ledger representation and invalidation granularity
+
+**Disposition:** Open question. **Resolve during:** A2 planning, before
+implementing the generator.
+
+Choose a small representation for current status, reason, evidence scope,
+and relevant dependencies. Decide whether conservative whole-row invalidation
+is sufficient or whether a limited finer-grained scheme is warranted. The
+accepted semantics do not mandate a full dependency engine or a particular
+JSON schema. Automated checks may verify records of human decisions but must
+not invent those decisions. Distinguish prescribed gates from any actual
+hook/CI enforcement selected for the build.
+
+**Resolution check:** document the choice and its limits in the build plan,
+then use CF-08 and CF-09's scenarios to test it. Do not defer the agreed
+semantics merely because the representation is undecided.
+
+**Source:** [review section 8.1.C and section 8.2](../module-ase-principles/review-lecture-01-a0.md).
+
+#### CF-13 — Integer payload boundary
+
+**Disposition:** Open question, not an authorized product change.
+**Resolve when relevant:** A1 elicitation/domain-glossary work.
+
+Does the domain's integer payload include Python `bool` values? A0's type
+check accepts them. Record the domain decision explicitly; if exclusion is
+desired, obtain approval for the corresponding requirement and behavior
+change rather than silently altering the unchanged A1 baseline.
+
+**Resolution check:** the elicitation/glossary record identifies the decision
+or explicitly records that it remains open, with any proposed product change
+handled separately.
+
+**Source:** [review section 7, question 4](../module-ase-principles/review-lecture-01-a0.md).

@@ -1202,7 +1202,12 @@ and the associated lectures.
 Keep citation-based requirements coverage, structural coverage, and assertion
 adequacy distinct. Passing prescribed checks supports a scoped CONF claim,
 not proof of all required behavior. A failed check requires investigation;
-the defect may be in the specification, implementation, verifier, or setup.
+the defect may be in the specification, implementation, (these first
+two should be the focus, and descriptions should indicate that these
+are the most likely), verifier, or setup (descriptions should indicate
+that we need to keep these in mind to understand all the potential
+failure modes, but the proposed methodology does not aim to address
+these directly).
 
 **Completion check:** review generated report labels, audit explanations, and
 lecture claims for these distinctions. Include assertion adequacy in the
@@ -1255,7 +1260,9 @@ passing fixture tests can coexist with a stakeholder rejecting the stories.
 #### CF-05 — Partial-run evidence and report scope
 
 **Disposition:** Proposed. **Target:** A1 reporting; carry forward to A2's
-ledger generator if accepted.
+ledger generator if accepted. [Note from John: the notion of partial
+evidence run this sounds useful in practice but it may over-complicate
+key issues meant to be addressed in A2.]
 
 Label deselected/partial runs explicitly in saved reports, not only terminal
 output. Prevent their use as evidence that the full verification obligations
@@ -1272,6 +1279,8 @@ An aggregate consumer must not treat it as a successful full run.
 #### CF-06 — Audit and trace-input robustness
 
 **Disposition:** Proposed. **Target:** A1, after defining its clause formats.
+[Note from John: these concepts seem like interesting examples for
+automated SQ checks. I propose that we accept these suggestions.]
 
 Make duplicate identifiers, malformed clause declarations, and unsupported
 verification methods visible audit/trace findings rather than silent
@@ -1292,6 +1301,10 @@ it does not require a separate A0 parser rewrite before starting A1.
 
 **Disposition:** Proposed implementation refinement of the existing provenance
 requirement. **Target:** A1 records and A2 automation.
+[Note from John: these notions seem important in practice (related to 
+HAMR's notion of attestation?) but I worry that this may over-complicate
+key issues meant to be demostrated.  I need a deeper explanation of
+what accepting this proposal would look like in practice.]
 
 Record the checked source revision and relevant working-tree state, the
 tests/verifier/configuration used, and retained run outputs. Do not infer a

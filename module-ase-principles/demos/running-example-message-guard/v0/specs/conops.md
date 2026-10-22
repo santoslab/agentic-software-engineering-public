@@ -25,8 +25,9 @@ to hold.
 ## 2. Scope and system boundary
 
 The guard is a library: a function that takes one message and returns either
-that message or nothing. Inside the boundary is the decision to pass or drop a
-message. Outside it are the transport that carries messages to and from the
+that message or nothing. Inside the boundary, logic is implemented to
+make the decision to pass or drop a message. 
+Outside the boundary are the transport mechanism that carries messages to and from the
 guard, the authentication of senders, the assignment of security levels, any
 record of what was dropped, and any change to a message's payload.
 

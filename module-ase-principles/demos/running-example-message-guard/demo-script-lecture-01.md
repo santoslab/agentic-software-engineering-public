@@ -1,17 +1,13 @@
 # Message guard demo, Lecture 01 — the five judgments on version A0
 
-The shows how to demo the running example for Lecture 01 of the ASE 
+This file shows how to demo the running example for Lecture 01 of the ASE 
 principles module.
 
-The repository is version A0 of the message guard, complete and green: one
+The repository holds version A0 of the message guard, complete and green: one
 stage, `filter`, with its specifications, tests, rules, and reports. Nothing
-is built during class. The class is walked through the artifacts in the order
-of the lecture notes, the gate is run, the three user stories are walked, and two
-judgments are broken to show which parts of the development catch the
-problems.  The slides show the same files and the same command output, 
-so the room sees on the screen what the deck has already shown them;
-the point of running it live is that the output is produced in front
-of them, not pasted.
+is built during class. The key elements of the demo are as follows:
+
+[Codex: list the key elements of the demo and what they teach]
 
 **What governs the whole script.** Everything except the optional last segment
 is deterministic: shell commands over a fixed snapshot. Rehearse once anyway,
@@ -23,7 +19,8 @@ Slide references below are by slide title.
 
 ## What A0 contains, and what the demonstration relies on
 
-`v0/` holds the artifacts by category (the table in `v0/README.md`): the two
+`v0/` holds the artifacts by category (the table in `v0/README.md` is
+very readable -- see that for an outline of the artifacts): the two
 specifications, the code and the tests, the rules file, four reports, the
 technology files, and two support scripts. Three facts about the snapshot are
 what the segments turn on; do not point them out before their segment.

@@ -758,7 +758,8 @@ all must hold, each with its own evidence:
 
 1. **Every test passes.** The run itself.
 2. **Requirements coverage.** Every clause whose method is *test* is cited by
-   at least one passing test. The program that writes `reports/conformance.md`
+   at least one passing test. The utility program `tests/conftest.py` 
+   that writes `reports/conformance.md`
    reads the clause identifiers from the specifications, collects the markers
    from the suite, and produces one row per clause:
 

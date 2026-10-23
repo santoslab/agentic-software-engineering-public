@@ -100,10 +100,13 @@ view.
 
 ![Create Neo4J import folder contents](./resources/neo4j-navigation-query-view.png)
 
-The screenshot below shows the query view.  To enter the Cypher
-commands and queries in the activities, you will enter the text in the
-dialog on the top right marked below and press `Run` to run the
-command/query.  It seems like copy and paste from the book itself
+The screenshot below shows the query view.  
+
+![Neo4J Query View](./resources/neo4j-query-panel.png)
+
+To enter the Cypher commands and queries in the activities, you will enter the text in the
+dialog on the top right indicated with the red box in the image above,
+then press `Run` to run the command/query.  It seems like copy and paste from the book itself
 works pretty well, but you can also find all of the queries in the
 activity listed in the [online resources for the book](https://github.com/neo4j-the-definitive-guide/book/tree/main/chapter01/cypher)
 

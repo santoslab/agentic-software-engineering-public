@@ -512,7 +512,7 @@ organization (the organization integrating the system into the
 context).  It is not the responsibility of the organization developing
 the system.  In fact, the developing organization typically doesn't
 even know all the possible contexts into which the system will be
-deployed.
+deployed.  
 
 For example, the guard's use at an enclave boundary assumes that outgoing
 messages are routed through it. The Python filtering function cannot itself
@@ -521,6 +521,11 @@ every Critical message it receives, a Critical message could leave by a path
 that never calls the function. Establishing that the deployed enclave has no
 such bypass requires evidence about the deployment, not just tests of the
 filtering function.
+
+A caveat: in some situations, the same company will play
+both roles of development and deployment -- in that case,
+it will be responsible for addressing both development and deployment
+(system integration) issues.
 
 We do not address the notion of context assumptions in this
 overview. 
@@ -574,7 +579,16 @@ here with the place in A0 where it can be checked.
 
 Further properties may be appropriate for particular specifications.
 The five above were chosen because they are general enough to apply to
-almost any specification. 
+almost any specification.  In practice, you may not need to start with
+all aspects of the quality rules above (in particular, the identifiers
+or the format enforcement).  And you might also have lighter-weight
+specifications instead of, e.g., the form of requirements that we
+illustrate in this example (for instance, it is not easy to write
+detailed requirements for the behavior of a UI).  
+But you will likely find it useful as
+your development progresses to enforce most aspects of these rules.
+Remember! the agents can help you maintain the specifications, so all
+of this is not as burdensome as it might appear.
 
 In A0, SQ is supported by an informal human audit: a person reads the
 specifications together against the quality criteria and records the finding
@@ -611,7 +625,7 @@ Though it is often considered part of the realization because it is
 code and it must be aligned with specification documents like ConOps
 and Requirements, the test suite can also be viewed as a
 specification: it is an **executable specification**, in which each
-test is a claim the output(s) that may be produced when the system is
+test is a claim about the output(s) that may be produced when the system is
 given specific input(s).  Moreover, to provide evidence of conformance
 to the higher-level specification, one choses input output pairs that 
 address behaviors described by specific specification clauses.  To
@@ -652,9 +666,10 @@ A person who sees this test fail knows which clause is in
 question without reading the test body. And an agent that writes a test *should*
 say which clause the test is evidence for, which rules out the common failure
 of a test that exercises the code without claiming anything about it.
-A0's rules do allow a test that has no cited clause.  
-developer may find it useful to have a
-test that doesn't directly match a written requirement.   Note that
+
+A0's rules do allow a test that has no cited clause, because  
+a developer may find it useful to have a
+test that doesn't directly match a written requirement.   Warning: 
 this may mean that the system is constrained in some way that is not
 explicitly acknowledged -- which could be OK or undesirable depending
 on how rigorous you want to be.  In critical systems, this may be
@@ -694,17 +709,18 @@ the clause.
 
 **Realization quality** is the judgment that the realization is in a state
 where it can be checked at all. In A0 it has two parts, both decided by
-programs: `ruff check` finds a class of mistakes (unused names, undefined
-names, syntax that will not run) more cheaply than any test would, and
-`pytest --collect-only` confirms that every test file imports and every
-marker is declared. Rule RQ-1 names both commands. These checks do not
+programs: `ruff check` finds a class of mistakes in the implementation
+source code (unused names, undefined names, syntax that will not run)
+more cheaply than any test would, and `pytest --collect-only` confirms that every test file imports
+correctly (the test declarations and metadata are well-formed) and every
+marker is declared. Rule RQ-1 references both these commands. Note: these checks do not
 establish that the tests adequately check their cited clauses. A2 adds a
 systematic test-discipline review, including whether assertions can expose a
 defect and whether they provide appropriate evidence for the clauses they
-cite. A0's recorded RQ checks are limited to lint and test collection.
+cite. A0's recorded RQ checks are limited to lint and test collection (well-formedness).
 
 Realization quality is kept separate from conformance for a reason that
-becomes visible on the ledger. A suite that does not compile produces no
+becomes visible on the ledger. A code base or test suite that does not compile produces no
 conformance evidence at all; a module with an undefined name may pass every
 test that does not reach the name. Checking the realization's own soundness
 first means that a conformance result, when it comes, is a result about code
@@ -727,23 +743,26 @@ produced the result, against which version of the specification, over which clau
 that scope it can be trusted; outside it, it says nothing; and, as a later
 lecture will take up, even within it the verifier can be wrong.
 
-In A0, conformance is not one thing but four, and the reason is the central
-technical point of this lecture. A passing test suite, on its own,
+In A0, conformance is not one thing but four.  We'll see that looking
+at *four* different aspect of how the tests relate to specs actually
+gives us greater confidence that the tests achieve their intended
+verification objective.  The basic issue is that a passing test suite, on its own,
 establishes only that the suite's own tests hold -- it doesn't
-indicate if the tests are relevant to specs, explore enough of the
+indicate if the tests are relevant to specs, that they explore enough of the
 code, etc.  Typically, when a human developer writes tests, the 
-human forms an understanding of the constraints/properties they are
+write itself helps the human form an understanding of the constraints/properties they are
 trying to enforce on the code.  Thus, even if the human does not understand
 every last detail of the code, they at least understand
 their tests.  When an agent has written both the code and the tests,
 the human loses this avenue to understanding the system, and a green
-suite can mislead in three ways. The
-suite may contain no test for some clause, in which case the clause is
-unverified and the green run says nothing about it. The tests may exercise
-only part of the code, in which case the untested part may do anything. And
-the clauses that no test can decide, the stories, may simply have been
-skipped.  When any of these happens, the green suite gives confidence that
-nothing has earned.  For these reasons,
+suite can mislead in three ways. 
+- The suite may contain no test for some clause, in which case the clause is
+unverified and the green run says nothing about it. 
+- The tests may exercise only part of the code, in which case the
+  untested part may do anything. 
+- And the clauses that no test can decide, the stories, may simply have been
+skipped.  
+When any of these happens, the green suite gives false confidence.  For these reasons,
 an agent development process needs to include steps that might previously
 have been considered "extra and unnecessary overhead" that was "only needed
 for critical systems".  This is an example of where one can *benefit*
@@ -790,14 +809,25 @@ all must hold, each with its own evidence:
    ```
 
    Branch coverage is not a strong property. It says every branch was taken
-   by some test, not that the test checked anything useful on that path. But
-   a branch that no test took is a place where the code can do anything
-   without the suite noticing, and the measure finds those places cheaply.
+   by *some* test, not that a particular test checked anything useful on that path. But
+   a branch that no test explored is a place where the code can do anything
+   without the test suite noticing, and the branch coverage measure
+   finds those places cheaply.  Note that there are a variety of forms
+   of [test coverage](https://en.wikipedia.org/wiki/Code_coverage) 
+   -- some are stronger, some are weaker.  Branch coverage represents a good
+   middle ground.  One of your engineering tasks is to decide which 
+   notion of coverage is appropriate for you.
 4. **Every clause assigned a walkthrough has its record.** A0 assigns human
-   walkthroughs to the three stories. Each was exercised by a person in the
-   role the story names, and the observations and findings are recorded in
-   `reports/walkthrough.md`. The behavioral examples can also be automated,
-   as A1 will demonstrate.
+   humans to do manual runs of the system (termed `walkthroughs`) to observe that its behavior
+   corresponds to the three stories. A0 constructs some simple
+   infrastructure in `tools/walk.py` to help the human carry out the
+   wakthroughs.  Each manual run is carried out by
+   a person in the role the story names, and the observations and findings are recorded in
+   `reports/walkthrough.md`.   There are widely-used approaches for
+   turning user stories into system tests that can be automatically
+   played and checked against expected results.  This can reduce the
+   human effort to a degree -- we will see this in version A1 of the
+   example in an upcoming lecture.
 
    | Clause | Role | Command | Observed | Finding |
    |---|---|---|---|---|
@@ -805,8 +835,12 @@ all must hold, each with its own evidence:
    | US-2 | message sender | `tools/walk.py Restricted 7` | `pass: Restricted 7` | as the story expects |
    | US-3 | security officer | `tools/walk.py Critical 100`, then `Critical 0` | `drop`, both times | as the story expects |
 
-The first three conditions are decided by one command, `tools/gate.sh`,
-which runs `ruff` and then `pytest`. Its output at v0 ends:
+It is often convenient to develop assurance infrastructure tooling to
+aggregate the checking of assurance properties.  Part of our "agentic
+software engineering" is to build such tools.  For the `CONF`
+judgement above, we write a very simple script `tools/gate.sh` to 
+aggregate the checking of the first three conditions above -- the
+script runs `ruff` and then `pytest`. Its output at v0 ends:
 
 ```
 conformance: every test clause has passing evidence; report in reports/conformance.md
@@ -815,7 +849,8 @@ Required test coverage of 100% reached. Total coverage: 100.00%
 ============================== 10 passed in 0.03s ==============================
 ```
 
-Rules CONF-1 and CONF-2 state the four conditions; the CONF row of the ledger
+Regarding the aggregation of results in reports, Rules CONF-1 and
+CONF-2 state the four conditions; the CONF row of the ledger
 cites all four pieces of evidence.
 
 As noted earlier, the regime with its four conditions 
@@ -829,7 +864,8 @@ These checks also illustrate different kinds of **verifier**. A0 uses
 algorithmic verifiers for its tests and coverage checks, and a human verifier
 for the story walkthroughs. A1 adds agent-assisted review of the
 specifications. Humans and agents can examine artifacts and make judgments;
-algorithms apply programmed checks. Each can miss defects in different ways.
+algorithms apply programmed checks. But it is important to understand
+that each approach can miss defects in different ways.
 
 Moving a check from a person to an agent or algorithm changes how evidence
 is produced. It does not automatically transfer authority to approve the
@@ -837,17 +873,25 @@ result. In particular, an agent can help prepare and review the stories, but
 stakeholder approval that they express the intended system remains a human
 decision.
 
-Finally, what a green CONF does not establish. It does not establish that
-the clauses are the right clauses; that is validation. And it does not
-establish that the verifiers are correct: a test can assert the wrong
-thing (the semantic alignment problem), a plugin can misread a marker, 
-a coverage tool can be misconfigured, and even obtaining 100% branch
-coverage doesn't mean that the test suite has explored all possible
-execution behaviors of the system.  *Thus, each method discussed so
-far has a failure mode*, and compentent engineer needs to understand
-the possible failure modes to how to effectively construct an
+Finally, we need to clearly understand a green CONF (i.e., a
+succeeding verification according to the policies above) does NOT
+establish. 
+- It does not establish that the specification clauses are the right 
+clauses (i.e., that they are appropriate in the sense that they match
+the stakeholder intent); that is the *validation* task, not verification. 
+- It does not establish that the verifier mechnisms are correct: 
+  - a test can assert the wrong thing (the semantic alignment
+    problem), 
+  - a traceability plugin can misread a marker, 
+  - a coverage tool can be misconfigured, 
+  - and even obtaining 100% branch coverage doesn't mean that the test
+    suite has explored all possible execution behaviors of the system.  
+    
+*Thus, each method discussed so far has failure modes*, 
+and a compentent engineer needs to understand
+the possible failure modes to effectively construct an
 assurance approach that gives appropriate effectiveness/cost
-tradeoffs.  The ledger records which verifier produced each piece of evidence partly so that,
+tradeoffs.  The ledger records *which verifier* produced each piece of evidence partly so that,
 when a verifier is later found to be wrong (a failure mode is
 exhibited), the claims it made can be found and re-examined.
 In short, passing the prescribed verification checks establishes a 
@@ -877,15 +921,21 @@ person, and the decision is recorded as a **sign-off**. A0's is in
 
 The sign-off names who signed, in which role, when, and which version of
 which document. Rule VAL-1 requires one from each user category.
+This level of rigor is often not worth the effort for a project
+built by a single developer with no other stakeholders: the act of the developer writing a user
+story typically reflects that they mean what they write.  However, for
+teams or in situations where the behavior of the system needs to be
+confirmed by other stakeholders, it becomes more important.
 
 A walkthrough can support two distinct activities. First, the stakeholder
-compares the observed behavior with the story: does the implementation behave
+compares the observed execution behavior with the story: does the implementation behave
 as specified? Second, the stakeholder considers the story itself: does it
 describe the behavior they want? The observations and findings support
-conformance; the separately recorded sign-off supports validation. Seeing
+conformance (as discussed in the Verification section); 
+the separately recorded sign-off supports validation. Seeing
 the expected output does not by itself answer the second question. A1
-automates checks of the behavioral examples, but retains stakeholder approval
-of the stories.
+automates part of the verification to user stories, 
+but retains manual stakeholder approval (validation) of the stories.
 
 Suppose the security officer had meant that Restricted messages must be
 stopped as well, and that the person who wrote the concept of operations had
@@ -909,8 +959,9 @@ has built the wrong system correctly, and the process has certified that.
 The sign-off is the one place where the process asks a person whether the
 system being certified is the one they wanted.
 
-One more consequence, which later versions develop: the VAL row can go stale
-when no file has changed. If the officer changes their mind, the
+One more consequence, which later versions develop: the VAL row
+(validation status in the ledger) can go stale when no file has
+changed.  If the officer changes their mind, the
 specification no longer describes what they intend, and the process learns of
 it only when they say so. Version A3 records such a declaration as a change
 request and shows the row turning stale while every other row stays green.
@@ -990,22 +1041,31 @@ development state. It is not a proof. It is five claims, each with named
 evidence and a named scope, which is what a person who has not read the code
 can examine and, if they choose, rerun.
 
-## The gate
+## Workflow controls - The gate
 
+We often want the development process to points where we force some
+sort of check that "everything is good" (i.e., that our assurance
+policies hold).  A common example is the use of continuous integration
+environments to run all tests when a project source code is committed
+and to provide reports of a "failing build".  
+
+We illustrate how that concept applies with our simple assurance
+framework with a simple workflow rule. 
 Rule WF-1 says that before work is committed, the command `tools/gate.sh`
 must exit 0. The command runs `ruff`, then `pytest` with the coverage
 requirement and the report-writing plugin, so it decides RQ and the three
 mechanical conditions of CONF in one step. A **gate** is a condition placed in
 front of a step so that the step cannot complete unless the condition holds.
-This one is an *algorithmic* gate: a program decides, and the decision is an
+This one is an *algorithmic* gate: the *program* (`tools/gate.sh` and
+support tools) decides, and the go/no-go decision is reflected in the
 exit code. The course also names *approval gates*, where proceeding requires
 a recorded human decision. A0 requires stakeholder sign-off before VAL is
 established.
 
 In version A0, requiring the automated gate before every commit gives us a
-simple, visible checkpoint. This is a process choice, not a requirement of
-Git or of specification-driven development. A larger workflow may allow
-intermediate commits containing incomplete work, while requiring particular
+simple, visible checkpoint. This is a process design choice, not a requirement of
+Git or of specification-driven development. A larger workflow may
+relax this and allow intermediate commits containing incomplete work, while requiring particular
 judgments before a development wave is accepted or changes are merged into a
 shared branch. The ledger must still describe the current evidence honestly.
 In A2, we will return to how these checkpoints are chosen, including approval
@@ -1081,13 +1141,19 @@ failure behavior.
 | WF-1 | Workflow gate supporting RQ, CONF, and TR | Before each commit, `tools/gate.sh` must succeed. It checks realization quality, the mechanical part of conformance, and test-citation validity—not all five judgments. |
 | RPT-1 | Reporting all five judgments | The dev log records each task and its gate result; at each commit, the ledger records the five judgments’ statuses, evidence, and provenance. Recording a judgment does not mean it is established. |
 
-There is a useful catch in these rules. Taken literally, CONF-1 and WF-1
+There is a problematic aspect about these rules, that we can use to 
+illustrate that the design of workflows is not trivial. 
+Taken literally, CONF-1 and WF-1
 require a baseline implementation, passing tests, and working checks before
 the first commit: we cannot first commit just the specifications and then
-build the implementation. That is not generally desirable. Development
-rules themselves need to be examined and "debugged," just as product
-specifications do. A0 presents a completed snapshot; its development log
-records tasks, not a separate commit for each task. In A2 we will revisit
+build the implementation. That is not generally desirable.   What we
+can conclude from this is that development rules (*process*
+specifications) themselves need to be 
+examined and "debugged," just as *product* specifications (ConOps,
+Requirements, etc) are.  A0 focus on presenting a completed snapshot
+(not building the system incrementally) so that we can look in a
+single view at all the different forms of artifacts; its development
+log records tasks, not a separate commit for each task. In A2 we will revisit
 the rules to allow intermediate commits while requiring designated
 judgments at acceptance checkpoints. Also, passing the automated gate is
 only part of following the rules: human-review and reporting obligations
@@ -1147,6 +1213,19 @@ technologies that developers may not be expert in, (c) as the size of
 the human and agent team grows, and (d) as we need more confidence in the
 development outcomes.
 
+Also all spec-driven development frameworks have a standard mechanism
+for specifying development rules.  For example, in Spec Kit, these
+rules are placed in what is called the
+[constitution](https://daita.io/en/blog/spec_kit_constitution_first_principles/).  
+In fact, setting up the constitution for a project is the first step taken in Spec
+Kit workflows.  In previous student coding assignments, there may not
+have been a lot of emphasis on this.  However, with agentic
+development, setting up these development rules is an important part
+of providing "guardrails" for the agents.  It may seem overwhelming,
+but as usual, the agents can help with with setting up these rules.
+For example, in Spec Kit, the `/speckit.constitution` skill helps you
+set up an initial set of development rules.
+
 In class, the lecture may close with one demonstration: an agent started in
 the A0 directory is asked what the system does and how it is known that the
 code does it. The useful thing to watch is where the agent looks. An answer
@@ -1190,26 +1269,32 @@ product teams supply their specifications, tests, and project-specific
 configuration. This helps keep the development process consistent and
 spreads the maintenance effort across projects. Shared tooling still needs
 testing, versioning, and controlled updates: a reporting defect can
-otherwise give many teams the same misleading picture. In this course, we
-expose a small version of that infrastructure so you can understand both how
-to use it and how to direct an agent to build or adapt it.
+otherwise give many teams the same misleading picture. 
+
+In this course, we expose a small version of that infrastructure so 
+you can understand both how to use it and how to direct an agent to
+build or adapt it.  Frameworks like Spec Kit, OpenSpec, etc. also help
+you by providing the ability to template your own specification and 
+reporting formats, then they provide skills that help automate the 
+completion of those templates.
 
 ## What is not here yet
 
 Version A1 keeps the same product behavior and improves its specifications
 and evidence. It introduces agent-assisted elicitation, a domain glossary,
-requirements in EARS form, and acceptance fixtures derived from the stories.
+requirements in EARS form, and acceptance fixtures derived from user stories.
 Fixture-based tests automate checks of the behavioral examples; stakeholder
 validation and sign-off remain separate. A0's informal specification audit
 becomes a structured procedure, demonstrated first by a person, then by an
 agent, then through a packaged skill. The next two lectures cover that
 material.
 
-Version A2 adds the `sanitize` stage, architecture, message-format
-specifications, and contracts between stages. It also adds systematic
-test-discipline review, a build plan with tasks and waves, approval gates at
-wave boundaries, and a generated ledger. Later versions introduce policy
-change, sessions with an ordering protocol, and a standard message format.
+Version A2 adds a new system component - the `sanitize` stage, as well
+as architecture, message-format specifications, and contracts between
+stages. It also adds systematic test-discipline review, a build plan 
+with tasks and waves, approval gates at wave boundaries, and a
+generated ledger. Later versions introduce policy change, sessions
+with an ordering protocol, and a standard message format.
 
 ## Applying this to your own project
 
@@ -1222,10 +1307,15 @@ will have to adapt.
 
 - *The entities and the judgments.* Every project has stakeholders with
   intent, specifications of some kind, and a realization, and the five
-  questions can be asked of any of them. Start a ledger (or some simpler
-  form of reporting) on the first day, by hand, 
-  with five rows; most will say "not established", and that is
-  information.
+  questions can be asked of any of them. Start with very simple
+  specifications.  A common approach is also to ask the agent to 
+  infer specifications from an existing system or prototype, a
+  developer reviews those, and then they are carried forward and
+  updated as part of a more rigorous development process as we have
+  illustrated here.  Start a ledger (or some simpler
+  form of automated reporting) on the first day, that lists the
+  assurance objectives along with their status for the current set of
+  artifacts. 
 - *A concept of operations.* You can always begin by working with the people
   on your team, and with an agent, to write a concept of operations that has
   the four elements shown here: a purpose statement that the stakeholders
@@ -1236,17 +1326,21 @@ will have to adapt.
   stories have long been a foundational element of agile development
   and have proven useful in many development styles.
   They are not something that we made up, or something burdensome that
-  is arbitrarily being imposed on you.
-- *A requirements document.* You can always have one, and its clauses can
-  always carry an identifier, a verification method, and the story or term
+  is being imposed arbitrarily on you.
+- *A requirements document.* You can always have one, you can start
+  simple. Then ask the agent to help you add rigour by adding
+  traceability identifiers, a verification method, and the story or term
   each derives from. The method field is the one most often left out and the
   one that pays back soonest, because it decides which clauses a program can
   check at every commit.
-- *A statement of the technology.* Agents and auditors both need what
+- *A statement of the technology.* This is another easy one that appears
+  in almost every agentic development project; most people start with
+  this being located in the `CLAUDE.md` file.   Agents and auditors both need what
   `pyproject.toml` provides here: the language and version, the tools and
   their versions, and the one command that is the gate. Write it down even
   when it seems obvious.
-- *Clause-linked evidence and coverage.* Ask whether each clause has the
+- *Clause-linked evidence and coverage.*  As you build out your
+  agentic development infrastructure, ask whether each clause has the
   evidence required by its assigned method, whether structural coverage meets
   the chosen objective, and whether the necessary reviews or walkthroughs are
   recorded. Tests are one method; analysis is another. Citation checks can
@@ -1256,9 +1350,12 @@ will have to adapt.
   evidence, and what happens on failure, apply to any rule about any process.
   Start with one gate and the ledger, and add a rule the second time you find
   yourself doing a check by hand.
-- *A sign-off, and provenance on every claim.* Find the person who can say
-  whether the system is the one they wanted, and get their decision on
-  record, named and dated. Record who or what produced every piece of
+- *A sign-off, and provenance on every claim.* This may not be
+  important when prototyping, but for teams or when your building a
+  system to a customer it matters.  Find the person who can say
+  whether the system is the one they wanted, and get their decision.
+  To be rigorous, make it in a record of some kind - named and dated. 
+  Record who or what produced every piece of
   evidence and against which version.
 
 **What you will need to adapt.**
@@ -1293,18 +1390,20 @@ will have to adapt.
   hand regardless, because the generated form is the hand-written form
   automated.
 
-One skill underlies the adapted parts, and the next several lectures are
-designed to build it: phrasing your own criteria for specification quality,
+For the adapted parts, you do need to develop some basic competencies
+and experience.  The next several lectures are designed to develop
+that: phrasing your own criteria for specification quality,
 for realization quality, and for verification in a form that an agent can
-process. That form is the one the rules file uses, a statement with a named
+process. That pattern is the one our rules file use: a statement with a named
 decider, named evidence, and a stated consequence of failure. A guideline
-that lacks those is something a person may follow; a guideline that has them
-is something an agent will follow and a person can check.
+that lacks those is something a person may follow but an agent might
+not; a guideline that has these characteristics is something an agent
+will follow *and a person can check*.
 
 ## Exercise 1
 
 Take a copy of A0 and add a requirement: a message whose payload is negative
-is dropped, whatever its level. Before writing any code, read the new
+is dropped, regardless of its level. Before writing any code, read the new
 requirement together with REQ-0 to REQ-3 and decide whether the five
 specification-quality properties still hold; at least one does not, and the
 resolution is an amendment to existing clauses, not just an addition. Record

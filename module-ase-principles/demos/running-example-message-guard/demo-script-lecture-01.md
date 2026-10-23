@@ -91,7 +91,13 @@ Slides: *The example: a message guard*; *The question the code cannot answer*;
 it was supposed to do; someone will say "drop Critical". Ask how they know
 that; the honest answer is the comment and the name of the constant. Then: it
 would look exactly like this if the security officer had wanted Restricted
-messages stopped as well, and it would be wrong. The code cannot say what was
+messages stopped as well, and it would be wrong.
+[Codex:  I don't understand the previous sentence.  If the security
+office had wanted Restricted messages stopped as well - it would not
+look the same.  There would be a second condition (e.g., in a
+disjunction, testing of the message level was Critical OR Restricted).
+Explain this to me or propose a correction.]
+The code cannot say what was
 asked for, what was promised, or whether the promise was checked.
 
 **Do (shell):**

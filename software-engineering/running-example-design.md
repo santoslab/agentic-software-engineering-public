@@ -12,8 +12,8 @@
 > classified with their mitigations). Responds to the brief in
 > `running-example.md`. The progression is decided (option A; section 8) and
 > version A0 is built under
-> `../module-ase-principles/demos/running-example-message-guard/v0/`; nothing
-> else is built yet. Vocabulary follows `../glossary.md`; the additions and
+> `../module-ase-principles/demos/running-example-message-guard/a0/` (the
+> directory was `v0/` until the re-layering of 2026-10-24). Vocabulary follows `../glossary.md`; the additions and
 > amendments this design proposed (section 5) were applied to the glossary on
 > 2026-10-20.
 
@@ -22,9 +22,13 @@
 > Recording a decision is not evidence that its implementation is complete.
 >
 > A1 built 2026-10-22 under
-> `../module-ase-principles/demos/running-example-message-guard/v1/`, from
-> the plan `running-example-a1-plan-fable.md`; its four commits replay with
-> `build-history.sh`. Section 9's A1 items carry their completion evidence
+> `../module-ase-principles/demos/running-example-message-guard/a1/`
+> (then `v1/`), from the plan `running-example-a1-plan-fable.md`; its four
+> commits replay with `build-history.sh`. Both snapshots were re-layered on
+> 2026-10-24 as [running-example-relayering.md](running-example-relayering.md)
+> describes (section 8, item 8): judgment clauses per form, procedures,
+> records beside reports, an assurance report compiled on request, no
+> process rules before A2. Section 9's A1 items carry their completion evidence
 > below. A2 and later versions remain unbuilt. The rule-style handout the
 > design proposed exists as `../process-rule-styles.md`.
 
@@ -178,20 +182,68 @@ which it uses.
 A *development-state judgment* is a claim about the current development state
 whose supporting evidence and status are tracked at recorded checkpoints.
 An established judgment is a supported, fallible claim, not proof that the
-claim is true. These five are the rows of the ledger in
-every version. Four are the Lean model's judgments (`specOK`, `realOK`,
-`verified`, `validated`) under course names; the fifth is the brief's
-"overarching" traceability, given its own row because it is mechanically
-checkable and because the other four are only decidable *per clause* when it
-holds.
+claim is true. These five are the rows of the assurance report, and later
+of the ledger, in every version. Four are the Lean model's judgments
+(`specOK`, `realOK`, `verified`, `validated`) under course names; the fifth
+is the brief's "overarching" traceability, given its own row because it is
+mechanically checkable and because the other four are only decidable *per
+clause* when it holds.
 
-| ID | Judgment | Question it answers | Established by | Evidence recorded in the ledger | Goes stale when |
-|---|---|---|---|---|---|
-| **SQ** | Specification quality | Is each specification well-formed, unambiguous, internally consistent, complete for its level, and consistent with its companion specifications? Does every clause carry a verification method, and does every judgment clause say why it is not mechanical? | an audit: an agent applies the SQ rules and a person rules on each gap; later, scripts for the syntactic parts (identifiers unique, EARS pattern, glossary terms, a method on every clause) | the audit report with zero open gaps; script exit codes | any specification changes |
-| **RQ** | Realization quality | Does the realization lint and type-check, does its test suite collect cleanly and follow the test discipline (a test can fail; a citing test's assertions adequately check its clause; direct assignment for setup only), and is its structure judged appropriate? | analysis: `ruff`, `mypy`, `pytest --collect-only`; a review for the test discipline and the structure | the commands and their exit codes; the review record | code or tests change |
-| **CONF** | Conformance (verified) | Does the realization satisfy the specification clauses in scope? The standing evidence obligations are: the required suite passes; each clause has the evidence its assigned method demands; structural coverage meets the stated objective; judgment clauses have the required review or walkthrough records. These support a scoped claim, not a proof of conformance | tests and analyses that cite clauses; the two coverage objectives; reviews and walkthroughs for judgment clauses; later contracts, trace tests with transition coverage, schema validation | the test run; the generated conformance report (requirements coverage); the coverage report (structural coverage); the review and walkthrough records | relevant specifications, code, tests, or verification tools/configuration/environment change |
-| **VAL** | Validated | Do the specifications describe what the stakeholders have in mind? | a person walks the user stories and their example messages against the running system and signs off | a sign-off line: who, when, which specification version | a stakeholder declares a change of mind, or the concept of operations or a specification changes |
-| **TR** | Traceable | Do identified clauses have unique identifiers, and do the declared links resolve (story to requirement to test to task)? Links can be followed in either direction; not every test must have a clause link | identifier/reference checks, automated where supported and otherwise reviewed | the trace matrix and reference-check findings, with no dangling declared links | relevant linked artifacts or reference-checking machinery change |
+**Vocabulary** (re-layering of 2026-10-24; the full statement is
+[running-example-relayering.md](running-example-relayering.md)). The
+*definition* of a judgment is what the claim says, stated once for the
+repository and then per *form* of artifact as a *clause* named
+`Form-JUDGMENT-n`; it is a predicate on the development state and says
+nothing about who evaluates it or when it must hold. An *evaluation* is the
+activity that produces evidence for or against a clause: a run (test,
+analysis) or a human or agent reading (review, walkthrough, sign-off); a
+clause's *Evaluated by* field names it, and the kind of evaluator named is
+the clause's rung on the ladder of 2.7. *Evidence* is what an evaluation
+produced; a *record* is a document attesting that a human activity was
+performed and what it decided (review, walkthrough, validation and
+sign-off, audit gap list, development log), kept under `records/`; a
+*report* is a presentation of the development and assurance state to the
+developers or other stakeholders (the assurance report, the generated
+conformance report and trace matrix, later the ledger), kept under
+`reports/`. *Provenance* is what is recorded about a piece of evidence:
+what produced it and its version, against which state of which artifacts,
+over which scope. The *assurance report* states, for each judgment and
+clause, whether it holds, on what evidence, with what provenance, compiled
+on request against a named state of the tree; from A2 it is kept between
+requests as the *ledger*. These four concerns, what a judgment says, how it
+is evaluated, how its state is presented, and when it must hold, are the
+layers of 2.1a, and the early versions carry only the first three.
+
+**The definition table.** The claim of each judgment as a predicate, the
+forms it concerns at A1, and how the per-form clauses aggregate.
+
+| ID | Judgment | The claim | Forms (clauses at A1) | Aggregation |
+|---|---|---|---|---|
+| **SQ** | Specification quality | Each specification is well-formed, has one reading, is consistent with itself and complete for its level, uses the glossary's terms in the glossary's sense, and the specifications agree with one another. Every clause carries a verification method, and every judgment clause says why it is not mechanical. | ConOps (ConOps-SQ-1), Reqs (Reqs-SQ-1, Reqs-SQ-2), Gloss (Gloss-SQ-1), Specs read together (Specs-SQ-1) | every SQ clause holds |
+| **RQ** | Realization quality | The realization is in a state in which evidence about it can be produced: it lints and type-checks, its suite collects and follows the test discipline, its structure is judged appropriate. | Code (Code-RQ-1); later clauses for `mypy`, the test-discipline review, the structure review | every RQ clause holds |
+| **CONF** | Conformance (verified) | A relation between a specification form and the realization: for each form in scope, every clause of the form has the evidence its verification method calls for, and that evidence is passing. The standing evidence obligations are: the required suite passes; each clause has the evidence its assigned method demands; structural coverage meets the stated objective; judgment clauses have the required review or walkthrough records. These support a scoped claim, not a proof. | Reqs (Reqs-CONF-1, test evidence; later Reqs-CONF-2, analysis evidence), Scen (Scen-CONF-1); at A0 also ConOps (ConOps-CONF-1, the stories walked); later the architecture, contracts, data formats, state machine | every CONF clause holds; a CONF clause is named by the specification form, the realization being its fixed other side, and its provenance names the state of both |
+| **VAL** | Validated | The specifications describe what the stakeholders have in mind. | ConOps (ConOps-VAL-1) | the one clause holds; only a stakeholder can evaluate it |
+| **TR** | Traceable | Identified clauses have unique identifiers, and the declared links resolve (story to requirement to scenario to test, and later to task), in both directions. Not every test must have a clause link. | Specs read together (Specs-TR-1 references, Specs-TR-2 the trace matrix) | every TR clause holds |
+
+**The evaluation table.** How the truth of each judgment is established:
+the parts of the evaluation, the verifier kind of each part at A0 and at
+A1, which is its rung, and the evidence each produces. The verifier kinds
+are those of 2.6 and 2.7: a person, an agent ad hoc, a skill, a program.
+
+| ID | Parts of the evaluation | Verifier kind, A0 → A1 | Evidence |
+|---|---|---|---|
+| **SQ** | the reading of each form against its clauses; the between-document items; the header parts | a person reading (rung 1) → the audit by a person, then an agent ad hoc, then the `/audit-spec` skill (rungs 1 to 3), with a person ruling on every gap; the clause reader for the header parts (rung 4) | the review record (A0); the audit records with their rulings (A1); the clause table and findings of the conformance report |
+| **RQ** | lint; collection; later type-check, test-discipline review, structure review | programs (rung 4) | the exit codes, quoted in the report with their header |
+| **CONF** | the test run with requirements coverage and structural coverage; the stories walked (A0) or run as scenarios (A1); later analyses and reviews | the test runner with the plugin and the coverage tool (rung 4); a person walking (rung 1) → the scenario loader (rung 4) | the conformance report; the coverage table; the walkthrough record (A0) |
+| **VAL** | a walkthrough per user category; the sign-off | the stakeholders, and nobody else (rung 1; it does not climb) | the validation record and the sign-off |
+| **TR** | the citations; the derivation, source, and scenario references; the matrix in both directions | the plugin (rung 4); a person with the audit (rung 1) → `tools/trace.py` (rung 4) | the "Unknown identifiers" section of the conformance report; the trace matrix's findings |
+
+An agent may be asked to review, walk, or audit; the record it writes names
+it as the evaluator (model, date, prompt or skill version). Whether that
+record is evidence for a clause is decided by the clause's *Evaluated by*
+field: if the field says review (human), the agent's review is input to the
+person, not the evidence; when the clause climbs, the field changes to
+review (agent) and states the independence requirement.
 
 Intent has no row and no artifact. It lives in the stakeholders' minds and is
 consulted only through a person (*intent* in `../glossary.md`), which is why VAL is the one row
@@ -215,34 +267,62 @@ whether the test actually supports the clause. Uncited tests may contribute
 to structural coverage. Neither a valid citation nor branch coverage proves
 test adequacy (CF-01 and CF-02 in section 9).
 
-**Ledger status concerns current support.** Established means the required
-checks and reviews succeeded and their evidence was recorded. Stale means a
-relevant change makes earlier evidence insufficient for the current state;
-it does not mean that a defect has been found. Not established can mean that
-checking is incomplete or that a current check found a problem; the finding
-must distinguish these cases. A failed check calls for investigation of the
-specification, realization, verifier, and environment. Changes can affect
-multiple judgments, and successful reruns can renew some evidence while
-other obligations remain unmet. Detailed maintenance belongs with A2's
-generated ledger, not Lecture 1 (CF-03 and CF-09).
+**Report status concerns current support.** The report says, per clause,
+*holds (run now)*, *holds (record)*, *record names another state*, *does
+not hold*, or *not evaluated*; the status words of the ledger, established,
+stale, and not established, and the staleness rules behind them are in 2.4a
+and belong to A2, not to Lecture 01 (CF-03 and CF-09).
 
-Every entry in the evidence column carries its **provenance**: which verifier
-and which version of it, which version of each artifact it examined, and which
-clauses it decided. These are the three scope lines that Lecture 01's RPT-2
-puts at the head of a conformance report, moved onto the ledger row. They are
-there because a row is a claim made by a verifier, and a claim can be wrong in
-the ways section 2.9 classifies; the provenance is what makes the claim
+Every row of the report carries its **provenance**: which verifier and
+which version of it, which state of each artifact it examined, and which
+clauses it decided. These are the three scope lines the generated
+conformance report prints at its head, moved onto the row. They are there
+because a row is a claim made by a verifier, and a claim can be wrong in the
+ways section 2.9 classifies; the provenance is what makes the claim
 checkable, and what makes it possible to say which rows to distrust when a
 verifier turns out to be wrong.
 
-Two kinds of *gate* follow from the "established by" column and both need a
-name. An **algorithmic gate** is a program whose exit code decides (RQ's
-analyses, CONF's mechanical conjuncts, TR, and the syntactic part of SQ). An
-**approval gate** is a recorded human decision (VAL, the judgment part of SQ,
-the reviews and walkthroughs in CONF, the sign-off that closes a wave). This
-widens the glossary's earlier rule that a person cannot be a gate; the Lean
-model's `establish` step with a human proof premise is exactly an approval
-gate.
+**The assurance-case remark, for Lecture 01.** The assurance report is a
+very simple assurance case. The judgment definitions are its claims,
+decomposed once, per form. The evidence is the evidence: test results,
+records, generated reports, with the evaluation method as the reason the
+evidence bears on the claim (a passing suite bears on REQ-1 because a test
+cites REQ-1 and the suite reaches the coverage objective). The provenance is
+the information about how each piece of evidence was produced, which is
+what governs trust in it. The report has no argument tree beyond that one
+decomposition, and that is deliberate.
+
+### 2.1a Four layers, and when each enters
+
+The judgments carry four concerns, and the running example introduces them
+one layer at a time so that a student's first exposure is to a definition
+and an evaluation, not to a rule with a trigger and a failure clause.
+
+| Layer | What it answers | Artifacts | Enters |
+|---|---|---|---|
+| Definition | what each judgment claims, per form and aggregated | `process/judgments.md`: five definitions; per-form clauses with *Holds when* | A0 |
+| Evaluation | how the truth of each clause is established, mechanically or by a person or an agent; later, by a fixed procedure | the *Evaluated by* and *Evidence* fields; the mechanical tools; from A1, `process/procedures.md` (Audit, Elicit) and the skills that package them | A0; procedures A1 |
+| Reporting | how the state is presented | `process/templates/assurance-report.md`; `reports/assurance-report.md` compiled on request; the generated conformance report and trace matrix | A0; the trace matrix A1 |
+| Ledger | how the report is kept between requests without re-evaluating everything: dependence information, staleness, generation | `reports/ledger.md`; `tools/ledger.py`; the `Ledger-n` rules | A2 (2.4a) |
+| Control | when the claims must hold: gates on commits and waves, approval gates, hooks, change control | `process/rules.md`: the `WF-n` rules; hooks or CI | A2 (gate, waves), A3 (change control) |
+
+A0 and A1 therefore have **no process rules**: nothing in them says when a
+claim must hold, who must run an evaluation, or what happens when a claim
+does not hold. The build of A1 audited before every commit that changed a
+specification and recompiled the report at every commit, and the records
+say so as a practice; A2 turns such practices into rules. Enforcement does
+not exist until the control layer, and when it arrives it is a hook, with
+the instruction file saying only when the report must be green.
+
+Two kinds of *gate* belong to the control layer and both need a name. An
+**algorithmic gate** is a program whose exit code decides a transition
+(the evaluation command of A0 and A1, `tools/evaluate.sh`, put behind a
+pre-commit hook or a CI job at A2). An **approval gate** is a recorded
+human decision placed in front of a step (the sign-off before a wave is
+accepted). This widens the glossary's earlier rule that a person cannot be
+a gate; the Lean model's `establish` step with a human proof premise is
+exactly an approval gate. Until A2 the evaluation command evaluates and
+does not gate: nothing runs it unasked and nothing waits for its result.
 
 ### 2.2 Artifact categories
 
@@ -255,9 +335,10 @@ reference material enters only with the version that teaches elicitation.
 |---|---|---|
 | Specifications | `specs/*.md`, every clause with an identifier and a verification method; the concept of operations opens with the agreed purpose statement | the subject of SQ; the reference for CONF and VAL |
 | Realization | `guard/*.py`, `tests/*.py` | the subject of RQ; checked by CONF |
-| Development rules (governance) | `process/rules.md`, split by category as it grows | say how each judgment is established and when it must hold; the CONF rules are the standing verification plan |
+| Judgment definitions and procedures (governance) | `process/judgments.md` (five definitions; per-form clauses with *Holds when*, *Evaluated by*, *Evidence*, *In this project*); from A1 `process/procedures.md` (Audit, Elicit) and `process/templates/`; from A2 `process/rules.md` (the ledger and control rules) | say what each judgment claims, form by form, and how it is evaluated; from A2, when it must hold; the CONF clauses are the standing verification plan |
 | Plan | `plans/NNN-*.md`; later `plans/verification-plan.md` | a build plan: tasks grouped into waves, a gate at the end of each wave, each task citing the clauses it realizes; a verification plan: the project-specific verification choices (section 4) |
-| Reports | `reports/dev-log.md`, `reports/ledger.md`, `reports/trace-matrix.md`, `reports/conformance.md`, the coverage report, gap lists, change reports | the development state as a person reads it |
+| Records | `records/reviews.md`, `records/walkthrough.md` then `records/validation.md`, `records/audit-NN.md` (gap lists with rulings), `records/dev-log.md`; later change requests | evidence of what people decided and did; what the human rows of the report rest on |
+| Reports | `reports/assurance-report.md` (compiled on request), `reports/conformance.md`, `reports/trace-matrix.md`, the coverage report; from A2 `reports/ledger.md`; later change reports | the development state as a person reads it |
 | Reference | `reference/elicitation.md`: the stakeholders' verbatim words, questions and answers; sketches | informs the specifications; is not a specification; not audited; no judgment is about it; kept from the elicitation version on |
 
 Intent is not in the table because it is not an artifact. The purpose
@@ -265,24 +346,53 @@ statement at the head of the concept of operations is the closest written
 thing to it, and it is a specification: an engineering artifact, revised with
 the stakeholders until agreed, and audited like the rest of the document.
 
-### 2.3 Rules filed by judgment, with a budget
+### 2.3 Clauses and rules, filed by form, with a budget
 
-Rule identifiers carry the category, so the categories are visible from the
-first rule: **SQ-**, **RQ-**, **CONF-**, **VAL-**, **TR-**, and two categories
-for the process itself, **WF-** (workflow: steps, commits, waves, gates,
-staleness) and **RPT-** (the forms reports take). Identifiers are never
-renumbered. Every rule is also typed by one of the seven styles of 2.8, and a
-version introduces at most two new styles. Every example inside a rule comes
-from this system. The CONF rules
-state the standing verification objectives, the same for every project: what
-counts as requirements coverage, the structural-coverage level, and how a
-judgment clause is covered; a project-specific verification plan adds to them
-only when a project makes choices beyond them.
+**Per-form clauses** are named `Form-JUDGMENT-n`: `ConOps-SQ-1`,
+`Reqs-CONF-1`, `Gloss-SQ-1`, `Scen-CONF-1`, `Code-RQ-1`; the family of
+specifications read together is the form `Specs` (`Specs-SQ-1`,
+`Specs-TR-1`). The form comes first because the judgments file and the
+catalog's per-form pages (section 4) list a form's clauses together, and
+because the report, arranged by judgment, collects across forms anyway. The
+mixed case is deliberate: a specification clause matches `[A-Z]+-\d+`
+(`REQ-1`, `US-3`) and a judgment clause never does, so the clause reader
+cannot confuse them and a reader sees at a glance which kind of identifier
+is in front of them (`Reqs`, not `Req`, for the same reason). A CONF clause
+is named by the specification form; the realization is its fixed other
+side, and a project with more than one realization form names both
+(`Policy-Config-CONF-1`). Identifiers are never renumbered; an amended
+clause keeps its identifier and the changelog says what changed.
 
-The budget: no version adds more than **eight rules**. The first version ships
-at most eight, one per category, in a single file of about eighty lines. After
-the core versions the set is about 30 rules in at most five short files,
-against 41 rules in 814 lines at the game demo's starting tag.
+**Fields.** A clause has four: *Holds when*, *Evaluated by*, *Evidence*,
+*In this project*. The first three depend only on the form and read the
+same in any project that uses the form, written for "the system" and naming
+a project's parameters as the project's (the coverage objective, the files
+of the form, the tools); they are what the catalog page for the form
+carries, and the identifiers travel with them, so `Reqs-CONF-1` means the
+same thing in the running example and in a student's project. The fourth
+binds the clause to the repository: which files are the form's instances,
+which tools and commands evaluate it, the values of the parameters, and,
+when one is short, one instance. The five definitions carry the bare
+judgment name.
+
+**Procedures** (A1) are named by activity, `Audit` and `Elicit`, with the
+steps stated once for any form (fields *Purpose*, *Serves*, *Run by*,
+*Steps*, *Per-form parts*, *Stops*, *Record*, *Example*); the parts that
+depend on the form live with the skill that packages the procedure, one file
+per form. **Ledger rules** (A2) are `Ledger-n`; **control rules** (A2, A3)
+are `WF-n`, in the rule template of 2.8 with its *When*, *Decided by*, and
+*On failure*, because control is where those fields belong. Report and
+record forms are templates in `process/templates/`, not rules. The CONF
+clauses state the standing verification objectives, the same for every
+project: what counts as requirements coverage, the structural-coverage
+level, and how a judgment clause is covered; a project-specific verification
+plan adds to them only when a project makes choices beyond them.
+
+The budget: A0 ships five definitions and at most eight clauses, no rules;
+A1 adds at most two procedures and four clauses; A2 adds at most eight rules.
+After the core versions the set is about 30 clauses and rules in at most
+five short files, against 41 rules in 814 lines at the game demo's starting
+tag.
 
 ### 2.4 Mechanisms that deepen across versions
 
@@ -296,7 +406,46 @@ stronger.
 | CONF | tests pass; `@pytest.mark.req` markers and the generated conformance report as requirements coverage; branch coverage from `pytest-cov` as structural coverage; stories walked | story tests over a fixture file; analysis as a second method (the import rule for the architecture clauses, the type checker for the signature part of the contracts); reviews for judgment clauses (the allocation table); trace tests with transition coverage for a state machine; schema validation at ingress; the verification plan for project-specific objectives |
 | VAL | one sign-off on the concept of operations | a walkthrough per user category; re-sign-off after a revision or a declared change of mind; a walkthrough per change |
 | TR | markers resolve to clause identifiers | `tools/trace.py` builds the matrix story to requirement to test to task; impact analysis reads the matrix |
-| the ledger | a hand-written table at a named commit | `tools/ledger.py` generates it from exit codes, the reports, and a sign-off file; stale rows are kept and marked |
+| the report | the assurance report, compiled on request by an agent from the evaluations run now and the records read | the ledger: the report kept between requests, with the artifact states each row's evidence was produced against, stale rows marked (A2); `tools/ledger.py` generates it from exit codes, the generated reports, and the records |
+
+### 2.4a The ledger as the report kept
+
+The assurance report of A0 and A1 is recompiled on every request: every
+mechanical evaluation is run again and every record is read again. Nobody
+wants that at every checkpoint of a larger build, and a human sign-off
+cannot be re-run on demand at all. The **ledger** is the report kept
+between requests: one table per named checkpoint, one row per clause, and,
+per row, the states of the artifacts its evidence was produced against. A
+change then marks the rows it touches as *stale* and leaves the others
+standing, and a stale row is re-established only by running its evaluation
+again or by a new record. Traceability is what makes the bookkeeping sound:
+the generator derives which rows a change touches from the trace matrix, so
+that a change to one requirement marks the rows of the clauses linked to it
+and nothing else, with "every row of the affected judgment" as the safe
+default when the links do not say.
+
+| Judgment | Its rows go stale when |
+|---|---|
+| SQ | any specification changes |
+| RQ | code, tests, or tools change |
+| CONF | relevant specifications, code, tests, or verification tools, configuration, or environment change |
+| VAL | a stakeholder declares a change of mind, or the concept of operations or a specification derived from it changes; no file need change |
+| TR | relevant linked artifacts or the reference-checking machinery change |
+
+**Status words.** *Established* means the required evaluations succeeded
+and their evidence was recorded. *Stale* means a relevant change makes
+earlier evidence insufficient for the current state; it does not mean a
+defect has been found. *Not established* can mean that evaluation is
+incomplete or that a current evaluation found a problem; the finding must
+distinguish these cases. A failed evaluation calls for investigation of the
+specification, realization, verifier, and environment. Changes can affect
+multiple judgments, and successful reruns can renew some evidence while
+other obligations remain unmet. The ledger enters at A2 with rules of its
+own (`Ledger-1` the kept report, generated and never written from a
+narrative; `Ledger-2` staleness; `Ledger-3` dependence through the trace
+matrix) and is generated from exit codes at the named commit, never from
+completion notes (T4 of 2.9). The optional sidebar beside Lecture 01 walks
+a hypothetical history through these states.
 
 ### 2.5 The shape of a verification method
 
@@ -385,7 +534,7 @@ when the person finds themself doing the same check repeatedly, they ask an
 agent; when the agent does it repeatedly, the procedure becomes a skill; and
 when the procedure turns out to be deterministic, the agent writes a program.
 
-| Rung | Verifier | What the ledger records | What changes |
+| Rung | Verifier | What the report records | What changes |
 |---|---|---|---|
 | 1 | a human reviews or walks through | a sign-off | one-off; a judgment |
 | 2 | an agent is asked to check and report | an agent report citing clause identifiers | repeated work delegated; costs tokens; two runs can differ |
@@ -405,8 +554,16 @@ Four things follow.
   clause group.
 - **A skill is rung 3.** Skills enter the example when a clause first reaches
   that rung, which is the first repeated agent verification: the `/audit-spec`
-  skill in the version that introduces the audit. The skills lecture earlier
-  in the course and the example tell the same story.
+  skill in the version that introduces the audit. A skill packages a
+  procedure of `process/procedures.md`, is started by the developer, takes
+  the form it works on as its argument (`/audit-spec reqs gloss`, `/elicit
+  conops`), and keeps its per-form content as one file per form under
+  `forms/`, so that adding a form to a project adds one file. The skills
+  lecture earlier in the course and the example tell the same story.
+- **The report climbs too.** Compiling the assurance report is an
+  evaluation activity: an agent by the written procedure at A0 (rung 2), a
+  skill when it is repeated, `tools/ledger.py` for the mechanical rows at A2
+  (rung 4), with the human rows still read from records.
 - **Validation does not climb.** A story walked by a person becomes fixture
   tests one version later; what climbed is the verification of the behavior
   the story describes. The validation question, whether it is the right
@@ -490,40 +647,39 @@ fails. Rules distinguish obligations that apply throughout development from
 conditions required only at designated checkpoints; their *When* fields make
 that distinction explicit.
 
-A0 and A1 use a simple policy: the automated gate must pass before every
-commit. A2 introduces intermediate commits within a planned wave, followed
-by an acceptance gate requiring the judgments designated for that wave.
-A scoped acceptance must not be reported as conformance of the entire
-product. A3 develops the more general workflow model. CF-15 records the A2
-implementation and teaching obligations.
+A0 and A1 have no control rules (2.1a): the evaluation command evaluates
+and does not gate, and the build's practice of auditing before a
+specification commit and recompiling the report at every commit is stated
+as practice in the records. A2 introduces the first rules: the gate before a
+commit, intermediate commits within a planned wave, and an acceptance gate
+requiring the judgments designated for that wave. A scoped acceptance must
+not be reported as conformance of the entire product. A3 develops the more
+general workflow model. CF-15 records the A2 implementation and teaching
+obligations. (An earlier A0 carried a per-commit gate rule that, taken
+literally, forbade a specifications-only first commit; the re-layering of
+2026-10-24 removed the rule rather than the lesson, which A2 now teaches
+when it writes its first gate.)
 
-**A0 teaching limitation.** Taken literally, CONF-1 and WF-1 require the
-implementation, passing tests, and checking infrastructure before the first
-commit. A specifications-only first commit is not permitted. Lecture 1
-acknowledges this as a reason to examine and "debug" process rules, rather
-than introducing an initial-construction phase or a baseline-acceptance
-protocol in A0. Its log records tasks leading to a completed snapshot, not
-one commit per task. Keep this limitation explicit until A2 addresses it
-under CF-15. Also distinguish the automated gate's checks from the full set
-of applicable obligations: a passing script does not discharge SQ review,
-human trace review, or reporting duties.
-
-**The rule template.** Every rule carries the same fields, so a reader can see
-when one is complete. This example uses the simple per-commit policy; A2's
-rules name the applicable checkpoints instead:
+**The rule template.** Every rule of the ledger and control layers carries
+the same fields, so a reader can see when one is complete; the per-form
+judgment clauses of A0 and A1 carry only the first four concerns of a rule
+(what, how evaluated, what evidence, how bound) and none of the last three
+(when, decided for a transition, on failure). A2's first rule:
 
 ```
-ID          CONF-2
-Style       obligation
-Maintains   CONF
-When        at every commit; applies to every mechanical clause
-Statement   Every mechanical clause MUST be cited by at least one test
-            or analysis of the method the clause names.
-Decided by  analysis: tools/trace.py; a "no evidence" row fails it
-Evidence    reports/conformance.md
-On failure  the gate is red and the work is returned; a test is added,
-            or the clause's method is changed by amendment
-Example     REQ-3 is cited by test_public_passes_unchanged
+ID          WF-1
+Style       gate
+Maintains   RQ, the mechanical part of CONF, and TR
+When        WHEN work would be committed
+Statement   Code-RQ-1, Reqs-CONF-1, Scen-CONF-1, Specs-TR-1, and
+            Specs-TR-2 MUST hold for the tree being committed, decided
+            by the exit code of tools/evaluate.sh.
+Decided by  analysis: the exit code; enforced by the pre-commit hook,
+            which runs the same script
+Evidence    the header of the run, copied into the dev-log entry; the
+            hook's refusal, when it refuses
+On failure  the commit is not made; the work returns to its task
+Example     the hook refusing the commit of a test with no marker
 ```
 
 *Decided by* is the verification method of 2.6 applied to the rule itself, so
@@ -542,9 +698,10 @@ skill, then a hook.
 4. Rules do not define terms.
 5. State the trigger and the scope.
 6. Say what failure does. Never silent.
-7. Rules are earned: start with one gate and the ledger; add a rule the
-   second time a check is done by hand, which is when a procedure is written
-   and a skill is near.
+7. Rules are earned: start with the judgment clauses and the report; add a
+   procedure the second time an activity is done by hand, which is when a
+   skill is near; add a rule when the process needs a claim to hold at a
+   named step.
 8. One example per rule, from this system.
 
 **The design grid.** A grid with the five judgments as rows and the seven
@@ -553,18 +710,22 @@ empty at first. The CONF row of the grid, made project-specific, is the
 verification plan, which is the cleanest statement of what a verification
 plan contains.
 
-**Pace.** Styles enter two at a time: obligation and gate with the first
-version (the ledger is a provided file, not yet a form rule); procedure and
-form with the audit, where the procedure becomes the skill; policy and
-staleness with the plan and its wave-end approval gate; change control with
-the change request; the verification plan as the bundle of a project's
-policies and procedures. Section 3.2 counts styles per version beside rules.
+**Pace.** The obligation style is carried by the per-form judgment clauses
+from A0 (a clause is an obligation with its trigger and failure clause left
+to the control layer); procedure enters at A1 with the audit and
+elicitation, where the procedure becomes the skill; form is a template
+(`process/templates/`) rather than a rule; gate, staleness, and policy enter
+at A2 with the ledger rules, the plan, and its wave-end approval gate;
+change control with the change request; the verification plan as the bundle
+of a project's policies and procedures. Section 3.2 counts styles per
+version beside rules.
 
 **Material to ship with the example.** A standing handout beside
 `../specification-kinds.md`, proposed as `process-rule-styles.md`, with the
 table, the template, the principles, the grid, the threat table of 2.9, and
-one worked example per style from the guard; and a `process/rules.md`
-template whose header carries the fields above.
+one worked example per style from the guard; the per-form clause template
+is the preamble of `a0/process/judgments.md`, and the rule template above
+is for the rules of A2 and later.
 
 ### 2.9 Threats to a judgment
 
@@ -614,9 +775,10 @@ which rung applies, what independence is required, and how the verifier is
 itself verified.
 
 **Pace.** Early in the progression the concept costs no rules; it enters
-through two things that the first version already has. Every ledger row
-carries its provenance (2.1), and the lecture says once that a row is a claim
-and that the ways it can be wrong are listed in one place. The closing
+through two things that the first version already has. Every row of the
+assurance report carries its provenance (2.1), which is how A0 carries T2
+and T4 before any rule exists, and the lecture says once that a row is a
+claim and that the ways it can be wrong are listed in one place. The closing
 sabotage of each version (3.3) is reframed as the first mitigation: a verifier
 that has never been seen to fail has not been verified. From there one threat
 surfaces per version with its mitigation, as the "first seen" column records:
@@ -664,9 +826,9 @@ systematic test-discipline review enter in A2.
 
 | Version | Capability | Specification forms introduced | Judgments and mechanisms introduced | Process artifacts and rules introduced |
 |---|---|---|---|---|
-| A0 | F1 | minimal concept of operations (purpose statement, scope, two user categories, three user stories with example messages, each story marked *walkthrough*); plain requirements with identifiers (REQ-0 message, REQ-1 to REQ-3, each marked *test*); test suite; technology (`pyproject.toml`) | all five rows, minimal: SQ by a person reading the clauses (ladder rung 1); RQ `ruff` and the suite collects; CONF as the aggregate: tests pass, requirements coverage from the markers and the conformance report, branch coverage from `pytest-cov`, the stories walked by a person (rung 1); VAL one sign-off on the concept of operations; TR markers resolve; every ledger row carries its provenance, and the closing sabotage is the first verification of a verifier (2.9) | `process/rules.md` with 8 rules, one per category (styles: obligation, gate); hand-written ledger from a provided template; dev log |
-| A1 | F1 (unchanged) | the concept of operations revised through elicitation with the stakeholders; the elicitation record (reference, not a specification); glossary; requirements rewritten in EARS; acceptance fixtures derived from the stories | SQ audit (consistency, EARS form, glossary discipline, story-to-requirement alignment, a method on every clause, a reason on every judgment clause) on six to eight seeded gaps, first by a person, then by the agent, then as the `/audit-spec` skill (ladder rungs 1 to 3 on the glossary-discipline check; the seeded gaps double as the audit's known-violation set: the person misses some, which is T1's capacity threat, the agent over-reports one, and the skill's first step is read-before-check); VAL walkthrough per user category and re-sign-off, since the revision made VAL stale; TR trace-matrix tool; CONF story tests over the fixtures (the story walkthrough climbs to a test; the sign-off is kept) | gap-list form; trace matrix report; 8 rules (styles added: procedure, form); first skill, `/audit-spec` (rung 3) |
-| A2 | F2 | architecture (stages, order, purity, allocation, integration contract); data format (ad hoc rules); interface contracts (pre- and postcondition per stage); build plan | RQ `mypy` and the test-discipline review; CONF gains *analysis* as a second method (the import rule for the architecture clauses, `mypy` for the signature part of the contracts, and a script for the glossary-discipline check, which reaches rung 4: review becomes analysis, and the script is verified on the A1 seeded gaps before it replaces the skill, T2) and *review* as a third (the allocation table as `review (agent)` with a human spot-check; the purpose statement's implementation-independence stays at rung 3); generated ledger, from exit codes at the named commit and never from completion notes (T4) | plan with tasks, waves, gates, and checkpoint-specific obligations: intermediate commits may have unmet judgments, while wave acceptance requires designated judgments for its declared scope (CF-15); revise inherited per-commit requirements accordingly, rather than merely adding a wave gate; dev log per task; 8 rules (WF-2 to WF-5, RQ-2, RQ-3, CONF-3, CONF-4; styles added: policy, staleness, the approval gate); `/ledger` skill |
+| A0 | F1 | minimal concept of operations (purpose statement, scope, two user categories, three user stories with example messages, each story marked *walkthrough*); plain requirements with identifiers (REQ-0 message, REQ-1 to REQ-3, each marked *test*); test suite; technology (`pyproject.toml`) | all five judgments, minimal, as eight clauses in four forms: SQ by a person reading the clauses (ConOps-SQ-1, Reqs-SQ-1, Specs-SQ-1; ladder rung 1) with the clause reader for the header parts; RQ `ruff` and the suite collects (Code-RQ-1); CONF as test evidence with requirements coverage from the markers and branch coverage from `pytest-cov` (Reqs-CONF-1) and the stories walked by a person (ConOps-CONF-1, rung 1); VAL one sign-off on the concept of operations (ConOps-VAL-1); TR citations resolve (Specs-TR-1); every row of the report carries its provenance, and the closing sabotage is the first verification of a verifier (2.9) | `process/judgments.md` with five definitions and eight clauses, no rules; `process/templates/assurance-report.md`; `records/` (the review, the walkthroughs and the sign-off, the dev log); the assurance report compiled on request by an agent, whose three roles the instruction file states (author; assessor on request; not a decider of human judgments); the evaluation command `tools/evaluate.sh`, which evaluates and does not gate |
+| A1 | F1 (unchanged) | the concept of operations revised through elicitation with the stakeholders; the elicitation record (reference, not a specification); glossary; requirements rewritten in EARS; acceptance fixtures derived from the stories | SQ audit (consistency, EARS form, glossary discipline, story-to-requirement alignment, a method on every clause, a reason on every judgment clause) on seven seeded gaps, first by a person, then by the agent, then as the `/audit-spec` skill (ladder rungs 1 to 3 on the glossary-discipline check; the seeded gaps double as the audit's known-violation set: the person misses some, which is T1's capacity threat, the agent over-reports one, and the skill's first step is read-before-check); VAL walkthrough per user category and re-sign-off, since the revision left ConOps-VAL-1 not holding; TR trace-matrix tool (Specs-TR-2); CONF story tests over the fixtures (Scen-CONF-1: the story walkthrough climbs to a test and ConOps-CONF-1 is retired; the sign-off is kept) | the judgments file arranged by form, grown to eleven clauses in six forms (Reqs-SQ-2, Gloss-SQ-1, Scen-CONF-1, Specs-TR-2 added); `process/procedures.md` with Audit and Elicit, their per-form parts kept with the skills (`forms/`); the gap-list template; the audit records; the assurance report recompiled at each of four commits, with ConOps-VAL-1 not holding at the first three; the two skills, `/audit-spec` (rung 3) and `/elicit`, both developer-started and taking the form as argument; still no rules |
+| A2 | F2 | architecture (stages, order, purity, allocation, integration contract); data format (ad hoc rules); interface contracts (pre- and postcondition per stage); build plan | RQ `mypy` and the test-discipline review; CONF gains *analysis* as a second method (the import rule for the architecture clauses, `mypy` for the signature part of the contracts, and a script for the glossary-discipline check, which reaches rung 4: review becomes analysis, and the script is verified on the A1 seeded gaps before it replaces the skill, T2) and *review* as a third (the allocation table as `review (agent)` with a human spot-check; the purpose statement's implementation-independence stays at rung 3); a clause may list several methods, and Reqs-CONF-2 arrives for analysis evidence; the ledger as the report kept, generated from exit codes at the named commit and never from completion notes (T4), with stale rows marked by dependence through the trace matrix | the first rules, in two groups: `Ledger-1` to `Ledger-3` (the kept report, staleness, dependence) and `WF-1` to `WF-3` (the gate before a commit, enforced by a pre-commit hook; a specification change audited before it is relied on; wave acceptance as a recorded decision), with the plan's tasks, waves, gates, and checkpoint-specific obligations: intermediate commits may have unmet judgments, while wave acceptance requires designated judgments for its declared scope (CF-15); dev log per task; at most 8 rules (styles added: gate, staleness, policy, the approval gate); `/ledger` skill |
 | A3 | F4 | change request and change report; workflow graph (the process as a state machine) | a declared change of mind makes VAL stale while the unchanged artifacts can still agree; the subsequent specification revision makes affected evidence stale; impact analysis uses the declared trace links without assuming they capture every dependency; the old suite still passes after the requirement changed, but stale CONF evidence cannot support the revised claim (T4) | branch per change; 4 rules (WF-6, WF-7, RPT-3, RPT-4; style added: change control) |
 | A4 | F5 | state machine (table and diagram); message sequence chart; **verification plan**, the first project-specific one: transition coverage as a second realization-coverage objective, and the ladder rung, the independence requirement, and how the verifier is verified, for every clause group | trace tests with transition coverage; table-driven or generated session module; the verification results reviewed against the plan; the deep dive on threats to a judgment (2.9): this version's sabotage is of a verifier, the import analysis made to ignore `from` imports, and its known-violation set catches it | 3 rules (CONF-5 transition coverage; CONF-6 independence; WF-8 the verification plan precedes its tests); the verification plan bundles the project's policies and procedures |
 | A5 | F6 | schema or IDL for the message | schema validation at ingress; the generator as the conformance argument | none |
@@ -835,6 +997,28 @@ maps to the catalog in `../specification-kinds.md`, and which capability from
 third, fourth, and fifth columns. Forms are cited by name, never by number, as
 the catalog does.
 
+**The per-form end state the catalog leads to.** From A1 the judgments file
+has one section per form, and every form a version introduces brings its
+section: its SQ clauses, its CONF method and evidence, its VAL clause if it
+is stakeholder-facing, its audit items, and whether elicitation applies to
+it. The end state is that every form in `../specification-kinds.md` has a
+page (or a section of the catalog) with the suggested format or template,
+the form-level fields of its clauses (*Holds when*, *Evaluated by*,
+*Evidence*, which depend only on the form), the audit items, the
+elicitation note, and an example from the running example; the catalog
+becomes the index into those pages, and the running example fills a page
+each time a form enters. The pathway for a student's project follows:
+choose the forms from the catalog; copy each form's clauses; write the *In
+this project* bindings; copy the templates and the instruction file's three
+roles, which are form-level too; build or adapt the tools from the tool
+catalog. The five definitions never change. A `starter/` directory holding
+the generic files is a later deliverable. Two pedagogical consequences: a
+student can take the A0 and A1 toolkit without any control layer, which is
+what a brownfield project needs (infer specifications for an existing code
+base, write their SQ clauses and audit them, write their CONF clauses and
+collect evidence); and the per-form pages are what a student reaches for
+when their project uses a form the lectures did not cover.
+
 ### 4A. Product specifications
 
 | Form | Constrains | Appropriate when | Verification method (verifier; specification coverage; realization coverage; what a pass does not show) | Must agree with | Catalog today | First needed by |
@@ -1002,7 +1186,7 @@ Where the game demo's verification rules go in this design:
 
 | Game demo rule | Home here |
 |---|---|
-| VER-1 verifiers and scope | the "established by" column of the ledger; the *who decides* axis of 2.6 |
+| VER-1 verifiers and scope | the *Evaluated by* field of every clause; the *who decides* axis of 2.6 |
 | VER-2 mechanical and judgment clauses, the table | the verification method on each clause (2.6); an SQ rule that every clause carries one |
 | VER-3 when verification runs | WF rules: A0/A1 require the automated gate before every commit; A2 separates intermediate checks from wave-acceptance gates requiring designated judgments for a declared scope |
 | VER-4 the gate | the algorithmic gate: CONF's mechanical conjuncts together with RQ's analyses |
@@ -1074,14 +1258,32 @@ Suggested evolutions of the model, none required by the course:
 ## 6. Repository layout and reuse
 
 - **Location:** `module-ase-principles/demos/running-example-message-guard/`,
-  one snapshot directory per version (`v0/`, `v1/`, and so on), plus a planned
-  `build-history.sh` that replays the snapshots into a tagged git repository.
-  Replay starts with the completed A0 as a baseline commit; its dev-log tasks
-  must not be represented as separate commits claimed to satisfy A0's rules.
-  Label replayed history as a reconstruction, not the original build history.
-  Later intermediate commits must follow the checkpoint policy applicable to
-  their version. Lecture notes link to a fixed snapshot; students can
-  `diff -r v1 v2`.
+  one snapshot directory per version, named as the lectures name the
+  versions (`a0/`, `a1/`, and so on), plus `build-history.sh`, which replays
+  the snapshots into a tagged git repository (tags `a0`, `a1-specs`,
+  `a1-scenarios`, `a1-trace`, `a1`). Replay starts with the completed A0 as
+  a baseline commit; its dev-log tasks are not represented as separate
+  commits. Label replayed history as a reconstruction, not the original
+  build history. Later intermediate commits must follow the checkpoint
+  policy applicable to their version, once one exists. Lecture notes link to
+  a fixed snapshot; students can `diff -r a1 a2`.
+- **Layout per version** (the layers of 2.1a):
+
+  ```
+  A0  CLAUDE.md                              the agent's three roles
+      process/judgments.md                   five definitions; clauses by form
+      process/templates/assurance-report.md
+      records/reviews.md  records/walkthrough.md  records/dev-log.md
+      reports/assurance-report.md  reports/conformance.md
+      tools/evaluate.sh                      every mechanical evaluation, one command
+  A1  + process/procedures.md  (Audit, Elicit)
+      + process/templates/gap-list.md
+      + records/audit-NN.md  records/validation.md  reference/elicitation.md
+      + reports/trace-matrix.md
+      + .claude/skills/{audit-spec,elicit}/  with forms/ per form
+  A2  + process/rules.md  (Ledger-n, WF-n)
+      + reports/ledger.md  tools/ledger.py  a pre-commit hook
+  ```
 - **Reuse:** adapt `tests/conftest.py` and `tests/conformance.py` from
   `module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/`
   (identifier patterns for `REQ-`, `US-`, `ARCH-`, `DATA-`, `IF-`; status
@@ -1089,9 +1291,9 @@ Suggested evolutions of the model, none required by the course:
   adapt its `tests/test_architecture.py` as the import analysis for the
   architecture clauses; copy its `pyproject.toml` marker configuration
   (`--strict-markers`); add `pytest-cov` for structural coverage.
-- **Licensing:** `specs/`, `process/`, `reports/`, and `reference/` are CC BY
-  4.0 prose; `guard/`, `tests/`, `tools/`, and configuration are MIT, per
-  `LICENSING.md`.
+- **Licensing:** `specs/`, `process/`, `records/`, `reports/`, `reference/`,
+  and `tooling/` are CC BY 4.0 prose; `guard/`, `tests/`, `tools/`, the
+  skills, and configuration are MIT, per `LICENSING.md`.
 - **Documents to update when the first version is built:**
   `specification-kinds.md` (the new kinds, *user categories*, the verification
   plan, and a "first needed by" column), the `CLAUDE.md` demos index, the
@@ -1113,7 +1315,7 @@ Suggested evolutions of the model, none required by the course:
 | conformance | A0 | B2 | C1 | D0 | the CONF row as the aggregate; the conformance and coverage reports |
 | executable specification | A0 | B2 | C1 | D0 | tests that cite clauses; fixtures from A1 / B1 / C3 / D2 |
 | family of specifications | A0 | B1 | C2 | D1 | several `specs/*.md`; audited together for consistency from A1 / B1 / C2 / D2 |
-| gate (algorithmic) | A0 | B2 | C1 | D0 | the gate command in WF-1 |
+| gate (algorithmic) | A2 | B2 | C1 | D0 | `tools/evaluate.sh` behind the pre-commit hook of WF-1 (A2); before that the command evaluates and does not gate |
 | gate (approval) | A2 | B3 | C4 | D1 | the sign-off that closes a wave |
 | invariant | A0, A2 | B2, B3 | C1, C4 | D0, D1 | A0/A1: the automated gate passes before each commit; A2: designated judgments are established before wave acceptance |
 | mechanical clause; judgment clause | A0 | B0 | C1 | D0 | the verification method on each clause: mechanical = test or analysis, judgment = review or walkthrough |
@@ -1124,12 +1326,12 @@ Suggested evolutions of the model, none required by the course:
 | specification | A0 | B0 | C1 | D0 | `specs/conops.md` or `specs/requirements.md` |
 | validation | A0 | B0 | C3 | D2 | the VAL row and the sign-off |
 | verification | A0 | B2 | C1 | D0 | the test suite and the two coverages under the CONF row |
-| verifier (human, agent, algorithmic) | A0 | B0 | C1 | D0 | the "established by" column of the ledger; the verifier kind on each judgment clause |
+| verifier (human, agent, algorithmic) | A0 | B0 | C1 | D0 | the *Evaluated by* field of every clause; the verifier kind on each judgment clause |
 | verifier ladder | A1, A2 | B1, B3 | C2, C4 | D2, D3 | the glossary-discipline check: a person, the agent, the skill, then a script; the story walkthrough becoming fixture tests with the sign-off kept |
 | intent | A0 | B0 | C3 | D2 | no artifact: the VAL sign-off, and the declared change of mind that makes VAL stale in A3 / B4 / C5 / D3 |
 | purpose statement | A0 | B0 | C3 | D2 | the opening of `specs/conops.md` |
 | elicitation record (reference) | A1 | B0 | C3 | D2 | `reference/elicitation.md` |
-| artifact | A0 | B0 | C1 | D0 | the categories in `process/rules.md` |
+| artifact | A0 | B0 | C1 | D0 | the categories of the README and the forms of `process/judgments.md` |
 | development state; ledger | A0 | B0 | C1 | D0 | `reports/ledger.md` |
 | development-state judgment (all five) | A0 | B2 | C3 | D2 | the five ledger rows; three rows from B0 / C1 / D0 |
 | establish; stale | A1, A2 | B3 | C4 | D1 | the re-sign-off after A1's revision; rule WF-5 and the regenerated ledger; the declared change of mind in A3 / B4 / C5 / D3 |
@@ -1137,7 +1339,7 @@ Suggested evolutions of the model, none required by the course:
 | traceability | A0 | B0 | C1 | D0 | markers; the trace matrix from A1 / B1 / C3 / D2 |
 | plan; task; wave | A2 | B3 | C4 | D1 | `plans/001-*.md` |
 | realization quality | A0 | B2 | C0 | D0 | the RQ row |
-| governance | A0 | B0 | C0 | D0 | `process/rules.md` |
+| governance | A0 | B0 | C0 | D0 | `process/judgments.md`; from A1 `process/procedures.md`; from A2 `process/rules.md` |
 | rule style (seven) | A0 | B0 | C0 | D0 | obligation and gate first; procedure and form with the audit; policy and staleness with the plan; change control with the change |
 | change request; change report | A3 | B4 | C5 | D3 | `reports/CR-001.md` |
 | assurance | A0 | B0 | C1 | D0 | the ledger read as an argument |
@@ -1213,6 +1415,25 @@ Suggested evolutions of the model, none required by the course:
    the mitigations; or a standalone lecture after it, which would also be the
    place to re-cut Lecture 01's six-item list into the five classes. Until
    then the lecture's list stands and is cited.
+8. **The layering of the process material**: settled 2026-10-24
+   ([running-example-relayering.md](running-example-relayering.md)). The
+   rule template of 2.8, which fused what a judgment says, who establishes
+   it, how it is reported, and when it must hold, was found too dense for a
+   first exposure. A0 and A1 were rebuilt with the four concerns separated:
+   per-form judgment clauses with *Holds when*, *Evaluated by*, *Evidence*,
+   *In this project*; procedures from A1; records beside reports; an
+   assurance report compiled on request in place of the hand-written
+   ledger; no process rules before A2, where the ledger rules and the
+   control rules enter together. Form-first identifiers (`Reqs-CONF-1`),
+   skills with the form as argument, and the snapshot directories `a0/`,
+   `a1/` were decided at the same time. Sections 2.1, 2.1a, 2.2, 2.3, 2.4,
+   2.4a, 2.7, 2.8, 2.9, 3 (option A), 4, and 6 carry the amendments; CF-12,
+   CF-14, and CF-15 are unchanged in substance, their "prescribed versus
+   enforced" language now describing the control layer. The A1 completion
+   notes of section 9 cite `v1/` paths and the rule identifiers of the
+   build as it stood on 2026-10-22; read `v1/` as `a1/`, `reports/audit-`
+   as `records/audit-`, and the rule identifiers through the mapping in
+   the re-layering proposal.
 
 ## 9. Implementation constraints and carry-forward items from review
 
@@ -1681,7 +1902,7 @@ as standard Spec Kit conformance-reporting utilities. The recorded chain is:
    the foundational implementation phase. The [session transcript](../module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/specs/001-five-in-a-row/transcript/session-transcript.md)
    records that phase under `/speckit-implement`; its original commit hash
    `2ff1e1c` maps to the public hash in the demo README.
-5. [A0's development log, entry 2](../module-ase-principles/demos/running-example-message-guard/v0/reports/dev-log.md)
+5. [A0's development log, entry 2](../module-ase-principles/demos/running-example-message-guard/a0/records/dev-log.md)
    records adapting the plugin and adding the gate command. The A0 files
    first appear in public commit `4a9d077`, dated 2026-10-20.
 

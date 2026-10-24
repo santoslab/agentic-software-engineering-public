@@ -109,7 +109,7 @@ Project 1 brief; PU the project unit (Stages B to E); E the essay only.
 | 13 | Architecture (module split) | parts, boundaries, allowed dependencies | AUD-1–7 | reading; a dependency check where one is written | mostly | L03, P1, E |
 | 14 | Technology and platform | named languages, versions, libraries, tools | AUD-1–7 | dependency and build files; provenance by judgment | no | P1, PU, E |
 | 15 | Development process | steps, gates, hand-offs, reporting forms | its own mechanism (DEV-3, RPT-3); AUD-1–7 | the repository's history; the gate (VER-4); hooks | yes | L01–L06, PU |
-| 16 | Glossary / domain model (the message guard's `specs/glossary.md`) | the vocabulary every specification uses in one sense; later, entities and attributes | AUD-1–7; the running example's SQ-4 | a reader within the audit; a script for the mechanical part (A2) | yes | the ASE principles module, version A1 |
+| 16 | Glossary / domain model (the message guard's `specs/glossary.md`) | the vocabulary every specification uses in one sense; later, entities and attributes | AUD-1–7; the running example's Gloss-SQ-1 | a reader within the audit (procedure Audit); a script for the mechanical part (A2) | yes | the ASE principles module, version A1 |
 
 The design of the running example (`software-engineering/running-example-design.md`,
 section 4) gives, for each kind, the capability of that example that first
@@ -180,7 +180,7 @@ technical specifications holds — that is the other kinds' job.
 `module-software-engineering/student-materials/reversi-starter/CONOPS-sketch.md`;
 the concept of operations you write for your knowledge base in Project 0;
 the running example's
-`module-ase-principles/demos/running-example-message-guard/v1/specs/conops.md`,
+`module-ase-principles/demos/running-example-message-guard/a1/specs/conops.md`,
 with its four essential parts (an agreed purpose statement, the scope with its
 assumptions, the user categories, the stories with their examples) and its
 deferred wants, revised through elicitation (`reference/elicitation.md`).
@@ -212,12 +212,12 @@ promotes it to a document of its own from version A1, because three
 specifications and a scenario file share it.
 
 **Place in the specification family.** Cross-cutting: every specification
-must agree with it (AUD-3; the running example's rule SQ-4, glossary
+must agree with it (AUD-3; the running example's clause Gloss-SQ-1, glossary
 discipline), and the data format, when it arrives, refines it. A requirement
 may derive from glossary terms rather than from a story (the running
 example's REQ-0).
 
-**Audited by.** AUD-1 to AUD-7 for the document itself; SQ-4 for the
+**Audited by.** AUD-1 to AUD-7 for the document itself; Gloss-SQ-1 for the
 discipline across the family: every domain term used in a specification is
 defined exactly once here and used only in that sense; a term defined twice,
 or defined elsewhere, is a gap. An unquantified adjective in a story
@@ -232,7 +232,7 @@ one vocabulary; it does not establish that the definitions are right, which
 is a validation question answered through the concept of operations.
 
 **Examples.** Course:
-`module-ase-principles/demos/running-example-message-guard/v1/specs/glossary.md`
+`module-ase-principles/demos/running-example-message-guard/a1/specs/glossary.md`
 (thirteen terms of the message guard); the Terms section of the A0 concept of
 operations it grew from; §9 of the game's `CONOPS.md`. General: the data
 dictionary of a database design; the Definitions clause of a standard, which
@@ -699,7 +699,7 @@ the shared fixtures of the project unit,
 `weeks-04-07/student-materials/fixtures/scenarios.json`; the Reversi shape in
 `project-1-reversi-brief.md` §3.1, with the pass and early-end scenarios its
    §3.3 requires; the running example's
-`module-ase-principles/demos/running-example-message-guard/v1/specs/scenarios.json`,
+`module-ase-principles/demos/running-example-message-guard/a1/specs/scenarios.json`,
 six scenarios derived from three stories, each citing its story, with the
 file's assumptions, governance, and blind spots stated inside it.
 General: the published test vectors for a cryptographic hash function, which

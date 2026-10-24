@@ -1,7 +1,8 @@
 # Re-layering the running example: definition, evaluation, reporting, control
 
-**Status:** proposal, 2026-10-24, for the instructor's review before any
-snapshot or lecture is changed. It amends
+**Status:** approved and carried out on 2026-10-24 (sections 9 and 10
+record the decisions; the snapshots `a0/` and `a1/`, the design document,
+the lectures, and the handouts now follow it). It amends
 [running-example-design.md](running-example-design.md); section 7 lists the
 amendments precisely. Worked examples of every new artifact are in
 [relayering-examples/](relayering-examples/README.md).
@@ -141,12 +142,14 @@ failure*, *Example*), because control is where *When* and *On failure* belong.
 A0  CLAUDE.md
     process/judgments.md
     process/templates/assurance-report.md
-    records/reviews.md  records/validation.md  records/dev-log.md
+    records/reviews.md  records/walkthrough.md  records/dev-log.md
     reports/assurance-report.md  reports/conformance.md
-A1  + process/procedures.md
+    tools/evaluate.sh  (every mechanical evaluation; evaluates, does not gate)
+A1  + process/procedures.md  (Audit, Elicit)
     + process/templates/gap-list.md
-    + records/audit-NN.md   reference/elicitation.md
+    + records/audit-NN.md   records/validation.md   reference/elicitation.md
     + reports/trace-matrix.md
+    + .claude/skills/{audit-spec,elicit}/forms/
 A2  + process/rules.md  (Ledger-n, WF-n)
     + reports/ledger.md  tools/ledger.py  a pre-commit hook
 ```
@@ -256,9 +259,11 @@ Applied after the instructor reviews the examples.
 - **A0.** `process/rules.md` becomes `process/judgments.md` and one
   template. `reports/ledger.md` becomes `reports/assurance-report.md`,
   compiled by the agent from a retained prompt. `reports/walkthrough.md`
-  becomes `records/validation.md`; the dev log moves to `records/`. The
-  gate script stays as the mechanical bundle the report procedure runs; the
-  plugin and the tests are unchanged. The instruction file is the example.
+  becomes `records/walkthrough.md` (renamed `records/validation.md` at A1's
+  last commit, when the validation record arrives); the dev log moves to
+  `records/`. The gate script becomes `tools/evaluate.sh`, the mechanical
+  bundle the report procedure runs, renamed because in A0 and A1 it
+  evaluates and does not gate; the plugin and the tests are unchanged. The instruction file is the example.
 - **Lecture 01.** Untouched except: "The ledger" becomes "The assurance
   report" (with the assurance-case remark and the ledger as a forward
   pointer); "Workflow controls: the gate" is removed and a paragraph in

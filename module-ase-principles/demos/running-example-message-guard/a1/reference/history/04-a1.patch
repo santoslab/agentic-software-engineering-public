@@ -1,0 +1,2622 @@
+From 3977fc74e7ca99fe979ebaf9ab4e9cb1b389248e Mon Sep 17 00:00:00 2001
+From: John Hatcliff <john.hatcliff@gmail.com>
+Date: Sat, 24 Oct 2026 12:12:08 -0500
+Subject: [PATCH] a1: validation and sign-off, ConOps-VAL-1 amended, the
+ README, the tool catalog, the skills per form
+
+records/validation.md with the stakeholders' walkthroughs and the A1 sign-off (the earlier walkthrough records as its appendix); ConOps-VAL-1 amended; /elicit 1.1 and /audit-spec 1.2 with the form as argument and one file per form; the tool catalog; the README; audit 05; the assurance report recompiled, all five judgments holding.
+---
+ .claude/skills/audit-spec/SKILL.md            | 118 ++++++----
+ .claude/skills/audit-spec/checklist.md        | 115 +++-------
+ .claude/skills/audit-spec/forms/between.md    |  34 +++
+ .claude/skills/audit-spec/forms/conops.md     |  38 ++++
+ .claude/skills/audit-spec/forms/gloss.md      |  12 ++
+ .claude/skills/audit-spec/forms/reqs.md       |  41 ++++
+ .claude/skills/audit-spec/forms/scen.md       |  21 ++
+ .claude/skills/elicit/SKILL.md                |  78 ++++---
+ .../elicit/{taxonomy.md => forms/conops.md}   |   2 +-
+ CLAUDE.md                                     |   7 +-
+ README.md                                     | 204 ++++++++++++------
+ process/judgments.md                          |  14 +-
+ process/procedures.md                         |   8 +-
+ pyproject.toml                                |   4 +-
+ records/audit-05-skill.md                     |  63 ++++++
+ records/audit-06-skill.md                     | 121 +++++++++++
+ records/dev-log.md                            |  57 +++++
+ records/validation.md                         |  96 +++++++++
+ records/walkthrough.md                        |  51 -----
+ reference/history/README.md                   |  34 +++
+ reports/assurance-report.md                   |  60 +++---
+ reports/conformance.md                        |   2 +-
+ reports/trace-matrix.md                       |   2 +-
+ specs/conops.md                               |   4 +-
+ specs/requirements.md                         |   2 +-
+ tooling/README.md                             |  61 ++++++
+ tooling/clause-reader.md                      |  87 ++++++++
+ tooling/conformance-plugin.md                 | 102 +++++++++
+ tooling/evaluate.md                           |  82 +++++++
+ tooling/replay.md                             |  60 ++++++
+ tooling/scenario-loader.md                    |  67 ++++++
+ tooling/skill-audit-spec.md                   | 141 ++++++++++++
+ tooling/skill-elicit.md                       | 142 ++++++++++++
+ tooling/tooling-tests.md                      |  76 +++++++
+ tooling/trace.md                              |  13 +-
+ tooling/walkthrough-helper.md                 |  57 +++++
+ tools/walk.py                                 |   2 +-
+ uv.lock                                       |   2 +-
+ 38 files changed, 1746 insertions(+), 334 deletions(-)
+ create mode 100644 .claude/skills/audit-spec/forms/between.md
+ create mode 100644 .claude/skills/audit-spec/forms/conops.md
+ create mode 100644 .claude/skills/audit-spec/forms/gloss.md
+ create mode 100644 .claude/skills/audit-spec/forms/reqs.md
+ create mode 100644 .claude/skills/audit-spec/forms/scen.md
+ rename .claude/skills/elicit/{taxonomy.md => forms/conops.md} (97%)
+ create mode 100644 records/audit-05-skill.md
+ create mode 100644 records/audit-06-skill.md
+ create mode 100644 records/validation.md
+ delete mode 100644 records/walkthrough.md
+ create mode 100644 reference/history/README.md
+ create mode 100644 tooling/README.md
+ create mode 100644 tooling/clause-reader.md
+ create mode 100644 tooling/conformance-plugin.md
+ create mode 100644 tooling/evaluate.md
+ create mode 100644 tooling/replay.md
+ create mode 100644 tooling/scenario-loader.md
+ create mode 100644 tooling/skill-audit-spec.md
+ create mode 100644 tooling/skill-elicit.md
+ create mode 100644 tooling/tooling-tests.md
+ create mode 100644 tooling/walkthrough-helper.md
+
+diff --git a/.claude/skills/audit-spec/SKILL.md b/.claude/skills/audit-spec/SKILL.md
+index b7285f7..708e7b7 100644
+--- a/.claude/skills/audit-spec/SKILL.md
++++ b/.claude/skills/audit-spec/SKILL.md
+@@ -2,20 +2,25 @@
+ name: audit-spec
+ description: >-
+   Audits the specifications of this repository for specification quality by
+-  the fixed procedure Audit: read every specification in full, check
+-  within each document, between documents, and by executing the examples,
+-  then report every gap in the gap-list form (`process/templates/gap-list.md`) and stop for the
+-  developer's rulings. Use only when the developer explicitly asks for an
+-  audit of the specifications. Not for amending a specification, not for
+-  eliciting one, not for reviewing code or tests.
+-argument-hint: "[optional: the specification files to audit, default all of specs/]"
++  the fixed procedure Audit: read every specification in scope in full, check
++  within each document by its form's items, between documents, and by
++  executing the examples and scenarios, then report every gap in the
++  gap-list form and stop for the developer's rulings. The arguments name the
++  forms to audit (conops, reqs, gloss, scen) or paths; the default is every
++  form under specs/. Use only when the developer explicitly asks for an audit
++  of the specifications. Not for amending a specification, not for eliciting
++  one, not for reviewing code or tests.
++argument-hint: "[forms (conops reqs gloss scen) or paths, default all of specs/]"
+ disable-model-invocation: true
+ allowed-tools: Read Grep Glob
+ ---
+ 
+ # Audit the specifications
+ 
+-Version 1.1. The scope is `$ARGUMENTS` (if empty, every file under `specs/`).
++Version 1.2. This skill packages procedure `Audit` of
++`process/procedures.md`: the steps are the procedure's, stated once for any
++form; the items that depend on the form are files under [forms/](forms/),
++indexed by [checklist.md](checklist.md).
+ 
+ The specifications are the reference that every test, every conformance
+ report, and the stakeholders' sign-off rest on. A defect in them gives a
+@@ -24,57 +29,80 @@ tests from them will realize either reading of an ambiguous clause. This
+ skill finds the gaps; the developer rules on every one of them. The skill
+ never amends a file.
+ 
++## 0. Resolve the scope
++
++`$ARGUMENTS` is a list of forms or paths; if it is empty, the scope is every
++form of the table below that has a file under `specs/`.
++
++| Form | Document | Within-document items |
++|---|---|---|
++| `conops` | `specs/conops.md` | [forms/conops.md](forms/conops.md) |
++| `reqs` | `specs/requirements.md` | [forms/reqs.md](forms/reqs.md) |
++| `gloss` | `specs/glossary.md` | [forms/gloss.md](forms/gloss.md) |
++| `scen` | `specs/scenarios.json` | [forms/scen.md](forms/scen.md) |
++
++A path is mapped to its form by its file name. A form or path that is not in
++the table stops the skill: say which forms have items and ask the developer
++to add a file under `forms/` before auditing a new form. The glossary is
++read whatever the scope, because every form's glossary-discipline item needs
++it.
++
+ ## 1. Read everything first
+ 
+-Read, in full and before the first check: every file under `specs/`
+-(including `specs/glossary.md` and `specs/scenarios.json`), and
+-`process/judgments.md` and `process/procedures.md`. If `reference/elicitation.md`
+-exists, read it too: it is not audited, but it says what a stakeholder meant,
+-which a ruling may need.
+-Checking from memory of an earlier read is the characteristic failure of an
+-agent verifier; reading first is how this procedure guards against it. If
+-the judgments file names checks this skill does not (an SQ clause added
+-after version 1.0), apply those too and cite the clause.
++Read, in full and before the first check: every file in scope, the
++glossary, and `process/judgments.md` and `process/procedures.md`. If
++`reference/elicitation.md` exists, read it too: it is not audited, but it
++says what a stakeholder meant, which a ruling may need. Checking from memory
++of an earlier read is the characteristic failure of an agent verifier;
++reading first is how this procedure guards against it. If the judgments file
++names checks this skill's files do not (an SQ clause added after this
++version), apply those too and cite the clause.
+ 
+ ## 2. Check within each document
+ 
+-Apply the "within a document" items of [checklist.md](checklist.md) to each
+-specification on its own: well-formed clause headers, the declared EARS
+-pattern against the sentence, every domain term defined once in the
+-glossary and used in that sense, a reason on every judgment clause, no
+-unquantified adjective where a definition or a number is needed, nothing in
+-a purpose statement that only a builder would see.
++Apply the form's file to each document in scope on its own: well-formed
++clause headers, the declared EARS pattern against the sentence, every domain
++term defined once in the glossary and used in that sense, a reason on every
++judgment clause, no unquantified adjective where a definition or a number is
++needed, nothing in a purpose statement that only a builder would see,
++completeness for the stated scope. Each file says which items apply to its
++form and keeps the item identifiers C-1 to C-14 of the index.
+ 
+ ## 3. Check between documents
+ 
+-Apply the "between documents" items: every story has at least one
+-requirement and every requirement derives from a story or a glossary term;
+-no two clauses contradict, in one document or across two; one term means one
+-thing everywhere; each scenario agrees with the example of the story it
+-derives from; assumptions are stated as assumptions and not as requirements;
+-a want recorded as deferred has no requirement deriving from it; every file,
+-clause, procedure, and record entry a specification names exists at this commit.
++When the scope has more than one form, apply [forms/between.md](forms/between.md):
++every story has at least one requirement and every requirement derives from
++a story or a glossary term; no two clauses contradict, in one document or
++across two; one term means one thing everywhere; each scenario agrees with
++the example of the story it derives from; assumptions are stated as
++assumptions and not as requirements; a want recorded as deferred has no
++requirement deriving from it; every file, clause, procedure, and record
++entry a specification names exists at this commit. When the scope is one
++form, report the between-document items as *not in scope* rather than
++omitting them.
+ 
+ ## 4. Check by execution
+ 
+-For every story example and every scenario, decide from the clauses what the
+-output must be and compare it with the stated expectation. Where the
+-realization exists, you may also run `uv run python tools/walk.py LEVEL
++For every story example and every scenario in scope, decide from the
++clauses what the output must be and compare it with the stated expectation
++(item C-14, in [forms/scen.md](forms/scen.md) and in `between.md`). Where
++the realization exists, you may also run `uv run python tools/walk.py LEVEL
+ PAYLOAD` (it needs the developer's permission); a disagreement between the
+ run and the expectation is a finding about the pair, not evidence of which
+ one is wrong.
+ 
+ ## 5. Report and stop
+ 
+-Write the record in the form of `process/templates/gap-list.md`:
+-the header with this skill's version as the auditor; every checklist item
+-with *pass* or the gap identifiers it produced, so that the report says what
+-was checked and not only what was found; then one numbered gap per finding,
+-with the location (clause identifier or section), the check, the text
+-quoted exactly, and one proposed resolution. One gap holds one question; an
+-item that bundles two is split. Then **stop** and ask for rulings. Do not
+-amend any file, and do not re-run after amendments unless asked.
+-
+-Two findings are not gaps, and the checklist says why: an implementation
+-choice the specification deliberately leaves open, and a deployment
+-assumption that is stated as an assumption.
++Write the record in the form of `process/templates/gap-list.md`: the header
++with this skill's version as the auditor and the scope as audited; every
++item of the index with *pass*, *not in scope*, or the gap identifiers it
++produced, so that the record says what was checked and not only what was
++found; then one numbered gap per finding, with the location (clause
++identifier or section), the item, the text quoted exactly, and one proposed
++resolution. One gap holds one question; an item that bundles two is split.
++Then **stop** and ask for rulings. Do not amend any file, and do not re-run
++after amendments unless asked.
++
++Two findings are not gaps, and the items say why: an implementation choice
++the specification deliberately leaves open, and a deployment assumption that
++is stated as an assumption.
+diff --git a/.claude/skills/audit-spec/checklist.md b/.claude/skills/audit-spec/checklist.md
+index 96a525e..90de43a 100644
+--- a/.claude/skills/audit-spec/checklist.md
++++ b/.claude/skills/audit-spec/checklist.md
+@@ -1,88 +1,33 @@
+-# Audit checklist (procedure Audit; skill version 1.1)
++# Audit checklist: the index (procedure Audit; skill version 1.2)
+ 
+-Every item is applied and reported, as *pass* or as the gaps it produced.
+-Cite items as C-1 to C-14. (Version 1.0 cited them as A-1 to A-14, which
+-collided with the assumption identifiers A-1, A-2 of the concept of
+-operations; audit 03 noticed, and 1.1 renamed them.) The judgment each item
+-maintains is SQ unless the item says otherwise.
++Every item is applied and reported, as *pass*, *not in scope*, or the gaps
++it produced. Items are cited as C-1 to C-14; the identifiers have been
++stable since version 1.1 (version 1.0 cited them as A-1 to A-14, which
++collided with the assumption identifiers of the concept of operations;
++audit 03 noticed, and 1.1 renamed them). Version 1.2 moved the items into
++one file per form, so that a form's items can be read, audited, and
++extended on their own; the text of each item is unchanged from 1.1 except
++where a form-specific sentence was split out. The judgment each item
++serves is SQ unless the item says otherwise.
+ 
+-## Within a document
++| Item | Title | Applies to | File |
++|---|---|---|---|
++| C-1 | Well-formed header | conops (US clauses), reqs (REQ clauses), scen (SC identifiers) | [forms/conops.md](forms/conops.md), [forms/reqs.md](forms/reqs.md), [forms/scen.md](forms/scen.md) |
++| C-2 | EARS form | reqs | [forms/reqs.md](forms/reqs.md) |
++| C-3 | Glossary discipline | gloss (defined once); conops, reqs, scen (used in the defined sense) | [forms/gloss.md](forms/gloss.md) and each form's file |
++| C-4 | Unambiguous | conops, reqs | [forms/conops.md](forms/conops.md), [forms/reqs.md](forms/reqs.md) |
++| C-5 | Judgment clauses state why | conops, reqs | [forms/conops.md](forms/conops.md), [forms/reqs.md](forms/reqs.md) |
++| C-6 | Implementation-independent purpose and stories | conops | [forms/conops.md](forms/conops.md) |
++| C-7 | Complete for the stated scope and level | conops, reqs | [forms/conops.md](forms/conops.md), [forms/reqs.md](forms/reqs.md) |
++| C-8 | Derivation both ways | between documents | [forms/between.md](forms/between.md) |
++| C-9 | No contradiction | between documents (and within one) | [forms/between.md](forms/between.md) |
++| C-10 | One term, one sense | between documents | [forms/between.md](forms/between.md) |
++| C-11 | Assumptions are not requirements | between documents | [forms/between.md](forms/between.md) |
++| C-12 | Deferred wants stay deferred | between documents | [forms/between.md](forms/between.md) |
++| C-13 | References resolve | between documents | [forms/between.md](forms/between.md) |
++| C-14 | Examples and scenarios agree with their clauses | scen; the story examples, between documents | [forms/scen.md](forms/scen.md), [forms/between.md](forms/between.md) |
+ 
+-- **C-1 Well-formed header.** Every identified clause is one line of the form
+-  `**ID** · Method: <value> · <Key>: <value> ...`; the identifier is unique
+-  across all specifications; the method is one of *test*, *analysis*,
+-  *review (human)*, *review (agent)*, *walkthrough (human)*, *walkthrough
+-  (agent)*; every key is one the format defines (`Method`, `Pattern`,
+-  `Derived from`, `Scenarios`, `Validated by`, `Source`, `User category`,
+-  `Reason`). A header with an identifier and no method is a gap, not an
+-  omission. (Mechanical at rung 4: `tests/conformance.py` reports the same
+-  findings; the audit still lists them.)
+-- **C-2 EARS form.** Every requirement declares a `Pattern` and has that
+-  pattern's shape: *ubiquitous* "The <subject> shall <response>";
+-  *event-driven* "When <trigger>, the <subject> shall <response>";
+-  *state-driven* "While <state>, the <subject> shall <response>";
+-  *unwanted-behavior* "If <condition>, then the <subject> shall <response>";
+-  *optional-feature* "Where <feature>, the <subject> shall <response>";
+-  *complex* a combination of the above. The subject is the stage or the
+-  guard; the verb is "shall"; passive voice with no subject is a gap.
+-- **C-3 Glossary discipline.** Every domain term used in a specification is
+-  defined exactly once in `specs/glossary.md` and used only in its defined
+-  sense; no other specification defines a term. A term used in a story and
+-  absent from the glossary is a gap; a term defined twice is a gap.
+-- **C-4 Unambiguous.** Two careful readers could not disagree whether a
+-  behavior satisfies the clause. An unquantified adjective ("sensitive",
+-  "large", "promptly") where a definition or a number is needed is a gap.
+-  **Not a gap:** an implementation choice the clause deliberately leaves
+-  open. REQ-2's "unchanged" requires equal values; whether the very same
+-  object is returned is left open on purpose, and asking for object
+-  identity would be a new requirement, not a resolution of an ambiguity.
+-- **C-5 Judgment clauses state why.** Every clause whose method is *review*
+-  or *walkthrough* carries a `Reason` saying what a program cannot decide
+-  about it, or why it is not decided by a program at this commit. Apply the
+-  item to whatever the tree holds; if no clause has such a method, report
+-  *pass, no clause in scope*.
+-- **C-6 Implementation-independent purpose and stories.** Nothing in the
+-  purpose statement, the scope, the user categories, or the stories names a
+-  language, a library, a data structure, or anything only a builder would
+-  see. This check has a ceiling: a reader decides it, and a program cannot;
+-  the repository records that at rung 3.
+-- **C-7 Complete for the stated scope and level.** Every case inside the
+-  boundary has a clause (each security level has an outcome); nothing
+-  outside the boundary is specified; leaving an algorithm open is not
+-  incompleteness.
+-
+-## Between documents
+-
+-- **C-8 Derivation both ways.** Every story has at least one requirement
+-  deriving from it; every requirement derives from a story or from glossary
+-  terms; every scenario derives from a story and is listed in that story's
+-  `Scenarios` field; a story's `Source` entries are answers given by a
+-  stakeholder of the story's own user category. (Mechanical at rung 4 for
+-  the link part: `tools/trace.py`.)
+-- **C-9 No contradiction.** No two clauses, in one document or across two,
+-  assign the same input different outcomes or promise what another
+-  forbids. Read clauses that touch the same property side by side, word for
+-  word.
+-- **C-10 One term, one sense.** The same word means the same thing in every
+-  document; a definition that differs between the glossary and a document
+-  is a gap in the document.
+-- **C-11 Assumptions are not requirements.** Anything the deploying
+-  organization must ensure (routing, assignment of markings, authentication)
+-  is stated as an assumption in the scope section, never as a requirement
+-  with a verification method. **Not a gap:** an assumption stated as an
+-  assumption.
+-- **C-12 Deferred wants stay deferred.** A want the concept of operations
+-  records as deferred has no requirement, story clause, or scenario that
+-  promises it.
+-- **C-13 References resolve.** Every file, judgment clause, procedure, and
+-  record entry a specification names exists in the tree at this commit.
+-  (Added in 1.1: audit 03 found two forward references, under Specs-SQ-1,
+-  with no item to cite.)
+-
+-## By execution
+-
+-- **C-14 Examples and scenarios agree with their clauses.** For every story
+-  example and every scenario, the expected output follows from the clauses;
+-  a disagreement is a gap about the pair (example, clause), reported without
+-  deciding which side is wrong. Each scenario's input and expectation are
+-  the story's example, or a further instance the story's wording covers.
++The clauses of `process/judgments.md` cite these items in their *Evaluated
++by* fields: ConOps-SQ-1 (C-1, C-4 to C-7, C-11, C-12), Reqs-SQ-1 (C-1, C-4,
++C-7, C-8), Reqs-SQ-2 (C-2), Gloss-SQ-1 (C-3, C-10), Specs-SQ-1 (C-8 to
++C-14), Specs-TR-1 (C-8, C-13, for the parts a person reads).
+diff --git a/.claude/skills/audit-spec/forms/between.md b/.claude/skills/audit-spec/forms/between.md
+new file mode 100644
+index 0000000..8020434
+--- /dev/null
++++ b/.claude/skills/audit-spec/forms/between.md
+@@ -0,0 +1,34 @@
++# Audit items between documents
++
++Applied when the scope has more than one form, to the documents read
++together. Report each as *pass*, *not in scope*, or the gaps it produced.
++
++- **C-8 Derivation both ways.** Every story has at least one requirement
++  deriving from it; every requirement derives from a story or from glossary
++  terms; every scenario derives from a story and is listed in that story's
++  `Scenarios` field; a story's `Source` entries are answers given by a
++  stakeholder of the story's own user category. (Mechanical at rung 4 for
++  the link part: `tools/trace.py`.)
++- **C-9 No contradiction.** No two clauses, in one document or across two,
++  assign the same input different outcomes or promise what another
++  forbids. Read clauses that touch the same property side by side, word for
++  word.
++- **C-10 One term, one sense.** The same word means the same thing in every
++  document; a definition that differs between the glossary and a document
++  is a gap in the document.
++- **C-11 Assumptions are not requirements.** Anything the deploying
++  organization must ensure (routing, assignment of markings, authentication)
++  is stated as an assumption in the scope section, never as a requirement
++  with a verification method. **Not a gap:** an assumption stated as an
++  assumption.
++- **C-12 Deferred wants stay deferred.** A want the concept of operations
++  records as deferred has no requirement, story clause, or scenario that
++  promises it.
++- **C-13 References resolve.** Every file, judgment clause, procedure, and
++  record entry a specification names exists in the tree at this commit.
++  (Added in 1.1: audit 03 found two forward references, under Specs-SQ-1,
++  with no item to cite.)
++- **C-14 Examples agree with their clauses.** For every story example, the
++  expected output follows from the clauses; a disagreement is a gap about
++  the pair (example, clause), reported without deciding which side is
++  wrong. The scenario file's own C-14 is in `scen.md`.
+diff --git a/.claude/skills/audit-spec/forms/conops.md b/.claude/skills/audit-spec/forms/conops.md
+new file mode 100644
+index 0000000..7467fce
+--- /dev/null
++++ b/.claude/skills/audit-spec/forms/conops.md
+@@ -0,0 +1,38 @@
++# Audit items for a concept of operations (`conops`)
++
++Applied to `specs/conops.md` on its own. Report each as *pass* or as the
++gaps it produced.
++
++- **C-1 Well-formed header.** Every story is one line of the form
++  `**US-n** · Method: <value> · <Key>: <value> ...`; the identifier is unique
++  across all specifications; the method is one of *test*, *analysis*,
++  *review (human)*, *review (agent)*, *walkthrough (human)*, *walkthrough
++  (agent)*; every key is one the format defines for a story (`Method`,
++  `Scenarios`, `User category`, `Validated by`, `Source`, `Reason`). A
++  header with an identifier and no method is a gap, not an omission.
++  (Mechanical at rung 4: `tests/conformance.py` reports the same findings;
++  the audit still lists them.)
++- **C-3 Glossary discipline (use).** Every domain term used in the document
++  is defined in `specs/glossary.md` and used only in its defined sense; the
++  document defines no term of its own. A term used in a story and absent
++  from the glossary is a gap.
++- **C-4 Unambiguous.** Two careful readers could not disagree whether a
++  behavior satisfies a story or whether a sentence of the scope holds. An
++  unquantified adjective ("sensitive", "large", "promptly") where a
++  definition or a number is needed is a gap. **Not a gap:** an
++  implementation choice the document deliberately leaves open, and an
++  adjective inside a deferred want, which is a want, not a clause.
++- **C-5 Judgment clauses state why.** Every story whose method is *review*
++  or *walkthrough* carries a `Reason` saying what a program cannot decide
++  about it, or why it is not decided by a program at this commit. Apply the
++  item to whatever the tree holds; if no story has such a method, report
++  *pass, no clause in scope*.
++- **C-6 Implementation-independent purpose and stories.** Nothing in the
++  purpose statement, the scope, the user categories, or the stories names a
++  language, a library, a data structure, or anything only a builder would
++  see. This check has a ceiling: a reader decides it, and a program cannot;
++  the repository records that at rung 3.
++- **C-7 Complete for the stated scope and level.** Every case inside the
++  boundary has a story or is covered by a requirement derived from one;
++  nothing outside the boundary is specified; each user category has at
++  least one story; leaving an algorithm open is not incompleteness.
+diff --git a/.claude/skills/audit-spec/forms/gloss.md b/.claude/skills/audit-spec/forms/gloss.md
+new file mode 100644
+index 0000000..d3f279e
+--- /dev/null
++++ b/.claude/skills/audit-spec/forms/gloss.md
+@@ -0,0 +1,12 @@
++# Audit items for a glossary (`gloss`)
++
++Applied to `specs/glossary.md` on its own. Report each as *pass* or as the
++gaps it produced.
++
++- **C-3 Glossary discipline (definition).** Every domain term is defined
++  exactly once, as an entry of the form `- **term**: ...`; a term defined
++  twice is a gap; a term in **bold** inside a definition is itself an entry;
++  a definition that names a synonym a stakeholder uses says so inside the
++  entry rather than defining the synonym again. The glossary is the only
++  specification that defines a term; a definition found in another document
++  is reported against that document under its own C-3.
+diff --git a/.claude/skills/audit-spec/forms/reqs.md b/.claude/skills/audit-spec/forms/reqs.md
+new file mode 100644
+index 0000000..087d98f
+--- /dev/null
++++ b/.claude/skills/audit-spec/forms/reqs.md
+@@ -0,0 +1,41 @@
++# Audit items for a requirements document (`reqs`)
++
++Applied to `specs/requirements.md` on its own. Report each as *pass* or as
++the gaps it produced.
++
++- **C-1 Well-formed header.** Every requirement is one line of the form
++  `**REQ-n** · Method: <value> · <Key>: <value> ...`; the identifier is
++  unique across all specifications; the method is one of *test*,
++  *analysis*, *review (human)*, *review (agent)*, *walkthrough (human)*,
++  *walkthrough (agent)*; every key is one the format defines for a
++  requirement (`Method`, `Pattern`, `Derived from`, `Reason`). A header with
++  an identifier and no method is a gap, not an omission. (Mechanical at
++  rung 4: `tests/conformance.py` reports the same findings; the audit still
++  lists them.)
++- **C-2 EARS form.** Every requirement declares a `Pattern` and has that
++  pattern's shape: *ubiquitous* "The <subject> shall <response>";
++  *event-driven* "When <trigger>, the <subject> shall <response>";
++  *state-driven* "While <state>, the <subject> shall <response>";
++  *unwanted-behavior* "If <condition>, then the <subject> shall <response>";
++  *optional-feature* "Where <feature>, the <subject> shall <response>";
++  *complex* a combination of the above. The subject is the one the
++  document's preamble names for that kind of clause; the verb is "shall";
++  passive voice with no subject is a gap.
++- **C-3 Glossary discipline (use).** Every domain term used in a
++  requirement is defined in `specs/glossary.md` and used only in its
++  defined sense; the document defines no term of its own.
++- **C-4 Unambiguous.** Two careful readers could not disagree whether a
++  behavior satisfies the clause. An unquantified adjective where a
++  definition or a number is needed is a gap. **Not a gap:** an
++  implementation choice the clause deliberately leaves open. REQ-2's
++  "unchanged" requires equal values; whether the very same object is
++  returned is left open on purpose, and asking for object identity would be
++  a new requirement, not a resolution of an ambiguity.
++- **C-5 Judgment clauses state why.** Every requirement whose method is
++  *review* or *walkthrough* carries a `Reason` saying what a program cannot
++  decide about it. Apply the item to whatever the tree holds; if no
++  requirement has such a method, report *pass, no clause in scope*.
++- **C-7 Complete for the stated scope and level.** Every case inside the
++  boundary has a clause (each security level has an outcome); nothing
++  outside the boundary is specified; leaving an algorithm open is not
++  incompleteness.
+diff --git a/.claude/skills/audit-spec/forms/scen.md b/.claude/skills/audit-spec/forms/scen.md
+new file mode 100644
+index 0000000..46196d5
+--- /dev/null
++++ b/.claude/skills/audit-spec/forms/scen.md
+@@ -0,0 +1,21 @@
++# Audit items for a scenario file (`scen`)
++
++Applied to `specs/scenarios.json` on its own, with the stories it derives
++from at hand. Report each as *pass* or as the gaps it produced.
++
++- **C-1 Well-formed header.** Every scenario has an identifier of the form
++  `SC-n`, unique in the file; `id`, `derived_from`, `input`, and `expected`
++  are present; `expected` is a message or `null`. (Mechanical at rung 4:
++  `tests/conformance.py` reports a malformed or duplicate scenario; the
++  audit still lists it.)
++- **C-3 Glossary discipline (use).** The prose fields of the file (the
++  `specification`, `assumes`, `governance`, `loader`, `blind_spots`, and
++  `note` fields) use the glossary's terms in the glossary's sense and
++  define none.
++- **C-14 Examples and scenarios agree with their clauses.** For every
++  scenario, the expected output follows from the clauses; a disagreement is
++  a gap about the pair (scenario, clause), reported without deciding which
++  side is wrong. Each scenario's input and expectation are the story's
++  example, or a further instance the story's wording covers. The file is
++  never edited to make a test pass; a scenario that looks wrong is a gap
++  here.
+diff --git a/.claude/skills/elicit/SKILL.md b/.claude/skills/elicit/SKILL.md
+index e99a3a8..9480510 100644
+--- a/.claude/skills/elicit/SKILL.md
++++ b/.claude/skills/elicit/SKILL.md
+@@ -1,47 +1,63 @@
+ ---
+ name: elicit
+ description: >-
+-  Elicits or revises a concept of operations with its stakeholders by the
+-  clarify method: scan the document for what it does not settle, ask the
+-  stakeholders at most five questions, one at a time, each with options and a
+-  recommended answer, record every answer verbatim in the elicitation record,
+-  and apply each answer to the section it affects. Use only when the developer
+-  explicitly asks to elicit or revise a concept of operations. Not for writing
+-  requirements, not for auditing a specification, not for explaining what a
+-  concept of operations is.
+-argument-hint: "[path to the concept of operations, default specs/conops.md] [optional focus]"
++  Elicits or revises a stakeholder-facing specification with its stakeholders
++  by the clarify method: scan the document for what it does not settle, ask
++  the stakeholders at most five questions, one at a time, each with options
++  and a recommended answer, record every answer verbatim in the elicitation
++  record, and apply each answer to the section it affects. The first argument
++  names the form (conops) or a path. Use only when the developer explicitly
++  asks to elicit or revise a specification with its stakeholders. Not for
++  writing requirements, not for auditing a specification, not for explaining
++  what a concept of operations is.
++argument-hint: "[form (conops) or path, default conops] [optional focus]"
+ disable-model-invocation: true
+ allowed-tools: Read Grep Glob
+ ---
+ 
+-# Elicit: a concept of operations from its stakeholders
++# Elicit: a specification from its stakeholders
+ 
+-Version 1.0. The document is `$ARGUMENTS` (if empty, `specs/conops.md`); any
+-words after the path are the focus the developer wants covered first.
++Version 1.1. This skill packages procedure `Elicit` of
++`process/procedures.md`: the steps are the procedure's, stated once for any
++form; what depends on the form is a file under [forms/](forms/).
+ 
+-A concept of operations is the governing specification: every requirement,
+-scenario, and test derives from it, and it is the document a stakeholder
+-signs. A guess written into it becomes a requirement nobody decided, and a
+-question put to a stakeholder costs their attention. So this skill asks few
++## 0. Resolve the form
++
++The first word of `$ARGUMENTS` is the form or a path; the rest is the focus
++the developer wants covered first. If it is empty, the form is `conops`.
++
++| Form | Document | Taxonomy |
++|---|---|---|
++| `conops` | `specs/conops.md` | [forms/conops.md](forms/conops.md) |
++
++A path is mapped to its form by its file name (`conops.md` is `conops`). A
++form or path that is not in the table stops the skill: say which forms have
++a taxonomy and ask the developer to add one under `forms/` before running
++the skill on a new form. Do not improvise a taxonomy.
++
++A stakeholder-facing specification is a governing document: what derives
++from it is built from it, and it is the document a stakeholder signs. A
++guess written into it becomes a requirement nobody decided, and a question
++put to a stakeholder costs their attention. So this skill asks few
+ questions, asks them well, records the answers in the stakeholders' own
+ words, and changes the document only in the way an answer says.
+ 
+ ## 1. Read before asking
+ 
+-Read, in full: the concept of operations; `specs/glossary.md` if it exists;
++Read, in full: the document; `specs/glossary.md` if it exists;
+ `reference/elicitation.md` if it exists (earlier questions are not asked
+-again); and `process/procedures.md`, whose procedure `Elicit` this skill performs.
+-If the repository's procedure or record form differs from this skill's
+-bundled files, the repository's is the authority and the bundled files are
+-the fallback.
++again); and `process/procedures.md`, whose procedure `Elicit` this skill
++performs. If the repository's procedure or record form differs from this
++skill's bundled files, the repository's is the authority and the bundled
++files are the fallback.
+ 
+ ## 2. Scan the document
+ 
+-Rate each category of [taxonomy.md](taxonomy.md) as Clear, Partial, or
+-Missing for this document. Keep the map internal; print it only if no
+-question will be asked. A fact the repository answers (a file, a rule, an
+-earlier answer) is looked up, never asked: asking a stakeholder what the
+-repository already says wastes the one resource this procedure spends.
++Rate each category of the form's taxonomy as Clear, Partial, or Missing for
++this document. Keep the map internal; print it only if no question will be
++asked. A fact the repository answers (a file, a clause, an earlier answer)
++is looked up, never asked: asking a stakeholder what the repository already
++says wastes the one resource this procedure spends.
+ 
+ ## 3. Build the queue
+ 
+@@ -89,8 +105,8 @@ Immediately after an answer is accepted:
+    one canonical term for one concept.
+ 
+ Do not touch `specs/requirements.md`, the scenarios, the tests, or the code:
+-those derive from the concept of operations and are revised by their own
+-procedures after the audit.
++those derive from the document and are revised by their own procedures
++after the audit.
+ 
+ ## 6. Report and stop
+ 
+@@ -99,6 +115,6 @@ the sections touched; a coverage table listing every taxonomy category as
+ Resolved, Deferred (quota reached; name what remains), Clear, or Outstanding
+ (still Partial or Missing but low impact); and the next steps, which in the
+ course method are `/audit-spec` on the revised family, then the validation
+-walkthrough and the sign-off (ConOps-VAL-1). The developer reviews
+-the diff; a change the developer rejects is reverted and its record entry is
+-marked withdrawn, not deleted. Do not commit.
++walkthrough and the sign-off (ConOps-VAL-1). The developer reviews the diff;
++a change the developer rejects is reverted and its record entry is marked
++withdrawn, not deleted. Do not commit.
+diff --git a/.claude/skills/elicit/taxonomy.md b/.claude/skills/elicit/forms/conops.md
+similarity index 97%
+rename from .claude/skills/elicit/taxonomy.md
+rename to .claude/skills/elicit/forms/conops.md
+index 92c1559..8375f74 100644
+--- a/.claude/skills/elicit/taxonomy.md
++++ b/.claude/skills/elicit/forms/conops.md
+@@ -1,4 +1,4 @@
+-# Coverage taxonomy for a concept of operations
++# Coverage taxonomy for a concept of operations (`conops`)
+ 
+ Rate each category Clear, Partial, or Missing. A category is Clear when a
+ reader who had never met the stakeholders could answer its questions from the
+diff --git a/CLAUDE.md b/CLAUDE.md
+index 88250c9..2e43696 100644
+--- a/CLAUDE.md
++++ b/CLAUDE.md
+@@ -19,8 +19,8 @@ You have three roles here.
+    that exercise it (ConOps-SQ-1). Never edit `specs/scenarios.json` to make
+    a test pass: a scenario that looks wrong is a gap for the audit.
+    To revise the concept of operations with its stakeholders, the developer
+-   starts `/elicit` (procedure Elicit); you ask, record the answers in their
+-   words, and apply them; you do not write a decision nobody gave.
++   starts `/elicit conops` (procedure Elicit); you ask, record the answers
++   in their words, and apply them; you do not write a decision nobody gave.
+ 2. **Assessor, when asked.** When asked for the assurance report, compile it
+    by the procedure at the end of the judgments file: run every evaluation
+    whose method is test or analysis now (`tools/evaluate.sh` runs them all)
+@@ -30,7 +30,8 @@ You have three roles here.
+    of `process/templates/assurance-report.md`. For the SQ clauses the record
+    is the latest audit; if it names a state older than the current
+    specifications, say so. Do not run the audit as part of the report. When
+-   the developer starts `/audit-spec` (procedure Audit), run it in full,
++   the developer starts `/audit-spec` (procedure Audit), with the forms to
++   audit as its argument or every form by default, run it in full,
+    report every gap in the gap-list form, and stop for the developer's
+    rulings. Running the evaluations regenerates `reports/conformance.md`
+    and `reports/trace-matrix.md`; that is expected. If you are asked to review something yourself, do it
+diff --git a/README.md b/README.md
+index 718814e..ecea6e8 100644
+--- a/README.md
++++ b/README.md
+@@ -1,93 +1,165 @@
+-# Message Guard, version A0
++# Message Guard, version A1
+ 
+-Version A0 of the running example of the agentic software engineering
+-principles module. The system is the smallest cross-domain message guard:
+-one stage, `filter`, that drops a Critical message and passes anything else
+-unchanged. Everything else in this directory exists to show how a
+-specification is written, how five claims about the development state are
+-defined and evaluated, and how the state of those claims is reported. The
+-design behind the versions is `software-engineering/running-example-design.md`
+-at the repository root.
++Version A1 of the running example of the agentic software engineering
++principles module. The system is the one A0 built, unchanged: one stage,
++`filter`, that drops a Critical message and passes anything else unchanged;
++`guard/` is byte-identical to `a0/`. Everything that changed is how the
++product is specified, evaluated, and reported. The concept of operations was
++revised through elicitation with its stakeholders, its terms became a
++glossary, the requirements were rewritten in EARS, the stories' examples
++became a scenario file that any realization must reproduce, the
++specifications were audited three times on a draft with seeded gaps, a trace
++tool resolves every declared link, two skills package the elicitation and
++the audit, and the assurance report was recompiled at each of four commits.
++The design is `software-engineering/running-example-design.md` at the
++repository root; the build plan was
++`software-engineering/running-example-a1-plan-fable.md`; the snapshot was
++re-layered on 2026-10-24 as `software-engineering/running-example-relayering.md`
++describes.
+ 
+ ## The artifacts, by category
+ 
+ | Category | Files | Role |
+ |---|---|---|
+-| Intent | none | lives with the stakeholders; consulted through the sign-off |
+-| Specifications | `specs/conops.md` (purpose, scope and terms, user categories, user stories US-1 to US-3); `specs/requirements.md` (REQ-0 to REQ-3) | seven identified verification clauses; contextual specification text is reviewed with them but has no individual conformance-report row |
+-| Realization | `guard/` (the code); `tests/` (the suite, with optional clause citations) | what was built, and the executable claims about it; every clause assigned method *test* requires citing evidence |
+-| Judgments | `process/judgments.md` (five definitions; eight clauses, filed by form); `process/templates/assurance-report.md` | what each claim says, per form, and how it is evaluated; the form of the report |
+-| Records | `records/reviews.md`; `records/walkthrough.md` (the walkthroughs and the sign-off); `records/dev-log.md` | evidence of what people decided and did |
+-| Reports | `reports/assurance-report.md` (compiled on request); `reports/conformance.md` (generated) | the development state, readable without reading the code |
++| Intent | none | lives with the stakeholders; consulted through `/elicit` and the sign-off |
++| Specifications | `specs/conops.md` (agreed purpose; scope with assumptions A-1 and A-2; user categories; stories US-1 to US-3; deferred wants D-1 to D-3); `specs/glossary.md`; `specs/requirements.md` (REQ-0 to REQ-3, EARS); `specs/scenarios.json` (SC-1 to SC-6) | seven identified verification clauses, all with method *test*; contextual text and the scenarios are audited with them |
++| Reference | `reference/elicitation.md` (E-1 to E-5, the stakeholders' words); `reference/drafts/` (the specifications before the audit, with the seven seeded gaps); `reference/prompts/` (the EARS-rewrite and ad-hoc-audit prompts); `reference/history/` (the patches that replay the build) | informs the specifications; not audited; no judgment is about it |
++| Realization | `guard/` (unchanged); `tests/` (the unit tests of A0, the scenario loader, the tooling tests) | what was built, and the executable claims about it |
++| Judgments | `process/judgments.md` (five definitions; eleven clauses filed by six forms; a changelog); `process/procedures.md` (Audit, Elicit); `process/templates/` (the assurance report, the gap list) | what each claim says, per form, and how it is evaluated; how two activities are carried out; the forms of the records and the report |
++| Skills | `.claude/skills/elicit/` (procedure Elicit; `forms/conops.md` is its taxonomy); `.claude/skills/audit-spec/` (procedure Audit; `forms/` holds the items per form, `checklist.md` the index) | the two procedures, packaged; both started by the developer |
++| Records | `records/reviews.md`; `records/audit-01-human.md`, `audit-02-agent.md`, `audit-03-skill.md` (the three audits of the seeded draft), `audit-04-skill.md`, `audit-05-skill.md` (the clean audits before the later commits), `audit-06-skill.md` (the skill at 1.2 rerun on the seeded drafts); `records/validation.md` (the validation walkthroughs and the sign-offs, with the earlier walkthrough records as its appendix); `records/dev-log.md` | evidence of what people decided and did |
++| Reports | `reports/assurance-report.md` (compiled at commit `a1`; the history holds the one compiled at each earlier commit); `reports/conformance.md` and `reports/trace-matrix.md` (generated) | the development state, readable without reading the code |
+ | Technology | `pyproject.toml`, `uv.lock` | Python 3.12 or later; pytest, pytest-cov, ruff; managed by `uv` |
+-| Support | `tools/evaluate.sh` (every mechanical evaluation in one command); `tools/walk.py` (walkthrough helper); `CLAUDE.md` (what an agent reads first, and its three roles) | none is a realization of a clause |
++| Tools | `tools/evaluate.sh`; `tools/trace.py`; `tools/walk.py` | every mechanical evaluation in one command; the trace tool; the walkthrough helper |
++| Tool catalog | `tooling/README.md` and one page per tool | how each tool was specified, prompted for, reviewed, and checked, and how to adapt or share it |
+ 
+ ## The five judgments, at this version
+ 
+ | Judgment | Clauses | Evaluated by | Evidence |
+ |---|---|---|---|
+-| SQ, specification quality | ConOps-SQ-1, Reqs-SQ-1, Specs-SQ-1 | a person reading the two specifications together; the clause reader for the header parts | `records/reviews.md`; the clause table of `reports/conformance.md` |
+-| RQ, realization quality | Code-RQ-1 | `ruff check`; the suite collects | exit codes, quoted in the assurance report |
+-| CONF, conformance | Reqs-CONF-1, ConOps-CONF-1 | the test run: every test passes, every *test* clause has passing evidence (requirements coverage), 100 percent branch coverage (structural coverage); a person walking every *walkthrough* story | `reports/conformance.md`; the coverage table; the walkthrough table of `records/walkthrough.md` |
+-| VAL, validated | ConOps-VAL-1 | a stakeholder of each user category signing the concept of operations | the sign-off in `records/walkthrough.md` |
+-| TR, traceable | Specs-TR-1 | the plugin for the citations; a person for the derivations | the "Unknown identifiers" section of `reports/conformance.md`; `records/reviews.md` |
+-
+-A clause has four fields: *Holds when*, *Evaluated by*, *Evidence*, and *In
+-this project*. The first three depend only on the form (a concept of
+-operations, a requirements document) and would read the same in another
+-project; the fourth binds the clause to this one. Nothing in A0 says when a
+-claim must hold: there is no gate, no hook, and no rule about commits. What
+-there is instead is the **assurance report**, `reports/assurance-report.md`,
+-which anyone, and in this version the agent, compiles on request by running
+-the mechanical evaluations and reading the records. It has one row per
+-clause with its evidence and its provenance.
++| SQ, specification quality | ConOps-SQ-1, Reqs-SQ-1, Reqs-SQ-2, Gloss-SQ-1, Specs-SQ-1 | the audit (procedure Audit), run on the draft by a person, by an agent, and by the `/audit-spec` skill, with a ruling on every gap, and twice more on clean trees; the clause reader for the header parts | `records/audit-0{1,2,3,4,5}.md`; the SQ section of the assurance report |
++| RQ, realization quality | Code-RQ-1 | `ruff check`; the suite collects | the exit codes, quoted in the assurance report with the header of the run |
++| CONF, conformance | Reqs-CONF-1, Scen-CONF-1 | the test run: every test passes; every *test* clause, the four requirements and the three stories, has passing evidence (requirements coverage); 100 percent branch coverage of `guard/` (structural coverage) | `reports/conformance.md`; the coverage table of the run |
++| VAL, validated | ConOps-VAL-1 | a stakeholder of each user category walks their stories on the running guard with the scenarios' inputs and decides, then signs the concept of operations for version A1 | `records/validation.md` |
++| TR, traceable | Specs-TR-1, Specs-TR-2 | the plugin for the citations; `tools/trace.py` for every `Derived from`, `Scenarios`, and `Source` reference, in both directions | the "Unknown identifiers" section of `reports/conformance.md`; `reports/trace-matrix.md` |
++
++The judgments file is arranged by form: the concept of operations, the
++requirements, the glossary, the scenarios, the specifications read together,
++and the code each have a section with every clause about them. A clause's
++first three fields depend only on the form; the fourth, *In this project*,
++binds it to this repository. Two activities have procedures of their own,
++the audit and elicitation, each with its steps and its stop stated once and
++its per-form parts kept with the skill that packages it. Nothing in A1 says
++when a claim must hold: as in A0, there is no gate and no rule about
++commits. The build audited before every commit that changed a specification
++and recompiled the assurance report at every commit, as a practice; A2 turns
++such practices into rules.
++
++The assurance report at each commit is in the history: `git show
++a1-specs:reports/assurance-report.md` shows ConOps-VAL-1 not holding after
++the revision, while the four other judgments hold, and the report at `a1`
++shows all five holding, with the VAL row's provenance naming a stand-in for
++the stakeholders.
+ 
+ ## Running it
+ 
+ ```sh
+-uv sync                       # once: creates .venv with pytest, pytest-cov, ruff
+-tools/evaluate.sh             # every mechanical evaluation: ruff, then pytest with coverage and the plugin
++uv sync                                    # once: creates .venv with pytest, pytest-cov, ruff
++tools/evaluate.sh                          # every mechanical evaluation: ruff, pytest with coverage and the plugin, then trace.py
+ uv run python tools/walk.py Critical 100   # a walkthrough step: prints "drop"
++uv run pytest tests/tooling                # the tools' own known-violation cases
+ ```
+ 
+-`uv run pytest` alone runs the suite with coverage, regenerates
+-`reports/conformance.md`, and fails if any requirement has no passing test.
+-To compile the report, start an agent here and ask for the assurance report;
+-or follow the steps at the end of `process/judgments.md` yourself.
++In a Claude Code session started here, `/elicit conops` revises the concept
++of operations with its stakeholders (procedure Elicit) and `/audit-spec`
++audits the specifications, every form or the forms named as arguments, and
++stops for rulings (procedure Audit). Asking the session for the assurance
++report makes it run the evaluations, read the records, and write
++`reports/assurance-report.md`. To replay the audit on the pre-audit draft,
++overlay `reference/drafts/` onto `specs/` in a scratch copy
++(`reference/drafts/README.md`).
++
++## Which files are generated, and which are written by hand
++
++| Generated by a run | Written by the agent or the skill, then ruled on or reviewed by hand | Written by hand |
++|---|---|---|
++| `reports/conformance.md` (the plugin, every pytest run); `reports/trace-matrix.md` (`tools/trace.py`) | `reports/assurance-report.md` (the agent compiles it from the runs and the records); `records/audit-02-agent.md`, `records/audit-03-skill.md`, `audit-04-skill.md`, `audit-05-skill.md` (the gap lists; the rulings column is a person's); `reference/elicitation.md` (the questions are the skill's; the answers are the stakeholders') | `records/dev-log.md`; `records/validation.md`; `records/reviews.md`; `records/audit-01-human.md`; every specification; the judgments and the procedures |
++
++The report is recompiled on request in A1; A2 keeps it between requests as
++the ledger, generated from the evaluations' outputs and the records.
+ 
+ ## Breaking it
+ 
+-Each judgment has a sabotage that turns exactly its clause red in the report
+-and shows which evaluation catches it. Two are for the first lecture; three
+-wait for the lecture on testing.
+-
+-1. **CONF, a wrong realization.** In `guard/filter.py`, change the condition to
+-   `SecurityLevel.RESTRICTED`. Run `tools/evaluate.sh`:
+-   `test_critical_is_dropped` fails, the conformance report shows REQ-1 as
+-   FAIL and REQ-2 as FAIL, the run exits non-zero. A report compiled now says
+-   Reqs-CONF-1 does not hold. Restore the file.
+-2. **VAL, the wrong system.** Suppose the security officer meant that Restricted
+-   messages must also be stopped. Every evaluation stays green: the
+-   specifications are consistent, the tests pass, coverage is complete, every
+-   link resolves. Only the walkthrough with the officer, and the sign-off they
+-   withhold, catches it. Nothing in the repository can.
+-3. **CONF, a missing test** (testing lecture). Delete `test_public_passes_unchanged`.
+-   Every remaining test passes and branch coverage stays at 100 percent, yet
+-   the run fails: REQ-3 has no evidence. Requirements coverage is the part of
+-   Reqs-CONF-1 that catches it.
+-4. **CONF, an unexercised branch** (testing lecture). Before the final
+-   `return message`, add `elif message.payload < 0: return None`. Every test
+-   passes and every requirement has evidence, yet the run fails: the new
+-   branch was never taken. Structural coverage is the part that catches it,
+-   and the branch it found is a bug: a Public message with a negative payload
+-   would be dropped, which no test claimed.
+-5. **TR, a dangling marker** (testing lecture). Change the marker `"REQ-3"` to
+-   `"REQ-9"`. The plugin lists REQ-9 under "Unknown identifiers", REQ-3 has no
+-   evidence, and the run fails.
++A0's five sabotages (a wrong realization; a wrong system with every
++evaluation green; a missing test; an unexercised branch; a dangling marker)
++still work as described in `a0/README.md`, with one change worth noticing.
++Sabotage 4's branch, `elif message.payload < 0: return None`, is now
++exercised by scenario SC-2 (Public, -3): the run fails on a failing scenario
++while coverage stays at 100 percent, because the stakeholder's example
++reaches the bug before the coverage tool does. To see the structural-coverage
++part alone, use a condition no scenario reaches, such as `payload < -1000`:
++every clause is still cited, every test passes, and coverage drops to 94
++percent. A1 adds five sabotages for the clauses it introduced, each run in a
++scratch copy and restored afterwards.
++
++6. **SQ, a contradiction after the audit.** Add to `specs/requirements.md` a
++   REQ-6 in good EARS form, "When the filter is given a message whose
++   security level is Restricted and whose payload is greater than 1000, the
++   filter shall drop the message," with `Method: test`, `Pattern:
++   event-driven`, and `Derived from: US-2`; add to `filter.py` the branch
++   `if message.level is SecurityLevel.RESTRICTED and message.payload > 1000:
++   return None`; add a test that cites REQ-6 with payload 5000 and passes.
++   Run `tools/evaluate.sh`: exit 0. Every clause has evidence, the new branch
++   is covered, every link resolves, and every scenario passes, because no
++   scenario sends a payload above 1000. Run `/audit-spec`: REQ-6 contradicts
++   REQ-2 and US-2, which say a Restricted message passes unchanged whatever
++   its payload (item C-9). The mechanical evaluations check what is cited
++   and exercised; only the audit checks what is consistent, which is why
++   Specs-SQ-1 is evaluated by a reader. Restore.
++7. **CONF and independence, a shared misreading.** Replace, together, the
++   return in `filter.py` with `return Message(message.level,
++   abs(message.payload))` for non-Critical messages and the assertion of
++   `test_restricted_passes_unchanged` with one that expects the absolute
++   value: the agent that wrote both read "unchanged" the same wrong way.
++   The unit test passes; `SC-2` (Public, -3), written from the sender's
++   words, fails; Scen-CONF-1 does not hold. The verifier that does not share
++   the author's reading is the one that catches it (threat T5).
++8. **TR, a wrong derivation.** Change REQ-3's `Derived from: US-1` to `US-2`.
++   The plugin is green. `tools/trace.py` reports "story without requirement
++   at US-1" and the run exits non-zero. Change it to `US-9`: a dangling
++   reference, a different finding. Restore.
++9. **VAL, scenarios pass and the officer declines.** No command. The
++   security officer reads the revised concept of operations and says that a
++   Restricted message with a payload above 100 must not leave. Every
++   scenario passes, including SC-4, which encodes the opposite. The
++   signature is withheld; ConOps-VAL-1 does not hold; nothing else moves. In
++   A1 the resolution is a sign-off scoped to the version with the want
++   deferred, as D-2 is; the unscoped version is A3's change request.
++10. **A verifier that has never failed.** Delete one directory under
++    `tests/tooling/cases/`. Nothing fails. A finding kind with no case is a
++    finding kind nobody has seen the tool report (`tooling/tooling-tests.md`).
++
++### Breaking the verifiers
++
++Four demonstrations of the evidence machinery itself (CF-01), scripted on
++`tooling/conformance-plugin.md`: an uncited passing test is accepted; an
++invalid citation is rejected; a test clause with no citing test is a
++coverage gap; and an uncited failing test fails the suite while every clause
++row of the report stays green. The last one is why the run's exit code, not
++the clause table, is what the assurance report quotes for Reqs-CONF-1.
++
++## Replaying the history
++
++`../build-history.sh TARGET_DIR` recreates the build as a tagged git
++repository from the `a0` snapshot and the patches in `reference/history/`
++(`tooling/replay.md`). The result is a reconstruction, not the original
++history; its commit messages say so.
+ 
+ ## Naming against the HAMR example
+ 
+ The guard is the Python sibling of the HAMR Simple Network Guard. Its `Gate`
+ component is this version's `filter` stage, since in ordinary usage a filter
+-drops; HAMR's `Filter`, which transforms, will appear as `sanitize` in a later
+-version. HAMR's Req_C, Req_R_1, and Req_P are REQ-1, REQ-2, and REQ-3.
++drops; HAMR's `Filter`, which transforms, will appear as `sanitize` in A2.
++HAMR's Req_C, Req_R_1, and Req_P are REQ-1, REQ-2, and REQ-3. HAMR's
++No_Input_No_Output has no counterpart here: a library that takes one message
++has no "no input" event, which is what the audit said of the draft's REQ-4.
+diff --git a/process/judgments.md b/process/judgments.md
+index 4feb4d3..b1e775e 100644
+--- a/process/judgments.md
++++ b/process/judgments.md
+@@ -18,7 +18,7 @@ evaluation produces and where it is kept. The fourth, *In this project*,
+ binds the clause to this repository: the files, the tools and commands, the
+ parameters, and, when one is short, one instance. Where an *Evaluated by*
+ field says "within the audit", the items it cites (C-1 to C-14) are the
+-audit's checklist, `.claude/skills/audit-spec/checklist.md`; the procedure itself is `Audit` in
++audit's checklist, `.claude/skills/audit-spec/forms/`; the procedure itself is `Audit` in
+ `process/procedures.md`.
+ 
+ Nothing in this file says when a claim must hold, who must run an
+@@ -56,10 +56,10 @@ a proof. The evidence has a scope and a producer, and the report states both.
+ 
+ | Field | |
+ |---|---|
+-| Holds when | A stakeholder of each user category has stated, naming the version, that the concept of operations describes what they intend. |
+-| Evaluated by | the stakeholder's own statement, a sign-off. No program and no agent can evaluate this clause. A walkthrough or a passing test that matches the story is input to the stakeholder's decision, not a substitute for it. |
+-| Evidence | a sign-off record: the statement, who, in which role, when, which version |
+-| In this project | The "Sign-off" section of `records/walkthrough.md`; two user categories, so two lines. Instance: the security officer's sign-off on version A0. |
++| Holds when | A stakeholder of each user category has walked their stories on the running realization with the scenario inputs, decided whether each story describes what they want, and stated, naming the version, that the concept of operations describes what they intend. |
++| Evaluated by | the stakeholders: a walkthrough per user category and a sign-off. No program and no agent can evaluate this clause; passing scenarios (Scen-CONF-1) are input to the decision, not a substitute for it. Observing the expected output is not the decision; the decision is whether the story describes what the stakeholder wants. |
++| Evidence | a validation record: per user category, who walked, in which role, when, against which realization state, which stories with which scenario inputs, what was observed, and the decision to sign or to withhold, with its reason; and the sign-off naming the version |
++| In this project | `records/validation.md`: one table per user category, the sign-off below them, and the earlier walkthrough records kept as an appendix. The walkthrough uses `uv run python tools/walk.py LEVEL PAYLOAD` with the inputs of `specs/scenarios.json`. Instance: the security officer's section for A1: US-3 walked with SC-5 and SC-6; decision: sign for A1 with D-1 to D-3 deferred. |
+ 
+ ## Requirements (`Reqs`)
+ 
+@@ -197,3 +197,7 @@ ledger.
+   evaluated by the tool, not read by a person) and Code-RQ-1 (the tools'
+   own tests collect with the suite); `tools/evaluate.sh` runs the trace tool
+   as its last step.
++- **A1, commit a1.** Amended ConOps-VAL-1 (a walkthrough per user category
++  with the scenario inputs, and a validation record with a decision per
++  story); `records/walkthrough.md` became `records/validation.md`, with the
++  earlier walkthrough records kept as its appendix.
+diff --git a/process/procedures.md b/process/procedures.md
+index fa64999..66b7050 100644
+--- a/process/procedures.md
++++ b/process/procedures.md
+@@ -16,9 +16,9 @@ it leaves. Nothing here says when a procedure must be run.
+ |---|---|
+ | Purpose | Evaluate the SQ clauses together: one reading of every specification in scope against one checklist, so that the between-document items are checked by the same reader that checked the within-document items. |
+ | Serves | SQ: ConOps-SQ-1, Reqs-SQ-1, Reqs-SQ-2, Gloss-SQ-1, Specs-SQ-1; the reference parts of Specs-TR-1 that a person reads |
+-| Run by | a person, by the checklist in `.claude/skills/audit-spec/checklist.md`; or an agent running `/audit-spec`, which the developer starts. Rulings are a person's in either case. |
++| Run by | a person, by the per-form items under `.claude/skills/audit-spec/forms/` (indexed by `checklist.md`); or an agent running `/audit-spec [forms]`, which the developer starts, with the forms to audit as its argument and every form under `specs/` as the default. Rulings are a person's in either case. |
+ | Steps | (1) Read every specification in scope in full before the first check, and the judgments file. (2) Within each document, apply the items for its form: well-formed headers, EARS form against the declared pattern, glossary discipline, a reason on every judgment clause, no unquantified adjective, nothing only a builder would see, complete for the stated scope. (3) Between documents, when the scope has more than one: every story has a requirement and every requirement a derivation; no contradictions; one sense per term; assumptions and deferred wants have not become requirements; every named file, clause, procedure, and entry exists. (4) By execution, where a form has examples or scenarios: decide from the clauses what each must output and compare with the stated expectation. (5) Stop and report every gap in the gap-list form. |
+-| Per-form parts | the items, by form, in `.claude/skills/audit-spec/checklist.md`; the items each clause relies on are cited in its *Evaluated by* field in `process/judgments.md` |
++| Per-form parts | the items, by form, in `.claude/skills/audit-spec/forms/`, one file per form and one for the between-document items, indexed by `checklist.md`; the items each clause relies on are cited in its *Evaluated by* field in `process/judgments.md` |
+ | Stops | After step 5. A person rules on each gap: accepted, ruled otherwise, rejected with a reason, or deferred. An accepted gap is amended by the author, and the audit is run again on the amended text. The auditor never amends a file. |
+ | Record | `records/audit-NN.md`, in the form of `process/templates/gap-list.md`: the audit number; the date; the auditor (a person by name and role, an agent by model and prompt, or a skill by name and version); the specifications and the state audited; every checklist item with *pass* or the gaps it produced; one row per gap with location, the item violated, the text quoted exactly, one proposed resolution, the ruling, and the amendment made. |
+ | Example | audit 03: `/audit-spec` 1.0 on the pre-audit draft; twelve gaps; the ruling on G-8 deleted the record-of-drop clause from REQ-1 and kept D-1 |
+@@ -33,9 +33,9 @@ a later version turns that into a rule.
+ |---|---|
+ | Purpose | Obtain or revise a stakeholder-facing specification from its stakeholders, so that it says what they intend and its VAL clause can be evaluated against it. This is an authoring procedure, not an evaluation: it produces a specification and a reference record, not evidence for a judgment. In this version the one form it applies to is the concept of operations. |
+ | Serves | VAL: ConOps-VAL-1 (the document it produces is what the stakeholders sign); SQ (its answers settle terms, assumptions, and wants) |
+-| Run by | an agent running `/elicit`, which the developer starts; the stakeholders answer; the developer reviews the resulting change |
++| Run by | an agent running `/elicit [form]`, which the developer starts, with the form to elicit as its argument (`conops` is the default and the only form with a taxonomy in this version); the stakeholders answer; the developer reviews the resulting change |
+ | Steps | (1) Read the specification, the glossary, and the existing elicitation record. (2) Scan the document for what it does not settle, by the form's taxonomy, and queue at most five questions, ranked by how much the answer changes the document times how uncertain it is; a fact the repository answers is looked up, not asked. (3) Ask one question at a time, addressed to a user category, with options and a recommended answer. (4) Record each question and the verbatim answer, with who answered and when, under an E identifier in `reference/elicitation.md`; then apply the answer to the one part of the document it affects, citing the identifier, and replace contradicted text rather than adding to it. (5) Report: questions asked, sections touched, coverage, and the next steps. |
+-| Per-form parts | the taxonomy of `.claude/skills/elicit/taxonomy.md`: the categories the scan rates as Clear, Partial, or Missing |
++| Per-form parts | the form's taxonomy, `.claude/skills/elicit/forms/conops.md` for a concept of operations: the categories the scan rates as Clear, Partial, or Missing |
+ | Stops | After five questions, when the queue is empty, or when the stakeholder says "done". The developer reviews the whole change. The procedure never writes a decision nobody gave and never touches the requirements, the scenarios, the tests, or the code. The next step after a revision is the audit (Audit), because the revision changes what SQ is about. |
+ | Record | `reference/elicitation.md`: reference material in the stakeholders' words, cited by the `Source` field of every story. It is not audited, and no judgment is about it. |
+ | Example | E-2: the security officer's "I'd like one eventually; not needed for this version" became deferred want D-1 and no requirement |
+diff --git a/pyproject.toml b/pyproject.toml
+index add7e57..1f93379 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,7 +1,7 @@
+ [project]
+ name = "message-guard"
+-version = "0.0.0"
+-description = "A message guard: the running example of the agentic software engineering principles module (version A0)."
++version = "0.1.0"
++description = "A message guard: the running example of the agentic software engineering principles module (version A1)."
+ requires-python = ">=3.12"
+ dependencies = []
+ 
+diff --git a/records/audit-05-skill.md b/records/audit-05-skill.md
+new file mode 100644
+index 0000000..8c18ce3
+--- /dev/null
++++ b/records/audit-05-skill.md
+@@ -0,0 +1,63 @@
++# Audit 05: the specifications before commit a1, by the `/audit-spec` skill (version A1)
++
++| Field | |
++|---|---|
++| Audit | 05 |
++| Date | 2026-10-22 |
++| Auditor | `/audit-spec` 1.1, run by an agent (Claude, a fresh session) |
++| Audited | the working tree before commit a1: `specs/conops.md`, `specs/glossary.md`, `specs/requirements.md`, `specs/scenarios.json` |
++| Checks applied | C-1 to C-14 of `checklist.md` 1.1 (Reqs-SQ-2 and Gloss-SQ-1 cited under C-2, C-3, and C-10) |
++| Read first | the four specifications and `process/judgments.md`; `reference/elicitation.md`; then `records/audit-04-skill.md` (the rulings applied), `records/validation.md`, `reports/trace-matrix.md`, `reports/conformance.md`, and `tools/walk.py`, for C-13 and C-14; the helper run on the six scenario inputs |
++
++The build audits before any commit that changes a specification (a practice,
++not yet a rule: nothing in A1 says when the audit must run). Since audit 04
++the specifications changed only in their references: the concept of
++operations and the requirements cite `records/validation.md` (present,
++replacing `records/walkthrough.md`) and ConOps-VAL-1, now amended in
++`process/judgments.md` to name the validation record; §6 says "is
++recorded" again because the A1 sign-off now exists. This audit found no gap.
++
++## Checks
++
++| Check | Result |
++|---|---|
++| C-1 Well-formed header | pass: seven headers, unique identifiers, method *test*, only defined keys; SC-1 to SC-6 unique and complete; the conformance report lists the same seven clauses with no specification finding |
++| C-2 EARS form | pass: REQ-0 ubiquitous with the guard as subject; REQ-1 to REQ-3 event-driven with the filter as subject and "shall" |
++| C-3 Glossary discipline | pass: thirteen terms, each defined once; no other specification defines one; every domain term used is a glossary term or a stated value of *security level* |
++| C-4 Unambiguous | pass; not reported, per the item: value equality in REQ-2 and REQ-3; "large" in D-2 |
++| C-5 Judgment clauses state why | pass, no clause in scope; `Validated by` is a field, not the method, and §4 ties it to ConOps-VAL-1 |
++| C-6 Implementation-independent | pass |
++| C-7 Complete for the stated scope | pass: each security level has an outcome; a non-message input is covered by REQ-0 with its signaling left open; nothing outside the boundary is specified |
++| C-8 Derivation both ways | pass: US-1 to REQ-3, US-2 to REQ-2, US-3 to REQ-1; REQ-0 from the glossary; every scenario derives from a story that lists it; `Source` entries match the stories' categories; the trace matrix reports no finding |
++| C-9 No contradiction | pass; §6 "is recorded" agrees with the A1 sign-off now present |
++| C-10 One term, one sense | pass; "stopped" appears only as the synonym the glossary declares |
++| C-11 Assumptions are not requirements | pass: A-1 and A-2 stated as obligations of the deploying organization; statelessness stated in the scope as a property of the guard |
++| C-12 Deferred wants stay deferred | pass: D-1 to D-3 have no requirement, story clause, or scenario promising them |
++| C-13 References resolve | pass: every file, clause, entry, and identifier a specification names exists, including `records/validation.md` with its "Sign-off" naming version A1 for both user categories, and ConOps-VAL-1 |
++| C-14 Examples and scenarios agree with their clauses | pass: the six expectations follow from REQ-1 to REQ-3; the helper printed `pass: Public 42`, `pass: Public -3`, `pass: Restricted 7`, `pass: Restricted 150`, `drop`, `drop` |
++
++## Gaps
++
++| Gap | Location | Check | Quoted | Proposed resolution | Ruling | Amendment |
++|---|---|---|---|---|---|---|
++| (none) | | | | | | |
++
++No gap was found: fourteen items applied, fourteen *pass*.
++
++Considered and not reported (the skill's words, condensed): "the same
++message" in §2 against *unchanged* (object identity left open, C-4); "the
++Terms section of the A0 concept of operations" names a version's document,
++not a file in this tree; "clamping" in SC-4's note names what this version
++does not do.
++
++Observation outside the gap list: the docstring of `tools/walk.py` still
++said "recorded in records/walkthrough.md", the file this commit renames.
++Applied before the commit: the docstring now names `records/validation.md`
++(the helper's page records the change; the helper's behavior is unchanged).
++Every other mention of the old name is in a historical record or in the
++intentional rename notes.
++
++Searched: within each document ✔ · between documents ✔ · by execution ✔.
++
++**Rulings:** none needed; the gap list is empty. The observation was
++applied as a one-line edit outside the specifications.
+diff --git a/records/audit-06-skill.md b/records/audit-06-skill.md
+new file mode 100644
+index 0000000..f07a405
+--- /dev/null
++++ b/records/audit-06-skill.md
+@@ -0,0 +1,121 @@
++# Audit 06: the audit skill at version 1.2, rerun on its known-violation set
++
++**Why this record exists.** The catalog page of `/audit-spec` says that any
++change to the skill is rerun on `reference/drafts/`, the pre-audit
++specifications with the seven seeded gaps, and must still find the seven
++and report nothing for the one non-gap. Version 1.2 (2026-10-24) moved the
++checklist into one file per form and made the form the skill's argument,
++with the items unchanged. This is that rerun. It is a check of the skill,
++not an audit of the live specifications: the gaps below are the drafts'
++known violations, ruled on in audit 03, and no ruling is given here.
++
++**Setup.** A scratch copy of this snapshot with `reference/drafts/conops.md`,
++`glossary.md`, and `requirements.md` overlaid onto `specs/` and
++`specs/scenarios.json` removed (the drafts predate the scenario file),
++committed in the scratch repository as `ce2e589`; a fresh agent session
++started with `/audit-spec` and no other instruction, allowed to read and
++not to write. The record below is the skill's output, verbatim, from its
++title to its gap table; the two observations it made outside the gap list
++are kept because both are artifacts of this setup.
++
++---
++
++# Audit 06: the specifications at commit ce2e589 (version A1)
++
++| Field | |
++|---|---|
++| Audit | 06 |
++| Date | 2026-10-24 |
++| Auditor | `/audit-spec` 1.2, run by an agent (Claude Opus 5.5, `claude-opus-5-5`) |
++| Audited | commit ce2e589, working tree clean: `specs/conops.md`, `specs/glossary.md`, `specs/requirements.md`. Each is byte-identical to its copy under `reference/drafts/`. **`specs/scenarios.json` does not exist**, so `scen` is not in scope |
++| Checks applied | C-1 to C-14 of `checklist.md` 1.2. Reqs-SQ-1's "Each states one requirement" was applied under C-4 |
++| Read first | the three specs, `judgments.md`, `procedures.md`, `elicitation.md`, the skill's files and the gap-list template. Then `records/validation.md`, `reference/drafts/README.md` and audits 04 and 05 (for numbering and form). **Audits 01–03 were not read**, because they hold this set's answer key. `tools/walk.py` was not run because it needs your permission; C-14 was decided from the clauses |
++
++## Checks
++
++| Check | Result |
++|---|---|
++| C-1 Well-formed header | G-15; otherwise pass |
++| C-2 EARS form | G-10, G-13, G-16 |
++| C-3 Glossary discipline | G-7, G-8, G-14. The glossary's own definitions pass: 13 terms, each defined once |
++| C-4 Unambiguous | G-2, G-7, G-11, G-14. Not reported, as the item says: value equality in REQ-3, and "large" in D-2 |
++| C-5 Judgment clauses state why | conops: G-4. reqs: pass, no clause in scope |
++| C-6 Implementation-independent | G-1 |
++| C-7 Complete for scope | conops: pass. reqs: G-12, G-17 |
++| C-8 Derivation both ways | G-5, G-17, G-18. The scenario part is not in scope |
++| C-9 No contradiction | G-6, G-12, G-18 |
++| C-10 One term, one sense | G-8 |
++| C-11 Assumptions are not requirements | G-2, G-18 |
++| C-12 Deferred wants stay deferred | G-12 |
++| C-13 References resolve | G-3, G-9 |
++| C-14 Examples agree with clauses | G-6. The scenario part is not in scope |
++
++## Gaps
++
++| Gap | Location | Check | Quoted | Proposed resolution | Ruling |
++|---|---|---|---|---|---|
++| G-1 | ConOps §1 | C-6 | "The message guard is a Python function that sits on that boundary" | "The message guard sits on that boundary and decides, one message at a time, whether a message may leave." | open |
++| G-2 | ConOps §2.1, A-3 | C-11, C-4 | "The guard handles one message at a time and keeps nothing between messages." | Move it to §2 as a statement about the guard, because it describes the guard and is not something the deploying organization must do. §2.1 keeps A-1 and A-2 | open |
++| G-3 | ConOps §4 preamble | C-13 | "(ConOps-VAL-2 and ConOps-VAL-1)" | "(ConOps-VAL-1)". There is no ConOps-VAL-2 | open |
++| G-4 | US-1, US-2, US-3 headers | C-5 | "Method: walkthrough (human) · …" with no `Reason` | Add a `Reason` to each. The reason is yours to state | open |
++| G-5 | US-2 header | C-8 | "Source: E-1" | "Source: E-3". E-1 is the security officer's answer, but US-2 is the message sender's story | open |
++| G-6 | US-2 example | C-14, C-9 | "the guard is given (Restricted, 7); it outputs (Public, 7)." | "…it outputs (Restricted, 7)." This is a gap about the pair; you may rule that the story changes instead | open |
++| G-7 | US-3 | C-3, C-4 | "every sensitive message stopped at the guard" | "every message whose security level is Critical stopped at the guard". One reading of "sensitive" includes Restricted, which contradicts US-2 | open |
++| G-8 | US-3; §3 | C-3, C-10 | "stopped at the guard"; "has no record of what was stopped" | Declare "stopped" as the stakeholders' word inside the glossary's *drop* entry | open |
++| G-9 | ConOps §6 | C-13 | "Validation of this document … is recorded in `records/validation.md` under "Sign-off"." | "…is to be recorded…". The recorded sign-off is for "the text of commit a1-specs", and this draft was never committed | open |
++| G-10 | Reqs preamble | C-2 | "Each requirement carries an identifier, a verification method, the EARS pattern it uses…" | Add the subject and trigger convention that Reqs-SQ-2 says the preamble states | open |
++| G-11 | REQ-0 | C-4 (Reqs-SQ-1) | "The guard shall not change a message after it is created." | Move it to its own requirement (REQ-6, ubiquitous, derived from Glossary: message) | open |
++| G-12 | REQ-1 | C-12, C-9, C-7 | "shall drop the message and shall record the drop." | "shall drop the message." The record is deferred want D-1, the glossary's *drop* says "no record is kept", and §2 puts records outside the boundary | open |
++| G-13 | REQ-2 | C-2 | "Restricted messages are allowed through." | "When the filter is given a message whose security level is Restricted, the filter shall pass the message unchanged." | open |
++| G-14 | REQ-2 | C-3, C-4 | "allowed through" | Use the glossary's *pass*, as G-13's text does. "Allowed through" doesn't say the message leaves unchanged | open |
++| G-15 | REQ-4 header | C-1 | "**REQ-4** · Derived from: US-3" | If REQ-4 stays, add "Method: test" | open |
++| G-16 | REQ-4 header | C-2 | (same) | If REQ-4 stays, declare a `Pattern` and match the sentence to it | open |
++| G-17 | REQ-4 | C-7, C-8 | "The filter shall produce no output when it receives no message." | Delete it. §2 gives the input as one message, and US-3 says nothing about receiving no message | open |
++| G-18 | REQ-5 | C-11, C-8, C-9 | "Derived from: ConOps §2.1"; "The guard shall receive every message that leaves the enclave." | Delete it. This is assumption A-2 restated as a requirement, and A-2 itself says "the guard cannot prevent a bypass" | open |
++
++**Two things outside the gap list.** Neither is in a specification:
++1. `specs/scenarios.json` is missing, yet `CLAUDE.md` and the *In this project* fields of `judgments.md` still name it and describe the a1 text: US-3 "Method: test · Scenarios: SC-5, SC-6", "REQ-0 to REQ-3", and "SC-1 to SC-6".
++2. ConOps-CONF-1 was retired because no clause used the *walkthrough* method, but US-1 to US-3 now use it. So no judgment clause checks the stories' behavior, which matters for your ruling on G-4.
++
++Searched: within each document ✔ · between documents ✔ · by execution ✔ (decided from the clauses; helper not run).
++
++
++## Key to the seeded gaps, and what the run shows
++
++| Seeded gap (A1 plan) | Found as | Audit 03 found it as |
++|---|---|---|
++| G1 "sensitive" in US-3 | G-7 | G-6 |
++| G2 REQ-1 records the drop | G-12 | G-8 |
++| G3 REQ-2 not in EARS form | G-13 (and G-14, the wording) | G-9 |
++| G4 US-2's example outputs (Public, 7) | G-6 | G-5 |
++| G5 REQ-5 promotes assumption A-2 | G-18 | G-12 |
++| G6 REQ-4: no method; no input event | G-15, G-16 (header), G-17 (content) | G-10, G-11 |
++| G7 "a Python function" in the purpose | G-1 | G-1 |
++
++- **Seven of seven seeded gaps found.** The non-gap, value equality versus
++  object identity in REQ-2 and REQ-3, was not reported and is listed under
++  C-4 as not reported, per the item.
++- **The unseeded findings of audit 03 are found again** (G-2 the assumption
++  that describes the guard, G-3 the forward reference to a second VAL
++  clause, G-4 the missing `Reason`, G-5 US-2's `Source`, G-9 the sign-off
++  sentence), and three more are reported that audit 03 did not: G-8
++  ("stopped" against the glossary's *drop*, which audit 02 had found as
++  its item 11), G-10 (the requirements preamble does not state the subject
++  and trigger convention, an item that exists only because Reqs-SQ-2's *In
++  this project* field now says the preamble states it), and G-11 (REQ-0's
++  two sentences, audit 02's item 15). Eighteen gaps against audit 03's
++  twelve: the per-form files split REQ-4 into three gaps where 1.0 reported
++  two, and the items are now read against a judgments file that says more.
++- **The skill kept to its procedure.** It refused to read audits 01 to 03,
++  naming them as this set's answer key; it reported the between-document
++  items with the scenario parts as not in scope; it did not run the helper
++  without permission and said so; it wrote nothing.
++- **The two observations outside the gap list** are consequences of the
++  setup, not findings about the snapshot: the scenario file was removed on
++  purpose, and the stories carry *walkthrough* because the drafts predate
++  Scen-CONF-1. Both are the kind of thing a reader of the record should be
++  told, which is why the skill reports them.
++
++**Rulings:** none; this is a rerun on the known-violation set, whose gaps
++were ruled in audit 03. The skill at 1.2 is trusted on the same grounds as
++1.1 was, plus this run.
+diff --git a/records/dev-log.md b/records/dev-log.md
+index 0bfdf04..8fb9729 100644
+--- a/records/dev-log.md
++++ b/records/dev-log.md
+@@ -182,3 +182,60 @@ one compiled for it.
+   declared link resolves, findings none
+ - Commit: `a1-trace`
+ 
++## 9 · Validate, sign, catalog, close; commit a1 (2026-10-22)
++
++- Task: a stakeholder of each user category walked their stories on the
++  running guard with the scenarios' inputs and decided; the A1 sign-off;
++  `records/walkthrough.md` renamed to `records/validation.md`, with the
++  earlier records kept as its appendix; ConOps-VAL-1 amended to name the
++  walkthrough per category and the validation record; the specifications'
++  references updated to the new file; the README; `pyproject.toml` version
++  0.1.0 (and `uv.lock` with it); the tool catalog completed
++  (`tooling/README.md` and nine more pages); the history folder's README.
++  Audit 05 (`/audit-spec` 1.1, `records/audit-05-skill.md`) on the tree
++  before the commit: fourteen items, fourteen pass, no gap; its one
++  observation outside the specifications, the helper's docstring naming the
++  old record file, applied. The assurance report recompiled: all five
++  judgments hold.
++- Files: `records/validation.md`, `records/audit-05-skill.md`,
++  `process/judgments.md`, `specs/conops.md`, `specs/requirements.md`
++  (references only), `README.md`, `pyproject.toml`, `uv.lock`, `tooling/*`,
++  `tools/walk.py` (docstring), `reference/history/README.md`,
++  `reports/assurance-report.md`, `reports/conformance.md` and
++  `reports/trace-matrix.md` (regenerated)
++- Judgments touched: VAL (holds: the validation record and the A1 sign-off,
++  by the build agent playing both roles on the instructor's behalf; the
++  instructor's own re-play supersedes it when recorded); SQ (references
++  changed; audit 05 passed); RQ, CONF, and TR renewed by the final run
++- Evaluations run: `tools/evaluate.sh` exit 0. ruff all checks passed;
++  pytest 29 passed; branch coverage of `guard/` 100 percent; conformance 7
++  of 7 test clauses, 29 tests collected, 16 cite a clause, scope full run;
++  trace: every declared link resolves, findings none
++- Commit: `a1`. After the commit, the four patches were exported to
++  `reference/history/` (outside the commits, as that folder's README says)
++  and `build-history.sh` was run once to confirm that it recreates this
++  tree.
++
++## 10 · The skills by form; the audit skill rerun on its known-violation set; committed with a1 (2026-10-24)
++
++- Task: `/elicit` to 1.1 (the taxonomy moved to `forms/conops.md`; the form
++  is the first argument) and `/audit-spec` to 1.2 (the checklist split into
++  `forms/conops.md`, `forms/reqs.md`, `forms/gloss.md`, `forms/scen.md`, and
++  `forms/between.md`, with `checklist.md` as the index; the forms to audit
++  are the arguments), so that a form's clauses, audit items, and
++  elicitation taxonomy travel together. The audit skill rerun on
++  `reference/drafts/` in a scratch copy, as its catalog page requires after
++  any change: `records/audit-06-skill.md`.
++- Files: `.claude/skills/elicit/*`, `.claude/skills/audit-spec/*`,
++  `records/audit-06-skill.md`, `tooling/skill-elicit.md`,
++  `tooling/skill-audit-spec.md`, `README.md`
++- Judgments touched: none of the five; the run checks a verifier (threat
++  T2), not a product clause. SQ's evaluation is unchanged in substance: the
++  items are the same, filed differently.
++- Evaluations run: the audit skill at 1.2 on the seeded drafts: seven of
++  seven seeded gaps found, the non-gap not reported, eighteen gaps in all
++  (audit 03 reported twelve; the difference is explained in the record).
++  `tools/evaluate.sh` unchanged from entry 9.
++- Commit: `a1` (this entry and the files above are part of the same commit
++  as entry 9; the snapshot's history README says how the commits were
++  remade).
+diff --git a/records/validation.md b/records/validation.md
+new file mode 100644
+index 0000000..03f4665
+--- /dev/null
++++ b/records/validation.md
+@@ -0,0 +1,96 @@
++# Validation Record and Sign-off: Message Guard (version A1)
++
++## Validation walkthroughs (ConOps-VAL-1)
++
++In A0 the stories' behavioral examples were walked by a person, and that
++walkthrough was the evidence for ConOps-CONF-1, since retired. In A1 the behavioral evidence
++is the scenario tests (`tests/test_scenarios.py`; the story rows of
++`reports/conformance.md`), and the walkthrough has one purpose left: a
++stakeholder of each user category exercises the running guard along their
++stories, with the scenarios' inputs, and decides whether the stories
++describe the guard they want. Seeing the expected output does not by itself
++answer that question. The decision is recorded here, and the sign-off
++follows it.
++
++Walked by: the build agent playing each role, on the instructor's behalf (as
++in A0, one person plays both roles; the instructor can re-play the session
++and record a new table) · Date: 2026-10-22 · Realization: the a1 working
++tree, in which `guard/` is byte-identical to a0 · Command:
++`uv run python tools/walk.py LEVEL PAYLOAD`
++
++### Message sender
++
++| Story | Scenarios | Commands | Observed | Decision |
++|---|---|---|---|---|
++| US-1 | SC-1, SC-2 | `walk.py Public 42`; `walk.py Public -3` | `pass: Public 42`; `pass: Public -3` | the story says what I want: what I send that may leave comes out as I sent it, whatever the number in it |
++| US-2 | SC-3, SC-4 | `walk.py Restricted 7`; `walk.py Restricted 150` | `pass: Restricted 7`; `pass: Restricted 150` | as above; the 150 case shows that nothing is cut down in this version, which is what I was told and what I expect |
++
++### Security officer
++
++| Story | Scenarios | Commands | Observed | Decision |
++|---|---|---|---|---|
++| US-3 | SC-5, SC-6 | `walk.py Critical 100`; `walk.py Critical 0` | `drop`; `drop` | the story says what I want: nothing marked Critical leaves, whatever its payload |
++| Deferred wants D-1 to D-3 | read, not walked | — | — | they are mine, recorded as deferred, and not promised here; I sign for A1 with them deferred |
++
++## Sign-off (ConOps-VAL-1, continued)
++
++"The concept of operations, version A1, describes the guard I intend: the
++marking alone decides, a Critical message never leaves, and anything else
++leaves as it arrived. The three deferred wants are mine and are not promised
++in this version."
++
++- Security officer: role played by the build agent on the instructor's
++  behalf, 2026-10-22, on `specs/conops.md` version A1 (the text of commit
++  a1-specs, unchanged through a1 except for the stories' method and
++  `Scenarios` fields).
++- Message sender: role played by the build agent on the instructor's
++  behalf, 2026-10-22, on `specs/conops.md` version A1.
++
++In a real project the two lines are signed by two different people, and the
++instructor's own re-play of this session supersedes these lines when it is
++recorded. The sign-off is kept although tests now exist for the stories: the
++question it answers, whether these are the right stories, is one no test can
++answer. A stakeholder who, at this walkthrough, had said that a Restricted
++message with a payload above 100 must not leave would have withheld the
++signature while every scenario passed (README, sabotage 9); the resolution
++is a sign-off scoped to the version with the want deferred, as here for
++D-2, or, in A3, a change request.
++
++## Earlier records, kept for the assurance reports' citations
++
++This file was `records/walkthrough.md` at a0 and at a1-specs; the assurance
++reports compiled at those commits cite it under that name. Its earlier contents
++follow unchanged.
++
++### Walkthroughs at a0 (version A0; ConOps-CONF-1)
++
++Walked by: the instructor, playing each role · Date: 2026-10-20 · Realization:
++the A0 snapshot (`a0`) · Command: `uv run python tools/walk.py LEVEL PAYLOAD`
++
++| Clause | Role | Command | Observed | Finding |
++|---|---|---|---|---|
++| US-1 | message sender | `tools/walk.py Public 42` | `pass: Public 42` | as the story expects |
++| US-2 | message sender | `tools/walk.py Restricted 7` | `pass: Restricted 7` | as the story expects |
++| US-3 | security officer | `tools/walk.py Critical 100`, then `Critical 0` | `drop`, both times | as the story expects |
++
++### Sign-off at a0 (version A0; ConOps-VAL-1)
++
++"The concept of operations, version A0, describes the guard I intend: a
++Critical message never leaves, and anything else leaves as it arrived."
++
++- Security officer: role played by the instructor, 2026-10-20, on
++  `specs/conops.md` version A0.
++- Message sender: role played by the instructor, 2026-10-20, on
++  `specs/conops.md` version A0.
++
++### Walkthroughs of the revised stories at a1-specs (version A1; ConOps-CONF-1)
++
++Walked by: the build agent, playing each role on the instructor's behalf ·
++Date: 2026-10-22 · Realization: the a1-specs working tree (`guard/`
++unchanged from a0) · Command: `uv run python tools/walk.py LEVEL PAYLOAD`
++
++| Clause | Role | Command | Observed | Finding |
++|---|---|---|---|---|
++| US-1 | message sender | `walk.py Public 42`; `walk.py Public -3` | `pass: Public 42`; `pass: Public -3` | as the story expects |
++| US-2 | message sender | `walk.py Restricted 7`; `walk.py Restricted 150` | `pass: Restricted 7`; `pass: Restricted 150` | as the story expects |
++| US-3 | security officer | `walk.py Critical 100`; `walk.py Critical 0` | `drop`; `drop` | as the story expects |
+diff --git a/records/walkthrough.md b/records/walkthrough.md
+deleted file mode 100644
+index ae7a269..0000000
+--- a/records/walkthrough.md
++++ /dev/null
+@@ -1,51 +0,0 @@
+-# Walkthrough Record and Sign-off: Message Guard (version A0)
+-
+-## Walkthroughs (ConOps-CONF-1)
+-
+-Each user story is a judgment clause with method *walkthrough (human)*. A
+-person, in the role the story names, gives the guard the story's example with
+-the helper `tools/walk.py` and judges what they observe.
+-
+-Walked by: the instructor, playing each role · Date: 2026-10-20 · Realization:
+-the A0 snapshot (`a0`) · Command: `uv run python tools/walk.py LEVEL PAYLOAD`
+-
+-| Clause | Role | Command | Observed | Finding |
+-|---|---|---|---|---|
+-| US-1 | message sender | `tools/walk.py Public 42` | `pass: Public 42` | as the story expects |
+-| US-2 | message sender | `tools/walk.py Restricted 7` | `pass: Restricted 7` | as the story expects |
+-| US-3 | security officer | `tools/walk.py Critical 100`, then `Critical 0` | `drop`, both times | as the story expects |
+-
+-## Sign-off (ConOps-VAL-1)
+-
+-"The concept of operations, version A0, describes the guard I intend: a
+-Critical message never leaves, and anything else leaves as it arrived."
+-
+-- Security officer: role played by the instructor, 2026-10-20, on
+-  `specs/conops.md` version A0.
+-- Message sender: role played by the instructor, 2026-10-20, on
+-  `specs/conops.md` version A0.
+-
+-In a real project the two lines are signed by two different people. The
+-sign-off is kept even after tests exist for the stories (later versions),
+-because the question it answers, whether these are the right stories, is one
+-no test can answer.
+-
+-## Walkthroughs of the revised stories (version A1, commit a1-specs; ConOps-CONF-1)
+-
+-The revision of the concept of operations reworded the three stories and
+-gave US-1 and US-2 a second example each, so the table above no longer
+-covers them. Until the scenario file of the next task turns the examples
+-into tests, the stories keep method *walkthrough (human)* and this table is
+-their record. The sign-off above still names version A0 and is not renewed
+-here: the validation walkthrough and the A1 sign-off are a later task of this
+-version, and ConOps-VAL-1 does not hold until then.
+-
+-Walked by: the build agent, playing each role on the instructor's behalf ·
+-Date: 2026-10-22 · Realization: the a1-specs working tree (`guard/`
+-unchanged from v0) · Command: `uv run python tools/walk.py LEVEL PAYLOAD`
+-
+-| Clause | Role | Command | Observed | Finding |
+-|---|---|---|---|---|
+-| US-1 | message sender | `walk.py Public 42`; `walk.py Public -3` | `pass: Public 42`; `pass: Public -3` | as the story expects |
+-| US-2 | message sender | `walk.py Restricted 7`; `walk.py Restricted 150` | `pass: Restricted 7`; `pass: Restricted 150` | as the story expects |
+-| US-3 | security officer | `walk.py Critical 100`; `walk.py Critical 0` | `drop`; `drop` | as the story expects |
+diff --git a/reference/history/README.md b/reference/history/README.md
+new file mode 100644
+index 0000000..ccee5c6
+--- /dev/null
++++ b/reference/history/README.md
+@@ -0,0 +1,34 @@
++# The build's history, as patches
++
++Reference material. The four commits of the A1 build, exported with
++`git format-patch` from the repository in which the version was built, in
++order:
++
++| Patch | Commit | Tag | What it holds |
++|---|---|---|---|
++| `01-a1-specs.patch` | the first | `a1-specs` | elicitation, the glossary, the EARS requirements, the three audits of the seeded draft, the two skills; the judgments file arranged by form, the procedures, the gap-list template; the assurance report with ConOps-VAL-1 not holding |
++| `02-a1-scenarios.patch` | the second | `a1-scenarios` | the scenario file and its loader; the extended clause reader and plugin; the stories' method becomes *test*; Scen-CONF-1; audit 04 |
++| `03-a1-trace.patch` | the third | `a1-trace` | the trace tool, its cases, the evaluation command's third step; Specs-TR-2 |
++| `04-a1.patch` | the fourth | `a1` | the validation record and sign-off, ConOps-VAL-1 amended, the README, the tool catalog, the skills at 1.1 and 1.2 with their per-form files; audit 05 |
++
++`../../../build-history.sh TARGET_DIR` (in the directory that holds `a0/`
++and `a1/`) recreates the history from the `a0` snapshot and these patches,
++tagging each commit. The result is a reconstruction: the dates and the
++author are the replay's, and each commit message says so. The patch files
++are not part of any commit (they could not be, since they describe the
++commits), so the replayed `a1` tree equals this snapshot except for this
++directory's `.patch` files.
++
++**Provenance of these patches.** The A1 build was made on 2026-10-22 under
++an earlier arrangement of the process files (a single rules file with a
++commit trigger in every rule, a hand-written ledger). On 2026-10-24 the
++snapshots were re-layered into the arrangement described in
++`software-engineering/running-example-relayering.md`: judgment clauses per
++form, procedures, records beside reports, and an assurance report compiled
++at each commit in place of the ledger. The four trees of the original
++commits were re-layered one by one, their evaluations run again, their
++assurance reports compiled, and the commits remade in order; these patches
++are exported from that remade history. The records (the audits, the
++elicitation record, the validation record) keep their original dates,
++because the activities they record happened then; the assurance reports
++carry the date they were compiled.
+diff --git a/reports/assurance-report.md b/reports/assurance-report.md
+index 8fb126e..14f358c 100644
+--- a/reports/assurance-report.md
++++ b/reports/assurance-report.md
+@@ -1,76 +1,76 @@
+ # Assurance report: Message Guard
+ 
+-Requested by: the developer, before commit a1-trace · Compiled by: an agent
++Requested by: the developer, before commit a1 · Compiled by: an agent
+ (Claude, the build session), by the procedure at the end of
+ `process/judgments.md` · Date: 2026-10-24 · Tree: the working tree committed
+-as `a1-trace` (the trace tool, its known-violation cases, and the evaluation
+-command's third step; no specification changed; the realization unchanged
+-from `a0`)
++as `a1`, the last commit of version A1 (the validation record and the A1
++sign-off, the amended ConOps-VAL-1, the README, the tool catalog, the skills
++at 1.1 and 1.2; the realization unchanged from `a0`)
+ 
+ ## Summary
+ 
+ | Judgment | Claim | Holds? | Rests on |
+ |---|---|---|---|
+-| SQ | the specifications can be built from and checked against | holds | ConOps-SQ-1, Reqs-SQ-1, Reqs-SQ-2, Gloss-SQ-1, Specs-SQ-1 (audit 04, unchanged specifications since; the header parts run now) |
++| SQ | the specifications can be built from and checked against | holds | ConOps-SQ-1, Reqs-SQ-1, Reqs-SQ-2, Gloss-SQ-1, Specs-SQ-1 (audit 05, no gap, on this tree; the header parts run now) |
+ | RQ | the realization lints and its suite collects | holds | Code-RQ-1 (run now) |
+ | CONF | the realization conforms to the requirements and to the scenarios, as far as the evidence shows | holds | Reqs-CONF-1, Scen-CONF-1 (run now) |
+-| VAL | the specifications describe what the stakeholders intend | **does not hold**: the only sign-off names version A0 | ConOps-VAL-1 (record names another state) |
++| VAL | the specifications describe what the stakeholders intend | holds, by a stand-in for the stakeholders | ConOps-VAL-1 (record) |
+ | TR | every declared link resolves, in both directions | holds | Specs-TR-1, Specs-TR-2 (run now) |
+ 
+ ## SQ · specification quality
+ 
+-No specification changed at this commit, so no audit was run; the latest
+-audit record, audit 04, names the state of `a1-scenarios`, whose
+-specifications this tree carries unchanged (the trace tool read them and
+-reported no finding).
++Audit 05 (`records/audit-05-skill.md`, `/audit-spec` 1.1) was run on the
++specifications as this tree commits them: fourteen items applied, fourteen
++*pass*, no gap. Since audit 04 the specifications changed only in their
++references (the validation record, the amended ConOps-VAL-1).
+ 
+ | Clause | Holds? | Evidence | Provenance |
+ |---|---|---|---|
+-| ConOps-SQ-1 | holds (record; header parts run now) | `records/audit-04-skill.md`, with its amendments applied at `a1-scenarios`; `reports/conformance.md` lists US-1 to US-3 with no finding | review (agent): `/audit-spec` 1.1, 2026-10-22, on the specifications as they still stand; analysis: the clause reader, run now |
+-| Reqs-SQ-1 | holds (record; header parts run now) | `records/audit-04-skill.md`; `reports/conformance.md` lists REQ-0 to REQ-3 with no finding | as above |
+-| Reqs-SQ-2 | holds (record) | `records/audit-04-skill.md`, C-2 pass | review (agent): `/audit-spec` 1.1, 2026-10-22 |
+-| Gloss-SQ-1 | holds (record) | `records/audit-04-skill.md`, C-3 and C-10 pass | as above |
+-| Specs-SQ-1 | holds (record) | `records/audit-04-skill.md`, C-8 to C-14 pass or applied; the trace tool, run now, reports no link finding, which covers the link part of C-8 and C-13 against this tree | review (agent): `/audit-spec` 1.1, 2026-10-22; analysis: `tools/trace.py` 1.0, run now, for the links |
++| ConOps-SQ-1 | holds (record; header parts run now) | `records/audit-05-skill.md`: C-1, C-4 to C-7 pass; `reports/conformance.md` lists US-1 to US-3 with method *test*, their `Scenarios`, and no finding | review (agent): `/audit-spec` 1.1, 2026-10-22, on this tree; analysis: the clause reader, run now |
++| Reqs-SQ-1 | holds (record; header parts run now) | `records/audit-05-skill.md`: C-1, C-4, C-7, C-8 pass; `reports/conformance.md` lists REQ-0 to REQ-3 with no finding | as above |
++| Reqs-SQ-2 | holds (record) | `records/audit-05-skill.md`: C-2 pass (REQ-0 ubiquitous with the guard as subject; REQ-1 to REQ-3 event-driven with the filter as subject and "shall") | review (agent): `/audit-spec` 1.1, 2026-10-22 |
++| Gloss-SQ-1 | holds (record) | `records/audit-05-skill.md`: C-3 pass (thirteen terms, each defined once; no other specification defines one; every domain term used is a glossary term or a stated value of *security level*); C-10 pass | as above |
++| Specs-SQ-1 | holds (record) | `records/audit-05-skill.md`: C-8 to C-14 pass (US-1 to REQ-3, US-2 to REQ-2, US-3 to REQ-1; REQ-0 from the glossary; every scenario derives from a story that lists it; no contradiction; no assumption or want as a requirement; every named file, clause, entry, and identifier exists; the helper agreed with all six scenario expectations) | review (agent): `/audit-spec` 1.1, 2026-10-22, on this tree; analysis: `tools/trace.py` 1.0, run now, for the link part |
+ 
+ ## RQ · realization quality
+ 
+ | Clause | Holds? | Evidence | Provenance |
+ |---|---|---|---|
+-| Code-RQ-1 | holds (run now) | `uv run ruff check .` → "All checks passed!", exit 0; `uv run pytest --collect-only -q --no-cov` → "29 tests collected", exit 0 (13 of them the tooling tests under `tests/tooling/`, which cite no clause) | analysis: ruff 0.17.1 and pytest 9.1.1 on Python 3.14.7, over `guard/`, `tests/`, and `tools/` at this tree, 2026-10-24 |
++| Code-RQ-1 | holds (run now) | `uv run ruff check .` → "All checks passed!", exit 0; `uv run pytest --collect-only -q --no-cov` → "29 tests collected", exit 0 (13 of them the tooling tests, which cite no clause) | analysis: ruff 0.17.1 and pytest 9.1.1 on Python 3.14.7, over `guard/`, `tests/`, and `tools/` at this tree, 2026-10-24 |
+ 
+ ## CONF · conformance
+ 
+ | Clause | Holds? | Evidence | Provenance |
+ |---|---|---|---|
+-| Reqs-CONF-1 | holds (run now) | `uv run pytest` → 29 passed, exit 0; requirements coverage 7 of 7 test clauses with passing evidence (`reports/conformance.md`, scope: full run, 29 collected, 16 cite a clause); branch coverage of `guard/` 100 percent | test: pytest 9.1.1 with the plugin in `tests/conftest.py` and pytest-cov 7.1.0, 2026-10-24; specifications at `a1-scenarios`, tests at this tree, realization unchanged from `a0`; clauses REQ-0 to REQ-3 |
+-| Scen-CONF-1 | holds (run now) | the same run: the six scenario tests passed, two per story (`reports/conformance.md`, the US rows) | test: the loader over `specs/scenarios.json`, 2026-10-24; clauses US-1 to US-3 |
++| Reqs-CONF-1 | holds (run now) | `uv run pytest` → 29 passed, exit 0; requirements coverage 7 of 7 test clauses with passing evidence (`reports/conformance.md`, scope: full run, 29 collected, 16 cite a clause); branch coverage of `guard/` 100 percent | test: pytest 9.1.1 with the plugin in `tests/conftest.py` and pytest-cov 7.1.0, 2026-10-24; specifications, tests, and tools at this tree, realization unchanged from `a0`; clauses REQ-0 to REQ-3 |
++| Scen-CONF-1 | holds (run now) | the same run: the six scenario tests passed, two per story (`reports/conformance.md`, the US rows) | test: the loader `tests/test_scenarios.py` over `specs/scenarios.json` at this tree, 2026-10-24; realization unchanged from `a0`; clauses US-1 to US-3 |
+ 
+ ## VAL · validated
+ 
+ | Clause | Holds? | Evidence | Provenance |
+ |---|---|---|---|
+-| ConOps-VAL-1 | record names another state (version A0); for this tree, does not hold | `records/walkthrough.md`, section "Sign-off": the statement names version A0 | sign-off: both roles played by the instructor, 2026-10-20, on `specs/conops.md` version A0 |
++| ConOps-VAL-1 | holds (record) | `records/validation.md`: the message sender walked US-1 with SC-1, SC-2 and US-2 with SC-3, SC-4, and decided that each story says what they want; the security officer walked US-3 with SC-5, SC-6 and decided the same, and signed with D-1 to D-3 deferred; the sign-off: "The concept of operations, version A1, describes the guard I intend: the marking alone decides, a Critical message never leaves, and anything else leaves as it arrived. The three deferred wants are mine and are not promised in this version." | the stakeholders' walkthrough and sign-off, both roles played by the build agent on the instructor's behalf, 2026-10-22, on `specs/conops.md` version A1 and the realization unchanged from `a0`. A stand-in: the record says so, and the instructor's own session supersedes these lines when it is recorded. The claim is as good as that stand-in |
+ 
+ ## TR · traceable
+ 
+ | Clause | Holds? | Evidence | Provenance |
+ |---|---|---|---|
+ | Specs-TR-1 | holds (run now) | `reports/conformance.md`, "Unknown identifiers: None", 16 citing tests; `reports/trace-matrix.md`, findings none: every `Derived from`, `Source`, and `Scenarios` reference and every scenario's `derived_from` resolves (3 stories, 4 requirements, 6 scenarios, 3 source references) | analysis: the plugin in `tests/conftest.py` under `--strict-markers` and `tools/trace.py` 1.0, both run now at this tree, 2026-10-24 |
+-| Specs-TR-2 | holds (run now) | `uv run python tools/trace.py` → exit 0, "every declared link resolves"; `reports/trace-matrix.md` regenerated with an empty findings section; the twelve known-violation cases and the clean base pass in the same suite run (`tests/tooling/`) | analysis: `tools/trace.py` 1.0, 2026-10-24, at this tree, over every clause, scenario, entry, and citation; the tool verified on its cases in the same run |
++| Specs-TR-2 | holds (run now) | `uv run python tools/trace.py` → exit 0, "every declared link resolves"; `reports/trace-matrix.md` regenerated with an empty findings section; the twelve known-violation cases and the clean base pass in the same suite run | analysis: `tools/trace.py` 1.0, 2026-10-24, at this tree; the tool verified on its cases in the same run |
+ 
+ ## What was run and read
+ 
+-- `tools/evaluate.sh` → exit 0. Header: `evaluate: 2026-10-24 12:05 ·
++- `tools/evaluate.sh` → exit 0. Header: `evaluate: 2026-10-24 12:11 ·
+   Python 3.14.7 · pytest 9.1.1 · pytest-cov 7.1.0 · ruff 0.17.1 · trace.py
+   1.0`. ruff: all checks passed; pytest: 29 passed, branch coverage 100
+   percent, conformance "every test clause has passing evidence"; trace:
+   "every declared link resolves"; `reports/conformance.md` and
+   `reports/trace-matrix.md` regenerated.
+ - `uv run pytest --collect-only -q --no-cov` → exit 0, "29 tests collected".
+-- `records/audit-04-skill.md`, dated 2026-10-22, naming the specifications
+-  as they still stand.
+-- `records/walkthrough.md`, the sign-off (dated 2026-10-20, naming version
+-  A0).
++- `records/audit-05-skill.md`, dated 2026-10-22, naming the working tree
++  before this commit; no gap.
++- `records/validation.md`, the two validation tables and the sign-off, dated
++  2026-10-22, naming `specs/conops.md` version A1 and the a1 working tree.
+ 
+ ## What this report does not say
+ 
+@@ -78,6 +78,10 @@ A row that holds is a supported claim with the scope its provenance states,
+ not a proof. A row evaluated by a person reports that a record exists and
+ what it says; the compiler did not repeat the evaluation. A row whose record
+ names a state other than the current tree is reported as such, and whether
+-the evidence still applies is for a person to decide. In this report the
+-audit record names the previous commit's specifications, which are this
+-tree's; the sign-off names version A0 and nothing bridges it.
++the evidence still applies is for a person to decide. In this report every
++record names this tree. Two things the rows say that a green summary alone
++would not: the VAL row's provenance names a stand-in for the stakeholders,
++so its claim is only as good as that stand-in until the instructor's own
++session replaces it; and the SQ rows rest on a skill whose first run caught
++the build's own setup (audit 03), which is the reason to trust its later
++passes more, not less.
+diff --git a/reports/conformance.md b/reports/conformance.md
+index 070667e..dbb613e 100644
+--- a/reports/conformance.md
++++ b/reports/conformance.md
+@@ -1,6 +1,6 @@
+ # Conformance Report: Message Guard
+ 
+-Generated 2026-10-24 12:05 by the plugin in `tests/conftest.py` from the clauses in `specs/conops.md`, `specs/requirements.md`, `specs/scenarios.json`, `specs/glossary.md`; 29 tests collected, 16 cite a clause.
++Generated 2026-10-24 12:11 by the plugin in `tests/conftest.py` from the clauses in `specs/conops.md`, `specs/requirements.md`, `specs/scenarios.json`, `specs/glossary.md`; 29 tests collected, 16 cite a clause.
+ 
+ **Scope**: full run.
+ 
+diff --git a/reports/trace-matrix.md b/reports/trace-matrix.md
+index b007559..4d231bc 100644
+--- a/reports/trace-matrix.md
++++ b/reports/trace-matrix.md
+@@ -1,6 +1,6 @@
+ # Trace Matrix: Message Guard
+ 
+-Generated 2026-10-24 12:05 by `tools/trace.py` 1.0 from `specs/conops.md`, `specs/requirements.md`, `specs/scenarios.json`, `specs/glossary.md` and `reference/elicitation.md`; citations from 29 collected tests (16 cite a clause). Repository state: HEAD 0033ee8, 9 changed or untracked path(s).
++Generated 2026-10-24 12:11 by `tools/trace.py` 1.0 from `specs/conops.md`, `specs/requirements.md`, `specs/scenarios.json`, `specs/glossary.md` and `reference/elicitation.md`; citations from 29 collected tests (16 cite a clause). Repository state: HEAD d1fb8fc, 33 changed or untracked path(s).
+ 
+ **Scope**: every declared link, in both directions. The tool decides whether a link resolves, not whether the linked texts agree; that review is the audit's (procedure Audit).
+ 
+diff --git a/specs/conops.md b/specs/conops.md
+index 4b641e7..e2a9845 100644
+--- a/specs/conops.md
++++ b/specs/conops.md
+@@ -11,7 +11,7 @@ interpreting them and are reviewed with them (ConOps-SQ-1). Domain terms are
+ defined once, in `glossary.md`, and used here in that sense (Gloss-SQ-1). The
+ requirements derived from the stories and the terms are in
+ `requirements.md`. Stakeholder sign-off is recorded separately in
+-`records/walkthrough.md`.
++`records/validation.md`.
+ 
+ ## 1. Purpose
+ 
+@@ -123,4 +123,4 @@ derives from any of them.
+ ## 6. Sign-off
+ 
+ Validation of this document, by a stakeholder of each user category naming
+-this version, is to be recorded in `records/walkthrough.md` under "Sign-off".
++this version, is recorded in `records/validation.md` under "Sign-off".
+diff --git a/specs/requirements.md b/specs/requirements.md
+index 8fa73b2..59cae0d 100644
+--- a/specs/requirements.md
++++ b/specs/requirements.md
+@@ -9,7 +9,7 @@ clause. Domain terms are those of `glossary.md` (Gloss-SQ-1). The subject of a
+ clause about the input is the guard; the subject of a pass-or-drop clause is
+ the filter; the trigger of an event-driven clause is "When the filter is
+ given a message ...". Stakeholder sign-off is recorded separately in
+-`records/walkthrough.md`.
++`records/validation.md`.
+ 
+ **REQ-0** · Method: test · Pattern: ubiquitous · Derived from: Glossary: message, security level, payload
+ 
+diff --git a/tooling/README.md b/tooling/README.md
+new file mode 100644
+index 0000000..feaf68c
+--- /dev/null
++++ b/tooling/README.md
+@@ -0,0 +1,61 @@
++# Tool Catalog: the assurance tooling of version A1
++
++With agentic development, the effort of a developer shifts from writing the
++code to building the environment and tooling that directs agents to build the
++code and reports on whether the code and the development process meet the
++goals. None of the reports, evaluations, or procedures in this snapshot
++appeared by themselves when the requirements were written. Each was
++specified, built or adapted, reviewed, and checked on inputs it must fail on,
++and each is maintained like any other engineered artifact. This catalog is
++where that work is recorded, so that a reader can set up the same tooling in
++their own project, or build infrastructure shared across several. The
++companion sidebar beside the module's Lecture 02 notes, *Tooling as
++engineering*, states the philosophy and the organization model at more
++length; this file is the inventory.
++
++**How to read a page.** Every page has the same seven headings: the tool's
++*goal* (the question it answers and the judgment clause or procedure that
++names it); its *requirements*, numbered; *the prompt*, verbatim for a tool new
++in A1 and as guidance for a tool inherited from A0; the *review points* to
++check in an agent's proposed design before accepting it; the
++*deliberate-failure checks* the tool must fail or report on, and where they
++live; what to change when *adapting it to your project*; and how to turn it
++into *shared infrastructure*. A tool whose page has an empty
++deliberate-failure section is a tool nobody has seen fail, and its findings
++are trusted only to that extent.
++
++**What a tool is to a judgment.** A program in this catalog is the
++*evaluation* a clause of `process/judgments.md` names in its *Evaluated by*
++field, or a part of one; a skill is the packaging of a procedure of
++`process/procedures.md`. No tool here decides when a claim must hold, and
++nothing runs any of them unasked: that is the control layer, which arrives
++with A2.
++
++## The tools
++
++| Tool | Kind | Goal | Evaluates, or serves | Reads | Writes | A0 or A1 | Page |
++|---|---|---|---|---|---|---|---|
++| `tests/conformance.py` | program | read the identified clauses and their fields from the specifications, so that no report depends on a hand-kept list | the header parts of ConOps-SQ-1 and Reqs-SQ-1; feeds Specs-TR-1 | `specs/*.md`, `specs/scenarios.json`, `reference/elicitation.md` | clause records; findings | A0, extended in A1 | [clause-reader.md](clause-reader.md) |
++| `tests/conftest.py` | program (pytest plugin) | turn test citations and outcomes into requirements coverage, and fail the run on missing or failing evidence | Reqs-CONF-1, Scen-CONF-1; the citation part of Specs-TR-1 | citations, outcomes, the clause records | `reports/conformance.md` | A0, extended in A1 | [conformance-plugin.md](conformance-plugin.md) |
++| `tools/evaluate.sh`, with the pytest and coverage settings in `pyproject.toml` | configuration | one command that runs every mechanical evaluation and exits non-zero at the first failure | Code-RQ-1, Reqs-CONF-1, Scen-CONF-1, Specs-TR-1, Specs-TR-2, in one run | the repository | an exit code; a provenance header | A0, extended in A1 | [evaluate.md](evaluate.md) |
++| `tools/walk.py` | program | let a person exercise one message in a role and see what the guard does | ConOps-VAL-1 (in A0, also ConOps-CONF-1) | one message | one line | A0 | [walkthrough-helper.md](walkthrough-helper.md) |
++| `tests/test_scenarios.py` | program | run every scenario of the fixture file as a test that cites its story | Scen-CONF-1 | `specs/scenarios.json` | outcomes | A1 | [scenario-loader.md](scenario-loader.md) |
++| `tools/trace.py` | program | resolve every declared link in both directions and report the ones that do not resolve | Specs-TR-2; the reference parts of Specs-TR-1 | the specifications, the suite's citations | `reports/trace-matrix.md`; an exit code | A1 | [trace.md](trace.md) |
++| `tests/tooling/` | program (tests of the tools) | show the clause reader and the trace tool failing on inputs they must fail on, before their findings are trusted | the trustworthiness of the CONF and TR evidence | case directories | outcomes | A1 | [tooling-tests.md](tooling-tests.md) |
++| `.claude/skills/elicit/` | agent procedure | obtain a concept of operations from its stakeholders in at most five questions and record their words | procedure Elicit (serves ConOps-VAL-1 and the SQ clauses) | `specs/conops.md`, the glossary, the record | the record, the concept of operations, the glossary | A1 | [skill-elicit.md](skill-elicit.md) |
++| `.claude/skills/audit-spec/` | agent procedure | audit the specifications by a fixed procedure, form by form, and report gaps in a fixed form, under a version | procedure Audit (the SQ clauses) | `specs/`, the process files | `records/audit-NN.md` | A1 | [skill-audit-spec.md](skill-audit-spec.md) |
++| `build-history.sh` | program | replay the snapshots into a tagged git history, labeled as a reconstruction | none | `a0/`, `a1/reference/history/` | a git repository | A1 | [replay.md](replay.md) |
++
++## Reused and new
++
++Reused from A0: the clause reader and the conformance plugin, which A0 had
++adapted from the Spec Kit tic-tac-toe demo; the evaluation command; the
++walkthrough helper. New in A1: the scenario loader, the trace tool, the
++tooling tests, and the two skills. Unchanged tools from the ecosystem:
++`pytest`, `pytest-cov`, `ruff`, `uv`. Every page says which of these its
++tool is.
++
++## Licensing
++
++The pages of this catalog are instructional prose (CC BY 4.0). The tools
++themselves, their tests, and the skills are code and configuration (MIT).
+diff --git a/tooling/clause-reader.md b/tooling/clause-reader.md
+new file mode 100644
+index 0000000..a939aff
+--- /dev/null
++++ b/tooling/clause-reader.md
+@@ -0,0 +1,87 @@
++# The clause reader: `tests/conformance.py`
++
++## Goal
++
++Read, from the specifications themselves, every identified clause with its
++fields, every scenario, every glossary term, and every elicitation entry, so
++that no report in this repository depends on a hand-kept list of what the
++specifications contain. ConOps-SQ-1 and Reqs-SQ-1 name it for the header parts of
++well-formedness; the conformance plugin and the trace tool are its two
++consumers.
++
++## Requirements
++
++1. A clause header is one line: `**ID** · Key: value · Key: value ...`. The
++   identifier family (`US`, `REQ`) decides which file it belongs in and which
++   keys are allowed.
++2. The method is one of `test`, `analysis`, `review (human)`, `review
++   (agent)`, `walkthrough (human)`, `walkthrough (agent)`.
++3. A header the reader cannot accept is a **finding**, never a silent
++   omission: no `Method`; an unknown method, key, or EARS pattern; a
++   requirement without a `Pattern`; a judgment method without a `Reason`; a
++   duplicate identifier (the first definition is kept); an identifier family
++   in the wrong file; an unknown family.
++4. Scenarios come from `specs/scenarios.json`: `id`, `derived_from`,
++   `input`, `expected` are required; a duplicate or malformed identifier is a
++   finding.
++5. Glossary terms are the `- **term**:` entries of `specs/glossary.md`; a
++   term defined twice is a finding.
++6. Elicitation entries are the `### E-n` headings of
++   `reference/elicitation.md`, read so that `Source` fields can be resolved.
++7. Everything that is not a header is contextual specification text and is
++   not read; the reader decides syntax only.
++8. Deterministic, dependency-free (standard library), and importable by the
++   plugin and the trace tool.
++
++## The prompt
++
++Inherited from A0, where it was adapted from the Spec Kit tic-tac-toe demo.
++The provenance chain the design records: the instructor's seed development
++rules supplied the reporting goals; Spec Kit planning decision R7 chose
++requirement markers and a generated report; tasks T004 to T006 specified the
++clause reader and the plugin; public commit `4d6a2cd` introduced them; A0's
++dev-log entry 2 records adapting them. The A1 extension (fields, scenarios,
++glossary, entries, findings) was written by the build agent from
++requirements 1 to 8 above, which the A1 plan's section 5.6 fixed first.
++
++Guidance for the prompt that would produce it from nothing:
++
++> Write a module that reads the clause headers of these specification files
++> (give the header format and an example), returns the clauses in document
++> order with their fields, and reports as findings, rather than skipping, a
++> header it cannot accept: list the finding kinds. Read the scenario file,
++> the glossary, and the elicitation record the same way. No hand-kept list
++> of identifiers anywhere. Show me the data model and the finding kinds
++> before writing code.
++
++## Review points
++
++The clause list comes from the files, not from a constant; a malformed header
++produces a finding and the clause is still returned where possible; the
++first of two duplicates wins and the second is reported; the reader does not
++resolve links (that is the trace tool's job) and does not judge meaning.
++
++## Deliberate-failure checks
++
++The case directories under `tests/tooling/cases/` (page
++[tooling-tests.md](tooling-tests.md)): `missing-method`,
++`unknown-method`, `unknown-key`, `unknown-pattern`, `missing-reason`,
++`duplicate-identifier`. Run them with `uv run pytest tests/tooling`. The
++A0 reader dropped a header without a `Method` silently, which is the
++finding `missing-method` exists to prevent; the plan's seeded gap G6 is the
++same input in the real specifications.
++
++## Adapting it to your project
++
++Project-specific: the header regex and the ` · ` separator; the identifier
++families and the file each belongs in; the allowed keys; the scenario file's
++shape; the glossary entry shape. Carries over as an idea: specifications are
++the source of truth for what exists, and a reader that cannot parse a line
++says so.
++
++## Making it shared infrastructure
++
++Package the reader with the header format it reads: the format is the
++contract, and a team that fixes one header format for all its projects can
++share one reader. Version them together; a reader change that starts
++accepting or rejecting a header changes what every project's reports say.
+diff --git a/tooling/conformance-plugin.md b/tooling/conformance-plugin.md
+new file mode 100644
+index 0000000..ade6790
+--- /dev/null
++++ b/tooling/conformance-plugin.md
+@@ -0,0 +1,102 @@
++# The conformance plugin: `tests/conftest.py`
++
++## Goal
++
++Turn the suite's citations and outcomes into **requirements coverage**: one
++row per identified clause saying which tests cite it and whether they passed,
++written to `reports/conformance.md` after every run, and fail the run when a
++clause assigned method *test* has no passing evidence or a marker names a
++clause that does not exist. Reqs-CONF-1 and Scen-CONF-1 name it as their evaluation;
++Specs-TR-1 names it for the resolution of citations. It is the mechanism behind "a green
++suite is not conformance": the suite can pass while a clause has no test.
++
++## Requirements
++
++1. Reads clauses through the clause reader; never from a list of its own.
++2. Collects, from every test, the identifiers in its `req` markers;
++   `--strict-markers` in `pyproject.toml` rejects an undeclared marker before
++   any test runs.
++3. Records each cited test's outcome (passed, failed, skipped).
++4. After the session, writes the report: a header naming the files read, the
++   number of tests collected and the number that cite a clause; a **scope
++   line** saying full run or partial run; the requirements-coverage count;
++   one row per clause; the legend; unknown identifiers; the reader's
++   findings.
++5. A *test* clause's status is pass, FAIL, partial, or no evidence; a
++   walkthrough or review clause is not decided by the run and its row points
++   at the record file.
++6. Fails the run (exit as if a test failed) on any no-evidence or FAIL
++   clause, any unknown identifier, or any reader finding, unless tests were
++   deselected, in which case the report is written, labeled partial, and the
++   run is not failed.
++7. Tests may omit citations; they still run, still count toward structural
++   coverage, and still fail the suite if they fail.
++8. The terminal summary names each gap, so that a red run says why.
++
++## The prompt
++
++Inherited from A0, adapted from the Spec Kit demo (the provenance chain is
++on [clause-reader.md](clause-reader.md)). The A1 extensions, the scope line,
++the findings section, and story rows backed by scenario tests, were written
++by the build agent from the A1 plan's N11.
++
++Guidance for the prompt that would produce it from nothing (it is the one
++Lecture 01 gives as the example of asking for a tool rather than a report):
++
++> Read the identified clauses from these specification files, show the tests
++> citing each test clause and their outcomes, identify missing evidence and
++> invalid citations, distinguish a partial run from a full run, and fail the
++> run on a missing or failing citation. Propose the report's layout and the
++> status vocabulary first, and say what the plugin will not decide.
++
++## Review points
++
++The clause list comes from the reader; a clause with no citing test fails
++the run rather than being omitted; a partial run cannot be mistaken for a
++full one when the saved file is read alone; the report says how many tests
++were collected and how many cite a clause, so that an uncited test is
++visible; the legend says what a citation does not establish (assertion
++adequacy).
++
++## Deliberate-failure checks
++
++Four scripted demonstrations, run from a scratch copy of the snapshot (also
++listed in the README under "Breaking the verifiers"):
++
++1. **An uncited passing test is accepted.** Add `def test_extra(): pass` to
++   any test file; the run stays green and the report's "cite a clause" count
++   is unchanged.
++2. **An invalid citation is rejected.** Change a marker to `"REQ-9"`; the
++   report lists it under "Unknown identifiers" and the run fails.
++3. **A test clause with no citing test is a coverage gap.** Delete
++   `test_public_passes_unchanged`; every remaining test passes, branch
++   coverage stays at 100 percent, and the run fails with "REQ-3: no
++   evidence".
++4. **An uncited failing test fails the suite while every clause row stays
++   green.** Add `def test_uncited_failure(): assert False`; pytest reports one
++   failure and the plugin still prints "every test clause has passing
++   evidence". The clause table and the suite result are two different
++   claims, and the suite's exit code is the one that counts; A2's generated
++   ledger must read the suite result, not the table (CF-08).
++
++Observed on 2026-10-22 in the trial run of this snapshot: 1 and 4 as
++described; 2 and 3 are A0's sabotages 5 and 3, unchanged.
++
++## Adapting it to your project
++
++Project-specific: the marker name and the test framework's hook API (this is
++pytest's `pytest_collection_modifyitems`, `pytest_runtest_logreport`,
++`pytest_sessionfinish`); the report path; the status vocabulary if the
++organization has one. Carries over as an idea: citations in tests, a
++generated report over the specification's identifiers, and a run that fails
++on absence, not only on failure. Another language needs its own way to cite
++a clause from a test and its own coverage tool.
++
++## Making it shared infrastructure
++
++This is the tool most worth sharing: package it as a pytest plugin
++(`pyproject.toml` entry point `pytest11`) that takes the clause reader and
++the report path as configuration, so that product repositories carry only
++their specifications and markers. Version it; a plugin defect gives every
++project the same misleading green, which is why the deliberate-failure
++demonstrations ship with it and run on every release.
+diff --git a/tooling/evaluate.md b/tooling/evaluate.md
+new file mode 100644
+index 0000000..3cafb4b
+--- /dev/null
++++ b/tooling/evaluate.md
+@@ -0,0 +1,82 @@
++# The evaluation command: `tools/evaluate.sh` and the pytest configuration
++
++## Goal
++
++One command that runs every mechanical evaluation of `process/judgments.md`
++and exits non-zero at the first failure: realization quality (Code-RQ-1),
++the test evidence for the requirements and the scenarios (Reqs-CONF-1 and
++Scen-CONF-1, through the plugin and `pytest-cov`), and traceability
++(Specs-TR-2 and the reference parts of Specs-TR-1, through the trace tool).
++It is what the assurance report's procedure runs in its step 2, and its
++header is what the report quotes as provenance. It is **not a gate**:
++nothing in A1 runs it unasked, and nothing waits for its exit code. It
++evaluates. A program whose exit code decides a transition, a hook or a CI
++job, is the control layer, and that arrives with A2; the script is written so
++that A2 can put it behind one without changing it.
++
++## Requirements
++
++1. Runs, in order, `ruff check .`, `pytest` (with the coverage threshold and
++   the conformance plugin, both configured in `pyproject.toml`), and
++   `tools/trace.py`; stops at the first failure; exit 0 means every
++   mechanical clause holds for the tree it was run on.
++2. Prints a provenance header first: the date; the repository state (HEAD
++   and the number of changed or untracked paths, so that a run on a dirty
++   tree says so); the versions of Python, pytest, pytest-cov, ruff, and the
++   trace tool. The assurance report copies this header (the hand convention
++   for CF-07; the tree-hash mechanism is A2's).
++3. Runs from the snapshot root wherever it is invoked from.
++4. Contains no policy of its own: the coverage threshold, the marker
++   declaration, and the test paths live in `pyproject.toml`, where a reader
++   looks for them, and the clauses it evaluates are named in its header
++   comment, not decided by it.
++
++## The prompt
++
++Inherited from A0 (the evaluation command of A0's dev-log entry 2); the
++provenance header and the trace step were added by the build agent in A1
++from requirements 2 and 1. Guidance for the prompt that would produce it:
++
++> Write one command that runs every evaluation the judgments file assigns to
++> a program: lint, then the suite with its coverage threshold and the
++> conformance plugin, then the trace tool, failing at the first red step.
++> Print, before anything runs, what state is being checked and by which tool
++> versions. Keep thresholds out of the script, and do not make it decide
++> anything about commits.
++
++## Review points
++
++The script carries no threshold; the order is lint, suite, trace (a suite
++that does not collect should fail before a trace is attempted); the header
++reports a dirty tree honestly; the exit code is the last step's only because
++every earlier step would have stopped the script; the header comment names
++the clauses, so that a reader can see which rows of the report one run
++covers.
++
++## Deliberate-failure checks
++
++Each step has its own: a lint error (add an unused import to `guard/`), a
++failing test (A0's sabotage 1), a coverage gap (A0's sabotage 4 in the form
++`payload < -1000`, since the original `payload < 0` is now caught by
++scenario SC-2 before the coverage tool sees it), a dangling reference (A1's
++sabotage 8). The command must exit non-zero on each and the header must
++show the dirty tree. All four observed on 2026-10-22 in a trial copy of this
++snapshot: ruff "F401 imported but unused"; four tests and three clause rows
++FAIL; coverage 94 percent with every clause cited; "story without
++requirement at US-1".
++
++## Adapting it to your project
++
++Project-specific: every command. Carries over as an idea: one command, one
++exit code, a header that says what was checked, no policy in the script, and
++a comment that names the clauses it evaluates. For a project with no test
++framework, the command is whatever evaluates the mechanical clauses: a
++schema validator, a type checker, a build.
++
++## Making it shared infrastructure
++
++Keep the command as a thin script that calls shared tools; the policy lives
++in configuration files the organization templates. A git pre-commit hook or
++a CI job that runs the same script turns the evaluation into a gate, which is
++a decision about process, not about the script; A2's build plan decides when
++enforcement is wanted and at which checkpoints.
+diff --git a/tooling/replay.md b/tooling/replay.md
+new file mode 100644
+index 0000000..70c3a44
+--- /dev/null
++++ b/tooling/replay.md
+@@ -0,0 +1,60 @@
++# The replay script: `build-history.sh`
++
++## Goal
++
++Turn the published snapshots into a tagged git history, so that a reader can
++`git log`, `git diff a1-specs..a1-scenarios`, and check out the state at
++each of A1's four commits. The history is a **reconstruction**: it is
++rebuilt from the patches that the actual A1 build produced, in the same
++order, but the dates and the author are the replay's. The commits it makes
++pass the mechanical evaluations of their version by construction, because
++the patches came from commits that did.
++
++## Requirements
++
++1. `build-history.sh TARGET_DIR` creates `TARGET_DIR` as a git repository
++   whose first commit is the complete A0 snapshot, tagged `a0`.
++2. Applies, in order, the patches of `a1/reference/history/`, one commit
++   each, with the commit messages of the build, and tags them `a1-specs`,
++   `a1-scenarios`, `a1-trace`, `a1`.
++3. Labels every commit message as a replay, and writes a note in the
++   repository saying that the history is a reconstruction.
++4. The replayed `a1` tree equals the `a1/` snapshot except for the `.patch`
++   files of `reference/history/` (the patches are not part of the commits,
++   since they describe them; the folder's README is), which the script's
++   header says. The script lives beside the snapshots, in the directory that
++   holds `a0/` and `a1/`, not inside `a1/`.
++5. Fails loudly if a patch does not apply.
++
++## The prompt
++
++New in A1, written by the build agent after the four commits existed. The
++prompt a developer would give:
++
++> Export each commit after the baseline as a patch under
++> `reference/history/`, and write a script that recreates the history from
++> the `a0` snapshot and those patches, tagging each commit with its name.
++> Say in the script and in the commit messages that this is a reconstruction.
++
++## Review points
++
++The patches are exported from real commits (`git format-patch`), not written
++by hand; the script does not invent intermediate states; the tags are the
++names the dev log uses; the difference between the replayed tree and the
++snapshot is stated, not discovered.
++
++## Deliberate-failure checks
++
++Run it, then run `tools/evaluate.sh` at the `a1` tag in the replayed
++repository: it must exit 0. Run it a second time into the same directory: it must refuse. Both
++observed on 2026-10-22 and again on 2026-10-24, after the snapshots were
++re-layered and the patches regenerated.
++
++## Adapting it to your project
++
++Not needed in a project that has a real history. It exists because the
++course publishes snapshots, not repositories.
++
++## Making it shared infrastructure
++
++Not applicable; it is a teaching artifact.
+diff --git a/tooling/scenario-loader.md b/tooling/scenario-loader.md
+new file mode 100644
+index 0000000..8d2e3f3
+--- /dev/null
++++ b/tooling/scenario-loader.md
+@@ -0,0 +1,67 @@
++# The scenario loader: `tests/test_scenarios.py`
++
++## Goal
++
++Run every acceptance scenario of `specs/scenarios.json` as a test that cites
++the story it derives from, so that a story's behavioral evidence is a passing
++test rather than a person's observation. Scen-CONF-1 is the clause it
++evaluates, and the stories are then covered like any other *test* clause. The scenario file is a specification (values
++only, readable by a stakeholder, portable to any realization); the loader is
++the one place that binds it to this realization's interface.
++
++## Requirements
++
++1. One parametrized test; one case per scenario; the case id is the
++   scenario's identifier, so that a failure names it.
++2. Each case carries the marker `req(<derived_from>)`, so that the
++   conformance report lists it under the story.
++3. Builds the message from the scenario's input through the public
++   interface, calls `filter_message`, and compares the output with
++   `expected` by value: `null` means no output.
++4. Reads the file at collection time; never edits it, and never skips a
++   scenario.
++5. If the file is malformed, collection fails (Code-RQ-1 catches it before
++   any evidence is produced).
++
++## The prompt
++
++New in A1; written by the build agent from the A1 plan's section 5.4, which
++fixed the file's shape and these five requirements. The prompt a developer
++would give:
++
++> Write a pytest module that turns every scenario in `specs/scenarios.json`
++> into a parametrized case, cites the story each scenario derives from with
++> the `req` marker, builds the message through the package's public
++> interface, and compares the output by value. The file is a specification:
++> read it, never change it, never skip an entry.
++
++## Review points
++
++Each case is marked with the scenario's `derived_from`, not with a constant;
++the comparison is by value (level and payload), not by object identity; a
++`null` expectation asserts that nothing came out; the test imports only the
++public interface.
++
++## Deliberate-failure checks
++
++A1's sabotage 7: change `filter.py` and the unit test
++`test_restricted_passes_unchanged` together so that both read "unchanged"
++as "payload normalized to non-negative" (a shared misreading); the unit test
++passes and `SC-2`, whose expectation was written from the stakeholder's
++words, fails. Observed on 2026-10-22 in the trial run. This is the
++independence point (threat T5): the scenario file was authored on the
++specification side, so it does not share the realization's mistake.
++
++## Adapting it to your project
++
++Project-specific: the message constructor and the function under test; the
++scenario schema. Carries over as an idea: one loader per realization, one
++scenario file per system, and the file governed on the specification side
++(never edited to make a test pass).
++
++## Making it shared infrastructure
++
++The scenario file's schema is the shareable part: an organization that fixes
++one schema can share one loader per language and run every realization of a
++system, in every language, against the same file. The HAMR version of this
++guard in Rust would read the same file.
+diff --git a/tooling/skill-audit-spec.md b/tooling/skill-audit-spec.md
+new file mode 100644
+index 0000000..5eec53d
+--- /dev/null
++++ b/tooling/skill-audit-spec.md
+@@ -0,0 +1,141 @@
++# `/audit-spec`: the specification audit skill
++
++## Goal
++
++Audit the specifications for specification quality by a fixed procedure
++(`Audit` in `process/procedures.md`), form by form, and report every gap in
++a fixed form (`process/templates/gap-list.md`), under a version, and stop for
++the developer's rulings. It is the verifier skill of
++A1: rung 3 of the verifier ladder for the SQ checks, between a person
++reading (audit 01) and an agent with an ad-hoc prompt (audit 02), and before
++the script that A2 writes for the syntactic items. The assurance report
++records its version as provenance.
++
++## Requirements
++
++1. Reads every file in scope in full, the glossary, and the process files,
++   before the first check; defers to any SQ clause the repository adds.
++2. Applies a fixed checklist, kept as one file per form under `forms/` and
++   indexed by `checklist.md` (version 1.2; one file in 1.0 and 1.1), in three
++   places: within each
++   document (well-formed headers, EARS form, glossary discipline,
++   ambiguity, a reason on judgment clauses, implementation independence,
++   completeness), between documents (derivation both ways, contradiction,
++   one sense per term, assumptions not requirements, deferred wants
++   deferred, references resolve), and by execution (examples and scenarios
++   against the clauses, with `tools/walk.py` where a realization exists).
++3. Reports every item as *pass* or as the gaps it produced, so the report
++   says what was checked.
++4. Reports gaps in the gap-list form: location, item, exact quotation, one
++   proposed resolution, ruling column left to the person.
++5. Does not report two things the checklist names as not gaps: an
++   implementation choice the specification leaves open, and an assumption
++   stated as an assumption.
++6. Never amends a file; stops and asks for rulings.
++7. Only the developer can start it, and names the forms to audit as its
++   arguments (every form under `specs/` by default).
++
++## The prompt
++
++The skill was written by the build agent from the A1 plan's section 8,
++condensed to its operative sentences:
++
++> Package procedure Audit as a skill in the house style of the course's
++> `conops-from-sketch`: a short body with the reasons, bundled detail, a
++> narrow description, and a stop where the person rules. Its first step is
++> to read every file under `specs/` in full. Put the checks in a
++> `checklist.md` with identifiers, in the order the procedure gives (within,
++> between, by execution), with the two negative rules that keep it from
++> over-reporting (an implementation choice left open is not an ambiguity; an
++> assumption stated as an assumption is not a finding). Put the gap-list form
++> in a template under `process/templates/`. Cite identifiers and quote text;
++> never amend; report under a version.
++
++## Review points
++
++Every checklist item appears in the report with a result; each gap quotes
++the text exactly and names the check; the two negative rules are applied
++(the object-identity reading of "unchanged" is not reported); the skill
++read the whole family before checking; it ran the examples; it did not edit
++anything; it stopped.
++
++## Deliberate-failure checks
++
++The known-violation set is `reference/drafts/`: the pre-audit specifications
++with the seven seeded gaps of the A1 plan and, as it turned out, several
++unseeded ones. Any change to the skill is rerun on the drafts and must still
++find the seven and report nothing for the non-gap. The key is the gap table
++of `records/audit-03-skill.md`.
++
++**First run, version 1.0, 2026-10-22** (`records/audit-03-skill.md`):
++
++| | Result |
++|---|---|
++| Seeded gaps found | 7 of 7 (G1 to G7) |
++| The non-gap (object identity) | not reported; listed under "considered and not reported" |
++| Unseeded findings | 4: two forward references to artifacts of a later commit (a rule and a record file), the missing `Reason` on three judgment clauses, a story whose `Source` was the other category's answer |
++| Items reported pass or finding | 14 of 14, plus one check it added under Specs-SQ-1 |
++| By execution | ran `walk.py` on all six examples; one disagreement, the seeded one |
++| Files amended | none |
++| Against the ad-hoc audit (audit 02) | 02 found the seven and the non-gap, and two content judgments the skill did not (an assumption that described the guard; a deferred want that reopened Critical); 02 missed the two header findings the skill made; 02 invented its own severity scale and read files the prompt did not name |
++
++**Later runs on clean trees.** The build audited before every commit that
++changed a specification (a practice, not a rule: nothing in A1 says when the
++audit must run), so the skill ran twice more in A1, at version 1.1: audit 04, before commit a1-scenarios (`records/audit-04-skill.md`),
++fourteen items, ten pass, four wording gaps, all accepted, one of which
++corrected a ruling of audit 03 that the 1.1 checklist does not admit; and
++audit 05, before commit a1 (`records/audit-05-skill.md`), on a tree whose
++only specification changes were references. A pass report that lists every
++item is what the procedure produces once the family is clean, and the cost
++of running it is the reason it can run every time.
++
++What the first run changed in the skill (version 1.1, committed with the
++audit): the checklist's item identifiers were A-1 to A-14 and collided with
++the assumption identifiers A-1 and A-2 of the concept of operations; the
++skill noticed and the items are now C-1 to C-14. Item C-5 (a reason on every
++judgment clause) said no such clause existed at A1, which was true of the
++final state and false of the audited commit; it now applies to whatever the
++tree holds. Item C-13 (references resolve) was added because the skill had
++to report two findings under a rule with no item to cite. The two content
++judgments that only the ad-hoc audit made were not turned into items: they
++are judgments of meaning, not checks of form, and a checklist that tried to
++hold them would be a list of everything.
++
++**Version 1.2 (2026-10-24): one file per form, the form as the argument.**
++The checklist was split into `forms/conops.md`, `forms/reqs.md`,
++`forms/gloss.md`, `forms/scen.md`, and `forms/between.md`, with
++`checklist.md` left as the index; the items and their identifiers are
++unchanged. The skill takes the forms to audit as its arguments, reads the
++glossary whatever the scope, and reports the between-document items as *not
++in scope* when one form is audited alone. The reason is the per-form
++arrangement of the judgments file: a form's clauses, its audit items, and
++its elicitation taxonomy are meant to travel together, so that a project
++that adds a form adds one file here. The rerun on the known-violation set
++that the discipline below asks for after any change to the skill was made
++the same day: `records/audit-06-skill.md`, a fresh session running
++`/audit-spec` 1.2 on the drafts, found seven of seven seeded gaps, did not
++report the non-gap, and reported eighteen gaps against audit 03's twelve,
++the difference being the finer split of the per-form files and the items
++now read against a fuller judgments file.
++
++## Adapting it to your project
++
++Project-specific: the per-form files for the forms your specifications
++use (the EARS item for requirements; a data-format file when there is a
++schema; an allocation item when there is an architecture, which A2 adds);
++the header format the clause reader fixes; the helper used for the
++by-execution step. Carries over as an idea: read everything first; check in
++three places; report what was checked; quote; never amend; stop. The
++"not a gap" rules are the part most worth copying: they are where the skill
++beats a free reading.
++
++## Making it shared infrastructure
++
++Share the skill with the clause-header format and the checklist as one
++package; an organization that fixes its specification kinds fixes the
++checklist's items with them. Version it, keep the drafts of each project as
++its known-violation set, and rerun them on every release: the skill is a
++verifier, and a verifier that has never been seen to fail has not been
++verified. When a syntactic item becomes a script (A2), the item stays in its form's
++file with a note that the script decides it and the audit reports the
++script's result.
+diff --git a/tooling/skill-elicit.md b/tooling/skill-elicit.md
+new file mode 100644
+index 0000000..8d0055d
+--- /dev/null
++++ b/tooling/skill-elicit.md
+@@ -0,0 +1,142 @@
++# `/elicit`: the elicitation skill
++
++## Goal
++
++Obtain, from the stakeholders of a concept of operations, the answers that
++the document does not yet settle, in at most five questions, and record their
++words so that every sentence of the document can be followed back to who said
++it. It packages procedure `Elicit` of `process/procedures.md`, which from
++version 1.1 takes the form to elicit as its argument. It is a procedure skill,
++not a verifier: it produces a
++specification and reference material, and the verifier that reads its
++product is `/audit-spec`.
++
++## Requirements
++
++1. Reads the document named by its form argument (`conops` by default),
++   the glossary and the elicitation record if they exist, and
++   `process/procedures.md`; asks nothing the repository already answers.
++2. Scans the document against the form's fixed taxonomy (`forms/conops.md`:
++   eight concept-of-operations categories) and rates each Clear, Partial, or
++   Missing; a form with no taxonomy stops the skill.
++3. Builds a queue of at most five questions ranked by impact times
++   uncertainty; each answerable with a letter or at most five words;
++   implementation, technology, and task order excluded.
++4. Asks one question at a time, addressed to a named user category, in the
++   fixed format (`question-format.md`): a full interrogative, one "why it
++   matters" sentence, the recommended option first with its reason, an
++   options table, the reply line.
++5. After each accepted answer, immediately appends an entry to
++   `reference/elicitation.md` with the answer verbatim and who gave it
++   (`record-template.md`), and applies the answer to the part of the
++   document it affects, replacing contradicted text.
++6. Never touches the requirements, the scenarios, the tests, or the code.
++7. Ends with a completion report: questions asked, sections touched, a
++   coverage summary, and the next steps (`/audit-spec`, then the validation
++   walkthrough and sign-off).
++8. Only the developer can start it (`disable-model-invocation: true`); the
++   same switch for Codex is in `agents/openai.yaml`.
++
++## The prompt
++
++The skill was written by the build agent from the A1 plan's section 8a,
++which specified requirements 1 to 8 and the adaptation from Spec Kit's
++`speckit-clarify` skill (the model for the whole procedure). What the plan
++told the agent, condensed to its operative sentences:
++
++> Base the skill on `speckit-clarify`'s steps 3 to 7: a taxonomy scan rated
++> Clear, Partial, or Missing; a queue of at most five questions by impact
++> times uncertainty; one full-interrogative question at a time, with a "why
++> it matters" sentence, the recommended option first, and an options table;
++> after each accepted answer, record it and apply it to the section it
++> affects, replacing contradicted text; validate after each write; finish
++> with a completion report. Change three things: the taxonomy is shaped by
++> the parts of a concept of operations (purpose, scope and boundary,
++> assumptions, user categories, stories, terms, wants and non-goals,
++> validation), each question is addressed to a named user category, and the
++> record goes to `reference/elicitation.md` with the stakeholders' verbatim
++> words, not into the specification. Leave out clarify's extension hooks and
++> its checklist re-validation; `/audit-spec` is the next step instead. Write
++> it in the house style of the course's `conops-from-sketch` skill: a short
++> body with reasons, bundled detail, a narrow description, and the stops
++> named.
++
++## Review points
++
++Before trusting a run: the questions name a user category, not "the user";
++every question is an interrogative, not a topic label; the recommended option
++comes first and has a reason; nothing in the queue is answered by a file in
++the repository; the record entry quotes the answer rather than paraphrasing
++it; the document changed only where the consequences line says; the
++requirements, scenarios, tests, and code are untouched; the completion
++report's coverage table accounts for every taxonomy category.
++
++## Deliberate-failure checks
++
++A procedure skill has no exit code, so its check is an evaluation in the
++manner of the course's skills lecture: run it several times on the same
++document and compare the queues. The check is that the queue stays on the
++high-impact areas and that no run takes a decision nobody gave.
++
++**Evaluation on the A0 concept of operations, 2026-10-22, three runs**
++(fresh agents, read-only, asked to print the whole queue instead of asking
++one question at a time; the runs could not reach step 5, so "a decision taken
++without asking" was checked on the queues and the exclusion lists only).
++
++| | Run 1 | Run 2 | Run 3 |
++|---|---|---|---|
++| Questions queued | 5 | 5 | 5 |
++| Coverage ratings | Assumptions, User categories, Wants: Partial; the other five Clear | the same | the same, and Terms: Partial ("enclave", "policy" undefined; "arrive" against "pass") |
++| Addressee named on every question | yes | yes | yes |
++| Recommended option first, with a reason | yes | yes | yes |
++| Trust in the marking as an assumption (A-1) | asked (Q2) | asked (Q2) | asked (Q1) |
++| What a sender observes on a drop (E-3) | asked (Q3) | asked (Q5) | asked (Q3) |
++| The later-version promises as deferred wants (D-1 to D-3) | asked (Q5, "any other wants") | asked (Q4, "which are yours") | asked (Q4) |
++| Who is, and is not, a user (E-4) | asked (Q1, the outside receiver) | asked (Q3, receiver or installer) | asked (Q2, the receiver; Q5, who marks) |
++| Fifth question, which varied | the transport's obligation for "arrives unchanged" | whether "Critical never leaves" is permanent or a changeable policy | who assigns the marking, the sender or a separate step |
++| The payload's domain (CF-13) | excluded: REQ-0 says integer; the rest is implementation | excluded, same reason | excluded, same reason |
++| Candidates excluded, with reasons | 14 | 12 | 18 |
++| A decision written without asking | none seen | none seen | none seen |
++| Format deviations | a one-line rank note before each question, not in the format | none | none |
++
++What the evaluation shows. The four high-impact areas (the marking
++assumption, the drop, the wants, the user categories) are asked in every run;
++the fifth slot varies, which is the ranking heuristic doing its job on
++near-ties. No run asks a terms question even when it rates Terms as Partial:
++all three treat a missing definition as the writer's job rather than a
++stakeholder's, which is defensible for "enclave" and would be wrong for an
++adjective such as "large" that only a stakeholder can quantify. Every run
++excludes the payload-domain question as answered by REQ-0, so the
++language-level question of CF-13 stays open and is recorded as such in the
++glossary rather than decided by a stakeholder who could not answer it. The
++live session (`reference/elicitation.md`) used run 2's queue.
++
++A proposed change for version 1.1, not applied: add to the Terms row of the
++taxonomy that an unquantified adjective in a story is the stakeholder's to
++quantify, so that a run on a document containing one queues the question.
++
++## Adapting it to your project
++
++Project-specific: the default path of the concept of operations; the names
++of the user categories (the skill reads them from the document); the rule
++procedure it cites (Elicit). Carries over as an idea: the cap, the ranking,
++the one-at-a-time protocol with a recommended default, the verbatim record
++under identifiers that the specification cites, and the rule that facts are
++looked up and decisions are asked. For a document that is not a concept of
++operations (a requirements document, a data format), add a taxonomy under
++`forms/` and name the form in the skill's table; the body does not change.
++Version 1.1 (2026-10-24) made that arrangement: `taxonomy.md` became
++`forms/conops.md` and the form became the first argument. The taxonomy's
++content did not change, so the evaluation above stands for it; a changed
++taxonomy would be re-evaluated the same way.
++
++## Making it shared infrastructure
++
++The skill folder is self-contained and harness-portable (`SKILL.md` for
++Claude Code; `agents/openai.yaml` for Codex). An organization that keeps its
++concept-of-operations skeleton fixed can ship this skill with the skeleton as
++one package: the taxonomy is the skeleton's section list stated as questions.
++Version the skill (the record's header names the version that asked), keep
++the evaluation runs beside it, and rerun them when the taxonomy or the format
++changes; a change that drops a high-impact area from the queue is a
++regression every project using the skill would inherit.
+diff --git a/tooling/tooling-tests.md b/tooling/tooling-tests.md
+new file mode 100644
+index 0000000..b3f8b58
+--- /dev/null
++++ b/tooling/tooling-tests.md
+@@ -0,0 +1,76 @@
++# The tooling tests: `tests/tooling/`
++
++## Goal
++
++Show the clause reader and the trace tool failing on inputs they must fail
++on, before their findings are trusted. A verifier that has never been seen to
++fail has not been verified (threat T2); these cases are the two programs'
++known-violation set, run with the suite at every commit. They cite no
++clause: they are tests of verifiers, not evidence for a product requirement,
++and the suite accepts them uncited (Specs-TR-1).
++
++## Requirements
++
++1. `cases/base/` is a minimal, clean family: one story with one scenario,
++   two requirements (one derived from the story, one from a glossary term),
++   a glossary, an elicitation entry, and a citation file; it must produce no
++   finding.
++2. Each other directory overlays one or two files on the base and states in
++   `expected.json` the finding kinds the tool must report, and why.
++3. `test_trace.py` copies the base, overlays the case, reads it with the
++   clause reader, calls `tools.trace.build()` with the case's citations,
++   and compares the sorted set of finding kinds with the expectation.
++4. One case per finding kind; adding a kind to the tools means adding a
++   case here.
++
++## The prompt
++
++New in A1, written by the build agent from T7 of the trace tool's
++requirements. The prompt a developer would give:
++
++> For each finding kind of the clause reader and the trace tool, make a
++> directory that overlays the smallest change on a clean base family and
++> states the expected finding kinds; write one parametrized test that runs
++> every directory through the tool's pure `build()` function. The base must
++> be clean.
++
++## Review points
++
++The cases exercise `build()` directly, so no pytest-in-pytest run is
++needed; the overlay keeps every case small enough to read; `expected.json`
++says *why*, so that a reader learns what each kind means; the base is itself
++a test.
++
++## Deliberate-failure checks
++
++The cases are the checks. Sabotage 10 of the README is the meta-check:
++delete one case directory and nothing fails, which is the point: a finding
++kind with no case is a finding kind nobody has seen the tool report.
++
++| Case | Finding kinds expected |
++|---|---|
++| `base` | none |
++| `duplicate-identifier` | duplicate identifier |
++| `missing-method` | malformed header |
++| `unknown-method` | unknown method |
++| `unknown-key` | unknown key |
++| `unknown-pattern` | unknown pattern |
++| `missing-reason` | missing Reason |
++| `dangling-derived-from` | dangling reference; story without requirement |
++| `dangling-scenario` | dangling reference |
++| `scenario-not-listed` | scenario not listed |
++| `story-without-requirement` | story without requirement |
++| `dangling-marker` | dangling marker |
++| `test-clause-without-test` | test clause without a citing test |
++
++## Adapting it to your project
++
++Project-specific: the base family's content and the finding vocabulary.
++Carries over as an idea: every program that produces evidence ships with the
++inputs it must fail on, and those inputs are checked in beside it.
++
++## Making it shared infrastructure
++
++The cases travel with the tools they test; a shared reader and trace tool
++ship their cases as part of the package's own test suite, and a project that
++extends the finding vocabulary adds its cases in its own repository.
+diff --git a/tooling/trace.md b/tooling/trace.md
+index 7c1d268..529f8ea 100644
+--- a/tooling/trace.md
++++ b/tooling/trace.md
+@@ -4,11 +4,12 @@
+ 
+ Resolve every declared link between the specifications and the suite, in
+ both directions, and report the ones that do not resolve: story to
+-requirements to scenarios to tests, and back. Rule TR-2 names it; it climbs
+-the "derived from" check from a person (A0's TR-1, "read by a person with
+-SQ-1") to a program. It decides links only. Whether a requirement says what
+-its story says, or a test's assertions check its clause, still needs a
+-reader (the audit procedure's audit and A2's test-discipline review).
++requirements to scenarios to tests, and back. Specs-TR-2 names it as its
++evaluation; it climbs the derivation check of Specs-TR-1 from a person (A0:
++"review (human) for the derivations, done with Specs-SQ-1") to a program.
++It decides links only. Whether a requirement says what its story says, or a
++test's assertions check its clause, still needs a reader (the audit,
++procedure Audit, and A2's test-discipline review).
+ 
+ ## Requirements
+ 
+@@ -75,7 +76,7 @@ never disagree about what a test cites; every finding carries a file and
+ line or an identifier; the forward and backward tables are built from the
+ same records; a story with no requirement is a finding even though every
+ link resolves; `build()` has no side effects, which is what makes T7
+-possible; the tool never reads the ledger or the dev log.
++possible; the tool never reads the assurance report or the dev log.
+ 
+ ## Deliberate-failure checks
+ 
+diff --git a/tooling/walkthrough-helper.md b/tooling/walkthrough-helper.md
+new file mode 100644
+index 0000000..448757d
+--- /dev/null
++++ b/tooling/walkthrough-helper.md
+@@ -0,0 +1,57 @@
++# The walkthrough helper: `tools/walk.py`
++
++## Goal
++
++Let a person, in the role a story names, give the guard one message and see
++what it does, so that a walkthrough is an observation of the running system
++and not a reading of the code. In A0 it produced the evidence for
++ConOps-CONF-1 (the stories' behavioral walkthroughs); in A1 the behavioral
++check has become the scenario tests, and the helper serves ConOps-VAL-1, the
++validation walkthrough in which a stakeholder decides whether the story
++describes the guard they want.
++
++## Requirements
++
++1. `uv run python tools/walk.py LEVEL PAYLOAD` prints `drop` or
++   `pass: LEVEL PAYLOAD`, nothing else.
++2. A level or payload that is not a message is reported as such, with exit
++   code 2, rather than crashing.
++3. Lives outside the package and outside the coverage measurement: it
++   realizes no clause.
++4. Unchanged from A0 in behavior; its docstring names the record file it
++   serves, which audit 05 noticed still said `records/walkthrough.md` after
++   the rename, and now says `records/validation.md`.
++
++## The prompt
++
++Inherited from A0, dev-log entry 2. Guidance for the prompt that would
++produce it:
++
++> Write a tiny command that builds one message from two arguments, passes it
++> through the guard, and prints what came out, so that a stakeholder can
++> walk a story without reading Python. Keep it outside the package.
++
++## Review points
++
++It prints what the guard returned, not what the story expects (the
++comparison is the person's); it is not imported by any test; it is not
++counted in coverage.
++
++## Deliberate-failure checks
++
++None of its own, by design: it is a window, not a verifier. A0's sabotage 1
++(the condition changed to Restricted) is visible through it, which is how the
++validation walkthrough would catch a wrong realization that no test covered.
++
++## Adapting it to your project
++
++Project-specific: everything. Carries over as an idea: a walkthrough needs a
++way to exercise the system along a scenario without touching the code, and
++that way should be in the repository, because the walkthrough record cites
++it.
++
++## Making it shared infrastructure
++
++Not worth sharing as code; worth sharing as a convention: every project has a
++`walk` entry point that takes a scenario's inputs and prints the observable
++output, in the words of the concept of operations.
+diff --git a/tools/walk.py b/tools/walk.py
+index db6ab5d..959a80a 100644
+--- a/tools/walk.py
++++ b/tools/walk.py
+@@ -2,7 +2,7 @@
+ 
+     uv run python tools/walk.py LEVEL PAYLOAD      LEVEL is Public, Restricted, or Critical
+ 
+-Support for the walkthroughs recorded in records/walkthrough.md. It is not the realization of
++Support for the walkthroughs recorded in records/validation.md. It is not the realization of
+ any clause, so it sits outside the package and outside the coverage measurement.
+ """
+ 
+diff --git a/uv.lock b/uv.lock
+index 761faca..bbbd1f5 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -121,7 +121,7 @@ wheels = [
+ 
+ [[package]]
+ name = "message-guard"
+-version = "0.0.0"
++version = "0.1.0"
+ source = { editable = "." }
+ 
+ [package.dev-dependencies]
+-- 
+2.55.0
+

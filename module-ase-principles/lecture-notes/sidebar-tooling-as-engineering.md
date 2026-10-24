@@ -2,7 +2,7 @@
 
 Companion to [Lecture 02](lecture-02-conops-and-elicitation-concepts.md)
 and to the tool catalog of version A1,
-`../demos/running-example-message-guard/v1/tooling/`. Lecture 01 ended its
+`../demos/running-example-message-guard/a1/tooling/`. Lecture 01 ended its
 section on process, reporting, and assurance tooling by saying that later
 lectures would give the subject substantial attention. They do not, by
 decision: there is no lecture time for building tools. This sidebar states
@@ -23,8 +23,9 @@ the specifications, the evidence that the code conforms to them, and the
 record of whether that evidence is current. None of those three exists
 unless something produces it. A conformance report is written by a program
 that reads clause identifiers from the specifications and citations from the
-tests. A trace matrix is written by a program that resolves links. A gate is
-a program whose exit code decides whether a commit may be made. An
+tests. A trace matrix is written by a program that resolves links. An evaluation
+command is a program whose exit code says whether every mechanical clause
+holds. An
 elicitation session or an audit is run by an agent following a procedure
 that someone wrote down. Every one of these is an engineered artifact: it
 has goals, it has requirements, its design is reviewed before it is trusted,
@@ -33,12 +34,13 @@ it reads change.
 
 Version A1 of the message guard makes the proportion visible. The product,
 `guard/`, is 29 lines of code, unchanged since A0. The tooling that
-specifies, checks, and reports on it is about 600 lines of code (the clause
+specifies, checks, and reports on it is about 700 lines of code (the clause
 reader, the conformance plugin, the trace tool, the scenario loader, the
-gate, and the tools' own tests), about 500 lines of procedure in the two
-skills, and 31 small files of cases the tools must fail on. The prose that
-governs and records the work, the specifications, the rules, the ledger, the
-dev log, the audits, and the validation record, is about 1,150 lines more.
+evaluation command, and the tools' own tests), about 500 lines of procedure
+and per-form items in the two skills, and 31 small files of cases the tools
+must fail on. The prose that governs and records the work, the
+specifications, the judgments and procedures, the templates, the records,
+and the assurance report, is about 1,300 lines more.
 For a system this small the proportion is absurd, and Lecture 01 said so;
 the point is that the proportion does not reverse as the system grows. It is
 where the person's effort goes when the agent writes the code.
@@ -54,8 +56,10 @@ the catalog.
   the trace tool, `tools/trace.py`, and the gap logic inside the plugin.
 - **Report writers**, which produce the files a person reads instead of the
   code: the plugin's conformance report, the trace matrix.
-- **Gates**, which turn checks into an exit code a commit can be conditioned
-  on: `tools/gate.sh`, with the thresholds in `pyproject.toml`.
+- **Evaluation commands**, which run every mechanical evaluation and
+  return one exit code: `tools/evaluate.sh`, with the thresholds in
+  `pyproject.toml`. A gate is what A2 makes of such a command by running
+  it from a hook; in A1 nothing runs it unasked.
 - **Agent procedures**, which package an activity so that it is done the
   same way every time and reported under a version: `/elicit` and
   `/audit-spec`.
@@ -71,17 +75,17 @@ against, and a tool that could change it would not be a verifier.
 
 ## The tools of A1
 
-| Tool | Goal | Decides or supports |
+| Tool | Goal | Evaluates, or serves |
 |---|---|---|
-| `tests/conformance.py`, the clause reader | read the identified clauses and their fields from the specifications; report a header it cannot accept rather than dropping it | SQ-1, TR-1 |
-| `tests/conftest.py`, the conformance plugin | turn test citations and outcomes into requirements coverage; fail the run on missing or failing evidence; label a partial run | CONF-1, TR-1 |
-| `tools/gate.sh`, with the settings in `pyproject.toml` | one command that decides RQ, the mechanical part of CONF, and TR, with an exit code and a header saying what was checked | WF-1 |
-| `tools/walk.py`, the walkthrough helper | let a person exercise one message in a role and see what the guard does | VAL-2 |
-| `tests/test_scenarios.py`, the scenario loader | run every scenario of the fixture file as a test that cites its story | CONF-1 |
-| `tools/trace.py`, the trace tool | resolve every declared link in both directions and report the ones that do not resolve | TR-2 |
-| `tests/tooling/`, the tooling tests | show the reader and the trace tool failing on inputs they must fail on | the trustworthiness of CONF and TR evidence |
-| `.claude/skills/elicit/` | obtain a concept of operations from its stakeholders in at most five questions and record their words | WF-2 |
-| `.claude/skills/audit-spec/` | audit the specifications by a fixed procedure and report gaps in a fixed form, under a version | SQ-2, RPT-2 |
+| `tests/conformance.py`, the clause reader | read the identified clauses and their fields from the specifications; report a header it cannot accept rather than dropping it | the header parts of ConOps-SQ-1 and Reqs-SQ-1; feeds Specs-TR-1 |
+| `tests/conftest.py`, the conformance plugin | turn test citations and outcomes into requirements coverage; fail the run on missing or failing evidence; label a partial run | Reqs-CONF-1, Scen-CONF-1; the citation part of Specs-TR-1 |
+| `tools/evaluate.sh`, with the settings in `pyproject.toml` | one command that runs every mechanical evaluation, with an exit code and a header saying what was checked | Code-RQ-1, Reqs-CONF-1, Scen-CONF-1, Specs-TR-1, Specs-TR-2 |
+| `tools/walk.py`, the walkthrough helper | let a person exercise one message in a role and see what the guard does | ConOps-VAL-1 |
+| `tests/test_scenarios.py`, the scenario loader | run every scenario of the fixture file as a test that cites its story | Scen-CONF-1 |
+| `tools/trace.py`, the trace tool | resolve every declared link in both directions and report the ones that do not resolve | Specs-TR-2; the reference parts of Specs-TR-1 |
+| `tests/tooling/`, the tooling tests | show the reader and the trace tool failing on inputs they must fail on | the trustworthiness of the CONF and TR evidence |
+| `.claude/skills/elicit/` | obtain a concept of operations from its stakeholders in at most five questions and record their words; the form is its argument | procedure Elicit |
+| `.claude/skills/audit-spec/` | audit the specifications by a fixed procedure, form by form, and report gaps in a fixed form, under a version | procedure Audit |
 | `build-history.sh` | replay the snapshots into a tagged git history, labeled as a reconstruction | none; a teaching artifact |
 
 Four of these were inherited from A0, where they had been adapted from the
@@ -94,9 +98,9 @@ and writes.
 Every page has the same seven headings, and the order is the order in which
 the tool was built.
 
-1. **Goal.** The question the tool answers, for whom, and the rule that names
-   it as decider or evidence. A tool with no rule naming it is a tool nobody
-   is obliged to run.
+1. **Goal.** The question the tool answers, for whom, and the judgment
+   clause or procedure that names it. A tool no clause names is a tool whose
+   output no judgment rests on.
 2. **Requirements.** Numbered: what it reads, what it writes, which findings
    it reports, its exit code, whether it is deterministic, and what it does
    not decide. The last item is the one most often missing from a first
@@ -159,10 +163,11 @@ organization provides it.
 
 ## In your own project
 
-- Start with the gate and one report. A single command whose exit code says
-  whether the mechanical checks pass, and one generated file a person can
-  read, are the two tools every project needs on its first day. The
-  catalog's pages for the gate and the plugin say what each must do.
+- Start with the evaluation command and one report. A single command whose
+  exit code says whether the mechanical clauses hold, and one generated file
+  a person can read, are the two tools every project needs on its first
+  day. The catalog's pages for the evaluation command and the plugin say
+  what each must do.
 - Add a tool the second time you do a check by hand. The first time is a
   habit; the second time, write the goal down, and the goal is most of the
   requirements.
@@ -180,4 +185,4 @@ organization provides it.
 - Keep the prompt. Six months later, the prompt and the approved layout are
   how the next person learns why the tool is shaped as it is.
 
-The catalog is at `v1/tooling/README.md`.
+The catalog is at `a1/tooling/README.md`.

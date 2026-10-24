@@ -2,8 +2,13 @@
 
 Worked examples of the artifacts that
 [running-example-relayering.md](../running-example-relayering.md) proposes,
-written against the message guard as it stands at A0 and A1. They are for
-review; nothing under `module-ase-principles/` has been changed.
+written against the message guard as it stands at A0 and A1. They were the
+review set for the proposal; the build of 2026-10-24 (`a0/`, `a1/` under
+`module-ase-principles/demos/running-example-message-guard/`) supersedes
+them, with two changes decided during the review: the clause field *Example*
+became *In this project*, and the procedures are named `Audit` and `Elicit`
+with the form as the skill's argument. Kept as the record of what was
+reviewed.
 
 | Version | File | What it shows |
 |---|---|---|

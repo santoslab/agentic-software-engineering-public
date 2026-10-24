@@ -2,7 +2,7 @@
 
 > Agentic software engineering principles module, meeting 1. Companion reading
 > for the lecture; self-contained. The example is version A0 of the message
-> guard, in `../demos/running-example-message-guard/v0/`; file paths below are
+> guard, in `../demos/running-example-message-guard/a0/`; file paths below are
 > relative to that directory unless they say otherwise. Vocabulary follows the
 > course glossary, `../../glossary.md`. Launches **Exercise 1**.
 
@@ -78,8 +78,8 @@ errors and help development carry forward successfully in the future.
 
 Given this emphasis on understanding the truth status of the
 judgments and being able to provide assurance, we will also aim for
-our process to maintain what we call an "assurance ledger" (or just
-"the ledger" below).
+our process to maintain what we call an "assurance report" (or just
+"the report" below).
 This is just a fancy way to describe a collection of 
 carefully maintained data that help us understand 
 the status of the five types of judgments above.  This will be 
@@ -104,7 +104,7 @@ in the rest of the course.
   replaced by agents. 
 - *To engineering and managing the development and assurance context.* 
   Developers will increasingly spend their time designing the
-  specifications that direct the agent work, the rules that say how it is checked,
+  specifications that direct the agent work, the judgments that say how it is checked,
   the verification methods and the evidence they produce, and the records of
   the current state. These are engineered artifacts in their own right. They
   have quality criteria, they can be wrong, and they are maintained over the
@@ -161,12 +161,13 @@ By the end of this lecture, students should be able to:
   the four conditions of conformance in A0 together with the evidence for each.
 - Say what validation asks, who can answer it, and construct a case in which
   every other judgment holds and validation fails.
-- Read a ledger row as a claim supported by recorded evidence, and explain
-  why a relevant change can make that evidence stale and require renewed checking.
-- Explain what a gate is and why an algorithmic gate before each commit
-  matters when an agent is the one committing.
-- Read a development rule written in the template form and identify its
-  decider, its evidence, and what happens on failure.
+- Read a row of the assurance report as a claim supported by recorded
+  evidence, and explain why a relevant change can make that evidence
+  insufficient and require renewed evaluation.
+- Say what A0 leaves out, when a claim must hold, and why keeping that
+  question apart from what a claim is and how it is evaluated is deliberate.
+- Read a judgment clause in its four fields and identify what holds, how it
+  is evaluated, what evidence results, and how it is bound to the project.
 - Identify which elements of A0 can be set up directly in their own project
   and which need adaptation, as the section "Applying this to your own
   project" describes.
@@ -212,10 +213,11 @@ Here is a summary of the artifacts that appear in A0.
 | Intent | none | lives with the stakeholders; consulted through a person |
 | Specifications | `specs/conops.md`, `specs/requirements.md` | what the system must do, as identified clauses |
 | Realization | `guard/` (the code), `tests/` (the test suite) | what was built, and the executable claims about it |
-| Development rules | `process/rules.md` | how each judgment is established and when it must hold |
-| Reports | `reports/ledger.md`, `reports/dev-log.md`, `reports/walkthrough.md`, `reports/conformance.md` | the state of the development, readable without reading the code |
+| Judgments | `process/judgments.md`, `process/templates/assurance-report.md` | what each judgment claims, form by form, and how it is evaluated; the form of the report |
+| Records | `records/reviews.md`, `records/walkthrough.md`, `records/dev-log.md` | evidence of what people decided and did |
+| Reports | `reports/assurance-report.md`, `reports/conformance.md` | the state of the development, readable without reading the code |
 | Technology | `pyproject.toml`, `uv.lock` | Python 3.12 or later; `pytest`, `pytest-cov`, `ruff`; managed by `uv` |
-| Support | `tools/gate.sh`, `tools/walk.py` | the gate command; a helper for walking through a scenario |
+| Support | `tools/evaluate.sh`, `tools/walk.py` | every mechanical evaluation in one command; a helper for walking through a scenario |
 
 This lecture defines the entities in the first three rows and the five
 judgments that relate them, points at the file in A0 that holds each, and
@@ -278,22 +280,26 @@ the tests in `tests/`. Between and on these entities sit five judgments, each
 a claim about the current artifacts whose truth is tracked from commit to
 commit:
 
-| Judgment | The question it answers | Established in A0 by | Evidence in A0 |
+| Judgment | The question it answers | Evaluated in A0 by | Evidence in A0 |
 |---|---|---|---|
-| **SQ**, specification quality | Are the specifications well-formed, unambiguous, consistent with themselves and with each other, and complete for their level? | a person reading the two specifications together (rule SQ-1) | the SQ row of `reports/ledger.md` |
-| **RQ**, realization quality | In A0, does the code lint and does the test suite collect without error? | `ruff`; `pytest --collect-only` (RQ-1) | exit codes, recorded in `reports/dev-log.md` |
-| **CONF**, conformance | Does the realization satisfy every clause of every specification? | the test suite, two coverage measures, and the walkthroughs (CONF-1, CONF-2) | `reports/conformance.md`; the coverage table; `reports/walkthrough.md` |
-| **VAL**, validated | Do the specifications describe what the stakeholders intend? | a stakeholder of each user category signing the concept of operations (VAL-1) | the sign-off in `reports/walkthrough.md` |
-| **TR**, traceable | Do identified clauses have unique identifiers, and do the declared references between artifacts resolve? | the markers and the "derived from" fields, read by a program and a person (TR-1) | the "Unknown identifiers" section of `reports/conformance.md` |
+| **SQ**, specification quality | Are the specifications well-formed, unambiguous, consistent with themselves and with each other, and complete for their level? | a person reading the two specifications together (clauses ConOps-SQ-1, Reqs-SQ-1, Specs-SQ-1); a program for the header parts | the review record, `records/reviews.md`; the clause table of `reports/conformance.md` |
+| **RQ**, realization quality | In A0, does the code lint and does the test suite collect without error? | `ruff`; `pytest --collect-only` (Code-RQ-1) | exit codes, quoted in `reports/assurance-report.md` |
+| **CONF**, conformance | Does the realization satisfy every clause of every specification? | the test suite with two coverage measures (Reqs-CONF-1), and the walkthroughs (ConOps-CONF-1) | `reports/conformance.md`; the coverage table; the walkthrough table of `records/walkthrough.md` |
+| **VAL**, validated | Do the specifications describe what the stakeholders intend? | a stakeholder of each user category signing the concept of operations (ConOps-VAL-1) | the sign-off in `records/walkthrough.md` |
+| **TR**, traceable | Do identified clauses have unique identifiers, and do the declared references between artifacts resolve? | the markers and the "derived from" fields, read by a program and a person (Specs-TR-1) | the "Unknown identifiers" section of `reports/conformance.md`; the review record |
 
 Some additional terms are not directly reflected in the diagram. 
 An **artifact** is anything under
-version control that a judgment is about: a specification, the code, a rule
-file, a report. The **development state** is the artifacts at a commit
-together with the ledger. A **development-state judgment** is one of the five
-claims above. The **ledger**, `reports/ledger.md`, is the table that states,
-at a named commit, which judgments hold, on what evidence, and which have gone
-stale.
+version control that a judgment is about: a specification, the code, the
+judgments file, a record, a report. The **development state** is the
+artifacts at a commit together with the records and the reports. A
+**development-state judgment** is one of the five claims above. Each is
+*defined* once for the repository and then, as a **clause**, once for each
+form of artifact it concerns (`Reqs-CONF-1` is the conformance clause for
+the requirements), and each clause says how it is *evaluated* and what
+*evidence* results. The **assurance report**, `reports/assurance-report.md`,
+is the document that states, for a named state of the tree, which judgments
+hold and on what evidence; it is compiled on request.
 
 Why five judgments rather than one judgment of "the system is good"? Because
 they fail independently, and knowing which one failed tells you what to do.
@@ -373,8 +379,8 @@ they are provided as an artifact already agreed on by the stakeholders.
 
 A **specification** states selected properties that an artifact or process
 is required to satisfy. For A0, the product specifications describe the
-guard's required behavior; the development rules describe requirements on
-the development process. A specification fixes some properties and
+guard's required behavior; the judgments file describes what is required of
+the development state. A specification fixes some properties and
 deliberately leaves others open. Leaving an implementation choice open is
 not necessarily an omission: it can allow different realizations to satisfy
 the same specification.
@@ -481,12 +487,12 @@ checks, not to weaken a property merely to make it easy to automate. The
 method field also makes the remaining judgment-based work explicit rather
 than leaving it silently unchecked.
 
-Automated checks can be run repeatedly through the gate; judgment-based
+Automated checks can be run repeatedly through the evaluation command; judgment-based
 checks need a designated reviewer and a recorded finding. Later versions
 introduce *analysis*, such as a static check of an artifact, and *review*, in
 which a human or agent examines artifacts against stated criteria. The method
-identifies the checking activity; the development rules identify who is
-authorized to perform it or approve its result.
+identifies the checking activity; the judgments file identifies, clause by
+clause, who or what performs it and what evidence results.
 
 The "derived from" field links a requirement to the story or term it refines.
 It is what makes the two documents a family rather than two files that happen
@@ -592,7 +598,7 @@ of this is not as burdensome as it might appear.
 
 In A0, SQ is supported by an informal human audit: a person reads the
 specifications together against the quality criteria and records the finding
-in the ledger. A1 makes this audit more structured, with a procedure and a
+in a review record (`records/reviews.md`). A1 makes this audit more structured, with a procedure and a
 form for reporting gaps. A person, then an agent, then an agent following a
 packaged skill applies the procedure to specifications containing deliberately
 seeded gaps. The change is in the structure and repeatability of the audit,
@@ -713,14 +719,14 @@ programs: `ruff check` finds a class of mistakes in the implementation
 source code (unused names, undefined names, syntax that will not run)
 more cheaply than any test would, and `pytest --collect-only` confirms that every test file imports
 correctly (the test declarations and metadata are well-formed) and every
-marker is declared. Rule RQ-1 references both these commands. Note: these checks do not
+marker is declared. The clause Code-RQ-1 names both these commands. Note: these checks do not
 establish that the tests adequately check their cited clauses. A2 adds a
 systematic test-discipline review, including whether assertions can expose a
 defect and whether they provide appropriate evidence for the clauses they
 cite. A0's recorded RQ checks are limited to lint and test collection (well-formedness).
 
 Realization quality is kept separate from conformance for a reason that
-becomes visible on the ledger. A code base or test suite that does not compile produces no
+becomes visible in the report. A code base or test suite that does not compile produces no
 conformance evidence at all; a module with an undefined name may pass every
 test that does not reach the name. Checking the realization's own soundness
 first means that a conformance result, when it comes, is a result about code
@@ -823,7 +829,7 @@ all must hold, each with its own evidence:
    infrastructure in `tools/walk.py` to help the human carry out the
    wakthroughs.  Each manual run is carried out by
    a person in the role the story names, and the observations and findings are recorded in
-   `reports/walkthrough.md`.   There are widely-used approaches for
+   `records/walkthrough.md`.   There are widely-used approaches for
    turning user stories into system tests that can be automatically
    played and checked against expected results.  This can reduce the
    human effort to a degree -- we will see this in version A1 of the
@@ -838,9 +844,11 @@ all must hold, each with its own evidence:
 It is often convenient to develop assurance infrastructure tooling to
 aggregate the checking of assurance properties.  Part of our "agentic
 software engineering" is to build such tools.  For the `CONF`
-judgement above, we write a very simple script `tools/gate.sh` to 
-aggregate the checking of the first three conditions above -- the
-script runs `ruff` and then `pytest`. Its output at v0 ends:
+judgement above, we write a very simple script `tools/evaluate.sh` that
+runs every mechanical evaluation in one command: realization quality and
+the first three conditions above. The script prints a header saying which
+state it checked and with which tool versions, then runs `ruff` and then
+`pytest`. Its output at a0 ends:
 
 ```
 conformance: every test clause has passing evidence; report in reports/conformance.md
@@ -849,9 +857,9 @@ Required test coverage of 100% reached. Total coverage: 100.00%
 ============================== 10 passed in 0.03s ==============================
 ```
 
-Regarding the aggregation of results in reports, Rules CONF-1 and
-CONF-2 state the four conditions; the CONF row of the ledger
-cites all four pieces of evidence.
+Regarding the aggregation of results in reports, the clauses Reqs-CONF-1
+and ConOps-CONF-1 state the four conditions; the CONF section of the
+assurance report cites all four pieces of evidence.
 
 As noted earlier, the regime with its four conditions 
 above still doesn't address the issue of
@@ -891,7 +899,7 @@ the stakeholder intent); that is the *validation* task, not verification.
 and a compentent engineer needs to understand
 the possible failure modes to effectively construct an
 assurance approach that gives appropriate effectiveness/cost
-tradeoffs.  The ledger records *which verifier* produced each piece of evidence partly so that,
+tradeoffs.  The report records *which verifier* produced each piece of evidence partly so that,
 when a verifier is later found to be wrong (a failure mode is
 exhibited), the claims it made can be found and re-examined.
 In short, passing the prescribed verification checks establishes a 
@@ -910,7 +918,7 @@ the behavior of a running system in some context) with what is
 in a person's mind, which is not in the repository. 
 So validation can only be decided by a
 person, and the decision is recorded as a **sign-off**. A0's is in
-`reports/walkthrough.md`:
+`records/walkthrough.md`:
 
 > "The concept of operations, version A0, describes the guard I intend: a
 > Critical message never leaves, and anything else leaves as it arrived."
@@ -920,7 +928,8 @@ person, and the decision is recorded as a **sign-off**. A0's is in
 > 2026-10-20, on `specs/conops.md` version A0.
 
 The sign-off names who signed, in which role, when, and which version of
-which document. Rule VAL-1 requires one from each user category.
+which document. The clause ConOps-VAL-1 requires one from each user
+category.
 This level of rigor is often not worth the effort for a project
 built by a single developer with no other stakeholders: the act of the developer writing a user
 story typically reflects that they mean what they write.  However, for
@@ -942,8 +951,8 @@ stopped as well, and that the person who wrote the concept of operations had
 not understood this. Look at the repository. The two specifications are
 consistent with each other: US-2 says a Restricted message arrives unchanged
 and REQ-2 agrees. Every requirement has a passing test. Branch coverage is
-complete. Every identifier resolves. Four of the five ledger rows are
-established on sound evidence, and the fifth will be too if the officer signs
+complete. Every identifier resolves. Four of the five judgments hold on
+sound evidence in the report, and the fifth will too if the officer signs
 without reading. Nothing in the repository can detect that the system is
 wrong, because every artifact in the repository was derived from the same
 misunderstanding. The only thing that catches it is the officer walking US-2,
@@ -954,14 +963,13 @@ evidence is a person's recorded decision rather than a tool's output.
 
 The point has particular force with agents. An agent given a specification
 will realize that specification, and a well-run process will produce a green
-ledger for it. If the specification describes the wrong system, the agent
+report for it. If the specification describes the wrong system, the agent
 has built the wrong system correctly, and the process has certified that.
 The sign-off is the one place where the process asks a person whether the
 system being certified is the one they wanted.
 
-One more consequence, which later versions develop: the VAL row
-(validation status in the ledger) can go stale when no file has
-changed.  If the officer changes their mind, the
+One more consequence, which later versions develop: the VAL row of the
+report can stop holding when no file has changed.  If the officer changes their mind, the
 specification no longer describes what they intend, and the process learns of
 it only when they say so. Version A3 records such a declaration as a change
 request and shows the row turning stale while every other row stays green.
@@ -972,8 +980,9 @@ request and shows the row turning stale while every other row stays green.
 artifacts, and the TR judgment is that every link resolves. In A0 the links
 run in a chain: a story in the concept of operations, to the requirements that
 derive from it, to the tests that cite them by marker, to the rows of the
-conformance report, to the CONF row of the ledger that cites the report. Rule
-TR-1 requires that every marker name a clause the specifications define and
+conformance report, to the CONF row of the assurance report that cites it.
+The clause Specs-TR-1 requires that every marker name a clause the
+specifications define and
 that every "derived from" reference identify an existing story or
 specification section, including REQ-0's reference to the ConOps Terms
 section. The first part is
@@ -981,7 +990,7 @@ decided by the report-writing program, which lists any marker it cannot
 resolve under "Unknown identifiers" and fails the run; `pytest` itself is
 configured with `--strict-markers`, so a marker that was never declared is
 rejected before any test runs. The second part is read by a person as part of
-SQ-1.
+Specs-SQ-1.
 
 Traceability is given its own row for two reasons. It can be decided by a
 utility program, so it is cheap to keep established. And the other four rows depend on
@@ -992,90 +1001,104 @@ the agent, and the programs. When all three say REQ-1 they mean the same
 sentence, and a report from any of them can be checked against a report from
 any other.
 
-## The ledger
+## The assurance report
 
-`reports/ledger.md` is the table of the five judgments at a named commit.
-The CONF row at v0, condensed:
+`reports/assurance-report.md` states, for each of the five judgments and
+each of their clauses, whether it holds now, on what evidence, with what
+provenance. It is compiled on request: an agent (or a person) runs every
+evaluation whose method is test or analysis, reads every record under
+`records/` for the evaluations people made, and writes the result in the
+form of `process/templates/assurance-report.md`, ending with a list of what
+was run and what was read. The CONF section at a0, condensed:
 
-| Judgment | Status | Evidence | Provenance | Goes stale when |
-|---|---|---|---|---|
-| CONF | established | tests: 10 passed; requirements coverage 4 of 4 test clauses; branch coverage 100 percent of `guard/`; US-1 to US-3 walked | tests: pytest 9.1.1; coverage and citation analysis: pytest-cov 7.1.0 and the plugin in `tests/conftest.py`, specifications and realization at v0, clauses REQ-0 to REQ-3; walkthrough (human): the instructor as sender and as security officer, 2026-10-20, clauses US-1 to US-3 | relevant specifications, code, tests, or verification tools/configuration/environment change |
+| Clause | Holds? | Evidence | Provenance |
+|---|---|---|---|
+| Reqs-CONF-1 | holds (run now) | 10 passed; requirements coverage 4 of 4 test clauses; branch coverage 100 percent of `guard/` | test: pytest 9.1.1 with the plugin in `tests/conftest.py` and pytest-cov 7.1.0, 2026-10-24; specifications and realization at the A0 snapshot; clauses REQ-0 to REQ-3 |
+| ConOps-CONF-1 | holds (record) | `records/walkthrough.md`: US-1 to US-3 walked, "as the story expects" | walkthrough (human): the instructor as sender and as security officer, 2026-10-20; stories and realization at the A0 snapshot |
 
 A row has four parts, and each is there for a reason.
 
 The **status** tells us whether we currently have the evidence required to
-support the claim. A judgment is *established* when the required checks and
-reviews have succeeded and their evidence has been recorded. It becomes
-*stale* when a relevant change means that the earlier evidence is no longer
-sufficient for the current development state. Stale does not mean the system
-is wrong; it means the claim needs renewed checking. A judgment may also be
-*not established* because the checking has not yet been completed or has found
-a problem; the record should explain which.
+support the claim, and how it was obtained. *Holds (run now)* means the
+evaluation was run against the current tree while the report was compiled,
+and passed. *Holds (record)* means a record exists, names the current state,
+and records a decision that the clause holds. A row whose record names an
+earlier state of the artifact says so, as *record names another state*: the
+decision is reported, its currency is not, and whether the evidence still
+applies is for a person to decide. *Does not hold* means a run failed or a
+record records a negative decision; *not evaluated* means no run was
+possible or no record exists.
 
 For this lecture, the important idea is simple: evidence has a scope and a
 lifetime. Changes to specifications, code, tests, or the checking tools can
-require renewed evidence. Later versions develop the rules for deciding what
-must be checked again.
+require renewed evidence, and a report compiled after such a change says so,
+because the runs are made again and the records are compared with the
+current state. Later versions keep the report between requests instead of
+recompiling it, with each row remembering which artifact states its evidence
+was produced against, so that a change marks the rows it touches as *stale*
+and leaves the others standing. That kept report is the **ledger**, and
+version A2 introduces it together with the rules for keeping it.
 
-For an optional worked example, see [How a ledger evolves during
-development](ledger-evolution-example.md), which follows evidence being
-established, becoming stale, and being renewed.
+For an optional worked example in the ledger's vocabulary, see [How a ledger
+evolves during development](ledger-evolution-example.md), which follows
+evidence being established, becoming stale, and being renewed.
 
-The **evidence** is what was produced: a report, a run, a record. It is named
-precisely enough to be found.
+The **evidence** is what was produced: a run's result, a generated report, a
+record. It is named precisely enough to be found.
 
 The **provenance** says who or what produced the evidence, against which
-versions of which artifacts, over which clauses. These are the three scope
+states of which artifacts, over which clauses. These are the three scope
 lines of a verification result from earlier in the lecture, moved onto the
 row. They are there because a row is a claim made by a verifier, not a fact
 about the system, and a claim can be wrong. If the plugin that writes the
 conformance report is later found to misread a marker, the rows whose
 provenance names the plugin are the rows to distrust. And the provenance is
 what distinguishes evidence from a description of evidence: "pytest 9.1.1
-exited 0 at v0" is a claim that can be rerun; "all tests pass" in an agent's
-completion message is not. A0's rule RPT-1 requires the provenance on every
-row for this reason.
+exited 0 at the A0 snapshot" is a claim that can be rerun; "all tests pass"
+in an agent's completion message is not. The report's procedure, at the end
+of the judgments file, requires the provenance on every row for this reason,
+and forbids reporting a result from memory or from an earlier run.
 
-A ledger with all five rows established is what the course means by a green
-development state. It is not a proof. It is five claims, each with named
-evidence and a named scope, which is what a person who has not read the code
-can examine and, if they choose, rerun.
+The report is a very small **assurance case**. Its claims are the judgment
+definitions, decomposed once, per form. Its evidence is the evidence: test
+results, records, generated reports. The evaluation method named by each
+clause is the reason the evidence bears on the claim: a passing suite bears
+on REQ-1 because a test cites REQ-1 and the suite reaches the coverage
+objective. And the provenance is what a reader uses to decide how far to
+trust each piece. There is no argument tree beyond that one decomposition,
+and that is deliberate. A report with every clause holding is what the
+course means by a green development state. It is not a proof. It is five
+claims, each with named evidence and a named scope, which is what a person
+who has not read the code can examine and, if they choose, rerun.
 
-## Workflow controls - The gate
+## What A0 does not say: when a claim must hold
 
-We often want the development process to points where we force some
-sort of check that "everything is good" (i.e., that our assurance
-policies hold).  A common example is the use of continuous integration
-environments to run all tests when a project source code is committed
-and to provide reports of a "failing build".  
+Nothing in A0 says when a claim must hold, who must run an evaluation, or
+what happens when a claim does not hold. The command `tools/evaluate.sh`
+runs every mechanical evaluation and exits non-zero at the first failure,
+and its header says which state it checked with which tool versions; but
+nothing runs it unasked, and nothing waits for its result. It evaluates; it
+does not gate. A report compiled with a failing test says that Reqs-CONF-1
+does not hold, and that is all it does.
 
-We illustrate how that concept applies with our simple assurance
-framework with a simple workflow rule. 
-Rule WF-1 says that before work is committed, the command `tools/gate.sh`
-must exit 0. The command runs `ruff`, then `pytest` with the coverage
-requirement and the report-writing plugin, so it decides RQ and the three
-mechanical conditions of CONF in one step. A **gate** is a condition placed in
-front of a step so that the step cannot complete unless the condition holds.
-This one is an *algorithmic* gate: the *program* (`tools/gate.sh` and
-support tools) decides, and the go/no-go decision is reflected in the
-exit code. The course also names *approval gates*, where proceeding requires
-a recorded human decision. A0 requires stakeholder sign-off before VAL is
-established.
-
-In version A0, requiring the automated gate before every commit gives us a
-simple, visible checkpoint. This is a process design choice, not a requirement of
-Git or of specification-driven development. A larger workflow may
-relax this and allow intermediate commits containing incomplete work, while requiring particular
-judgments before a development wave is accepted or changes are merged into a
-shared branch. The ledger must still describe the current evidence honestly.
-In A2, we will return to how these checkpoints are chosen, including approval
-gates that require a recorded human decision.
-
-In A0, WF-1 prescribes running the gate before committing and recording its
-result. The script does not itself prevent someone from committing without
-running it. Hooks or required CI checks can enforce such a policy
-automatically; here, the distinction is between the required check and the
-mechanism that enforces its use.
+This is deliberate, and it is worth saying why. We often want the
+development process to have points where some check that "everything is
+good" is forced: a continuous-integration job that runs every test when
+code is pushed and reports a failing build is the common example. A **gate**
+is a condition placed in front of a step so that the step cannot complete
+unless the condition holds; an *algorithmic* gate is one a program decides
+by its exit code, and an *approval* gate one that needs a recorded human
+decision. A0 has the material for the first kind, the evaluation command,
+and for the second, the sign-off, and uses neither as a gate. Keeping the
+questions apart, what a claim is, how it is evaluated, how its state is
+presented, and when it must hold, is what makes the first three learnable on
+their own. It is also what a project needs that has no process rules yet: a
+brownfield code base, for instance, can have its specifications inferred,
+its clauses defined, and its report compiled long before anyone decides what
+must hold before a commit. Version A2 adds the control layer: rules that say
+which clauses must hold before a commit and before a wave of work is
+accepted, a pre-commit hook that runs the evaluation command, and the ledger
+that keeps the report between checkpoints.
 
 ## Breaking it: conformance
 
@@ -1087,7 +1110,7 @@ lecture on testing.
 
 The first is a wrong realization. In `guard/filter.py`, change
 `SecurityLevel.CRITICAL` to `SecurityLevel.RESTRICTED`, so that Critical
-messages pass and Restricted ones are dropped. Run the gate:
+messages pass and Restricted ones are dropped. Run the evaluations:
 
 ```
 conformance: REQ-1: FAIL
@@ -1107,10 +1130,11 @@ claims that depend on it. Here, the rerun still passes lint and collection
 and finds no broken clause citations, but the behavioral tests fail. The
 specifications and stakeholder agreement have not changed.
 
-In A0, these commands update the conformance report, not the handwritten
-ledger. A ledger entry for the changed state would record that CONF is not
-established and point to the failing results. Restoring the code and
-rerunning the gate makes the automated checks pass again.
+In A0, these commands update the conformance report; the assurance report
+in the tree still describes the state it was compiled for. A report
+compiled now would say that Reqs-CONF-1 does not hold and point at the
+failing results. Restoring the code and rerunning the evaluations makes them
+pass again.
 
 A failed check signals a discrepancy or an unmet evidence obligation. We
 investigate the specification, implementation, and checking machinery to
@@ -1122,86 +1146,81 @@ rationale belong in the development record.
 The second sabotage, validation, was described above and has no command to
 run, which is its point.
 
-## The development rules
+## The judgments file
 
-Everything above is governed by `process/rules.md`, which holds eight rules.
-Six concern the five judgments, with two rules contributing to CONF. The
-remaining two govern the workflow and its records. The table summarizes
-their roles in A0; the rule files give their full conditions, evidence, and
-failure behavior.
+Everything above is defined by `process/judgments.md`. It states the five
+judgments once, for the repository, and then as eight clauses, one for each
+judgment and each form of artifact the judgment concerns: the concept of
+operations, the requirements, the specifications read together, and the
+code. A clause is named by its form, its judgment, and a number. The table
+summarizes them; the file gives their full fields.
 
-| Rule | Judgment or concern | What the rule requires in A0 |
+| Clause | Judgment | What holds in A0 |
 |---|---|---|
-| SQ-1 | Specification quality | At each commit, the specifications must be well-formed, unambiguous, consistent, and complete for their stated scope and level of detail. A person reviews them together. |
-| RQ-1 | Realization quality | At each commit, the code and supporting programs must pass the lint checks, and the test suite must collect without error. |
-| CONF-1 | Conformance: test evidence | At each commit, every clause assigned to testing must have a citing test, every citing test must pass, and the suite must achieve 100% branch coverage of `guard/`. |
-| CONF-2 | Conformance: walkthrough evidence | Before CONF is recorded as established, every clause assigned to a walkthrough must have a record of who checked it, against which version, what was observed, and the finding. |
-| VAL-1 | Validation | Before VAL is recorded as established, a stakeholder from each user category must sign off on the identified version of the concept of operations. |
-| TR-1 | Traceability | At each commit, every supplied test citation and every “derived from” reference must identify an existing clause or specification section. Tests may omit citations. |
-| WF-1 | Workflow gate supporting RQ, CONF, and TR | Before each commit, `tools/gate.sh` must succeed. It checks realization quality, the mechanical part of conformance, and test-citation validity—not all five judgments. |
-| RPT-1 | Reporting all five judgments | The dev log records each task and its gate result; at each commit, the ledger records the five judgments’ statuses, evidence, and provenance. Recording a judgment does not mean it is established. |
+| ConOps-SQ-1 | Specification quality | The concept of operations is well-formed: a purpose in the stakeholders' words, a scope, user categories with what each observes, stories with identifier, method, category, and example, no sentence with two readings. Evaluated by a person reading. |
+| Reqs-SQ-1 | Specification quality | Every requirement carries an identifier, a method, and its derivation; each has one reading; the set covers every case the scope names. A person reads; a program reads the header parts. |
+| Specs-SQ-1 | Specification quality | No requirement contradicts a story; every story is covered; each term means one thing in both documents. A person reads both together. |
+| Code-RQ-1 | Realization quality | The realization passes the linter and the suite collects. Two programs. |
+| Reqs-CONF-1 | Conformance | Every requirement assigned *test* is cited by a passing test, and the suite reaches the coverage objective. The test run with the plugin and the coverage tool. |
+| ConOps-CONF-1 | Conformance | Every story assigned *walkthrough* has been walked on the running guard by a person in its role, and what they observed matched. A walkthrough record. |
+| ConOps-VAL-1 | Validation | A stakeholder of each user category has stated, naming the version, that the concept of operations describes what they intend. The stakeholders' own sign-off. |
+| Specs-TR-1 | Traceability | Every citation in a test names a clause that exists; every derivation names a story or section that exists. The plugin for the citations; a person for the derivations. |
 
-There is a problematic aspect about these rules, that we can use to 
-illustrate that the design of workflows is not trivial. 
-Taken literally, CONF-1 and WF-1
-require a baseline implementation, passing tests, and working checks before
-the first commit: we cannot first commit just the specifications and then
-build the implementation. That is not generally desirable.   What we
-can conclude from this is that development rules (*process*
-specifications) themselves need to be 
-examined and "debugged," just as *product* specifications (ConOps,
-Requirements, etc) are.  A0 focus on presenting a completed snapshot
-(not building the system incrementally) so that we can look in a
-single view at all the different forms of artifacts; its development
-log records tasks, not a separate commit for each task. In A2 we will revisit
-the rules to allow intermediate commits while requiring designated
-judgments at acceptance checkpoints. Also, passing the automated gate is
-only part of following the rules: human-review and reporting obligations
-still apply.
-
-Each rule uses the same fields, making its scope, verifier, evidence, and
-response to failure explicit. Here is CONF-1, condensed:
+Each clause has the same four fields. Here is Reqs-CONF-1, condensed:
 
 | Field | |
 |---|---|
-| Style | obligation |
-| Maintains | CONF |
-| When | at every commit; applies to every clause whose method is *test* |
-| Statement | Every clause with method *test* MUST be cited, by marker, by at least one test; every citing test MUST pass; and the suite MUST reach 100 percent branch coverage of `guard/`. |
-| Decided by | analysis: `uv run pytest`. The plugin in `tests/conftest.py` fails the run on a clause with no evidence or with a failing citation; `pytest-cov` fails it below 100 percent. |
-| Evidence | `reports/conformance.md`; the coverage table in the run output, recorded in the dev log |
-| On failure | a test is added or fixed, or the code is fixed; a clause is never weakened to make the run pass |
-| Example | REQ-1 is cited by `test_filter.py::test_critical_is_dropped` |
+| Holds when | Every requirement whose method is *test* is cited by at least one test; every citing test passes; and the suite meets the project's structural-coverage objective over the realization. |
+| Evaluated by | test: the project's test runner, with a plugin that computes requirements coverage from the citations and the outcomes, and a coverage tool for the structural part |
+| Evidence | the generated conformance report; the coverage table of the run |
+| In this project | The requirements are the REQ clauses of `specs/requirements.md`; the realization is `guard/`; the objective is 100 percent branch coverage; the run is `uv run pytest` with the plugin in `tests/conftest.py` and `pytest-cov`. Instance: REQ-1 is cited by `test_filter.py::test_critical_is_dropped`. |
 
-Two of the fields deserve attention now. *Decided by* names the verifier, so
-that a rule is something that can actually be checked rather than a statement
-of good intentions; a rule with no decider cannot be followed by a program and
-is easy for a person to believe they are following. *On failure* says what
-happens, so that a red result has a next step. The rules in A0 come in two
-styles: an **obligation**, "every X must have property P", and a **gate**,
-"when step S would complete, condition C must hold". Later versions add
-further styles as the process grows.
+Two things about the fields deserve attention now. The first three depend
+only on the form of the artifact: a requirements document in any project has
+a clause that reads like this one, and the identifier `Reqs-CONF-1` would
+mean the same thing there. Only the fourth, *In this project*, names this
+repository's files, commands, and threshold, which is what you write when
+you set the same framework up for your own system. And *Evaluated by* names
+what produces the evidence, a program, a person, or an agent, by a named
+verification method, so that a clause is something that can actually be
+evaluated rather than a statement of good intentions; a clause with no
+evaluation named cannot be checked by a program and is easy for a person to
+believe they are meeting. What the fields do not say is *when* the clause
+must hold or what happens when it does not; that is the control layer, and
+A0 does not have one.
 
-The rules are a file in the repository, rather than a convention, because the
-agent reads the file. An agent started in this directory is told, through
-the project's instructions, to read `process/rules.md`, and from that point
-the person and the agent are following the same written process. When the
-agent adds evidence for a test clause, it records the citation required by
-CONF-1; additional tests may omit citations. When it finishes a task it
-records the gate result because RPT-1 says so. A process that lives
-in a person's habits cannot be followed by an agent, and a process that lives
-in the agent's prompt cannot be audited by a person; a process that is a file
-can be both followed and audited.
+The judgments are a file in the repository, rather than a convention,
+because the agent reads the file. An agent started in this directory is
+told, through the project's instruction file `CLAUDE.md`, to read
+`process/judgments.md` before the specifications, and it is given three
+roles. As an **author**, anything it writes or changes, a specification,
+code, or a test, is held to the clauses: when it adds evidence for a test
+clause, it records the citation because Reqs-CONF-1 says what evidence
+looks like. As an **assessor, when asked**, it compiles the assurance report
+by the procedure at the end of the judgments file: it runs the evaluations
+now, reads the records, states the tree state, and lists what it ran and
+read. And it is **never a decider of a human judgment**: it does not sign
+off, does not walk a story on a stakeholder's behalf, does not write a
+record for a reading a person did not do, and does not report a result it
+did not obtain in this session. From that point the person and the agent
+work to the same written definitions. A process that lives in a person's
+habits cannot be followed by an agent, and a process that lives in the
+agent's prompt cannot be audited by a person; a process that is a file can
+be both followed and audited.
 
-The remaining report, `reports/dev-log.md`, is the append-only record of what
-each task did: the files it touched, the judgments it affected, and the gate
-result. A0's has three entries, for writing the specifications, realizing them
-with tests, and walking the stories and writing the ledger. It is the record a
-person reads to learn what happened, as the ledger is the record they read to
+The records under `records/` are the other half of the evidence. The review
+record says who read the specifications against which clauses and what they
+found; the walkthrough record says who walked which story in which role and
+what they observed, and carries the sign-off; and `records/dev-log.md` is
+the append-only record of what each task did: the files it touched, the
+judgments it affected, and the evaluations it ran. A0's log has three
+entries, for writing the specifications, realizing them with tests, and
+walking the stories and compiling the report. It is the record a person
+reads to learn what happened, as the report is the document they read to
 learn where things stand.
 
 One observation about where effort goes. In A0 the code is under thirty lines.
-The specifications, rules, and reports are more than three hundred. That ratio is not
+The specifications, judgments, records, and reports are several hundred. That ratio is not
 just a property of this small example; it reflects a shift in what a person does
 when an agent writes the code. The person's effort goes into saying what is
 wanted, deciding how it will be checked, and reading the evidence, because
@@ -1214,13 +1233,14 @@ the human and agent team grows, and (d) as we need more confidence in the
 development outcomes.
 
 Also all spec-driven development frameworks have a standard mechanism
-for specifying development rules.  For example, in Spec Kit, these
+for specifying development rules, the standing requirements on how the
+work is done; our judgments file is the first layer of ours.  For example, in Spec Kit, these
 rules are placed in what is called the
 [constitution](https://daita.io/en/blog/spec_kit_constitution_first_principles/).  
 In fact, setting up the constitution for a project is the first step taken in Spec
 Kit workflows.  In previous student coding assignments, there may not
 have been a lot of emphasis on this.  However, with agentic
-development, setting up these development rules is an important part
+development, setting up these definitions and rules is an important part
 of providing "guardrails" for the agents.  It may seem overwhelming,
 but as usual, the agents can help with with setting up these rules.
 For example, in Spec Kit, the `/speckit.constitution` skill helps you
@@ -1229,8 +1249,8 @@ set up an initial set of development rules.
 In class, the lecture may close with one demonstration: an agent started in
 the A0 directory is asked what the system does and how it is known that the
 code does it. The useful thing to watch is where the agent looks. An answer
-drawn from `specs/`, `reports/conformance.md`, and `reports/ledger.md` is an
-answer a person could check; an answer drawn from reading `guard/filter.py`
+drawn from `specs/`, `reports/conformance.md`, and
+`reports/assurance-report.md` is an answer a person could check; an answer drawn from reading `guard/filter.py`
 is the agent's opinion of the code.
 
 ## Process, Reporting, and Assurance Tooling
@@ -1241,7 +1261,8 @@ should answer, what evidence they should contain, and what should happen
 when evidence is missing or a check fails. Someone also had to build the
 supporting programs: `tests/conformance.py` reads the identified specification
 clauses; `tests/conftest.py` connects test citations and results to the
-conformance report; and `tools/gate.sh` runs the prescribed checks. This is
+conformance report; and `tools/evaluate.sh` runs every mechanical
+evaluation in one command. This is
 **process, reporting, and assurance tooling**: infrastructure that helps
 developers carry out the process and understand the evidence it produces.
 Designing and maintaining it is part of the engineering effort, alongside
@@ -1291,9 +1312,10 @@ material.
 
 Version A2 adds a new system component - the `sanitize` stage, as well
 as architecture, message-format specifications, and contracts between
-stages. It also adds systematic test-discipline review, a build plan 
-with tasks and waves, approval gates at wave boundaries, and a
-generated ledger. Later versions introduce policy change, sessions
+stages. It also adds systematic test-discipline review, a build plan
+with tasks and waves, the first process rules (a gate before each commit,
+approval gates at wave boundaries), and the ledger as the report kept
+between checkpoints. Later versions introduce policy change, sessions
 with an ordering protocol, and a standard message format.
 
 ## Applying this to your own project
@@ -1312,10 +1334,10 @@ will have to adapt.
   infer specifications from an existing system or prototype, a
   developer reviews those, and then they are carried forward and
   updated as part of a more rigorous development process as we have
-  illustrated here.  Start a ledger (or some simpler
-  form of automated reporting) on the first day, that lists the
-  assurance objectives along with their status for the current set of
-  artifacts. 
+  illustrated here.  Start a judgments file and an assurance report on
+  the first day: the clauses say what the assurance objectives are, and
+  the report, compiled on request, says their status for the current set
+  of artifacts. 
 - *A concept of operations.* You can always begin by working with the people
   on your team, and with an agent, to write a concept of operations that has
   the four elements shown here: a purpose statement that the stakeholders
@@ -1337,7 +1359,8 @@ will have to adapt.
   in almost every agentic development project; most people start with
   this being located in the `CLAUDE.md` file.   Agents and auditors both need what
   `pyproject.toml` provides here: the language and version, the tools and
-  their versions, and the one command that is the gate. Write it down even
+  their versions, and the one command that runs every mechanical
+  evaluation. Write it down even
   when it seems obvious.
 - *Clause-linked evidence and coverage.*  As you build out your
   agentic development infrastructure, ask whether each clause has the
@@ -1346,10 +1369,14 @@ will have to adapt.
   recorded. Tests are one method; analysis is another. Citation checks can
   account for declared links, but do not establish that the linked evidence
   adequately checks the clause. Additional tests may omit clause citations.
-- *A rules file.* The template fields, in particular the decider, the
-  evidence, and what happens on failure, apply to any rule about any process.
-  Start with one gate and the ledger, and add a rule the second time you find
-  yourself doing a check by hand.
+- *A judgments file.* The four fields of a clause, what holds, how it is
+  evaluated, what evidence results, and how it is bound to your project,
+  apply to any judgment about any artifact. The first three depend only on
+  the form of the artifact, so they can be copied from the running example
+  or from the course's catalog; the fourth is yours to write. Start with the
+  clauses and the report; add a procedure the second time you do an
+  activity by hand; add a rule, with a trigger and a consequence of failure,
+  when your process needs a claim to hold at a named step.
 - *A sign-off, and provenance on every claim.* This may not be
   important when prototyping, but for teams or when your building a
   system to a customer it matters.  Find the person who can say
@@ -1377,7 +1404,7 @@ will have to adapt.
   program derives requirements coverage from citations in the tests, carries
   over to any language; the code does not. A project in another language will
   need its own way to cite a clause from a test, its own coverage tool, and
-  its own gate command.
+  its own evaluation command.
 - *The thresholds.* Complete branch coverage is the right requirement for
   thirty lines of code. A larger system will set a level and justify it, and
   the lecture that introduces the verification plan shows where such a
@@ -1385,17 +1412,18 @@ will have to adapt.
 - *The people.* In A0 one person plays both stakeholder roles. In a project
   the roles are held by different people, some of whom are hard to reach, and
   finding them early is part of writing the concept of operations.
-- *The records.* A ledger written by hand serves a small project; a larger
-  one generates it from the gate's outputs, as version A2 shows. Begin by
-  hand regardless, because the generated form is the hand-written form
-  automated.
+- *The records and the report.* A report compiled on request serves a
+  small project; a larger one keeps it between checkpoints as a ledger
+  generated from the evaluations' outputs, as version A2 shows. Begin with
+  the compiled report regardless, because the ledger is the report kept.
 
 For the adapted parts, you do need to develop some basic competencies
 and experience.  The next several lectures are designed to develop
 that: phrasing your own criteria for specification quality,
 for realization quality, and for verification in a form that an agent can
-process. That pattern is the one our rules file use: a statement with a named
-decider, named evidence, and a stated consequence of failure. A guideline
+process. That pattern is the one our judgments file uses: a claim with a
+named evaluation and named evidence, to which the control layer later adds
+a trigger and a stated consequence of failure. A guideline
 that lacks those is something a person may follow but an agent might
 not; a guideline that has these characteristics is something an agent
 will follow *and a person can check*.
@@ -1407,14 +1435,16 @@ is dropped, regardless of its level. Before writing any code, read the new
 requirement together with REQ-0 to REQ-3 and decide whether the five
 specification-quality properties still hold; at least one does not, and the
 resolution is an amendment to existing clauses, not just an addition. Record
-which ledger rows the amendment makes stale and why. Then carry the
-requirement through: the clause with its identifier, method, and derivation; a
-test that cites it; the gate; the ledger; and a dev-log entry. If a story is
+which clauses of the assurance report the amendment affects and why. Then
+carry the requirement through: the clause with its identifier, method, and
+derivation; a test that cites it; the evaluations; a recompiled report; and
+a dev-log entry. If a story is
 affected, say what the sign-off would have to say now.
 
-Deliverable: the diff of the specifications and the realization, the ledger
-after the change, and half a page on which rows went stale, which verifier
-re-established each, and which could not be re-established without a person.
+Deliverable: the diff of the specifications and the realization, the report
+after the change, and half a page on which rows the change affected, which
+evaluation re-established each, and which could not be re-established
+without a person.
 
 ## Questions to think about
 
@@ -1424,10 +1454,11 @@ re-established each, and which could not be re-established without a person.
    additionally required the very same object to be returned, what would
    need to change in the specification and test?
 2. Write a change to `guard/filter.py` under which every test passes and every
-   requirement has evidence, yet the gate is red. Say what the change does to
+   requirement has evidence, yet the evaluations fail. Say what the change does to
    a message that no test sends, and what that tells you about which of the
    four conformance conditions found it.
-3. For each ledger row in A0, identify which evidence is program-produced,
+3. For each clause of A0's assurance report, identify which evidence is
+   program-produced,
    person-produced, or mixed. Which parts could be automated by specifying
    inputs, checking rules, and expected outcomes? Which still require judgment
    or stakeholder approval? Explain why checking that a sign-off exists does
@@ -1435,13 +1466,15 @@ re-established each, and which could not be re-established without a person.
 
 ## Before next meeting
 
-- Run A0 yourself: `uv sync`, then `tools/gate.sh`, then the two sabotages
-  from the README, restoring the file after the first. Read `reports/ledger.md`
-  and check one row's evidence against the file it names.
+- Run A0 yourself: `uv sync`, then `tools/evaluate.sh`, then the two
+  sabotages from the README, restoring the file after the first. Read
+  `reports/assurance-report.md` and check one row's evidence against the
+  file it names.
 - Read the glossary entries for the terms introduced here: intent, purpose
   statement, specification, realization, conformance, verification,
-  validation, development-state judgment, ledger, establish and stale,
-  provenance, traceability, gate, mechanical clause and judgment clause,
+  validation, development-state judgment, evaluation, evidence, record,
+  report, assurance report, provenance, traceability, gate, mechanical
+  clause and judgment clause,
   verification method, verifier, executable specification, requirements
   coverage and structural coverage.
 - Read `specs/conops.md` once more and ask how its author could have found

@@ -2,8 +2,8 @@
 
 > Agentic software engineering principles module, meeting 2. Companion reading
 > for the lecture; self-contained. The example is version A1 of the message
-> guard, in `../demos/running-example-message-guard/v1/`, with version A0
-> (`v0/`) used for contrast; file paths below are relative to `v1/` unless
+> guard, in `../demos/running-example-message-guard/a1/`, with version A0
+> (`a0/`) used for contrast; file paths below are relative to `a1/` unless
 > they say otherwise. Vocabulary follows the course glossary,
 > `../../glossary.md`. Launches **Exercise 2**.
 
@@ -54,14 +54,15 @@ By the end of this lecture, students should be able to:
   answer lands in the document.
 - Explain why the elicitation record is reference material and not a
   specification, and what follows from that for the audit and for the
-  ledger.
+  assurance report.
 - Read a scenario file and its loader, and trace one scenario from the
   stakeholder's example to a row of the conformance report and a row of the
   trace matrix.
 - State what a passing scenario set establishes and what it does not, and
   explain why the file is governed on the specification side.
 - Construct a case in which every scenario passes and validation fails, and
-  say which ledger row moves and which verifier catches it.
+  say which clause of the assurance report moves and which verifier
+  catches it.
 
 ## Where we are: A0's concept of operations, and what it did not say
 
@@ -115,7 +116,7 @@ the stakeholders want lives in their minds, and the only way to consult it is
 to ask them. The concept of operations is the document we ask them about. A
 stakeholder cannot say whether `filter_message` should return `None`; they
 can say whether "a message marked Critical never leaves" is what they want.
-Validation, the judgment VAL of the ledger, is therefore *performed on* the
+Validation, the judgment VAL, is therefore *performed on* the
 concept of operations, by a stakeholder reading its scenarios or walking
 them on the running system, and every other specification is validated
 *through* it: a requirement is right if it says what a validated story says.
@@ -130,8 +131,8 @@ glossary defines the terms its stories use. When two documents disagree, the
 concept of operations wins, because it is the one the stakeholders agreed
 to. That is why Lecture 03's audit has a check for the agreement of each
 requirement with its story, and why the first thing an agent is told to read
-in this repository, after the rules, is the glossary and then the concept of
-operations.
+in this repository, after the judgments and the procedures, is the glossary
+and then the concept of operations.
 
 What the document leaves open is as important as what it fixes. It leaves
 open everything a user cannot observe, which is where the realization is
@@ -154,8 +155,8 @@ identifier and a verification method, are the clauses that the conformance
 report and the trace matrix have rows for. The purpose, the scope, the
 assumptions, the user-category descriptions, and the deferred wants are
 contextual specification text: they are part of the specification, they are
-audited with the clauses (rule SQ-1 says so), and they have no row of their
-own. The distinction matters for the tooling, which reads clause headers and
+audited with the clauses (ConOps-SQ-1 says so), and they have no row of
+their own. The distinction matters for the tooling, which reads clause headers and
 nothing else, and for the audit, which must read everything.
 
 ## The format, section by section
@@ -239,7 +240,8 @@ no record of what was dropped (E-2; deferred want D-1)". And a sentence that
 was not in A0:
 
 > The developer who builds the guard is not a user category (E-4); the
-> developer's obligations are in `process/rules.md`.
+> developer's roles are in `CLAUDE.md`, and the judgments the developer's
+> work is held to are in `process/judgments.md`.
 
 The sentence answers a question the first version left open. A user
 category is a role whose holder can be asked whether the system is the one
@@ -262,7 +264,7 @@ A0's `walkthrough (human)` that the fixtures section below explains.
 `Scenarios` names the entries of the scenario file that are this story's
 examples as data. `User category` says whose story it is. `Validated by`
 says how the question whether the story is *right* is decided: a walkthrough
-with a stakeholder of that category, under rule VAL-2, followed by the
+with a stakeholder of that category, under ConOps-VAL-1, followed by the
 sign-off. `Source` names the elicitation entry whose words the story is
 written from.
 
@@ -317,7 +319,8 @@ This section replaces A0's "Later versions will" sentence. The difference is
 not the list, which is nearly the same; it is the status of the items. Each
 want names who wants it, through its citation, and the section's preamble
 says what the status *deferred* means: nothing in this version derives from
-it. The audit checks that (rule SQ-2, item C-12), and the check has teeth. The
+it. The audit checks that (procedure Audit, item C-12), and the check has
+teeth. The
 draft that the audits examined contained the sentence "the filter shall drop
 the message and shall record the drop" in REQ-1, which is D-1 leaking into a
 requirement one version early. Both audits found it; the ruling deleted the
@@ -339,7 +342,7 @@ below says what the file holds.
 A0 defined its six terms in a subsection of the concept of operations. A1
 moves them to `specs/glossary.md`, adds the terms elicitation produced, and
 makes the glossary a specification of its own, the kind the course's catalog
-now lists as entry 16. The reason is rule SQ-4, glossary discipline: every
+now lists as entry 16. The reason is Gloss-SQ-1, glossary discipline: every
 domain term used in any specification is defined exactly once, in the
 glossary, and used only in that sense, and no other specification defines a
 term. With four specifications sharing the vocabulary, a term defined inside
@@ -359,7 +362,7 @@ about a word is recorded so that the next reader does not reopen it.
 
 | A0 | A1 | The problem the change answers |
 |---|---|---|
-| terms inside the concept of operations | `specs/glossary.md`, a specification of its own; rule SQ-4 | a term shared by several documents was owned by one of them |
+| terms inside the concept of operations | `specs/glossary.md`, a specification of its own; Gloss-SQ-1 | a term shared by several documents was owned by one of them |
 | "Later versions will sanitize, record, change the policy" | section 5, deferred wants D-1 to D-3, each with its source | a promise with no owner; a want that could leak into a requirement |
 | the deployment assumption inside the purpose | section 2.1, assumptions A-1 and A-2, labeled as the deploying organization's obligations | an obligation on the environment could be mistaken for one on the system |
 | a story's example checked by a person | `specs/scenarios.json`, run by `tests/test_scenarios.py`; the story's method is *test* | behavioral evidence that cost a person's attention every time |
@@ -418,8 +421,9 @@ writing `/elicit` so that a stakeholder can sit through a session with it.
 
 ### The procedure
 
-A1's elicitation is a procedure, rule WF-2, packaged as the skill `/elicit`
-(`.claude/skills/elicit/`). It is modeled on the `clarify` step of Spec Kit,
+A1's elicitation is a procedure, `Elicit` in `process/procedures.md`,
+packaged as the skill `/elicit` (`.claude/skills/elicit/`), which the
+developer starts with the form to elicit as its argument (`/elicit conops`). It is modeled on the `clarify` step of Spec Kit,
 a specification-driven development toolkit the course meets later, which
 asks at most five questions and encodes the answers into the specification.
 The course's version keeps that shape and changes three things: the
@@ -431,16 +435,17 @@ specification.
 The steps, as the skill performs them:
 
 1. **Read before asking.** The current concept of operations, the glossary,
-   the existing elicitation record, and the rules. A question the repository
+   the existing elicitation record, and the procedures file. A question the repository
    answers is answered by reading it, not by asking. The record of A1's
    session has a closing section, "Not asked", listing the questions the
    skill considered and excluded, with the reason for each: whether
    Restricted messages should also be stopped (answered by US-2 and the A0
    sign-off); what the guard does with a marking outside the three (answered
    by REQ-0); who agreed to the purpose (the A0 sign-off); and so on.
-2. **Scan the document** against a fixed list of eight categories: purpose,
-   scope and boundary, assumptions, user categories, stories, terms, wants
-   and non-goals, validation. Each is rated Clear, Partial, or Missing. For
+2. **Scan the document** against the form's fixed list of eight categories
+   (`forms/conops.md` in the skill): purpose, scope and boundary,
+   assumptions, user categories, stories, terms, wants and non-goals,
+   validation. Each is rated Clear, Partial, or Missing. For
    A0's document, three runs of the skill agreed that assumptions, user
    categories, and wants were Partial and the rest Clear.
 3. **Build a queue** of at most five questions from the Partial and Missing
@@ -543,9 +548,10 @@ the audit's derivation check (item C-8 of the checklist) reads the entry to
 see whether the story is in the words of a stakeholder of its own category.
 When the two disagree, the story is wrong, not the record.
 
-And no ledger row is about it. Changing the record does not make anything
-stale; changing the concept of operations does. That is the operational
-meaning of "reference": the development state does not depend on it.
+And no judgment clause is about it. Changing the record changes nothing in
+the assurance report; changing the concept of operations does. That is the
+operational meaning of "reference": the development state does not depend
+on it.
 
 ### Evaluating a procedure that has no exit code
 
@@ -568,37 +574,42 @@ evaluation and one proposed change to the skill that the evaluation
 suggested. The lesson transfers: a procedure packaged as a skill is checked
 by running it and reading what it does, and the runs are kept beside it.
 
-### The rule
+### The procedure, written down
 
-Rule WF-2 is the procedure in the rules file. Condensed:
+`Elicit` is one of the two procedures in `process/procedures.md`, the file
+A1 adds beside the judgments. Condensed:
 
 | Field | |
 |---|---|
-| Style | procedure |
-| Maintains | VAL and SQ |
-| When | before any revision of `specs/conops.md` that is to reflect what a stakeholder wants |
-| Statement | Run `/elicit` or follow its steps by hand: read; ask at most five questions, one at a time, each addressed to a user category, with options and a recommended default; record each answer verbatim under an E identifier; apply each answer to the part of the specification it affects, citing the identifier; the person reviews the resulting diff and runs the audit before the revision is committed |
-| Decided by | review (human) of the record and the diff; the audit that follows |
-| Evidence | `reference/elicitation.md`; the dev-log entry that names the run |
-| On failure | the revision is not committed |
+| Purpose | obtain or revise a stakeholder-facing specification from its stakeholders, so that it says what they intend and its VAL clause can be evaluated against it; an authoring procedure, not an evaluation |
+| Serves | ConOps-VAL-1 (the document it produces is what the stakeholders sign); the SQ clauses (its answers settle terms, assumptions, and wants) |
+| Run by | an agent running `/elicit [form]`, which the developer starts; the stakeholders answer; the developer reviews the resulting change |
+| Steps | read; scan by the form's taxonomy and queue at most five questions by impact times uncertainty; ask one at a time, addressed to a user category, with options and a recommended answer; record each answer verbatim under an E identifier, then apply it to the one part it affects, citing the identifier; report |
+| Per-form parts | the taxonomy, `forms/conops.md` in the skill |
+| Stops | after five questions, when the queue is empty, or when the stakeholder says "done"; never writes a decision nobody gave; never touches the requirements, the scenarios, the tests, or the code; the next step is the audit |
+| Record | `reference/elicitation.md`: reference material in the stakeholders' words |
 
-The style, *procedure*, is new in A1: a rule of this style says how an
-activity is done and where it stops. Lecture 01's rules were obligations and
-gates. The next lecture adds the other new style, *form*, with the gap list
-of the audit.
+A procedure is new in A1: it says how an activity is done and where it
+stops, once, for any form it applies to, with the parts that depend on the
+form kept with the skill that packages it. Lecture 01's judgments file said
+what each claim is and how it is evaluated; a procedure says how an activity
+that produces or evaluates an artifact is carried out. Neither says *when*
+the activity must run: nothing in A1 does. The build ran the audit before
+every commit that changed a specification as a practice, and A2 turns such
+practices into rules, with a trigger and a failure clause, which is the
+layer this version deliberately leaves out.
 
 ## What we do with it, first: validation
 
 The concept of operations is validated by its stakeholders, and in A1 the
-validation has its own rule and its own record.
+clause that says so, ConOps-VAL-1, was amended to say what its record holds.
 
-Rule VAL-2 says what the record holds: per user category, who walked, in
-which role, when, against which realization version, which stories, with
-which scenario inputs, what was observed, and the decision to sign or to
-withhold the signature, with its reason. Rule VAL-1, unchanged from A0, says
-that the sign-off names the version signed and comes from a stakeholder of
-each user category. The record is `reports/validation.md`. Its security
-officer's section:
+Its *Evidence* field now names a validation record: per user category, who
+walked, in which role, when, against which realization state, which stories,
+with which scenario inputs, what was observed, and the decision to sign or
+to withhold the signature, with its reason; and, as in A0, the sign-off
+naming the version, from a stakeholder of each user category. The record is
+`records/validation.md`. Its security officer's section:
 
 | Story | Scenarios | Commands | Observed | Decision |
 |---|---|---|---|---|
@@ -615,20 +626,21 @@ conformance question: does the running guard do what the story says? A1's
 last column is headed *Decision*, and it answers a validation question: is
 this the story I want? The behavioral question is still answered, but not
 here; it is answered by the scenario tests, which the next section
-describes. The walkthrough in A1 has one job, and rule VAL-2's statement
+describes. The walkthrough in A1 has one job, and the clause's *Evaluated by* field
 says it in a sentence: observing the expected output is not the decision;
 the decision is whether the story describes what the stakeholder wants.
 
-Two things follow that the ledger shows. At A1's first commit, after the
-concept of operations had been revised but before the stakeholders had
-walked it, the VAL row is *stale*: the only sign-off named version A0, and
-the document had changed in every section. The ledger's table for that
-commit says so, in a column that is otherwise green. Four commits later, at
-`v1`, the row is established, and its provenance says what the evidence is:
-a walkthrough and a sign-off by a stand-in for the stakeholders, which the
-instructor's own session supersedes. A row that names a stand-in is weaker
-than one that names the stakeholder, and the ledger is where that is
-written down.
+Two things follow that the assurance report shows. At A1's first commit,
+after the concept of operations had been revised but before the stakeholders
+had walked it, the report compiled for that commit says ConOps-VAL-1 **does
+not hold**: the only sign-off named version A0, and the document had changed
+in every section (`git show a1-specs:reports/assurance-report.md` in the
+replayed history). The four other judgments hold in the same report. Three
+commits later, at `a1`, the row holds, and its provenance says what the
+evidence is: a walkthrough and a sign-off by a stand-in for the
+stakeholders, which the instructor's own session supersedes. A row that
+names a stand-in is weaker than one that names the stakeholder, and the
+report is where that is written down.
 
 The second thing is the case Lecture 01 constructed for A0, now with more
 machinery around it. Suppose the security officer, walking US-2 at this
@@ -636,8 +648,8 @@ validation, says that a Restricted message with a payload above 100 must not
 leave. Every scenario passes, including SC-4, which encodes a Restricted
 message with payload 150 leaving unchanged. The audit found nothing; the
 trace matrix has no findings; coverage is complete. The officer declines to
-sign. VAL is not established, and nothing else in the ledger moves, because
-nothing else is wrong: the repository is a consistent realization of a story
+sign. ConOps-VAL-1 does not hold, and nothing else in the report moves,
+because nothing else is wrong: the repository is a consistent realization of a story
 the stakeholder does not want. In A1 the resolution is a sign-off scoped to
 the version, with the want recorded as deferred, which is what D-2 is. The
 unscoped resolution, where the requirement actually changes, is the change
@@ -661,8 +673,8 @@ and what it does not.
   "specification": "Acceptance scenarios for the message guard, derived from the user stories in specs/conops.md. Any realization, in any language, must reproduce them. ...",
   "version": "A1",
   "assumes": "A message is a security level and an integer payload (REQ-0). The guard is the filter stage alone (glossary: filter); the payload is not inspected (E-1).",
-  "governance": "Never edited to make a test pass. A scenario that looks wrong is a gap about the pair (scenario, story): report it to the audit (rule SQ-2) and rule on it there.",
-  "loader": "tests/test_scenarios.py runs every scenario and cites the story it derives from (rule CONF-1).",
+  "governance": "Never edited to make a test pass. A scenario that looks wrong is a gap about the pair (scenario, story): report it to the audit (procedure Audit) and rule on it there.",
+  "loader": "tests/test_scenarios.py runs every scenario and cites the story it derives from (Scen-CONF-1).",
   "scenarios": [
     {
       "id": "SC-1",
@@ -813,7 +825,7 @@ not by object identity, because the glossary's *unchanged* is defined as
 raised about identity is settled here by not asking it.
 
 **What the loader must not do.** It must not skip a scenario it cannot
-parse (collection fails instead, which rule RQ-1 catches before any
+parse (collection fails instead, which Code-RQ-1 catches before any
 evidence is produced), must not edit the file, and must not add a scenario
 of its own. A loader is the thinnest possible layer between a data file and
 a test framework, and its catalog page, `tooling/scenario-loader.md`, lists
@@ -825,7 +837,7 @@ and how to read them, since no lecture time is given to building the tools.
 
 ### What the reports say
 
-Run the gate, and two generated reports now carry the stories. The
+Run `tools/evaluate.sh`, and two generated reports now carry the stories. The
 conformance report, `reports/conformance.md`, has a row per clause; the
 story rows, which in A0 pointed at the walkthrough file, now list the citing
 scenario tests:
@@ -837,11 +849,11 @@ scenario tests:
 | US-3 | `conops.md` | test | `test_scenarios.py::test_scenario[SC-5]`<br>`test_scenarios.py::test_scenario[SC-6]` | pass |
 
 The requirements-coverage line reads "7 of 7 test clauses have passing
-evidence": the four requirements and the three stories. Rule CONF-1, amended
-in A1, now says in so many words that the loader must run every scenario of
-the file as a test citing the story it derives from, so that a story with no
-scenario would show as **no evidence** and fail the run, like a requirement
-with no test.
+evidence": the four requirements and the three stories. A1 adds a clause
+for the new form, Scen-CONF-1, which says in so many words that a loader
+runs every scenario of the file as a test citing the story it derives from,
+so that a story with no scenario would show as **no evidence** and fail the
+run, like a requirement with no test.
 
 The trace matrix, `reports/trace-matrix.md`, which the next lecture
 introduces properly, has a forward table whose first row is:
@@ -865,7 +877,7 @@ evidence was a person's observation. In A1 they carry *test*, and their
 evidence is the loader's cases. Lecture 01 named this movement the verifier
 ladder: a check that begins with a person can, when the procedure turns out
 to be decidable, end as a program, and then the clause is mechanical and can
-sit behind the gate. The stories' examples were always decidable; what A1
+be evaluated at every request, and at A2 behind a gate. The stories' examples were always decidable; what A1
 adds is the artifact that makes them so, the scenario file, and the loader
 that runs it.
 
@@ -875,12 +887,13 @@ why the sign-off is kept after the tests exist. And the question whether the
 scenarios are the *right* instances of the story, whether the file's blind
 spots are acceptable, is a judgment that the audit makes and no test can.
 
-Rule CONF-2, which in A0 required a walkthrough record for every clause
-with method *walkthrough*, now has no clause in scope. It stays in the rules
-file, with a note saying so, for the next judgment clause that arrives. A
-rule with nothing to apply to is not a dead rule; it is a rule waiting for
-the version that needs it, and the version A2 brings review clauses that
-will.
+ConOps-CONF-1, which in A0 required a walkthrough record for every story
+with method *walkthrough*, now has no story in scope, and A1 retires it: the
+judgments file's changelog says so, and the identifier is not reused. A
+clause that applies to nothing is retired rather than kept, because a
+reader of the file should find only clauses that say something about the
+tree in front of them; when A2 brings review clauses, they bring a clause of
+their own.
 
 ### Independence: what a person-authored file catches
 
@@ -905,7 +918,7 @@ and the assertion of `test_restricted_passes_unchanged` becomes
 ```
 
 The unit test passes: the test and the code agree, because the same mind
-wrote both. Run the gate:
+wrote both. Run the evaluations:
 
 ```
 FAILED tests/test_scenarios.py::test_scenario[SC-2] - AssertionError
@@ -980,8 +993,9 @@ that need adapting are small.
 - *Elicitation with a cap.* Five questions, ranked, one at a time, each with
   a recommended answer, each recorded verbatim with who gave it. The
   `/elicit` skill works on any concept of operations that has the sections
-  above; its taxonomy is the section list stated as questions, and the
-  catalog page says how to change it for a document shaped differently.
+  above; its taxonomy, `forms/conops.md`, is the section list stated as
+  questions, and a document of another form gets a file of its own under
+  `forms/` and becomes the skill's argument.
 - *The record under reference.* Keep the stakeholders' words in a file no
   judgment depends on, and cite it from the specification. The habit costs
   a `Source` field per story.
@@ -1004,7 +1018,7 @@ that need adapting are small.
   of the file is itself a data format that the project fixes.
 - *The elicitation taxonomy.* The eight categories are a concept of
   operations' sections. A different governing document has different
-  sections, and the skill's `taxonomy.md` is the file to rewrite.
+  sections, and a new file under the skill's `forms/` is where they go.
 - *The people.* In A1 one person played both stakeholder roles, and the
   record says so. In a project the roles are held by different people, the
   record names them, and finding them before the first session is part of
@@ -1038,8 +1052,8 @@ rows, the validation record, and the evaluation note.
 
 ## Questions to think about
 
-1. The elicitation record is reference material: not audited, and no ledger
-   row depends on it. Suppose it were made a specification instead. Which
+1. The elicitation record is reference material: not audited, and no
+   judgment clause is about it. Suppose it were made a specification instead. Which
    audit checks would it fail by design, and what would a stakeholder lose?
 2. When version A2 adds the `sanitize` stage, scenario SC-4 (Restricted 150
    in, Restricted 150 out) becomes wrong. List, in order, the artifacts that
@@ -1047,8 +1061,8 @@ rows, the validation record, and the evaluation note.
    must not be the first one edited, and why?
 3. Construct the case from the validation section: the security officer
    says a Restricted message with payload above 100 must not leave, and every
-   scenario passes. Which ledger rows change, in what order, and what is the
-   evidence for each change? What is the first artifact that would have to
+   scenario passes. Which rows of the assurance report change, in what
+   order, and what is the evidence for each change? What is the first artifact that would have to
    change for the scenarios to catch the officer's intent, and who may
    change it?
 4. A1's loader compares outputs by value. Write the one-line change that
@@ -1061,11 +1075,11 @@ rows, the validation record, and the evaluation note.
 
 ## Before next meeting
 
-- Run A1 yourself: `uv sync`, then `tools/gate.sh`; read
+- Run A1 yourself: `uv sync`, then `tools/evaluate.sh`; read
   `reports/conformance.md` and find the three story rows; run sabotage 7
   from the README and restore the file.
-- In a scratch copy, start a Claude Code session in `v1/`, run `/elicit`
-  on the A0 concept of operations (copy `../v0/specs/conops.md` over
+- In a scratch copy, start a Claude Code session in `a1/`, run `/elicit
+  conops` on the A0 concept of operations (copy `../a0/specs/conops.md` over
   `specs/conops.md` first), answer its questions yourself, and compare its
   queue with the five entries of `reference/elicitation.md`.
 - Read the glossary entries for: concept of operations, purpose statement,

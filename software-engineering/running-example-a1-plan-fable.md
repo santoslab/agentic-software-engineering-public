@@ -1,5 +1,17 @@
 # Plan for Version A1 of the Message Guard
 
+
+> **Note, 2026-10-24.** This plan was executed on 2026-10-22 and the build
+> was then re-layered as [running-example-relayering.md](running-example-relayering.md)
+> describes: the snapshot is `a1/` (not `v1/`), `process/rules.md` became
+> `process/judgments.md` and `process/procedures.md`, the ledger became an
+> assurance report compiled at each commit, records moved to `records/`,
+> the gate script became `tools/evaluate.sh`, and the rule identifiers
+> this plan uses (SQ-1, WF-2, RPT-2, ...) became per-form clauses
+> (`Reqs-SQ-2`, procedure `Elicit`, the gap-list template, ...). The plan
+> is kept as the record of what was decided and why; the snapshot and the
+> design document are current.
+
 > Status: proposal, 2026-10-22, written independently of
 > `running-example-a1-plan.md` (not read) so that the two can be compared.
 > Inputs: `running-example-design.md` (sections 2, 3 option A, 4, 8, 9),

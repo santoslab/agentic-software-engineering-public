@@ -15,9 +15,18 @@ Entries are alphabetical.
 specification, the realization, a rule file, a plan, a report. Reference
 material is versioned, but no judgment is about it.
 
-**Assurance.** The argument, from the ledger and the reports, that the
-development-state judgments hold. It is as strong as the mitigations against
-the threats to each row's evidence (design 2.9).
+**Assurance.** The argument, from the assurance report (later the ledger)
+and the records, that the development-state judgments hold. It is as strong
+as the mitigations against the threats to each row's evidence (design 2.9).
+
+**Assurance report.** The document that states, for each development-state
+judgment and each of its clauses, whether it holds, on what evidence, with
+what provenance, compiled on request against a named state of the tree by
+running the mechanical evaluations and reading the records. A very small
+assurance case: the clauses are its claims, the evaluation method the reason
+the evidence bears on each claim, the provenance the ground for trusting it.
+In the running example an agent compiles it from A0; from A2 it is kept
+between requests as the *ledger* (design 2.1a).
 
 **Audit.** The activity of reading artifacts against rules and reporting the
 gaps; the judgment's name says what is audited. The common case is the audit
@@ -51,8 +60,8 @@ about the pair; properties S does not state are not part of the question. Under
 the module's process, conformance is an invariant of the repository, not a
 milestone.
 
-**Development log.** The append-only record of what each task or commit did
-and which judgments it touched.
+**Development log.** The append-only record of what each task or commit did,
+which judgments it touched, and which evaluations were run. A *record*.
 
 **Development state** (`DevState`). The artifacts at a commit together with
 the ledger.
@@ -60,8 +69,23 @@ the ledger.
 **Development-state judgment** (`Judgment`). One of five claims about the
 current artifacts, tracked commit by commit: specification quality (SQ),
 realization quality (RQ), conformance (CONF), validated (VAL), and traceable
-(TR) (design 2.1). Distinct from a *judgment clause*, which is a clause of a
-specification that needs a reader's assessment.
+(TR) (design 2.1). Each is *defined* once for the repository and then per
+form of artifact, as clauses named `Form-JUDGMENT-n` (`Reqs-CONF-1`), each
+with what holds, how it is evaluated, what evidence results, and how it is
+bound to the project; the definition says nothing about when the claim must
+hold, which is the control layer's business. Distinct from a *judgment
+clause*, which is a clause of a specification that needs a reader's
+assessment.
+
+**Evaluation.** The activity that produces evidence for or against a
+development-state judgment: a run (test, analysis) or a human or agent
+reading (review, walkthrough, sign-off). A clause's *Evaluated by* field
+names it, and the kind of evaluator named is the clause's rung on the
+verifier ladder.
+
+**Evidence.** What an evaluation produced and a judgment rests on: the
+results of a run, or a record of a human activity. Evidence has a scope and
+a producer, which its *provenance* states.
 
 **Elicitation record.** The stakeholders' verbatim words and the questions and
 answers of elicitation, kept as reference and used as the source the user
@@ -99,8 +123,11 @@ every branch was reached; it does not establish that the tests claim what the
 specification says, which is why conformance also requires requirements
 coverage.
 
-**Governance.** The development rules, filed by the judgment they maintain
-(design 2.3).
+**Governance.** The process files of a project: the judgment definitions
+and their per-form clauses, the procedures, the templates, and, when the
+control layer exists, the rules that say when a judgment must hold (design
+2.1a, 2.3). Filed by form from the first version and by layer as the layers
+arrive.
 
 **Independence.** The requirement that the verifier of a clause not be the
 author of the realization it verifies, or that an agent's result be
@@ -129,9 +156,12 @@ and run whenever it changes. The seeded gaps of an audit and the sabotage that
 closes each version of the running example are instances; it is how a program
 at rung 4 of the verifier ladder is verified.
 
-**Ledger** (`Ledger`). The table that states, at a named commit, which
-development-state judgments hold, on what evidence, and which are stale. Every
-row carries its provenance.
+**Ledger** (`Ledger`). The assurance report kept between requests: a table
+per named checkpoint stating which development-state judgments hold, on
+what evidence, and which rows are stale, with the artifact states each
+row's evidence was produced against so that a change marks the rows it
+touches. Every row carries its provenance. Enters the running example at A2
+(design 2.4a); before that the report is recompiled on request.
 
 **Mechanical clause; judgment clause.** A clause of a specification is
 *mechanical* when a program can decide it, by examining the artifact or by
@@ -157,10 +187,24 @@ or a reading of the log. The same questions apply to both: when the form is
 appropriate, how conformance is shown, and what it must agree with (design
 section 4).
 
-**Provenance** (of a ledger row). What the row records about its evidence:
-which verifier and which version of it, which artifact versions, which clauses
-were decided. These are the three scope lines of a conformance report (RPT-2),
-moved onto the row.
+**Provenance** (of evidence). What is recorded about a piece of evidence:
+which verifier and which version of it produced it, against which state of
+which artifacts, over which clauses. It is what a reader uses to decide how
+far to trust the evidence, and what lets the rows a verifier established be
+found when the verifier turns out to be wrong. A row of the assurance report
+or the ledger carries it.
+
+**Record.** A document attesting that an activity was performed and what it
+decided: a review record, a walkthrough record, a validation record with its
+sign-off, an audit record (the gap list with its rulings), the development
+log. Records are evidence and live under `records/` in the running example.
+Distinct from a *report*.
+
+**Report.** A presentation of the development and assurance state to the
+developers or to other stakeholders such as auditors: the assurance report,
+the generated conformance report and trace matrix, later the ledger. Reports
+live under `reports/` in the running example. A report is not a record: the
+output of a manual task is a record.
 
 **Purpose statement.** The one-to-two paragraph opening of the concept of
 operations that says what the system is for. An engineering artifact, revised
@@ -188,7 +232,10 @@ with every test passing and every judgment clause reviewed.
 **Rule style.** The kind of a process rule, one of obligation, gate, staleness,
 procedure, policy, form, and change control (design 2.8). Every rule names its
 style, the judgment it maintains, its decider, its evidence, and what failure
-does.
+does. In the running example the obligation style is carried by the per-form
+judgment clauses from A0, procedures enter at A1, and rules in the full
+template (gate, staleness, policy, change control) enter with the control
+layer at A2; the form style is a template, not a rule.
 
 **Specification.** A document that states, at a higher level than the artifact
 it governs, what the developer intends. It fixes some properties and

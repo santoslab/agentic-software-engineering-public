@@ -5,7 +5,7 @@
 > and the user chooses one before anything under `demos/` changes. Vocabulary
 > follows `../glossary.md`; the running example is `running-example-design.md`
 > (cited by section, "design 2.6"); version A0 is
-> `../module-ase-principles/demos/running-example-message-guard/v0/`; the Spec
+> `../module-ase-principles/demos/running-example-message-guard/a0/`; the Spec
 > Kit material is the tic-tac-toe demo,
 > `../module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe/`
 > ("the demo"), at Spec Kit 1.1.1 in skills mode.

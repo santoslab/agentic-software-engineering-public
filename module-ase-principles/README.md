@@ -8,7 +8,11 @@ It is under development and is not yet referenced from the course web page;
 What is here:
 
 - `demos/running-example-message-guard/` — the running example, one snapshot
-  directory per version. Versions A0 and A1 are complete; `build-history.sh`
+  directory per version (`a0/`, `a1/`). Versions A0 and A1 are complete and
+  were re-layered on 2026-10-24 (judgment clauses filed by form, procedures,
+  records beside reports, an assurance report compiled on request, no
+  process rules before A2; see
+  `software-engineering/running-example-relayering.md`); `build-history.sh`
   replays them into a tagged git history.
 - `lecture-notes/` — student-facing notes, one file per lecture. Lecture 01
   (intent, specifications, realizations, and the five judgments, on A0) is

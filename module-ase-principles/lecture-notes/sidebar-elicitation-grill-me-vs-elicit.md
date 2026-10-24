@@ -8,7 +8,7 @@ writing the second one so that a stakeholder can sit through a session with
 it. Both skills are in the repository: `grill-me` at
 `module-software-engineering/student-materials/pkb-starter/.claude/skills/grill-me/SKILL.md`,
 `/elicit` at
-`module-ase-principles/demos/running-example-message-guard/v1/.claude/skills/elicit/`.
+`module-ase-principles/demos/running-example-message-guard/a1/.claude/skills/elicit/`.
 
 ## The two definitions
 
@@ -131,7 +131,7 @@ design decision with a reason that the skill states.
 Two things were left out of `clarify` on purpose: its extension-hook
 machinery, which belongs to its toolkit, and its re-validation of a quality
 checklist after the session, because in the course method the next step is
-the audit skill, which does that job under its own rule.
+the audit skill, which does that job under its own procedure.
 
 Beyond the adaptation of `clarify`, the writing followed the criteria the
 course's skills lecture set out for any skill, and each shows up in the
@@ -160,9 +160,9 @@ file:
   record template are files the agent opens when it reaches the step that
   needs them; the body is paid for the whole session, a bundled file only
   when read.
-- **Deference to the repository.** The skill reads `process/rules.md` first
-  and says that if the repository has its own elicitation rule or record
-  form, that is the authority and the bundled files are the fallback.
+- **Deference to the repository.** The skill reads `process/procedures.md`
+  first and says that if the repository's own procedure or record form
+  differs, that is the authority and the bundled files are the fallback.
 - **Facts are looked up, decisions are asked.** This is `grill-me`'s own
   best line, "if a question can be answered by exploring the codebase,
   explore the codebase instead", kept and given its reason.
@@ -178,9 +178,9 @@ question varied. No run wrote a decision of its own. No run asked about
 terms, even when it rated that category as Partial, treating a missing
 definition as the writer's job; and no run asked about the payload's domain,
 because all three found that REQ-0 already answers it. The catalog page
-`v1/tooling/skill-elicit.md` has the table, and one proposed change to the
+`a1/tooling/skill-elicit.md` has the table, and one proposed change to the
 taxonomy that the evaluation suggested. The live session of A1
-(`v1/reference/elicitation.md`) used the second run's queue.
+(`a1/reference/elicitation.md`) used the second run's queue.
 
 That is the practical difference between the two skills, stated as a test:
 run `/elicit` three times on one document and the queues agree on the

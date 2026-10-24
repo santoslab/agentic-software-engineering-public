@@ -1,7 +1,16 @@
 # How a ledger evolves during development
 
 Optional companion to [Lecture 1: Intent, specifications, realizations, and
-judgments](lecture-01-intent-specifications-realizations-and-judgments.md#the-ledger).
+judgments](lecture-01-intent-specifications-realizations-and-judgments.md#the-assurance-report).
+
+In A0 and A1 the state of the judgments is an *assurance report*, compiled
+on request by running the evaluations and reading the records. The
+*ledger*, which version A2 introduces, is that report kept between requests,
+with each row remembering which artifact states its evidence was produced
+against, so that a change can mark the rows it touches without everything
+being re-run. This example uses the ledger's words, *established* and
+*stale*, to follow evidence through a development history; in A0 the same
+story would be told by compiling the report at each step and comparing.
 
 A ledger records claims supported by evidence about a particular development
 state. Relevant changes can make that evidence out of date. Checking again
@@ -11,8 +20,8 @@ without requiring you to memorize a dependency rule for every ledger row.
 This is a **hypothetical teaching history**, not a reconstruction of A0's
 actual development log. Most steps are working states, not commits. The two
 commit checkpoints below are illustrative labels, not repository tags or
-hashes. Under A0's process rule, a failed gate prevents a commit; the
-deliberately broken states remain uncommitted.
+hashes. A0 has no rule about commits; in this example the deliberately
+broken states are simply not committed.
 
 ## Reading a ledger entry
 
@@ -42,14 +51,14 @@ Restricted messages pass unchanged.
 | 1 | Draft the ConOps and requirements. | SQ is not established: writing the specifications is not the same as reviewing them. The other judgments also await their evidence. |
 | 2 | Review the specifications; obtain stakeholder agreement on the named specification version. | Record SQ's review and VAL's sign-off separately. A specification can be well formed without saying what stakeholders want. |
 | 3 | Write the implementation and tests. | Their existence alone establishes neither RQ nor CONF. Record which checks remain outstanding. |
-| 4 | Run lint and collect the test suite successfully. | Record RQ evidence under A0's limited quality rule. Collection shows that tests can be discovered, not that their assertions pass. |
+| 4 | Run lint and collect the test suite successfully. | Record RQ evidence under A0's one clause for it, Code-RQ-1. Collection shows that tests can be discovered, not that their assertions pass. |
 | 5 | Run the full suite with the required coverage checks; complete the story walkthroughs and check the trace references. | Record CONF and TR evidence once their obligations are met. Automated citation checks do not replace the review of specification derivations or stakeholder sign-off. |
-| Checkpoint 1 | Confirm the gate passes, complete the evidence records and dev-log entry, and commit. | All five judgments now have recorded support for this state. Identify the checked source state in the evidence; a commit itself establishes none of the judgments. |
+| Checkpoint 1 | Confirm the mechanical evaluations pass, complete the records and the dev-log entry, compile the report, and commit. | All five judgments now have recorded support for this state. Identify the checked source state in the evidence; a commit itself establishes none of the judgments. |
 
 This ordering is illustrative. Reviews and testing can be interleaved. What
 matters is that the ledger claims no more than the available evidence
-supports. In particular, passing the automated gate alone does not establish
-all five judgments.
+supports. In particular, passing the mechanical evaluations alone does not
+establish all five judgments.
 
 ## A code change followed by a failed check
 
@@ -64,7 +73,7 @@ would say:
 > Stale — the implementation has changed since the recorded successful
 > verification; checking the changed state is pending.
 
-**After rerunning the gate:** lint and collection succeed, and the clause
+**After rerunning the evaluations:** lint and collection succeed, and the clause
 citations still resolve. Four behavioral tests fail, covering REQ-1 and
 REQ-2, even though branch coverage remains 100 percent. Now the CONF entry
 has a current finding:
@@ -76,16 +85,17 @@ This is more informative than leaving the entry merely stale: we checked
 and found a problem. The other successful checks do not cancel that result.
 Conversely, CONF's failure does not mean that every other judgment failed.
 
-These entries are examples of what a developer would record. A0's gate
-rewrites the conformance report; it does **not** rewrite the handwritten
-ledger. The ledger at Checkpoint 1 remains a historical record, not evidence
-that the edited working tree is still green.
+These entries are examples of what a developer would record. A0's
+evaluation command rewrites the conformance report; it does **not** rewrite
+the assurance report, which is recompiled only on request. The report
+compiled at Checkpoint 1 remains a historical record, not evidence that the
+edited working tree is still green.
 
-**Checkpoint 2:** repair the defect, rerun the gate, and complete or renew the
-required reviews and evidence records for the repaired state, including the
-walkthrough evidence needed for CONF. Once the obligations are met, record
-CONF as established and commit. The failed intermediate state is not
-committed under A0's gate rule. The dev log can still record the failed run
+**Checkpoint 2:** repair the defect, rerun the evaluations, and complete or
+renew the required reviews and records for the repaired state, including
+the walkthrough evidence needed for CONF. Once the obligations are met,
+record CONF as established and commit. The failed intermediate state is not
+committed. The dev log can still record the failed run
 and the repair; committing only the repaired state does not mean hiding the
 problem's history.
 

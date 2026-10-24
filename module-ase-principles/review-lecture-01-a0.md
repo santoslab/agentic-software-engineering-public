@@ -1,5 +1,14 @@
 # Review: Lecture 01 and message guard A0
 
+> **Note, 2026-10-24.** This review examined the A0 snapshot as it stood
+> on 2026-10-21 at `demos/running-example-message-guard/v0/`. The snapshot
+> has since been re-layered and renamed `a0/` (rules became per-form
+> judgment clauses, the ledger became an assurance report, the gate became
+> an evaluation command; see `software-engineering/running-example-relayering.md`).
+> The review's findings and the design's carry-forward items (design section
+> 9) stand; its file paths and rule identifiers describe the earlier state.
+
+
 Reviewed 2026-10-21 against repository HEAD `9a37882`. This is a review, not an implementation of the proposed edits. Line numbers refer to that checkout.
 
 ## 1. Summary

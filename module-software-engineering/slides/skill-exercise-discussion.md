@@ -28,7 +28,7 @@ style: |
   }
 ---
 
-## Skill exercise discussion (1/4): each skill re-run 4 times, 3 tic-tac-toe, 1 [Lecture 01 note set](https://github.com/santoslab/agentic-software-engineering-public/tree/main/module-software-engineering/demos/lecture-01-note-specs-demo/completed) *(without `note-set-operations.md`)*
+## Skill exercise discussion (1/5): each skill re-run 4 times, 3 tic-tac-toe, 1 [Lecture 01 note set](https://github.com/santoslab/agentic-software-engineering-public/tree/main/module-software-engineering/demos/lecture-01-note-specs-demo/completed) *(without `note-set-operations.md`)*
 
 <style scoped>
 section { font-size: 21px; }
@@ -49,7 +49,7 @@ li { margin: 0.15em 0; }
 
 ---
 
-## Skill exercise discussion (2/4)
+## Skill exercise discussion (2/5)
 
 <style scoped>
 section { font-size: 23px; }
@@ -65,7 +65,7 @@ li { margin: 0.2em 0; }
 
 ---
 
-## Skill exercise discussion (3/4)
+## Skill exercise discussion (3/5)
 
 <style scoped>
 section { font-size: 22px; }
@@ -83,7 +83,7 @@ li { margin: 0.2em 0; }
 
 ---
 
-## Skill exercise discussion (4/4): what each line of your note checked
+## Skill exercise discussion (4/5): what each line of your note checked
 
 <style scoped>
 section { font-size: 19px; }
@@ -105,3 +105,28 @@ th, td { padding: 4px 10px; }
 | | Output grouped by kind | The report groups questions by kind of specification (AUD-8 to AUD-14) |
 | | A bundled file the body sends the model to | `SKILL.md` points the model to a supporting file it must read |
 | | Lines carrying an answer | No line in the skill states a tic-tac-toe answer instead of asking the question |
+
+---
+
+## Skill exercise discussion (5/5): how the note set run was checked
+
+<style scoped>
+section { font-size: 20px; }
+li { margin: 0.15em 0; }
+table { font-size: 17px; }
+th, td { padding: 3px 10px; }
+</style>
+
+- **One run per skill** — `/specs-from-conops note-set-conops.md`, Sonnet 5.5, on the note set without `note-set-operations.md` (the document a good run should propose). No score: the run was compared with a checklist written before any note set run.
+- **Behavior** — stopped for rulings; wrote no file; listed as settled nothing no document states; followed the note set's `CLAUDE.md` list of documents (an operations specification, not `SPECS.md`).
+- **Precision** — each question classed as worth asking, already settled by the repository (for example, the note filename by R7), trivial, or real but low-stakes.
+- **Notable** — decisions a good run should raise; your note names one or two:
+
+| | Decision |
+|---|---|
+| N1 | A blank note versus R8's required Summary (the two governing documents conflict) |
+| N2 | What "a note with that title exists" means, and two titles that give the same file name |
+| N3 | Titles R7 cannot turn into a file name (empty, punctuation only, non-Latin) |
+| N4 | Which changes the import operation may make to the user's text on its own |
+| N5 | Whether checking notes is a separate operation, and when it runs |
+| N6 | What an operation does after reporting a failed precondition |

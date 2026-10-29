@@ -28,10 +28,11 @@ style: |
   }
 ---
 
-## Skill exercise discussion (1/4): each skill re-run 4 times, 3 tic-tac-toe, 1 Lecture 01 note set
+## Skill exercise discussion (1/4): each skill re-run 4 times, 3 tic-tac-toe, 1 [Lecture 01 note set](https://github.com/santoslab/agentic-software-engineering-public/tree/main/module-software-engineering/demos/lecture-01-note-specs-demo/completed) *(without `note-set-operations.md`)*
 
 <style scoped>
 section { font-size: 21px; }
+h2 em { font-size: 0.65em; font-style: normal; }
 li { margin: 0.15em 0; }
 </style>
 
@@ -44,7 +45,7 @@ li { margin: 0.15em 0; }
 - **The model followed a simple instruction every time** — every skill tells the model to stop after each step and wait for the developer to rule on its questions.
   - In all 20 re-runs, including the note set, Sonnet 5.5 stopped with a list of questions and wrote no file.
   - For contrast, one student asked "Write SPECS.md from CONOPS.md" without the skill: the model wrote the whole `SPECS.md` first, deciding every open question itself, and asked for rulings only afterwards.
-  - A judgment instruction, such as never listing as settled what no document states (above), was followed less reliably.
+  - A judgment instruction, such as never listing as settled what no document states, was followed less reliably.
 
 ---
 

@@ -1,0 +1,13 @@
+Now translate the reviewed plan in planning/beads-plan.md into Beads, following Steve Yegge's advice.
+
+Read bd prime and the project policy. File a milestone epic and detailed child issues covering all approved T018–T024 work. Choose useful, bounded units of implementation and verification; related tests and implementation may share one issue. Preserve original task IDs, exact project-relative design/contract references, required evidence, important boundary conditions, and the separate II(b) menu refactor obligation. Explicitly record blocking dependencies; epic membership alone does not express task order. Identify work that could proceed independently even though we use one agent at a time.
+
+Use bd directly to create and inspect the actual records. Record the mapping from original task IDs to actual Beads IDs in planning/beads-map.md. Do not implement or change the governing artifacts. Do not create speculative extra scope. Report the actual graph and ready work.
+
+Clarifications from the existing starter authorization, in response to your planning report:
+
+- Unit tests for parse_menu follow the existing tests-first requirement and C-1/C-2; adding them does not add specified behavior. Schedule the future failing two-player tests after the required green-suite II(b) refactor if needed; that execution order is within the approved plan.
+- The starter policy explicitly selects T018–T024 and excludes later US3 work. Follow T021/T023's intermediate milestone behavior, without a leave-game hint or m handling, and do not claim FR-018 conformance. Document the staged boundary; do not amend any governing artifact or invent a new developer ruling. A genuine unresolved behavior conflict must still be reported.
+- This lecture deliberately interrupts one still-unfinished parsing work item. Keep T019/T022 move parsing, menu parsing, and the required menu-caller refactor in ONE bounded parsing bead, with their test-first steps and separate II(c)/II(b) commits inside that bead. Internal plan steps need not each become an issue. Choose useful grouping for the remaining work while preserving every obligation.
+
+Update the execution plan/review to reflect these existing constraints, then create the actual records. Record any refinement honestly; do not say no bd commands were run if your transcript includes bd list.

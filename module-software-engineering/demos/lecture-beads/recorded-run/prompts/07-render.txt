@@ -1,0 +1,3 @@
+Read the project instructions and bd prime, then inspect unfinished and ready work. Recover the current milestone state from the project and Beads.
+
+Choose one ready implementation issue from the approved T018–T024 milestone, claim it, read all governing references, and complete it with tests written and shown to fail first. Preserve existing behavior and tests, and follow the project's change-record rules. Record exact verification results and commit references, close only after the evidence supports its acceptance criteria, then inspect the next ready work. Work on only this one issue and stop when it is complete, or report a genuine specification conflict for a developer ruling. Do not expand scope or read transcripts/automatic memory.

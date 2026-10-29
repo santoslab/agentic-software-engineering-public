@@ -38,6 +38,18 @@ Across the seven lectures the module introduces most of the kinds of
 specification in the course catalog (`../specification-kinds.md`); Lecture 03's
 table is the module's view of it, and Lecture 06 adds the last kind.
 
+## Beads lecture
+
+[Slides](slides/lecture-beads.md) and [course notes](lecture-notes/lecture-beads.md)
+introduce agent work graphs, dependencies, evidence, and fresh-session recovery
+using the familiar Spec Kit tic-tac-toe project. The
+[recorded demonstration](demos/lecture-beads/recorded-run/transcript.md)
+combines nine calls across six sessions in one sanitized transcript.
+[Project materials](demos/lecture-beads/README.md) include the reproduction
+starter, checkpoints, and the self-contained
+[render-and-resume exercise](demos/lecture-beads/exercise-beads/README.md),
+**due November 8, 2026**.
+
 ## The process documents
 
 From Lecture 01 on, every demo repository and every starter carries a `process/`
@@ -59,6 +71,7 @@ rules.
 | Ex. 2 | [exercise-02-operations-under-contract.md](exercises/exercise-02-operations-under-contract.md) | L02 | before L04 | 2–3 h | Claude Code, Python 3.11+, git |
 | Ex. 3 (optional) | to write | L03 | before L05 | 1–2 h | Claude Code |
 | Skills | [exercise-03-a-skill-for-specs-from-conops.md](exercises/exercise-03-a-skill-for-specs-from-conops.md) | L06 | Tue Oct 13, 11:55 pm | — | Claude Code, git, jq |
+| Beads | [Render and resume](demos/lecture-beads/exercise-beads/README.md) | Beads lecture | Nov 8, 2026 | — | Claude Code, Git, Node.js/npm, uv, Python 3.12+ |
 
 **Project 0** — the personal knowledge base — is assigned in this module at
 Lecture 02 by [`project-0-pkb-brief.md`](project-0-pkb-brief.md), with its

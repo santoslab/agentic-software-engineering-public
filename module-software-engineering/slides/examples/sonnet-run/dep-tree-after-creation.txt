@@ -1,0 +1,9 @@
+
+🌲 Dependency tree for ttt-cik.4:
+
+ttt-cik.4: Verify two-player milestone conformance (T024) [P1] (open) [BLOCKED]
+    └── ttt-cik.3: Two-player game loop with tests (T020 + T023) [P1] (open) [blocks]
+    │   ├── ttt-cik.2: Move and menu parsing plus menu-caller refactor (T019 + T022) [P1] (open) [blocks]
+    │       └── ttt-cik: Milestone: two-player five-in-a-row (original T018–T024) [P1] (open) [parent-child]
+        └── ttt-cik.1: Board rendering and message text (T018 + T021) [P1] (open) [blocks]
+

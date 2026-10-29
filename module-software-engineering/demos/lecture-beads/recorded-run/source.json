@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/santoslab/agentic-software-engineering-public",
+  "commit": "4d6a2cdc70cfd3fc4ffc5d117ad1078d69b206f8",
+  "subtree": "module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe",
+  "created_utc": "20261026T231233Z",
+  "beads_version": "1.3.2",
+  "input_archive_revision": 2,
+  "prompt_revision_note": "Create-beads prompt includes recorded clarifications after planning; pristine starter is unchanged."
+}

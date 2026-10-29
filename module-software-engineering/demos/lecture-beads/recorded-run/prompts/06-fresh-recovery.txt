@@ -1,0 +1,5 @@
+This is a fresh implementation session. Read the project instructions and bd prime. Inspect Beads for unfinished work, identify the active issue and its governing contracts, inspect the working tree and recorded evidence, and report your recovered understanding and next action BEFORE making any source or test edits.
+
+Then finish that active issue within its recorded scope and acceptance criteria. Write any remaining tests before implementation, verify the required behavior, preserve existing tests, and honor the required separate verified II(b) commit for any conformance-preserving caller refactor. Record actual commands/results and commit references in the bead, and close it only when its full acceptance criteria are satisfied. Inspect bd ready afterwards.
+
+Do not begin another issue in this session. Do not read sibling directories, transcripts, previous conversations, or automatic memory. The project files and Beads are your durable record. If a genuine specification conflict requires a developer ruling, report it and stop the affected work instead of silently changing the specification or tests.

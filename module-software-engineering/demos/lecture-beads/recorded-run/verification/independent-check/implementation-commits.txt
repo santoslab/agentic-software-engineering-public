@@ -1,0 +1,72 @@
+fde838863c6cb79882a4182cf398d83b61eb7bd8
+Add two-player game loop with transcript tests (T020, T023)
+
+Start-menu choice 2 now plays a full game: draw the board, prompt the mark to
+move, parse the entry, pass the Square to GameState.play, print the reason and
+re-ask the same mark on an unreadable or illegal entry, redraw after each
+accepted move, then print the result line and return to the start menu.
+Interim until T034 (game-over menu). Choice 1 still raises NotImplementedError;
+no leave-game command or hint (FR-018, FR-015 not claimed).
+
+tests/cli/test_two_player.py failed first (all 10 tests: NotImplementedError
+from choice 2); now passes. Full suite: 83 passed. Board is drawn once per
+accepted move plus once at the start, so the final board is not drawn twice.
+
+Change type: II(c) — implements FR-002, FR-003, FR-005..FR-007, FR-009..FR-011, US1-1; interim: returns to start menu until T034
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+51655ccb427978372d8284b8e2de4984e6e1a30b
+Add render_board and CLI message text with test (T018, T021)
+
+render_board draws the board per C-5 (tested in tests/cli/test_render.py,
+which failed first with ModuleNotFoundError on five_in_a_row.cli.render).
+render.py also holds the move prompt, rejection messages and two-player
+result lines; those are verified by the game-loop transcript tests (ttt-cik.3).
+The prompt carries no leave-game hint (US3 adds it; FR-018 not claimed).
+
+Change type: II(c) — implements FR-006, FR-004 (T018, T021)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+8a56f896b672c01a2e661e0b1c9a0c6c97c2f986
+Use parse_menu in the start menu (T022 caller refactor)
+
+Replaces the inline string comparison in the T016 start menu with
+parse_menu. No specified behavior changed: choice 3 still quits, choices 1
+and 2 still raise NotImplementedError, and any other entry still prints
+"'<entry>' is not a choice." and redisplays the menu. Full suite passed
+(72) on the preceding II(c) commit and after this change; test_start_menu.py
+and test_end_of_input.py are unmodified.
+
+Change type: II(b)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+8cd08deeb83f3024e4bdd27d329e5f387e2f7350
+Add parse_menu with tests (T019, T022)
+
+Completes the parsing module for bead ttt-cik.2: parse_menu(text, choices)
+accepts only the stripped entry equal to 1..choices (C-1/C-2); '01', '+1',
+'1 2', blank and out-of-range entries are None. Tests written first and seen
+failing (ImportError on parse_menu). The start menu is not yet changed.
+
+Change type: II(c) — implements FR-014/FR-017 menu entry parsing (T019, T022).
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+701dc435a55edca8b67f24373c30989f7e3a7c7d
+WIP checkpoint (unfinished): parse_move and its tests (T019, partial T022)
+
+UNFINISHED CHECKPOINT for bead ttt-cik.2, which stays in_progress.
+Adds tests/cli/test_parse.py (parse_move only) and parse_move in
+src/five_in_a_row/cli/parse.py per C-7. Signed and out-of-range integers
+parse to a Square (range is the engine's job); 4;7 is unreadable.
+
+Not done yet: parse_menu and its tests, and the separate II(b) refactor of
+the T016 start menu in cli/app.py. No rendering or game loop.
+
+Change type: II(c) — implements FR-004 move parsing (T019, partial T022).
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+

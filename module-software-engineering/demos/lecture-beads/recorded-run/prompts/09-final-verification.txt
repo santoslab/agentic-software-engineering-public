@@ -1,0 +1,5 @@
+Read the project instructions, bd prime, the milestone epic, and the T024 verification issue. Recover the implementation state from Beads and project evidence. Claim the ready verification issue.
+
+Run the full test suite and inspect reports/conformance.md. Confirm every US1-* acceptance scenario has passing evidence, inspect the actual realization changes and required commit records against T018–T024, and record what is and is not established. Preserve evidence in verification/milestone-review.md and append a summary with exact commands, results, and revision references to Beads. Do not change or weaken tests to manufacture success. If there is a genuine discrepancy, report it for a developer ruling and leave the relevant work open.
+
+If all approved milestone criteria are satisfied, close the verification issue and then the epic with evidence. Other user stories are outside this run; the whole game's specification need not have evidence yet. Do not claim an effectiveness benchmark from this single demonstration. Do not push or publish.

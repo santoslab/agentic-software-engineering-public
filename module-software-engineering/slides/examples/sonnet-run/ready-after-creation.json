@@ -1,0 +1,83 @@
+[
+  {
+    "id": "ttt-cik",
+    "title": "Milestone: two-player five-in-a-row (original T018–T024)",
+    "description": "Milestone for US1 \"Two players at one keyboard\": choosing \"Play a friend\" plays a complete 9×9 game (five or more in a row wins) to a win or a draw.\n\nGoverning/derived references (read-only; do not edit): .specify/memory/constitution.md; specs/001-five-in-a-row/spec.md (US1, FR-004..FR-011); specs/001-five-in-a-row/contracts/cli.md (C-1..C-8, C-12, C-13); specs/001-five-in-a-row/contracts/engine.md; specs/001-five-in-a-row/tasks.md (T018–T024 and Notes); specs/001-five-in-a-row/data-model.md; planning/beads-plan.md; planning/plan-review.md; planning/beads-map.md.\n\nScope: original tasks T018–T024 only. Out of scope: computer play (start-menu choice 1 keeps raising NotImplementedError), US3 menus, game-over menu, leave-game command `m` and its prompt hint. FR-018 conformance is NOT claimed. Existing start-menu (T014) and EOF (T015) tests are preserved unchanged.\n\nPolicy: tests before implementation with the intended initial failure recorded; commits end with `Change type: II(c) — ...` or II(b) (which must state no specified behavior changed, after the full suite passes); no push/remote; genuine spec-vs-realization disagreement is reported for a developer ruling, never silently resolved. tasks.md stays unchanged; Beads is authoritative for live status.\n\nOrder is expressed by blocking dependencies on the child issues, not by epic membership.\n",
+    "status": "open",
+    "priority": 1,
+    "issue_type": "epic",
+    "owner": "beads-lecture@example.invalid",
+    "created_at": "2026-10-26T23:39:03Z",
+    "created_by": "Beads lecture demo",
+    "updated_at": "2026-10-26T23:39:03Z",
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "ttt-cik.1",
+    "title": "Board rendering and message text (T018 + T021)",
+    "description": "Original tasks: T018 (test) and T021 (implementation), specs/001-five-in-a-row/tasks.md.\n\nTest first: write tests/cli/test_render.py for render_board(board) -\u003e str in five_in_a_row.cli.render. Board with marks at (1,1), (5,5), (9,9): column numbers 1–9 across the top, row numbers 1–9 down the left with row 1 first, `.` for every empty square, X/O at the squares holding them. Tags: FR-006, FR-004. Assert facts, not spacing (specs/001-five-in-a-row/contracts/cli.md \"Normative vs. illustrative\"). Run it and record the intended failure (ImportError: no module five_in_a_row.cli.render) before implementing.\n\nImplement src/five_in_a_row/cli/render.py (II(c)):\n- render_board(board) per C-5; reads SIZE from the engine public API.\n- Move prompt text per C-6: names the mark and says how to enter a square, e.g. `X to move — type row and column (e.g. 4 7):`. NO leave-game / `m` hint (staged boundary: US3 adds it; FR-018 not claimed).\n- Rejection messages per C-8 for OUT_OF_RANGE (word \"range\"), OCCUPIED (word \"occupied\"), and unreadable (a not-understood message); each is one line.\n- Two-player result lines per C-12/C-13: `X wins!`, `O wins!`, `It's a draw.`\n\nBoundaries: import only from five_in_a_row.engine public API (tests/test_architecture.py must pass); no terminal I/O in render.py beyond returning strings; no computer-play text (T028 owns that).\n\nDiscovery to record in this issue when closing: contracts C-6/FR-018 say the prompt explains how to leave, T021 defers it to US3; follow T021, do not amend artifacts.\n\nIndependent of the Parsing issue; can be done in either order.\n",
+    "acceptance_criteria": "tests/cli/test_render.py failed first (ImportError on five_in_a_row.cli.render, recorded), then passes; full suite green; commit message ends 'Change type: II(c) — implements FR-006, FR-004 (T018, T021)'",
+    "spec_id": "specs/001-five-in-a-row/contracts/cli.md",
+    "status": "open",
+    "priority": 1,
+    "issue_type": "task",
+    "owner": "beads-lecture@example.invalid",
+    "created_at": "2026-10-26T23:39:27Z",
+    "created_by": "Beads lecture demo",
+    "updated_at": "2026-10-26T23:39:27Z",
+    "labels": [
+      "T018",
+      "T021",
+      "us1"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "ttt-cik.1",
+        "depends_on_id": "ttt-cik",
+        "type": "parent-child",
+        "created_at": "2026-10-26T23:39:27Z",
+        "created_by": "Beads lecture demo",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 1,
+    "comment_count": 0,
+    "parent": "ttt-cik"
+  },
+  {
+    "id": "ttt-cik.2",
+    "title": "Move and menu parsing plus menu-caller refactor (T019 + T022)",
+    "description": "Original tasks: T019 (test) and T022 (implementation + refactor), specs/001-five-in-a-row/tasks.md. ONE bounded bead by developer decision; the steps below stay inside it. If interrupted, record the current step in notes and leave the issue in_progress.\n\nStep 1 (tests first): tests/cli/test_parse.py.\n - parse_move(text) in five_in_a_row.cli.parse: `4 7`, `4,7`, ` 4 , 7 `, `4   7` -\u003e Square(4, 7); `0 3`, `10 3`, `-1 3` -\u003e a Square (range is left for the engine); `abc`, `5`, `1 2 3`, `` (blank), `4;7` -\u003e None (unreadable). Tags FR-004, EDGE-unreadable-input.\n - parse_menu(text, choices) unit tests (C-1/C-2; tests-first, adds no specified behavior): surrounding spaces ignored; None for anything outside 1..choices (e.g. `0`, `4` with choices=3, `x`, blank, `1 2`). Tags FR-014, FR-017.\n - Run and record the intended failure (ImportError: no module five_in_a_row.cli.parse).\nStep 2 (II(c) commit): implement src/five_in_a_row/cli/parse.py. parse_move per C-7: regex = optional spaces, signed integer, then one or more spaces OR a comma with optional spaces, signed integer, optional spaces; None = unreadable. parse_menu(text, choices: int) -\u003e int | None per C-1/C-2. Boundaries: do NOT accept `4;7`; do NOT put engine range checks (1..9) in the parser; import engine only through its public API. Commit: `Change type: II(c) — implements FR-004 parsing (T019, T022)`.\nStep 3 (separate II(b) commit): refactor the start menu in src/five_in_a_row/cli/app.py (T016's code) to use parse_menu. FIRST run the full suite (`uv run pytest`) and record it green; tests/cli/test_start_menu.py (T014) and test_end_of_input.py (T015) must pass UNCHANGED. Behavior must not change (choice 1 still raises NotImplementedError, `3` quits, bad entries print \"not a choice\" and redisplay). Commit message must state no specified behavior changed and end `Change type: II(b)`.\n\nEvidence to record: commands run, outcomes, both commit hashes.\nIndependent of the Board rendering issue. Blocks the two-player loop issue, which edits app.py after this refactor.\n",
+    "acceptance_criteria": "parse tests failed first (recorded) then pass; II(c) parser commit; separate II(b) refactor commit made only after full uv run pytest passed, message states no specified behavior changed; tests/cli/test_start_menu.py and test_end_of_input.py unmodified and passing",
+    "spec_id": "specs/001-five-in-a-row/contracts/cli.md",
+    "status": "open",
+    "priority": 1,
+    "issue_type": "task",
+    "owner": "beads-lecture@example.invalid",
+    "created_at": "2026-10-26T23:39:28Z",
+    "created_by": "Beads lecture demo",
+    "updated_at": "2026-10-26T23:39:28Z",
+    "labels": [
+      "T019",
+      "T022",
+      "us1"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "ttt-cik.2",
+        "depends_on_id": "ttt-cik",
+        "type": "parent-child",
+        "created_at": "2026-10-26T23:39:28Z",
+        "created_by": "Beads lecture demo",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 1,
+    "comment_count": 0,
+    "parent": "ttt-cik"
+  }
+]

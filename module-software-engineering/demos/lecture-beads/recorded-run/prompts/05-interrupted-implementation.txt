@@ -1,0 +1,7 @@
+Read the project instructions and bd prime, then inspect the reviewed plan and Beads for the issue covering T019/T022 parsing. Read its complete record and linked governing tasks/contracts before claiming it.
+
+This is a deliberately interrupted teaching run. Implement only the move-parsing portion now: write the T019 move-parser tests first, run them and record the expected initial failure, then implement parse_move and verify the actual results. Keep syntactic parsing separate from engine legality: signed and out-of-range integers are readable; 4;7 remains unreadable. Keep the original requirement tags and run the full existing suite after the partial implementation.
+
+STOP BEFORE adding parse_menu, its tests, or the T016 start-menu caller refactor required by T022. Do not implement rendering or the game loop. The parser issue is intentionally unfinished and must remain in_progress. Save the partial source/tests in a local II(c) commit clearly marked as an unfinished checkpoint.
+
+Append a concrete handoff to the bead: exact commands and results, completed work, remaining acceptance criteria, relevant file and commit references, the next action, and scope boundaries. Use actual evidence, never invented test counts or hashes. Give a final report identifying the saved partial state and what remains. Do not read or write conversation logs or external memory; a fresh session must recover from the project and Beads.

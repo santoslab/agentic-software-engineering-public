@@ -1,0 +1,20 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "20px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    A["Session 1<br/>Implement part of a task"] -->|"record progress"| B[("Beads<br/>Task, evidence, next action")]
+    A -->|"edit and test"| F["Project files<br/>Specifications, code, tests, Git"]
+    B -->|"query active work"| C["Fresh session<br/>Inspect, recover, continue"]
+    F -->|"read and verify"| C
+    style A fill:#310066,color:#ffffff,stroke:#310066
+    style C fill:#310066,color:#ffffff,stroke:#310066

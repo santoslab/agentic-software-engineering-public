@@ -39,6 +39,22 @@ copies of the tree.
 
 ## Folder Structure
 
+There are a number of suggested folders and files.  For now, start
+with the following...
+
+- README.md
+- CLAUDE.md
+- .gitignore
+- docs
+- process
+- reference
+- reports
+- specs
+- .claude/skills/
+
+See below for details.
+
+
 ```
 your-project/
 ├── README.md          the map: what the system is, the role of every folder, how to run it

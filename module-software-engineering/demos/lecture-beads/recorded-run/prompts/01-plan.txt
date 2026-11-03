@@ -1,0 +1,7 @@
+Use Steve Yegge's plan-outside-Beads workflow for the course's tic-tac-toe example. This turn is planning only.
+
+Read CLAUDE.md, AGENTS.md, .specify/memory/constitution.md, and the existing Spec Kit specification, plan, tasks, contracts, and source relevant to T018–T024. This is the approved two-player milestone, not a new specification exercise. The engine and CLI shell already exist; computer play and later US3 menus are out of scope.
+
+Create planning/beads-plan.md as a concise execution plan outside Beads. Preserve the approved behavior, original task IDs, tests-first obligations, public API boundaries, and T022's separately verified II(b) menu-caller refactor. Identify independently executable work, prerequisites, evidence, and the final T024 conformance check. Review and revise your proposed plan at least once against the original tasks/contracts. Record the review's concrete findings and changes in planning/plan-review.md, including any unresolved question rather than guessing. Do not change tasks.md or governing artifacts.
+
+Do not create beads or implement code yet. Report what you reviewed, what you refined, and any remaining ambiguity. Do all work yourself without subagents. Use only project files and the local tools; no web access, sibling transcript directories, remote operations, or automatic memory.

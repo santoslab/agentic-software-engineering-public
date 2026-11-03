@@ -48,3 +48,7 @@ This folder holds the materials for live demonstrations run during lectures.
   (v1, the obvious skill) and `conops-from-sketch/` (v2, the method packaged,
   with `agents/openai.yaml` for Codex). Copy a folder into a repository's
   `.claude/skills/` to use it.
+- [`lecture-beads/`](lecture-beads/README.md) — Beads work tracking for the
+  Spec Kit tic-tac-toe project: a reproduction starter, one sanitized
+  [transcript](lecture-beads/recorded-run/transcript.md), restorable checkpoints,
+  and the [render-and-resume exercise](lecture-beads/exercise-beads/README.md).

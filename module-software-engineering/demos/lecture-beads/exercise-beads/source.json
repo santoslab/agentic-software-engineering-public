@@ -1,0 +1,14 @@
+{
+  "repository": "https://github.com/santoslab/agentic-software-engineering-public",
+  "commit": "4d6a2cdc70cfd3fc4ffc5d117ad1078d69b206f8",
+  "subtree": "module-software-engineering/demos/lecture-speckit-intro-tic-tac-toe",
+  "beads_version": "1.3.2",
+  "exercise": "Beads: render and resume",
+  "base_input_archive": "tictactoe-beads-sonnet-starter.tar.gz",
+  "base_input_sha256": "2300772eaf5b801d8a61674973177b650a8866efdb1cd7875d0c49b8da45ffb3",
+  "adaptations": [
+    "Rendering-only exercise policy in AGENTS.md and CLAUDE.md",
+    "Student-written prompts and two-session recovery protocol",
+    "Setup and recorder adapted from the recorded demonstration; setup verifies baseline tests and uses the student Git identity"
+  ]
+}

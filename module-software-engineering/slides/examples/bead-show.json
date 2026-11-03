@@ -1,0 +1,24 @@
+[
+  {
+    "id": "ttt-8fy",
+    "title": "Parse player input for tic-tac-toe",
+    "description": "Implement move/menu parsing. Update menu caller. Follow input rules.",
+    "acceptance_criteria": "Required formats parse; menu behavior is preserved; tests pass.",
+    "notes": "Move parser done; next: menu tests and refactor. (Example progress.)",
+    "status": "in_progress",
+    "priority": 2,
+    "issue_type": "task",
+    "assignee": "Lecture example",
+    "owner": "lecture@example.invalid",
+    "created_at": "2026-10-26T19:39:25Z",
+    "created_by": "Lecture example",
+    "updated_at": "2026-10-26T19:39:27Z",
+    "started_at": "2026-10-26T19:39:26Z",
+    "lease_expires_at": "2026-10-26T19:44:26Z",
+    "heartbeat_at": "2026-10-26T19:39:26Z",
+    "dependent_count": 0,
+    "dependency_count": 0,
+    "comment_count": 0,
+    "revision": "-3630586678475596299"
+  }
+]

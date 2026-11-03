@@ -1,0 +1,24 @@
+[project]
+name = "five-in-a-row"
+version = "0.1.0"
+description = "Tic-tac-toe on a 9x9 board, five or more in a line wins, played in a terminal."
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+five-in-a-row = "five_in_a_row.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/five_in_a_row"]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+markers = ["req(*ids): spec IDs this test is evidence for"]

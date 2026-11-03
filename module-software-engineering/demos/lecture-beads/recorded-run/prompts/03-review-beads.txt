@@ -1,0 +1,5 @@
+Do a thorough review of the actual Beads epic and issues you just filed, following Yegge's review-and-refine step.
+
+Read each record, not only its title. Check it against planning/beads-plan.md and the original T018–T024 task details, specifications, and contracts. Find omissions, duplicate work, ambiguous outcomes, missing evidence, incorrect dependencies, and details an implementing agent would otherwise have to guess. Refine the actual beads where needed and inspect the resulting graph/readiness again.
+
+Record the concrete findings, corrections, remaining limitations, and final review result in planning/beads-review.md. Preserve approved behavior and task IDs. Any new specification gap must be recorded for a developer ruling rather than silently resolved. Do not implement code. Report which records changed and why. This is an independent review request, not just an instruction to declare the previous output satisfactory.

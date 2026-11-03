@@ -1,0 +1,52 @@
+[
+  {
+    "id": "ttt-cik",
+    "title": "Milestone: two-player five-in-a-row (original T018–T024)",
+    "description": "Milestone for US1 \"Two players at one keyboard\": choosing \"Play a friend\" plays a complete 9×9 game (five or more in a row wins) to a win or a draw.\n\nGoverning/derived references (read-only; do not edit): .specify/memory/constitution.md; specs/001-five-in-a-row/spec.md (US1, FR-004..FR-011); specs/001-five-in-a-row/contracts/cli.md (C-1..C-8, C-12, C-13); specs/001-five-in-a-row/contracts/engine.md; specs/001-five-in-a-row/tasks.md (T018–T024 and Notes); specs/001-five-in-a-row/data-model.md; planning/beads-plan.md; planning/plan-review.md; planning/beads-map.md.\n\nScope: original tasks T018–T024 only. Out of scope: computer play (start-menu choice 1 keeps raising NotImplementedError), US3 menus, game-over menu, leave-game command `m` and its prompt hint. FR-018 conformance is NOT claimed. Existing start-menu (T014) and EOF (T015) tests are preserved unchanged.\n\nPolicy: tests before implementation with the intended initial failure recorded; commits end with `Change type: II(c) — ...` or II(b) (which must state no specified behavior changed, after the full suite passes); no push/remote; genuine spec-vs-realization disagreement is reported for a developer ruling, never silently resolved. tasks.md stays unchanged; Beads is authoritative for live status.\n\nOrder is expressed by blocking dependencies on the child issues, not by epic membership.\n",
+    "notes": "REVIEW 1 (planning/beads-review.md). Baseline for all 'unchanged' checks: git commit f803ba7 (HEAD at milestone start); baseline suite: 44 passed. Task-ID map: planning/beads-map.md. Child order: ttt-cik.3 blocked by .1 and .2; .4 blocked by .3. Close this epic only after ttt-cik.4 is closed with evidence. Commit-message convention: the 'Change type: II(x) — ...' line comes immediately before the Co-Authored-By trailer required by the session; 'ends with Change type' elsewhere means the last line of the message body. Open non-blocking developer questions are listed in planning/beads-review.md (D1–D3).\nREVIEW 2 WORKING PROTOCOL (applies to every child):\n- Start: 'bd update \u003cid\u003e --claim' (one child at a time; .1 or .2 first - they are independent). Keep the child in_progress until ALL its acceptance criteria are met; if interrupted, leave it in_progress.\n- After each step append a note with: exact command run, outcome (pass/fail counts or first error line), remaining acceptance criteria, next action, and commit hash/diff reference. Record failing-test evidence BEFORE implementing.\n- Commits: stage explicit paths only (git add \u003cfiles\u003e), never 'git add -A'; planning/ stays untracked and out of milestone commits unless the developer asks. Beads git hooks (.beads/hooks, via core.hooksPath) run on commit: after each commit run 'git show --stat HEAD' and confirm only the intended files are in it. Commit locally only; no push/pull/remote (none configured).\n- Use project-relative paths and 'uv run pytest' for the suite; tests import shared positions as 'from tests.positions import ...' (as tests/engine/test_state.py does).",
+    "status": "open",
+    "priority": 1,
+    "issue_type": "epic",
+    "owner": "beads-lecture@example.invalid",
+    "created_at": "2026-10-26T23:39:03Z",
+    "created_by": "Beads lecture demo",
+    "updated_at": "2026-10-26T23:43:44Z",
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "ttt-cik.1",
+    "title": "Board rendering and message text (T018 + T021)",
+    "description": "Original tasks: T018 (test) and T021 (implementation), specs/001-five-in-a-row/tasks.md.\n\nTest first: write tests/cli/test_render.py for render_board(board) -\u003e str in five_in_a_row.cli.render. Board with marks at (1,1), (5,5), (9,9): column numbers 1–9 across the top, row numbers 1–9 down the left with row 1 first, `.` for every empty square, X/O at the squares holding them. Tags: FR-006, FR-004. Assert facts, not spacing (specs/001-five-in-a-row/contracts/cli.md \"Normative vs. illustrative\"). Run it and record the intended failure (ImportError: no module five_in_a_row.cli.render) before implementing.\n\nImplement src/five_in_a_row/cli/render.py (II(c)):\n- render_board(board) per C-5; reads SIZE from the engine public API.\n- Move prompt text per C-6: names the mark and says how to enter a square, e.g. `X to move — type row and column (e.g. 4 7):`. NO leave-game / `m` hint (staged boundary: US3 adds it; FR-018 not claimed).\n- Rejection messages per C-8 for OUT_OF_RANGE (word \"range\"), OCCUPIED (word \"occupied\"), and unreadable (a not-understood message); each is one line.\n- Two-player result lines per C-12/C-13: `X wins!`, `O wins!`, `It's a draw.`\n\nBoundaries: import only from five_in_a_row.engine public API (tests/test_architecture.py must pass); no terminal I/O in render.py beyond returning strings; no computer-play text (T028 owns that).\n\nDiscovery to record in this issue when closing: contracts C-6/FR-018 say the prompt explains how to leave, T021 defers it to US3; follow T021, do not amend artifacts.\n\nIndependent of the Parsing issue; can be done in either order.\n",
+    "acceptance_criteria": "tests/cli/test_render.py failed first (ImportError on five_in_a_row.cli.render, recorded), then passes; full suite green; commit message ends 'Change type: II(c) — implements FR-006, FR-004 (T018, T021)'",
+    "notes": "REVIEW 1 REFINEMENTS (binding where they differ from the description):\n- Test-first scope: tasks.md T018 specifies a unit test for render_board only. Prompt text, rejection messages and result lines (also T021) are NOT unit-tested here; their evidence is ttt-cik.3's transcript tests (FR-005, FR-007, FR-009, FR-010). Do not add extra render tests beyond T018; do not close this bead claiming those lines are verified - say they are verified in ttt-cik.3.\n- Internal API is left open by the contracts. Suggested (non-binding) names in cli/render.py: render_board(board), move_prompt(mark), rejection_message(kind), result_line(result). ttt-cik.3 must use whatever is chosen; record the chosen names in this bead's notes at close.\n- Wording constraints that ttt-cik.3 tests rely on: out-of-range line contains 'range'; occupied line contains 'occupied'; unreadable line is a not-understood message that contains neither word; prompt contains the mark letter and 'to move'; result lines exactly 'X wins!', 'O wins!', \"It's a draw.\". Each rejection is ONE line (C-8).\n- Board layout: header row of 1..9, then 9 rows each starting with its row number; empty = '.'; marks as 'X'/'O' (C-5 sample screen is illustrative, not exact spacing).\n- Unit test should build the board via GameState.play or Board.with_mark? with_mark is engine-internal ('callers use GameState.play'); prefer GameState.play or the Board constructor tuple only if it stays within the public Board API.\n- Commit: tests and render.py land in one II(c) commit; the failing-run evidence (command + first error) goes in this bead's notes.",
+    "spec_id": "specs/001-five-in-a-row/contracts/cli.md",
+    "status": "open",
+    "priority": 1,
+    "issue_type": "task",
+    "owner": "beads-lecture@example.invalid",
+    "created_at": "2026-10-26T23:39:27Z",
+    "created_by": "Beads lecture demo",
+    "updated_at": "2026-10-26T23:41:46Z",
+    "labels": [
+      "T018",
+      "T021",
+      "us1"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "ttt-cik.1",
+        "depends_on_id": "ttt-cik",
+        "type": "parent-child",
+        "created_at": "2026-10-26T23:39:27Z",
+        "created_by": "Beads lecture demo",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 1,
+    "comment_count": 0,
+    "parent": "ttt-cik"
+  }
+]

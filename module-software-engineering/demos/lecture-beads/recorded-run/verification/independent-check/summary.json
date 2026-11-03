@@ -1,0 +1,41 @@
+{
+  "checked_utc": "2026-10-26T23:54:54.842917+00:00",
+  "command": [
+    "uv",
+    "run",
+    "--frozen",
+    "--offline",
+    "pytest"
+  ],
+  "test_exit_code": 0,
+  "tests_passed": 83,
+  "US1_status": {
+    "US1-1": "pass",
+    "US1-2": "pass",
+    "US1-3": "pass",
+    "US1-4": "pass",
+    "US1-5": "pass",
+    "US1-6": "pass",
+    "US1-7": "pass"
+  },
+  "protected_files_unchanged": true,
+  "changed_realization_files": [
+    "src/five_in_a_row/cli/app.py",
+    "src/five_in_a_row/cli/parse.py",
+    "src/five_in_a_row/cli/render.py",
+    "tests/cli/conftest.py",
+    "tests/cli/test_parse.py",
+    "tests/cli/test_render.py",
+    "tests/cli/test_two_player.py"
+  ],
+  "all_five_milestone_beads_closed": true,
+  "git_remotes": [],
+  "fresh_recovery_has_distinct_session_id": true,
+  "fresh_recovery_no_resume": true,
+  "fresh_recovery_auto_memory_enabled": false,
+  "fresh_recovery_explicit_report_before_edit": false,
+  "remaining_limitations": [
+    "D2 move-parser plus-sign/non-ASCII interpretation is not resolved by tests.",
+    "No comparative effectiveness or cross-platform evaluation."
+  ]
+}

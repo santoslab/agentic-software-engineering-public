@@ -10,3 +10,9 @@ and self-contained, is distributed per lecture, and converts to PDF with pandoc.
   `../../weeks-04-07/lecture-notes/lecture-09-persistence.md`.
 - Sections follow the outline's topic blocks in order and close with
   `## Questions to think about`.
+
+## Beads lecture
+
+- [Beads: Managing Agent Work Across Sessions and Subsystems](lecture-beads.md)
+  — accompanies the [slide deck](../slides/lecture-beads.md) and
+  [recorded demonstration](../demos/lecture-beads/recorded-run/transcript.md).

@@ -1,0 +1,3 @@
+Review the refined plan and Beads records once more before implementation. Look specifically for requirements lost during grouping, mismatches between acceptance criteria and contracts, and prerequisites or verification obligations that are still implicit.
+
+Correct actionable deficiencies within the approved T018–T024 scope and append the concrete result of this second pass to planning/beads-review.md. If nothing useful remains to change, say so with the checks performed; do not invent refinements or extra work. Do not implement. Report whether the records are ready for an implementation session and list any unresolved developer decision.

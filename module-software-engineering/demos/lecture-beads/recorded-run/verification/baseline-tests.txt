@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /private/tmp/lecture-beads-sonnet-20261026T231233Z/reproduce/work
+configfile: pyproject.toml
+testpaths: tests
+collected 44 items
+
+tests/cli/test_end_of_input.py ...                                       [  6%]
+tests/cli/test_start_menu.py .......                                     [ 22%]
+tests/engine/test_board.py .......                                       [ 38%]
+tests/engine/test_state.py ......................                        [ 88%]
+tests/test_architecture.py ....                                          [ 97%]
+tests/test_conformance.py .                                              [100%]
+
+============================== 44 passed in 0.05s ==============================

@@ -1,0 +1,756 @@
+{
+  "format": "beads-publication-sanitization-v1",
+  "scope": "student-facing transcript, prompts, provenance, and 01–09 restorable state archives",
+  "summary": {
+    "sessions": 6,
+    "calls": 9,
+    "rendered_events": {
+      "hook_started": 9,
+      "hook_response": 9,
+      "hook_duplicate_collapsed": 9,
+      "tool_use": 77,
+      "rate_limit_event": 11,
+      "tool_result": 77,
+      "assistant_text": 20,
+      "result": 9,
+      "task_started": 3,
+      "task_notification": 3
+    },
+    "bytes": 595901
+  },
+  "change_counts": {
+    "credential_value": 0,
+    "home_path": 15,
+    "local_hostname": 0,
+    "rate_limit_account_fields_removed": 66,
+    "hidden_reasoning_block": 36,
+    "archive_owner_headers_normalized": 5242
+  },
+  "records": [
+    {
+      "source": "research/sonnet-tictactoe/prompts/01-plan.txt",
+      "source_sha256": "57d142d69bb93eee8bc7a6642fa4bcc0b4ca1735f034d08afdbbf8ddc25062a9",
+      "output": "prompts/01-plan.txt",
+      "output_sha256": "57d142d69bb93eee8bc7a6642fa4bcc0b4ca1735f034d08afdbbf8ddc25062a9",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/01-plan-retry.jsonl",
+      "source_sha256": "27a9a3f3264f1518c6606c9f88b7a4f03f340bc49aaadabea11cd06998adf010",
+      "internal_output": "sanitized-intermediate/events/01-plan-retry.jsonl",
+      "internal_output_sha256": "38e3f2f30854b8dbd9844198e3a7dfbc7798013b2996d472c240b12fff8aff54",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 2,
+        "local_hostname": 0,
+        "rate_limit_account_fields_removed": 12,
+        "hidden_reasoning_block": 4
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/01-plan-retry.metadata.json",
+      "source_sha256": "61bb5b31c04506b2db5aa2620c1906dc1d52205287842f5f7151f89cca348044",
+      "internal_output": "sanitized-intermediate/metadata/01-plan-retry.json",
+      "internal_output_sha256": "91421c957d8e306420530bdc87a4d6bfeefd4ef4ee7bfd3ecec40e20b59260d6",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/prompts/02-create-beads.txt",
+      "source_sha256": "eddd888fcf41d26b7790e00869c87fd297bf24072741af2c370d1e6526c68c52",
+      "output": "prompts/02-create-beads.txt",
+      "output_sha256": "eddd888fcf41d26b7790e00869c87fd297bf24072741af2c370d1e6526c68c52",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/02-create-beads.jsonl",
+      "source_sha256": "f933346637a4ae7653a0b67662559a6b1d86351890c116111033bb115ba2aaac",
+      "internal_output": "sanitized-intermediate/events/02-create-beads.jsonl",
+      "internal_output_sha256": "18318980716a5cd10c45f67a2d06d5380fb418052538e5313ac3d95552077a1b",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "hidden_reasoning_block": 4,
+        "rate_limit_account_fields_removed": 6
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/02-create-beads.metadata.json",
+      "source_sha256": "07a382de7a681803b5bd866cc31a8e27167e5b1ee9cf3d0fd47e82a10d0f151d",
+      "internal_output": "sanitized-intermediate/metadata/02-create-beads.json",
+      "internal_output_sha256": "222a7c2169a05b1c16334e464d27624369c0f12907e3cae1541cfef335ba0b9b",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/prompts/03-review-beads.txt",
+      "source_sha256": "c75888bbe80bab03a3081718c238bccf6a3602e9578f53070fa1eab25addb8eb",
+      "output": "prompts/03-review-beads.txt",
+      "output_sha256": "c75888bbe80bab03a3081718c238bccf6a3602e9578f53070fa1eab25addb8eb",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/03-review-beads.jsonl",
+      "source_sha256": "34eb24172537591f136d46d6315d005e76b4dafca88b6161503d6df56b4f0a68",
+      "internal_output": "sanitized-intermediate/events/03-review-beads.jsonl",
+      "internal_output_sha256": "94caa3de5ffeca4ff344ad23239817952ef66cf4250c09062a8e38d01f5b0e96",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "rate_limit_account_fields_removed": 6,
+        "hidden_reasoning_block": 3
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/03-review-beads.metadata.json",
+      "source_sha256": "726018242b2be4e254bedc1ea1206f6f5d40f1c44a532f9ff132f7b953900d4e",
+      "internal_output": "sanitized-intermediate/metadata/03-review-beads.json",
+      "internal_output_sha256": "c12f90f126e2be3ef28f8e1a784008b299852a351db6163f58ca49fc1adfdbc0",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/prompts/04-review-again.txt",
+      "source_sha256": "c2a5f515b3322df39720ffd5134e789854b616012f4db9832e5c62ef7e7b29d6",
+      "output": "prompts/04-review-again.txt",
+      "output_sha256": "c2a5f515b3322df39720ffd5134e789854b616012f4db9832e5c62ef7e7b29d6",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/04-review-again.jsonl",
+      "source_sha256": "792d83e2e85adedb306104a2e457010a730facdf0c6ceda53a2e1c7b98c47a4b",
+      "internal_output": "sanitized-intermediate/events/04-review-again.jsonl",
+      "internal_output_sha256": "bdcdf2dd95546380a89c44e8afdd3a2977231e88430075f108997f842fe6eb52",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "hidden_reasoning_block": 2,
+        "rate_limit_account_fields_removed": 6
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/04-review-again.metadata.json",
+      "source_sha256": "ddc2bbcb67bb4b3d83f5bb5a868ca9c493dcb25d97635a3e3cb933f744d1fdcb",
+      "internal_output": "sanitized-intermediate/metadata/04-review-again.json",
+      "internal_output_sha256": "a40a3ec15b6258bc050e4b42e8f93cb75030e699627ff9355d960e4c1b4e47c1",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/prompts/05-interrupted-implementation.txt",
+      "source_sha256": "933819105148b26d592fb22e2704fa16607ac43f0a0b09d7461d5ff69bb5cc62",
+      "output": "prompts/05-interrupted-implementation.txt",
+      "output_sha256": "933819105148b26d592fb22e2704fa16607ac43f0a0b09d7461d5ff69bb5cc62",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/05-interrupted-implementation.jsonl",
+      "source_sha256": "6c30d3dd60b8d091af5fa7699053ca7e85c02d870dde26ad09277e9109aecdf0",
+      "internal_output": "sanitized-intermediate/events/05-interrupted-implementation.jsonl",
+      "internal_output_sha256": "46d59ef23e52561f83e344b351719d7773c93ae12bda4a492dfc2950f5be532f",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 2,
+        "local_hostname": 0,
+        "rate_limit_account_fields_removed": 6,
+        "hidden_reasoning_block": 4
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/05-interrupted-implementation.metadata.json",
+      "source_sha256": "894e60a9ca665f2d88a7f0b1683aea33740d56070c5b1d7d2d0bd44cadd0fe6a",
+      "internal_output": "sanitized-intermediate/metadata/05-interrupted-implementation.json",
+      "internal_output_sha256": "bd6a0225c57f52caecee77b92cce8804ce56d532bc2c0383dd124b99c457d230",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/prompts/06-fresh-recovery.txt",
+      "source_sha256": "a2f17d1c8a89a7019f610baa161503b9965744e30b986aeccbce023a6d3f7b1e",
+      "output": "prompts/06-fresh-recovery.txt",
+      "output_sha256": "a2f17d1c8a89a7019f610baa161503b9965744e30b986aeccbce023a6d3f7b1e",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/06-fresh-recovery.jsonl",
+      "source_sha256": "61c4b33dd80d1072e53f96575002de1b4d475c837af9346f0ab0d3f77012ec7f",
+      "internal_output": "sanitized-intermediate/events/06-fresh-recovery.jsonl",
+      "internal_output_sha256": "64914d13933015c78af13eb26709e0307f475386c2b250e1c4e6a8096808aaf5",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "rate_limit_account_fields_removed": 6,
+        "hidden_reasoning_block": 4
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/06-fresh-recovery.metadata.json",
+      "source_sha256": "8ffc6139a788d1d8966c42dec079933d75eeab38b50b953e4c3487a1c81584ac",
+      "internal_output": "sanitized-intermediate/metadata/06-fresh-recovery.json",
+      "internal_output_sha256": "893a5f1901c27010814b9dc3548ab8b9ff862aaf6ea7393a13cbd8bb5e151afb",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/prompts/07-next-ready-task.txt",
+      "source_sha256": "db7d5f77ab070dbc9c38582203339f66de9ce57bea398865a8ca926daf5561dd",
+      "output": "prompts/07-render.txt",
+      "output_sha256": "db7d5f77ab070dbc9c38582203339f66de9ce57bea398865a8ca926daf5561dd",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/07-render.jsonl",
+      "source_sha256": "b227bacc736b59cdd3bc1246135cdd6c8a11a8c37a96f3b220658c141eadca1d",
+      "internal_output": "sanitized-intermediate/events/07-render.jsonl",
+      "internal_output_sha256": "0b577a5edc8e177dd67826c88b6b6bbcb5c7d3fe41b8925b4dc572de73652d7d",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 2,
+        "local_hostname": 0,
+        "rate_limit_account_fields_removed": 6,
+        "hidden_reasoning_block": 4
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/07-render.metadata.json",
+      "source_sha256": "330eeb98a78a2dfb13692376f420e8e82cfe389c95b7ce2c8939b4ea750c18a1",
+      "internal_output": "sanitized-intermediate/metadata/07-render.json",
+      "internal_output_sha256": "84fbbe82003e24d0346415503ca383b5c3ec05077f804aa65db9471db2fff596",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/prompts/07-next-ready-task.txt",
+      "source_sha256": "db7d5f77ab070dbc9c38582203339f66de9ce57bea398865a8ca926daf5561dd",
+      "output": "prompts/08-loop.txt",
+      "output_sha256": "db7d5f77ab070dbc9c38582203339f66de9ce57bea398865a8ca926daf5561dd",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/08-loop.jsonl",
+      "source_sha256": "997db5fd6350a4da9d1e4b582b6a65346183721219505cca5223ac6230b2c075",
+      "internal_output": "sanitized-intermediate/events/08-loop.jsonl",
+      "internal_output_sha256": "c1a8360b4be329b727bd5738e35734e6599d12535276d7c1f3215e82a2284729",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "rate_limit_account_fields_removed": 12,
+        "hidden_reasoning_block": 7
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/08-loop.metadata.json",
+      "source_sha256": "ce836342fa5e4e21f9f93a189178414b69f42cc833b650332591f22df69faa6b",
+      "internal_output": "sanitized-intermediate/metadata/08-loop.json",
+      "internal_output_sha256": "2fcc5db4c58cfa863e60d4d6d830a1ea42c2cf235b6d0e7bd13a7f51df2e0836",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/prompts/08-final-verification.txt",
+      "source_sha256": "f34693dbc1a9e6a6c37d4bb0c72d6cd13ae9d56785b92ed9a3d0a693a8854b91",
+      "output": "prompts/09-final-verification.txt",
+      "output_sha256": "f34693dbc1a9e6a6c37d4bb0c72d6cd13ae9d56785b92ed9a3d0a693a8854b91",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/09-final-verification.jsonl",
+      "source_sha256": "e392e225f79650b3300f81c9b1436375aff848902d94d8ba59a5f7dc939bf9a8",
+      "internal_output": "sanitized-intermediate/events/09-final-verification.jsonl",
+      "internal_output_sha256": "f672420022dff6332e36354112dd3448b016064d488194e0b96cba1af8aac02c",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "rate_limit_account_fields_removed": 6,
+        "hidden_reasoning_block": 4
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/09-final-verification.metadata.json",
+      "source_sha256": "0b47a9ccf7231d64b8acef7a4301706717c162398cc1faf4f9dd4219d44edc2b",
+      "internal_output": "sanitized-intermediate/metadata/09-final-verification.json",
+      "internal_output_sha256": "b605b4f9f0c956f1a5ef6aad8340b390c4bd38781ece81e6878b15c02fde68fe",
+      "public_output": "transcript.md",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 1,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source_inputs_sha256": [
+        "27a9a3f3264f1518c6606c9f88b7a4f03f340bc49aaadabea11cd06998adf010",
+        "61bb5b31c04506b2db5aa2620c1906dc1d52205287842f5f7151f89cca348044",
+        "f933346637a4ae7653a0b67662559a6b1d86351890c116111033bb115ba2aaac",
+        "07a382de7a681803b5bd866cc31a8e27167e5b1ee9cf3d0fd47e82a10d0f151d",
+        "34eb24172537591f136d46d6315d005e76b4dafca88b6161503d6df56b4f0a68",
+        "726018242b2be4e254bedc1ea1206f6f5d40f1c44a532f9ff132f7b953900d4e",
+        "792d83e2e85adedb306104a2e457010a730facdf0c6ceda53a2e1c7b98c47a4b",
+        "ddc2bbcb67bb4b3d83f5bb5a868ca9c493dcb25d97635a3e3cb933f744d1fdcb",
+        "6c30d3dd60b8d091af5fa7699053ca7e85c02d870dde26ad09277e9109aecdf0",
+        "894e60a9ca665f2d88a7f0b1683aea33740d56070c5b1d7d2d0bd44cadd0fe6a",
+        "61c4b33dd80d1072e53f96575002de1b4d475c837af9346f0ab0d3f77012ec7f",
+        "8ffc6139a788d1d8966c42dec079933d75eeab38b50b953e4c3487a1c81584ac",
+        "b227bacc736b59cdd3bc1246135cdd6c8a11a8c37a96f3b220658c141eadca1d",
+        "330eeb98a78a2dfb13692376f420e8e82cfe389c95b7ce2c8939b4ea750c18a1",
+        "997db5fd6350a4da9d1e4b582b6a65346183721219505cca5223ac6230b2c075",
+        "ce836342fa5e4e21f9f93a189178414b69f42cc833b650332591f22df69faa6b",
+        "e392e225f79650b3300f81c9b1436375aff848902d94d8ba59a5f7dc939bf9a8",
+        "0b47a9ccf7231d64b8acef7a4301706717c162398cc1faf4f9dd4219d44edc2b"
+      ],
+      "output": "transcript.md",
+      "output_sha256": "283f1e05efc0b328369ba114029d5eb20e0a4815e5c32647dae06afcdb3624c8",
+      "reason": "consolidated nine successful calls; hidden reasoning omitted; visible dialogue/tool evidence retained"
+    },
+    {
+      "source": "research/sonnet-tictactoe/00-prepared-auth-rejected.tar.gz",
+      "source_sha256": "5c2652106bac51581da542b27541fa6f30425a58208dedb7f82a619554e750fc",
+      "output": null,
+      "reason": "authentication-rejected checkpoint withheld; private diagnostics are not included"
+    },
+    {
+      "source": "research/sonnet-tictactoe/01-after-planning.tar.gz",
+      "source_sha256": "4e382f304ebefb7d6637379df2061673db1e9e66d22b5a9c6705fe3b957c66de",
+      "output": "states/01-after-planning.tar.gz",
+      "output_sha256": "0ac90482b3a531071bb5028626930d2302b99e06565c2238aa2e2dc16b662809",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 480
+      },
+      "members_written": 480,
+      "members_removed": {
+        "duplicate_or_private_recording": 11,
+        "private_stderr_capture": 5,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/02-after-bead-creation.tar.gz",
+      "source_sha256": "20ae6390c837abdb0fb4cb198f76781dbe29c5cc1f1d118aac2dabf04d651149",
+      "output": "states/02-after-bead-creation.tar.gz",
+      "output_sha256": "d1119fc13048d029baecaaea3cde4681a48ac4df9d63c89dc2b47de665a6106f",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 499
+      },
+      "members_written": 499,
+      "members_removed": {
+        "duplicate_or_private_recording": 16,
+        "private_stderr_capture": 5,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/03-after-first-review.tar.gz",
+      "source_sha256": "43ed7644ff7816a6ff9021baf41503252aa255d48ee0a30f58be1bfdf5858778",
+      "output": "states/03-after-first-review.tar.gz",
+      "output_sha256": "9e4c82c86b2cf2f8f27580322650a0a44d4fc742a4f4844a8aac8e04a653f737",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 517
+      },
+      "members_written": 517,
+      "members_removed": {
+        "duplicate_or_private_recording": 21,
+        "private_stderr_capture": 5,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/04-after-second-review.tar.gz",
+      "source_sha256": "e069af61e7c1cfadeeccbba28e0586d55e45dec75a2806b0ef84300f849dd4d7",
+      "output": "states/04-after-second-review.tar.gz",
+      "output_sha256": "a6acc9a7fc7d5ba29452bd64eda487491d2fa95d9d62b2ea76a88c1fe46375ca",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 534
+      },
+      "members_written": 534,
+      "members_removed": {
+        "duplicate_or_private_recording": 26,
+        "private_stderr_capture": 5,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/05-after-interruption.tar.gz",
+      "source_sha256": "1cc72a3b7b26284e924ea10c006911a9ce24492a8c360f46f948ae3331404ba6",
+      "output": "states/05-after-interruption.tar.gz",
+      "output_sha256": "1cdb123908253640c6b4a3aad90dd23e5122ba99cdf700ab9ff9f403d9a921c0",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 566
+      },
+      "members_written": 566,
+      "members_removed": {
+        "duplicate_or_private_recording": 31,
+        "private_stderr_capture": 5,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/06-after-recovery.tar.gz",
+      "source_sha256": "54472d1754b4b4e0d7e52538c15dd792f08608e689650f430031d6445280b385",
+      "output": "states/06-after-recovery.tar.gz",
+      "output_sha256": "b7f5e020527dfdbefce0e6b07e707d0a12ca96a831d5e1580b0d3008c2469973",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 612
+      },
+      "members_written": 612,
+      "members_removed": {
+        "duplicate_or_private_recording": 36,
+        "private_stderr_capture": 5,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/07-after-rendering.tar.gz",
+      "source_sha256": "f968113c2e34c3ef822748336c3440e1624adae03f4c38e6e6bcf00bc43cf76a",
+      "output": "states/07-after-rendering.tar.gz",
+      "output_sha256": "3a7b3bd8530b78e0a9fb6b246bdc63e968369ebe739a001c47f078b837b87b27",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 646
+      },
+      "members_written": 646,
+      "members_removed": {
+        "duplicate_or_private_recording": 41,
+        "private_stderr_capture": 5,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/08-after-game-loop.tar.gz",
+      "source_sha256": "ffa1e5fa0a3e38ec1ff26e8fd3a3e1dec978ce04be049d273838d1137aab4053",
+      "output": "states/08-after-game-loop.tar.gz",
+      "output_sha256": "a1556da78c0778db704d0ddc7c29fb0e94295f3022922d65d01aa917824fab66",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 681
+      },
+      "members_written": 681,
+      "members_removed": {
+        "duplicate_or_private_recording": 46,
+        "private_stderr_capture": 5,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/09-after-milestone.tar.gz",
+      "source_sha256": "c2a334e5181f4c44d1a245d10471f677a196ef647c732a94bcf4b961f86dbb27",
+      "output": "states/09-after-milestone.tar.gz",
+      "output_sha256": "c6ea71f54e432561818d7a608e0b28db09c8b612e1c58dbabd0c6bb6cd964fd0",
+      "native_data_clearance": "source SHA256 matches the audited Git/Dolt inventory; native data copied without byte-level rewriting",
+      "changes": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0,
+        "archive_owner_headers_normalized": 707
+      },
+      "members_written": 707,
+      "members_removed": {
+        "duplicate_or_private_recording": 51,
+        "private_stderr_capture": 6,
+        "authentication_diagnostic": 22
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/source.json",
+      "source_sha256": "64480c86d930a823d6c0ced4e311e5a1fe387ab2cbbf79c0edc42067bce790a4",
+      "output": "source.json",
+      "output_sha256": "64480c86d930a823d6c0ced4e311e5a1fe387ab2cbbf79c0edc42067bce790a4",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/planning/beads-plan.md",
+      "source_sha256": "5750106800c1b68e5f51c371e50430a873bf4102ea2d2169e65b697894528781",
+      "output": "planning/beads-plan.md",
+      "output_sha256": "5750106800c1b68e5f51c371e50430a873bf4102ea2d2169e65b697894528781",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/planning/plan-review.md",
+      "source_sha256": "aa5011e190c95ae4f28ca3fe72fe9840f214f186cb41c3653a96c8add3efd2a4",
+      "output": "planning/plan-review.md",
+      "output_sha256": "aa5011e190c95ae4f28ca3fe72fe9840f214f186cb41c3653a96c8add3efd2a4",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/planning/beads-map.md",
+      "source_sha256": "6f04c3ea78ce60262b45be28c57b3f26f4925700a55ccd97bec7eb01e15d2825",
+      "output": "planning/beads-map.md",
+      "output_sha256": "6f04c3ea78ce60262b45be28c57b3f26f4925700a55ccd97bec7eb01e15d2825",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/planning/beads-review.md",
+      "source_sha256": "2b78e2f55d7b07e782ceae27f55c1d9f68110f74fd70e570c74600bb82fa988d",
+      "output": "planning/beads-review.md",
+      "output_sha256": "2b78e2f55d7b07e782ceae27f55c1d9f68110f74fd70e570c74600bb82fa988d",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/verification/milestone-review.md",
+      "source_sha256": "956de0a5995a30c2634701f4a6e642356771694bca1b22dfcff69f57aeac7df7",
+      "output": "verification/milestone-review.md",
+      "output_sha256": "956de0a5995a30c2634701f4a6e642356771694bca1b22dfcff69f57aeac7df7",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/evidence/10-independent-check/summary.json",
+      "source_sha256": "7bfef2078ba5f716fd719670d2430f69e15b54c07601b55e5af2cc8d54716b56",
+      "output": "verification/independent-check/summary.json",
+      "output_sha256": "7bfef2078ba5f716fd719670d2430f69e15b54c07601b55e5af2cc8d54716b56",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/evidence/10-independent-check/conformance.md",
+      "source_sha256": "9fe7a9b007c01e495c0207bad180af2f1df0ad4106d3f91122be4d130f705918",
+      "output": "verification/independent-check/conformance.md",
+      "output_sha256": "9fe7a9b007c01e495c0207bad180af2f1df0ad4106d3f91122be4d130f705918",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/evidence/10-independent-check/implementation-commits.txt",
+      "source_sha256": "25b3c09e4160debfff00e1c86426d0255af922f3b09d2f845fa81c54f791aa53",
+      "output": "verification/independent-check/implementation-commits.txt",
+      "output_sha256": "25b3c09e4160debfff00e1c86426d0255af922f3b09d2f845fa81c54f791aa53",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/evidence/10-independent-check/protected-files.diff",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output": "verification/independent-check/protected-files.diff",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/evidence/10-independent-check/pytest.stdout.txt",
+      "source_sha256": "49d0eac749d531a80ee83955f20afc4ddfda6920ea4b09a212e98e28ad79288f",
+      "output": "verification/independent-check/pytest.stdout.txt",
+      "output_sha256": "49d0eac749d531a80ee83955f20afc4ddfda6920ea4b09a212e98e28ad79288f",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/01-after-planning.tar.gz",
+      "source_sha256": "4e382f304ebefb7d6637379df2061673db1e9e66d22b5a9c6705fe3b957c66de",
+      "source_member": "work/CLAUDE.md",
+      "source_member_sha256": "d3ca7be9448f93b82916b26bf234684c7efa846f9f00eadcffff8a994d2387b5",
+      "output": "policy/CLAUDE.md",
+      "output_sha256": "d3ca7be9448f93b82916b26bf234684c7efa846f9f00eadcffff8a994d2387b5",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": "research/sonnet-tictactoe/01-after-planning.tar.gz",
+      "source_sha256": "4e382f304ebefb7d6637379df2061673db1e9e66d22b5a9c6705fe3b957c66de",
+      "source_member": "work/AGENTS.md",
+      "source_member_sha256": "4acede26613acb2017b8bbb209d08524a6013a871a449a496d045855956ce8a3",
+      "output": "policy/AGENTS.md",
+      "output_sha256": "4acede26613acb2017b8bbb209d08524a6013a871a449a496d045855956ce8a3",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    },
+    {
+      "source": null,
+      "source_sha256": null,
+      "output": "README.md",
+      "output_sha256": "7c2a10211cc6759206b528aeaad6638b81735e38ce81ef8c153551c24f90fc45",
+      "reason": "generated publication instructions"
+    },
+    {
+      "source": null,
+      "source_sha256": null,
+      "output": "RESTORE.md",
+      "output_sha256": "5189a103816f245cc798b54e780ae9f953604f2b4ee554cb41174812b3ada703",
+      "reason": "generated publication instructions"
+    },
+    {
+      "source": "research/sonnet-tictactoe/evidence/00-baseline/full-suite.stdout.txt",
+      "source_sha256": "22cb0ae741706e2da35f048279150fffcb37166246b9e7543f10053924de4e5f",
+      "output": "verification/baseline-tests.txt",
+      "output_sha256": "22cb0ae741706e2da35f048279150fffcb37166246b9e7543f10053924de4e5f",
+      "redactions": {
+        "credential_value": 0,
+        "home_path": 0,
+        "local_hostname": 0
+      }
+    }
+  ],
+  "omitted": [
+    {
+      "source": "research/sonnet-tictactoe/transcripts/01-plan*",
+      "reason": "authentication-rejected attempt; excluded from nine successful calls"
+    },
+    {
+      "source": "checkpoint evidence/00-prepared-auth-rejected and 01-auth-diagnostic/; launch-context.json",
+      "reason": "private authentication and launch diagnostics"
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/*.stderr.log",
+      "reason": "private stderr captures not needed in the student transcript"
+    },
+    {
+      "source": "research/sonnet-tictactoe/transcripts/*.md and *.jsonl",
+      "reason": "superseded by one consolidated sanitized transcript; raw support records stay private"
+    }
+  ]
+}

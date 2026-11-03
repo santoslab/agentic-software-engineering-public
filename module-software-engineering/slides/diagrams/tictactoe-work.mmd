@@ -1,0 +1,19 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "21px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+    A["Render<br/>ttt-cik.1"] --> C["Two-player loop<br/>ttt-cik.3"]
+    B["Parse<br/>ttt-cik.2"] --> C
+    C --> D["Verify milestone<br/>ttt-cik.4"]
+    style A fill:#310066,color:#ffffff,stroke:#310066
+    style B fill:#310066,color:#ffffff,stroke:#310066

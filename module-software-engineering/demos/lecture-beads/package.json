@@ -1,0 +1,12 @@
+{
+  "name": "lecture-beads",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Repo-local Beads CLI for the Beads lecture project",
+  "scripts": {
+    "bd": "bd"
+  },
+  "devDependencies": {
+    "@beads/bd": "1.3.2"
+  }
+}

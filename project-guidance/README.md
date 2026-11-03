@@ -2,15 +2,18 @@
 
 Notes for the class project: what is expected and when, how to get a
 project started with an agent before applying the spec-driven method
-of the course, and transcripts of real brainstorming conversations to
-learn from.
+of the course, how to lay out the project repository, and transcripts
+of real brainstorming conversations to learn from.
 
-Read the first two in order.
+Read the first two in order. Keep the third at hand when you set up
+your repository: it names the folders that the brainstorming prompts
+write into.
 
 | File | What it is |
 |---|---|
 | [`general-guidance-timeline.md`](general-guidance-timeline.md) | The purpose and expected content of the project, the four deliverables (proposal, initial presentation, completed repository, final presentation), and the 2026 timeline. The proposal is due October 28. |
 | [`brainstorming.md`](brainstorming.md) | How to use an agent to get from an idea (greenfield) or an existing codebase (brownfield) to a first set of engineering documents: a ConOps, a description of the technology stack, and for brownfield projects descriptions of the data formats and the architecture. Ends with a catalog of example prompts, grouped by step. |
+| [`repository-organization.md`](repository-organization.md) | The suggested layout of a project repository, taken from the message guard running example of the lectures: one entry per folder (`specs/`, the realization, `tests/`, `tools/`, `tooling/`, `process/`, `records/`, `reports/`, `reference/`, `.claude/`, and later `plans/`, `docs/`, `examples/`), each with what the guard keeps there and guidance for your project, and a suggested order for adding the folders against the timeline. |
 
 ## Brainstorming examples
 

@@ -34,7 +34,7 @@ nearly verbatim in Exercise 4:
 messages = [{"role": "user", "content": task}]
 while True:
     # send to the model a string combining the system prompt, message history,
-    #  ..and list of availabel tools
+    #  ..and list of available tools
     response = model(system=SYSTEM_PROMPT, messages=messages, tools=TOOLS)
     # add the model's reponse to the message history
     messages.append(assistant_message(response))

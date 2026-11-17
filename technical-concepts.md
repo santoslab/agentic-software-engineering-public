@@ -7,7 +7,7 @@ references to educational material for each concept.
 > schedule and [weeks-01-03/](./weeks-01-03/) for the foundations unit. Roughly: the
 > Basic Concepts below are covered in Lectures 03–06 (weeks 2–3); of the Tools,
 > skills get a first taste in week 2 (grill-me) with depth around week 5, hooks and
-> subagents arrive with Project 2 (~week 9), and MCP servers with Project 3 (~week 12).
+> subagents arrive with Project 2 (~week 9), and MCP servers in the software-engineering module's two MCP lectures.
 
 ### Basic Concepts
 1. **Prompting and Permissions**
@@ -88,6 +88,7 @@ In your claude project you have a `.claude` folder where, among other things, yo
     - To provide Claude additional external tools and resources, MCP for Model Context Protocol servers can be installed and used.
     - [Udemy Section 28: Using MCP Servers & More on Permissions](https://www.udemy.com/course/claude-code-the-practical-guide/learn/lecture/54529251#overview)
     - [Claude Code Docs: MCP Quickstart](https://code.claude.com/docs/en/mcp-quickstart)
+    - Course lectures: [connecting to existing MCP servers](./module-software-engineering/lecture-notes/lecture-mcp-adoption.md) and [implementing a dice server](./module-software-engineering/lecture-notes/lecture-mcp-dice.md)
     - _Agentic-Engineering-with-Claude:_ Chapter 4
 
 - **Plugins**

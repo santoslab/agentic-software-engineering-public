@@ -1,0 +1,8 @@
+flowchart LR
+  U[User] -->|OWNS| P[Playlist]
+  P -->|HAS_TRACK<br/>position| T[Track]
+  L[Album] -->|HAS_TRACK| T
+  T -->|ARTIST| A[Artist]
+  T -->|ARTIST<br/>collaboration| B[Another Artist]
+  style P fill:#beaefc,stroke:#310066
+  style T fill:#f0eaff,stroke:#310066

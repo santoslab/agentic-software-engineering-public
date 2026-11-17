@@ -1,0 +1,12 @@
+sequenceDiagram
+  participant H as Host / MCP client
+  participant M as Model API
+  participant S as Dice server
+  Note over H,S: Before call: server/discover, tools/list (see full trace)
+  H->>M: User task and adapted tool definitions
+  M-->>H: Request roll(count=3, sides=6)
+  H->>S: tools/call (id=3, arguments, metadata)
+  Note right of S: Validate and execute
+  S-->>H: id=3, content, structuredContent, isError=false
+  H->>M: Adapted tool result
+  M-->>H: Each die, total, comparison with 12

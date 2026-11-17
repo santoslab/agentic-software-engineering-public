@@ -1,0 +1,57 @@
+{
+  "fixture": "fictional-music-v1",
+  "question_a": [
+    {
+      "artist_id": "A07",
+      "artist_name": "Glass Meadow",
+      "playlist_count": 8
+    },
+    {
+      "artist_id": "A08",
+      "artist_name": "Indigo Current",
+      "playlist_count": 8
+    },
+    {
+      "artist_id": "A01",
+      "artist_name": "Amber Circuit",
+      "playlist_count": 5
+    },
+    {
+      "artist_id": "A02",
+      "artist_name": "Blue Orchard",
+      "playlist_count": 5
+    },
+    {
+      "artist_id": "A03",
+      "artist_name": "Copper Kite",
+      "playlist_count": 4
+    }
+  ],
+  "question_b": [
+    {
+      "playlist_id": "P02",
+      "playlist_name": "Mix 2",
+      "shared_tracks": 6
+    },
+    {
+      "playlist_id": "P03",
+      "playlist_name": "Evening",
+      "shared_tracks": 6
+    },
+    {
+      "playlist_id": "P07",
+      "playlist_name": "Mix 7",
+      "shared_tracks": 4
+    },
+    {
+      "playlist_id": "P08",
+      "playlist_name": "Mix 8",
+      "shared_tracks": 4
+    },
+    {
+      "playlist_id": "P04",
+      "playlist_name": "Evening",
+      "shared_tracks": 2
+    }
+  ]
+}

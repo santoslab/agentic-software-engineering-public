@@ -1,0 +1,11 @@
+sequenceDiagram
+  participant S as MCP server
+  participant H as Host / client
+  participant M as Model
+  H->>S: tools/list
+  S-->>H: Provider tool definitions
+  H->>M: Deferred names and task context
+  M->>H: ToolSearch selects search + fetch
+  H-->>M: Selected definitions
+  Note over S,M: Two layers: provider discovery and model-context loading
+  Note over S,M: ToolSearch is a host facility, not an MCP method

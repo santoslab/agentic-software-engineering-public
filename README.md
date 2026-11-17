@@ -14,8 +14,10 @@ The course is still being developed: published materials may change, and files t
   prompting, context, and verification
 - [Software engineering for agentic development](module-software-engineering/README.md)
   — classical software-engineering concepts applied to agent-based development
-  (Lectures 01–05 drafted with demos, exercises, and the Project 0 and Project 1
-  briefs; Lecture 06 in progress)
+  (Lectures 01–06, the Beads lecture, and two MCP lectures, with demos, exercises,
+  and the Project 0 and Project 1 briefs)
+- [Neo4j exercises](neo4j/README.md) — the Cypher introduction and the music
+  database homework reached through MCP
 - [Weeks 4–7: The Growing Tic-Tac-Toe](weeks-04-07/README.md) — a staged project in
   specification-driven agentic development
 - [Technical concepts](technical-concepts.md) — topic index and further reading

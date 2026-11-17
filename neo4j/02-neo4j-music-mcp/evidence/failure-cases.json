@@ -1,0 +1,8 @@
+{
+  "date": "2026-11-16",
+  "kind": "Summaries of actual rehearsal failures; no model interaction",
+  "failures": [
+    {"stage": "provider connection", "observation": "Direct reference queries succeeded; provider initialization rejected the database because APOC meta was not installed.", "resolution": "Install APOC 5.26.0 matching Neo4j 5.26.0 and restart."},
+    {"stage": "schema tool execution", "observation": "Connection and discovery succeeded after plugin installation, but get-schema returned isError=true: apoc.meta.schema was sandboxed.", "resolution": "Permit apoc.meta.* for the trusted plugin in the disposable instance and restart."}
+  ]
+}

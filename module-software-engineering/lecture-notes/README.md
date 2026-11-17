@@ -16,3 +16,13 @@ and self-contained, is distributed per lecture, and converts to PDF with pandoc.
 - [Beads: Managing Agent Work Across Sessions and Subsystems](lecture-beads.md)
   — accompanies the [slide deck](../slides/lecture-beads.md) and
   [recorded demonstration](../demos/lecture-beads/recorded-run/transcript.md).
+
+## MCP lectures
+
+- [Connecting an agent to existing MCP servers](lecture-mcp-adoption.md) —
+  accompanies the [slide deck](../slides/lecture-mcp-adoption.md) and the
+  [adoption demo](../demos/lecture-mcp-adoption/README.md); launches the
+  [music homework](../../neo4j/02-neo4j-music-mcp/README.md).
+- [MCP: from an ordinary function to an agent tool](lecture-mcp-dice.md) —
+  accompanies the [slide deck](../slides/lecture-mcp-dice.md) and the
+  [dice example](../demos/lecture-mcp-dice/README.md).

@@ -1,0 +1,12 @@
+[project]
+name = "mcp-music-homework"
+version = "1.0.0"
+requires-python = ">=3.12"
+dependencies = ["mcp==2.3.0", "neo4j==6.0.3", "neo4j-mcp-server==2.1.1"]
+
+[dependency-groups]
+dev = ["pytest==9.0.2"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

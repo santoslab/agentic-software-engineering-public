@@ -1,0 +1,231 @@
+{
+  "stage": "E",
+  "tools": {
+    "_meta": {
+      "io.modelcontextprotocol/serverInfo": {
+        "name": "dice",
+        "version": ""
+      }
+    },
+    "ttlMs": 0,
+    "cacheScope": "private",
+    "tools": [
+      {
+        "name": "roll",
+        "description": "Roll 1\u201320 dice; sides must be 4, 6, 8, 10, 12, or 20.\n\nReturn ordered rolls, their total, and sides. Invalid inputs are tool errors.\nCount is schema-validated; the allowed sides are checked by the function.\n",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "default": 1,
+              "maximum": 20,
+              "minimum": 1,
+              "title": "Count",
+              "type": "integer"
+            },
+            "sides": {
+              "default": 6,
+              "title": "Sides",
+              "type": "integer"
+            }
+          },
+          "title": "rollArguments"
+        },
+        "outputSchema": {
+          "properties": {
+            "rolls": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Rolls",
+              "type": "array"
+            },
+            "total": {
+              "title": "Total",
+              "type": "integer"
+            },
+            "sides": {
+              "title": "Sides",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "rolls",
+            "total",
+            "sides"
+          ],
+          "title": "RollResult",
+          "type": "object"
+        }
+      },
+      {
+        "name": "flip_coins",
+        "description": "Flip 1\u2013100 coins. Return the H/T sequence and head/tail tallies.\n\nInvalid count is a tool error. Each flip uses the local PRNG.\n",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "default": 1,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          "title": "flip_coinsArguments"
+        },
+        "outputSchema": {
+          "properties": {
+            "flips": {
+              "title": "Flips",
+              "type": "string"
+            },
+            "heads": {
+              "title": "Heads",
+              "type": "integer"
+            },
+            "tails": {
+              "title": "Tails",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "flips",
+            "heads",
+            "tails"
+          ],
+          "title": "CoinResult",
+          "type": "object"
+        }
+      }
+    ],
+    "resultType": "complete"
+  },
+  "calls": [
+    {
+      "name": "roll",
+      "arguments": {
+        "count": 3,
+        "sides": 6
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"rolls\": [\n    2,\n    4,\n    5\n  ],\n  \"total\": 11,\n  \"sides\": 6\n}"
+          }
+        ],
+        "structuredContent": {
+          "rolls": [
+            2,
+            4,
+            5
+          ],
+          "total": 11,
+          "sides": 6
+        },
+        "isError": false,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "roll",
+      "arguments": {
+        "count": 0
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Error executing tool roll: 1 validation error for rollArguments\ncount\n  Input should be greater than or equal to 1 [type=greater_than_equal, input_value=0, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/greater_than_equal"
+          }
+        ],
+        "isError": true,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "roll",
+      "arguments": {
+        "count": "many"
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Error executing tool roll: 1 validation error for rollArguments\ncount\n  Input should be a valid integer [type=int_type, input_value='many', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type"
+          }
+        ],
+        "isError": true,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "roll",
+      "arguments": {
+        "sides": 7
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Error executing tool roll: sides must be one of (4, 6, 8, 10, 12, 20)"
+          }
+        ],
+        "isError": true,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "flip_coins",
+      "arguments": {
+        "count": 5
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"flips\": \"HHTHH\",\n  \"heads\": 4,\n  \"tails\": 1\n}"
+          }
+        ],
+        "structuredContent": {
+          "flips": "HHTHH",
+          "heads": 4,
+          "tails": 1
+        },
+        "isError": false,
+        "resultType": "complete"
+      }
+    }
+  ]
+}

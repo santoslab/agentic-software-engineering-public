@@ -1,0 +1,11 @@
+{
+  "kind": "LLM-free invalid-endpoint diagnostic",
+  "date": "2026-11-16",
+  "returncode": 1,
+  "last_error_lines": [
+    "      |     raise MCPError(code=outcome.code, message=outcome.message, data=outcome.data)",
+    "      | mcp.shared.exceptions.MCPError: Server returned an error response",
+    "      +------------------------------------"
+  ],
+  "success_report_written": false
+}

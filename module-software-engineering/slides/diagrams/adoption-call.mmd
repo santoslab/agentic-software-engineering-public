@@ -1,0 +1,12 @@
+sequenceDiagram
+  participant H as Host / client
+  participant M as Model API
+  participant S as Learn server
+  Note over H,S: Configured provider, discovered tools, selected schemas loaded
+  H->>M: Documentation task and available tool context
+  M-->>H: Search + fetch requests in one response
+  H->>S: Route each request through tools/call
+  S-->>H: Source material for each request
+  H->>M: Adapted tool results
+  M-->>H: Explanation and citation
+  Note over H,S: Schematic routing, execution concurrency not measured

@@ -1,0 +1,11 @@
+flowchart LR
+  subgraph H["Host: Claude Code"]
+    A[Agent loop]
+    C[MCP clients]
+    A <--> C
+  end
+  A <-->|Model API| M[Model service]
+  C <-->|HTTP| R[Learn MCP<br/>remote service]
+  C <-->|stdio| L[Music MCP<br/>local process]
+  L <-->|Bolt| D[Neo4j database]
+  style H fill:#f0eaff,stroke:#310066

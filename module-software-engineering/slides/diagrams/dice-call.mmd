@@ -1,0 +1,20 @@
+sequenceDiagram
+  actor U as User
+  participant H as Host / MCP client
+  participant M as Model API
+  participant S as Dice MCPServer
+  Note over H,S: SDK 2.3.0 auto mode, stdio, protocol 2026-07-28
+  H->>S: server/discover (version metadata)
+  S-->>H: supportedVersions, capabilities, instructions
+  H->>S: tools/list
+  S-->>H: names, descriptions, input/output schemas
+  U->>H: Roll 3d6, compare total with 12
+  H->>M: Messages and model-format tool definitions
+  M-->>H: Request roll(count=3, sides=6)
+  H->>S: tools/call, id=3, arguments and metadata
+  Note right of S: Validate, execute dice.roll
+  S-->>H: id=3, content, structuredContent, isError=false
+  H->>M: Model-format tool result
+  M-->>H: Grounded explanation
+  H-->>U: Each die, total, comparison
+  Note over H,S: No initialize handshake on this captured modern path

@@ -1,0 +1,13 @@
+%%{init: {'themeVariables': {'fontSize': '22px'}}}%%
+flowchart LR
+  U[User] --> H
+  subgraph HOST["Host: Claude Code"]
+    H[Agent loop<br/>and policy]
+    C[MCP client]
+    H <--> C
+  end
+  H <-->|Model API| M[Model service]
+  C <-->|MCP: stdio| S[Python<br/>MCPServer]
+  S --> F[Dice<br/>functions]
+  style HOST fill:#f0eaff,stroke:#310066
+  style S fill:#beaefc,stroke:#310066

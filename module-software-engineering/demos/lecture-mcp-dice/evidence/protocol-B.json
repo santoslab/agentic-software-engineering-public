@@ -1,0 +1,149 @@
+{
+  "stage": "B",
+  "tools": {
+    "_meta": {
+      "io.modelcontextprotocol/serverInfo": {
+        "name": "dice",
+        "version": ""
+      }
+    },
+    "ttlMs": 0,
+    "cacheScope": "private",
+    "tools": [
+      {
+        "name": "roll",
+        "description": "Roll 1\u201320 dice with 4/6/8/10/12/20 sides. Return rolls and total.\n\nInvalid values return ordinary text beginning Error:, not an MCP error.\n",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "default": 1,
+              "title": "Count",
+              "type": "integer"
+            },
+            "sides": {
+              "default": 6,
+              "title": "Sides",
+              "type": "integer"
+            }
+          },
+          "title": "rollArguments"
+        },
+        "outputSchema": {
+          "properties": {
+            "result": {
+              "title": "Result",
+              "type": "string"
+            }
+          },
+          "required": [
+            "result"
+          ],
+          "title": "rollOutput",
+          "type": "object"
+        }
+      }
+    ],
+    "resultType": "complete"
+  },
+  "calls": [
+    {
+      "name": "roll",
+      "arguments": {
+        "count": 3,
+        "sides": 6
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "rolls: [4, 2, 1] total: 7"
+          }
+        ],
+        "structuredContent": {
+          "result": "rolls: [4, 2, 1] total: 7"
+        },
+        "isError": false,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "roll",
+      "arguments": {
+        "count": 0
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: count must be an integer between 1 and 20"
+          }
+        ],
+        "structuredContent": {
+          "result": "Error: count must be an integer between 1 and 20"
+        },
+        "isError": false,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "roll",
+      "arguments": {
+        "count": "many"
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Error executing tool roll: 1 validation error for rollArguments\ncount\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='many', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+          }
+        ],
+        "isError": true,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "roll",
+      "arguments": {
+        "sides": 7
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "dice",
+            "version": ""
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: sides must be one of (4, 6, 8, 10, 12, 20)"
+          }
+        ],
+        "structuredContent": {
+          "result": "Error: sides must be one of (4, 6, 8, 10, 12, 20)"
+        },
+        "isError": false,
+        "resultType": "complete"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"rolls\": [\n    4,\n    5,\n    5\n  ],\n  \"total\": 14,\n  \"sides\": 6\n}"
+    }
+  ],
+  "structuredContent": {
+    "rolls": [
+      4,
+      5,
+      5
+    ],
+    "total": 14,
+    "sides": 6
+  },
+  "isError": false
+}

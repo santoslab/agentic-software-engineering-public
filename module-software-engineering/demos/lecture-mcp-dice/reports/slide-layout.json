@@ -1,0 +1,419 @@
+[
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 1,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 2,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 3,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 4,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 5,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 6,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 7,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": [
+      {
+        "src": "diagrams/adoption-connections.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 8,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 9,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": [
+      {
+        "src": "diagrams/adoption-call.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 10,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 11,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 12,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 13,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 14,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 15,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 16,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 17,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": [
+      {
+        "src": "diagrams/neo4j-processes.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 18,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 19,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": [
+      {
+        "src": "diagrams/music-graph.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 20,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 21,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-adoption.html",
+    "slide": 22,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 1,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 2,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 3,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 4,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 5,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 6,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": [
+      {
+        "src": "diagrams/components.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 7,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": [
+      {
+        "src": "diagrams/host-call.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 8,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 9,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 10,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 11,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 12,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 13,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 14,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 15,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 16,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 17,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 18,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 19,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 20,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  },
+  {
+    "deck": "lecture-mcp-dice.html",
+    "slide": 21,
+    "width": 1280,
+    "height": 720,
+    "scrollWidth": 1280,
+    "scrollHeight": 720,
+    "images": []
+  }
+]

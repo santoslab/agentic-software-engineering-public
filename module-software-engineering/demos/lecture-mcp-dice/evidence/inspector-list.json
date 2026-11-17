@@ -1,0 +1,92 @@
+{
+  "tools": [
+    {
+      "name": "roll",
+      "description": "Roll 1–20 dice; sides must be 4, 6, 8, 10, 12, or 20.\n\nReturn ordered rolls, their total, and sides. Invalid inputs are tool errors.\nCount is schema-validated; the allowed sides are checked by the function.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "default": 1,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Count",
+            "type": "integer"
+          },
+          "sides": {
+            "default": 6,
+            "title": "Sides",
+            "type": "integer"
+          }
+        },
+        "title": "rollArguments"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "rolls": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Rolls",
+            "type": "array"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "sides": {
+            "title": "Sides",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rolls",
+          "total",
+          "sides"
+        ],
+        "title": "RollResult"
+      }
+    },
+    {
+      "name": "flip_coins",
+      "description": "Flip 1–100 coins. Return the H/T sequence and head/tail tallies.\n\nInvalid count is a tool error. Each flip uses the local PRNG.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "default": 1,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "title": "flip_coinsArguments"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "flips": {
+            "title": "Flips",
+            "type": "string"
+          },
+          "heads": {
+            "title": "Heads",
+            "type": "integer"
+          },
+          "tails": {
+            "title": "Tails",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "flips",
+          "heads",
+          "tails"
+        ],
+        "title": "CoinResult"
+      }
+    }
+  ]
+}

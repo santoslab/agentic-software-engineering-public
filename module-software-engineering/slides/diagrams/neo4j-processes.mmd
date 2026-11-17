@@ -1,0 +1,5 @@
+flowchart LR
+  H[Claude Code<br/>host and client] <-->|stdio| P[Official Neo4j<br/>MCP process]
+  P <-->|Bolt queries| D[Neo4j instance<br/>music fixture + APOC]
+  H <-->|Model API| M[Model service]
+  style P fill:#beaefc,stroke:#310066

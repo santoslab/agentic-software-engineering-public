@@ -1,0 +1,25 @@
+{
+  "version": "fictional-music-v1",
+  "source": "Original fictional teaching fixture; build_fixture.py",
+  "source_playlist_id": "P01",
+  "csv_rows": {
+    "tracks.csv": 48,
+    "playlists.csv": 92
+  },
+  "sha256": {
+    "tracks.csv": "e37dfc65db65bab7601986645eb678e35dc84ecb38e309d8b71cd7c0ff574148",
+    "playlists.csv": "97816a5fbbe877ce119103fcf6365e02a1efc1e632eb29bb9339075e621283a5"
+  },
+  "expected_graph": {
+    "Track": 36,
+    "Artist": 8,
+    "Album": 6,
+    "Playlist": 8,
+    "User": 4,
+    "OWNS": 8,
+    "PLAYLIST_HAS_TRACK": 89,
+    "ALBUM_HAS_TRACK": 36,
+    "ARTIST": 48
+  },
+  "duplicate_policy": "Collapse identical playlist/track/position tuples; preserve different positions and all artist credits."
+}

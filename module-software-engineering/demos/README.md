@@ -52,3 +52,16 @@ This folder holds the materials for live demonstrations run during lectures.
   Spec Kit tic-tac-toe project: a reproduction starter, one sanitized
   [transcript](lecture-beads/recorded-run/transcript.md), restorable checkpoints,
   and the [render-and-resume exercise](lecture-beads/exercise-beads/README.md).
+- [`lecture-mcp-adoption/`](lecture-mcp-adoption/README.md) — the MCP adoption
+  lecture's demo: Claude Code configured against Microsoft Learn's public
+  documentation server, with an LLM-free client (`check_remote.py`), captured
+  protocol evidence, the instructor's recorded session (`claude-session/`), the
+  script `DEMO.md`, the evidence template, the Neo4j preview note, the music
+  homework's instructor key (`neo4j-music-instructor-key/`), and the authoring
+  plan and verification report (`planning/`, `reports/`).
+- [`lecture-mcp-dice/`](lecture-mcp-dice/README.md) — the MCP implementation
+  lecture's demo: a dice library exposed through the official Python SDK's
+  `MCPServer` in stages A–E, with tests, a protocol tracer, captured wire logs
+  (`evidence/`), the script `DEMO.md`, the agent-development prompt, and the
+  authoring records (`planning/` holds the handoff brief and source map,
+  `reports/` the verification report and slide-layout measurements).

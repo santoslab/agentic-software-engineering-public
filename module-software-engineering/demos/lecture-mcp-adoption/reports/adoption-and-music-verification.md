@@ -13,6 +13,20 @@ actual independent evidence. [Module index](../../../README.md) links the delive
 No public migration, commit, global host registration, or frozen snapshot edit
 was performed.
 
+## Motivation block added on 2026-11-17, after migration
+
+The adoption deck gained a four-slide motivation block after the cold open:
+simplified toy-agent registrations and loop, a per-tool schema beside a
+per-server declaration, a new connections diagram without the database
+(`adoption-connections-basic`), and the two benefits with caveats. The former
+"From wired-in tools" slide became the toy-agent mapping table and the Neo4j
+connections slide was dropped, so the deck has 25 slides; it was re-rendered
+with the module's shared build. The notes gained Section 1, "Why MCP", merging
+the former toy-agent and participants sections, and later sections were
+renumbered; the instructor outline's timing moved the student attempt to ten
+minutes. The slide-layout measurement below predates this change and was not
+re-run.
+
 ## Instructor session update on 2026-11-17
 
 The instructor subsequently supplied a live documentation session account and

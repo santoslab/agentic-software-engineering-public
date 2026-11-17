@@ -2,15 +2,11 @@
 
 An agent is useful when it can do more than answer from its training. It may
 need to read a current reference, query a database, or operate a program. In the
-toy-agent exercise you built some of that machinery yourself: describe a tool
+toy-agent exercise you built the machinery for that yourself: describe a tool
 to the model, inspect the model's request, dispatch a function, and append the
-result before asking the model what to do next. This lecture shows how the same
-pattern works when the tool provider is an existing MCP server.
-
-The main extension point changes: the toy harness contains tool-specific schemas
-and dispatch mappings, while an MCP-capable host reads server declarations and
-discovers the operations those providers expose. This lets us add compatible
-providers through configuration and reuse them across compatible hosts.
+result before asking the model what to do next. This lecture shows what changes
+when the tool provider is an existing MCP server: the developer declares a
+server, the host discovers the server's tools, and the model selects among them.
 
 Our first task uses a public documentation server. You will declare its existence
 in your repository, inspect its available tools, ask for information, and verify
@@ -23,7 +19,163 @@ and worked checks are also reference material for when setup goes wrong. The
 written explanation is more detailed than the classroom presentation; you are
 not expected to memorize every field during the live demonstration.
 
-## 1 A concrete reason to retrieve information
+## 1 Why MCP: from hard-wired tools to discovered tools
+
+### 1.1 How the toy agent got its tools
+
+In Step 5 of the toy-agent exercise, a tool had two halves stored in two places.
+The schema was the half the model saw; the function was the half the harness
+executed:
+
+```python
+READ_FILE_SCHEMA = {
+    "type": "function",
+    "function": {
+        "name": "read_file",
+        "description": "Get the full contents of a file",
+        "parameters": {
+            "type": "object",
+            "properties": {"file_name": {"type": "string"}},
+            "required": ["file_name"],
+        },
+    },
+}
+
+TOOLS_DICTIONARY = {"read_file": read_file}   # name -> function, for the loop to dispatch
+TOOLS_SCHEMA = [READ_FILE_SCHEMA]             # what actually gets sent to the model
+```
+
+Sending the schema does not send the Python function to the model. It tells the
+model that an operation exists, what it is for, and how to request it. The model
+can then ask the harness to call a tool by name with arguments; the harness
+decides whether and how to execute that request.
+
+Step 6 wrote the loop that services those requests. Reduced to its data flow,
+with the error handling and the Step 7 execution bound removed, it is:
+
+```python
+message = call_model(messages, tools=TOOLS_SCHEMA)
+messages.append(message)
+for tc in message.get("tool_calls", []):
+    name = tc["function"]["name"]
+    arguments = json.loads(tc["function"]["arguments"])
+    result = TOOLS_DICTIONARY[name](**arguments)
+    messages.append({"role": "tool", "tool_call_id": tc["id"], "content": str(result)})
+```
+
+The exercise names its model call `call_zen`, after the gateway used in class;
+the name here is generic.
+
+Step 8 then asked for two more tools, `list_files` and `write_file`, and its
+instruction was to register each one in **both** `TOOLS_DICTIONARY` and
+`TOOLS_SCHEMA`. That instruction is the point to notice. Every tool the agent
+can use is wired into the harness by hand: its schema is written in the harness,
+its implementation lives in the harness, and its dispatch entry is edited into
+the harness. The tool catalogue is a constant in the program. Adding a tool is a
+code change, forgetting one of the two registrations is a silent failure, and a
+second harness that wants the same tool repeats all of the work.
+
+### 1.2 What MCP changes
+
+The Model Context Protocol (MCP) moves the tool catalogue out of the harness.
+Three things change.
+
+**The developer declares a server, not a tool.** The configuration names a
+provider and says how to reach it. For the documentation server used in this
+lecture, the whole declaration is:
+
+```json
+{
+  "mcpServers": {
+    "microsoft-learn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
+    }
+  }
+}
+```
+
+There is no tool name, description, or parameter schema in this file. Section 3
+explains each field; for now notice only what is absent.
+
+**The host discovers the server's tools.** When the host starts, its MCP client
+connects to each declared server and asks for that server's tool definitions
+(the protocol request is `tools/list`). The server answers with names,
+descriptions, and input schemas in MCP's format. The host adapts those
+definitions to its model API, the job `TOOLS_SCHEMA` did, and remembers which
+server each name came from, the job `TOOLS_DICTIONARY` did. Neither structure
+is written by hand any more; both are filled from what the server declared.
+
+**The model selects; the host routes.** The model is shown the discovered
+definitions and requests a call exactly as it did in the toy agent. The host
+routes the request to the right server (`tools/call`), receives the result,
+converts it into a tool-result message, and asks the model again. The loop is
+the one you wrote. What moved is where its tool table comes from.
+
+![Host, model service, and a declared MCP server](../slides/diagrams/adoption-connections-basic.svg)
+
+The diagram names the participants. The **host** is the agent application, here
+Claude Code. It manages the conversation, the model requests, the tools
+available to the model, execution policy, and results. The **MCP client** is the
+part of the host that speaks MCP to one provider. An **MCP server** is a program
+that exposes capabilities such as a search or a database query. A **transport**
+is how client and server exchange messages: here HTTP to a **remote endpoint**;
+later, for the music homework, standard-input and standard-output pipes to a
+local child **process**. A server need not be a separate machine, and a local
+server does not make the model run locally. The dashed box stands for any
+further server the developer declares: adding one is another entry in the
+configuration, not another edit to the host.
+
+The two connections carry different things. The model API carries messages,
+tool definitions, and tool requests and results. MCP carries discovery and
+invocation. The model never connects to a server and never reads `.mcp.json`;
+the host's client performs every MCP exchange on the model's behalf. Claude Code
+adds one refinement to this picture: it can present discovered tools to the
+model as deferred names and let the model load full definitions on request
+through a host facility called ToolSearch. That is a host policy for managing
+context, not an MCP method; Section 6 shows it in the instructor's recorded
+session. MCP also defines **resources** (addressable context) and **prompts**
+(reusable message templates); this lecture needs only tools.
+
+### 1.3 Why a shared standard, and what it does not buy
+
+Two benefits follow from moving the catalogue out of the harness.
+
+First, **adding a provider is configuration, not harness code.** A host that
+already speaks MCP acquires the documentation server, the music database
+server, or the dice server of the next lecture through declarations. No
+provider-specific schema or dispatch branch is added to the host, and a provider
+whose tools change is rediscovered at the next connection rather than re-edited.
+
+Second, **one interface is implemented on both sides by many parties.** Many
+hosts contain an MCP client, and many providers publish an MCP server. A
+provider written once works in every compatible host, and each host adapts the
+same discovered contracts to whichever tool-capable model it drives. Without a
+shared protocol, every host-and-provider pair would invent its own integration;
+the toy agent is one such pair.
+
+The caveats are as real as the benefits. "Adding tools without retraining the
+model" is not an MCP benefit; the toy agent already did that. A host must
+support MCP, the configuration must be loadable, the provider must be reachable,
+credentials and permissions must be in place, and every discovered definition
+and every result occupies context when loaded. MCP does not make the loop safe
+or the answers correct: the toy agent's exception handling, request-result
+pairing, and execution limit all remain the host's responsibility. What MCP
+provides is a standard way to discover and invoke capabilities across the
+host-provider boundary.
+
+| Toy agent (exercise 04) | MCP-capable host |
+|---|---|
+| `TOOLS_SCHEMA` written by hand | Tool definitions discovered from each declared server and adapted to the model API |
+| `TOOLS_DICTIONARY` written by hand | Each discovered name associated with its server connection |
+| `TOOLS_DICTIONARY[name](**arguments)` | An authorized request routed through the MCP client as `tools/call` |
+| `messages.append({"role": "tool", ...})` | The server's result converted into the model API's tool-result message |
+
+The word "adapt" matters in this table. The model's tool-call format is not the
+same object as an MCP request; the host connects the two representations, and
+Section 6 shows a name changing shape as it crosses that boundary.
+
+## 2 A concrete reason to retrieve information
 
 Imagine this directory tree, a constructed example:
 
@@ -73,164 +225,7 @@ returned. Check its Depth parameter and examples when evaluating a response.
 The saved capture is LLM-free: it demonstrates provider access, not a model's
 selection or explanation. Your own host interaction supplies that next layer.
 
-## 2 Revisiting how we made tool calls in the Toy Agent
-
-In the toy-agent exercise, `TOOLS_SCHEMA` contained metadata sent to the model.
-A simplified teaching example is:
-
-```python
-TOOLS_SCHEMA = [{
-    "type": "function",
-    "function": {
-        "name": "read_file",
-        "description": "Read the contents of a file",
-        "parameters": {
-            "type": "object",
-            "properties": {"file_name": {"type": "string"}},
-            "required": ["file_name"]
-        }
-    }
-}]
-TOOLS_DICTIONARY = {"read_file": read_file}
-```
-
-`TOOLS_SCHEMA` and `TOOLS_DICTIONARY` have different jobs. The schema
-explains an available operation in the model API's format. The
-dictionary maps a name to executable code in the
-harness. Sending the schema does not send the Python function to the model.
-Instead, it tells the model what tools are available for it to
-*request*.  The model can request that the harness call a tool with a
-particular name and arguments; the harness then interprets 
-that request and decide whether and how to execute it.
-
-The loop then appends the result of the tool call to the conversation. 
-This illustrative fragment omits error handling and budget checks to 
-make the data flow visible:
-
-```python
-message = call_model(messages, tools=TOOLS_SCHEMA)
-messages.append(message)
-for call in message.get("tool_calls", []):
-    name = call["function"]["name"]
-    arguments = json.loads(call["function"]["arguments"])
-    result = TOOLS_DICTIONARY[name](**arguments)
-    messages.append({"role": "tool", "tool_call_id": call["id"],
-                     "content": str(result)})
-```
-
-### From hard-wired tools to configured providers
-
-In our toy agent, the harness's code names the specific tools it supports. To
-add a new operation, we add its schema to `TOOLS_SCHEMA`, put its implementation
-or adapter in the program, and update `TOOLS_DICTIONARY` so the harness can
-route the model's request. The model itself does not need retraining, but the
-harness needs tool-specific integration work. That approach is understandable
-for two functions; However, it becomes tedious and repetitive when many tools and providers are involved.
-
-MCP moves the provider-specific tool catalogue out of the harness.
-With MCP, the developer configures **which servers the host may
-connect to**, rather than writing a schema and dispatch entry 
-into the harness for every tool. Each server describes
-the operations (tools) it provides through a standard discovery interface. The host's
-MCP client obtains those definitions, adapts them to the model API, and keeps
-the routing information needed to invoke the correct provider.
-
-For example, suppose our toy agent already has `read_file`, and we now want dice
-operations. With its current design, we would edit the harness to describe and
-dispatch `roll` and `flip_coins`. With an MCP-capable host, we can configure the
-dice server and let the host discover those two definitions. The host still
-needs its general MCP integration, but we do not add custom dice dispatch code
-to that host. Adding the Neo4J-based music server follows the same
-pattern: another provider declaration, discovery of its tools, then calls through the common interface.
-
-The distinction is therefore:
-
-| Toy agent as written | MCP-capable host |
-|---|---|
-| Harness code contains a specific tool catalogue and function mappings | Configuration identifies approved providers; providers publish their tool catalogues |
-| Adding an integration means editing tool-specific schemas/dispatch code | Adding a compatible existing provider usually means configuration and discovery |
-| Another harness needs its own integration for that provider | Compatible hosts can reuse the provider's MCP interface |
-
-The server declaration normally stays in the host's (e.g., Claude
-Code's) configuration; it is not
-simply forwarded to the model as instructions to open a connection. **The host's
-MCP client (the Claude Code harness has an MCP client living inside
-it) queries the server; the model requests actions through the host.**
-A model can participate in finding relevant tools when a host exposes a tool-search
-operation, but even then the host/client performs the underlying MCP exchanges.
-This separates protocol discovery from the model's decision about which available
-capability is useful. See the [MCP architecture explanation](https://modelcontextprotocol.io/docs/learn/architecture).
-
-This gives us three practical benefits. First, an existing MCP-capable host can
-acquire new integrations without adding provider-specific dispatch
-code in the harness for each one. 
-Second, one server implementation can serve multiple compatible hosts.
-Third, a host that supports several tool-capable models can adapt the same discovered
-contracts for those models instead of requiring the provider to implement every
-model API separately. Host support, schema compatibility, credentials, dependencies,
-and permission policy still determine whether a particular combination works.
-
-“Without changing the model” is useful, but it is not unique to MCP: our toy
-agent already added tools without changing model weights. **MCP's additional
-benefit is standardized discovery and invocation across the host/provider
-boundary.** It also does not make the toy agent's design the only possible
-non-MCP design; we could build our own plugin/discovery mechanism. The benefit
-of adopting a shared protocol is that many providers and hosts already implement
-that interface rather than each pair inventing its own.
-
-Tool availability can change as a provider evolves. The host can obtain the
-current definitions when it connects or refreshes discovery, subject to its
-loading and permission policy. This is runtime discovery of an external contract,
-not the model learning a new implementation or gaining permission to contact
-arbitrary servers on its own. The developer still chooses the configured providers.
-
-
-The full exercise needed invalid-argument handling, unknown-tool handling, proper
-pairing, and execution limits. Those needs remain with MCP. MCP does not replace
-the model API or provide a universally safe autonomous loop. It gives hosts and
-providers a common interface for discovering and invoking capabilities.
-
-| Handwritten integration | MCP-enabled host |
-|---|---|
-| Maintain `TOOLS_SCHEMA` | Discover provider definitions and adapt to the model API |
-| Maintain name-to-function dictionary | Associate each exposed name with its server/client |
-| Call the function directly | Route an authorized request through the MCP client |
-| Append a tool result message | Convert the server result into model API context |
-
-The word “adapt” matters. The model's tool-call format is not necessarily the
-same object as an MCP request. The host connects those representations.
-
-## 3 Name the participants before connecting them
-
-The **host** is the agent application you use, here Claude Code. It manages the
-conversation, model requests, tools available to the model, execution policy,
-and results. An **MCP client** is the part of the host that communicates with
-a provider through MCP. An **MCP server** exposes capabilities, such as a
-search operation or a database query operation.
-
-A **process** is a running program. A **server** need not mean a separate physical
-machine: your host can launch a local server as a child process. A **remote
-endpoint** is an address at which a service accepts protocol requests. A
-**transport** specifies how those requests and responses move between client
-and server, such as pipes or HTTP.
-
-![Remote and local connections](../slides/diagrams/adoption-connections.svg)
-
-The host-to-model API and host-to-MCP-server connections have different purposes.
-The model API carries messages and tool requests. MCP carries discovery and
-provider invocations. The model selects/request tools, the host routes them,
-and provider code executes the operation. A provider can itself access another
-service. In the music example, the MCP process talks to a separate database.
-
-A local stdio server does not make a remote model run offline. A remote MCP
-service does not mean its provider is the model vendor. Each component can
-have a different deployment, failure mode, credential requirement, and cost.
-
-MCP also has **resources**, which expose addressable context, and **prompts**,
-which expose reusable message templates. Tools are the operations we need in
-this walkthrough. Do not infer that every server must implement every primitive.
-
-## 4 What a server declaration actually does
+## 3 What a server declaration actually does
 
 Putting a server in `.mcp.json` tells Claude Code where it can obtain
 capabilities (discover tools).
@@ -265,10 +260,10 @@ list of MCP Servers:
 }
 ```
 
-Notice that we are telling tell Claude directly what tools are
-available.  Instead, we tell Calude where it can interact with (the
+Notice that we are not telling Claude directly what tools are
+available. Instead, we tell Claude where it can interact with (the
 MCP server at `https://learn.microsoft.com/api/mcp`) to discover
-tools.
+tools, as Section 1 previewed.
 
 As a reminder, 
 JSON is a text representation of values. Objects use braces and contain named
@@ -287,7 +282,7 @@ a universal file format that every MCP-compatible product must consume.
 Another host can connect to the same provider through its own configuration UI
 or file format. That is consistent with sharing a protocol interface.
 
-## 5 Reproduce the connection step by step
+## 4 Reproduce the connection step by step
 
 You need Claude Code installed and authenticated with your normal model access.
 Microsoft documents its Learn endpoint as accessible without
@@ -335,7 +330,7 @@ for instructors whose other integrations could answer the same task. Students
 normally use the straightforward project file. Isolation does not authorize
 bypassing permissions or changing user-wide configuration.
 
-## 6 Understand configuration scope and sharing
+## 5 Understand configuration scope and sharing
 
 An MCP configuration for Claude can apply to one project or to 
 many projects for one user. In Claude Code, 
@@ -364,7 +359,7 @@ to a provider. Version control makes changes visible but does not make every
 configuration trustworthy automatically. Keep that review practical: identify
 what will run, where data will go, and what access it receives.
 
-## 7 Inspect the discovered contract
+## 6 Inspect the discovered contract
 
 The host's MCP client discovers tool definitions from the server. These
 definitions include schemas describing argument shapes. A **schema** describes
@@ -451,7 +446,7 @@ body. The host must preserve the operation's meaning and route it correctly;
 we do not need to guess its private routing data structure to explain that job.
 
 
-## 8 Follow one task through the boundaries
+## 7 Follow one task through the boundaries
 
 ![Discovery and the documentation task](../slides/diagrams/adoption-call.svg)
 
@@ -494,7 +489,7 @@ The instructor record supplies a separate account of model-selected calls and
 answers. For your own live pass, inspect your host's actual invocation and final
 answer rather than substituting that record or the independent client capture.
 
-## 9 Search results, retrieved articles, and grounded answers
+## 8 Search results, retrieved articles, and grounded answers
 
 Search usually returns candidate material, perhaps with useful snippets. Retrieval
 opens a particular article. A snippet may establish a simple fact, but it may
@@ -555,7 +550,7 @@ the source URL, the final claim, and your explanation. Avoid dumping an entire
 account conversation. If no call is visible, label the result unverified for
 this integration even if you recognize the answer as correct.
 
-## 10 Practice and systematic diagnosis
+## 9 Practice and systematic diagnosis
 
 Try the alternate task:
 
@@ -613,7 +608,7 @@ first answer and correction so the evidence tells an honest story.
 Do not repeatedly change multiple layers at once. Make one diagnosis, inspect
 an observation that can confirm it, then rerun the smallest relevant check.
 
-## 11 Local stdio, remote HTTP, and database integration
+## 10 Local stdio, remote HTTP, and database integration
 
 For a remote server, the host uses a URL. For stdio, it launches a program and
 exchanges protocol messages over the child's standard input/output pipes. The
@@ -625,6 +620,12 @@ that select a pinned project and run a launcher. That command starts the provide
 it does not itself ask for schema inspection. The homework supplies a complete
 version rather than a partly runnable placeholder. A package runner can also
 need network access on first installation; install dependencies before class.
+
+![Remote and local connections](../slides/diagrams/adoption-connections.svg)
+
+This is the Section 1 picture with the music provider added: the same host and
+client, a second declared server reached over stdio instead of HTTP, and behind
+it a database that the provider, not the host, talks to.
 
 ![Neo4j process boundaries](../slides/diagrams/neo4j-processes.svg)
 
@@ -639,7 +640,7 @@ results. MCP provides a reusable discovery/invocation boundary; it does not make
 CLI execution obsolete. An adapter can wrap a library, command, or remote service
 without rewriting the underlying operation.
 
-## 12 Permissions, output, costs, and context
+## 11 Permissions, output, costs, and context
 
 Three permission questions are separate: will the host allow this action, will
 the provider expose this operation, and will the downstream service authorize
@@ -663,7 +664,7 @@ that every definition enters every request. Use `/context` and actual host
 observations for that session. This package supplies no invented prices or
 measured token savings.
 
-## 13 Transfer the method to music
+## 12 Transfer the method to music
 
 A Playlist points to Tracks; a Track points to its Artists. Artist A can have
 many tracks in one playlist, so counting paths differs from counting distinct
@@ -682,7 +683,7 @@ Do not let database setup swallow the lecture. The instructor preview uses a
 prepared instance. Your homework checkpoint provides time to establish that
 the instance, plugin, provider, and host are each ready.
 
-## 14 A reusable adoption recipe
+## 13 A reusable adoption recipe
 
 Start with a task and a way to judge its answer. Identify a provider and inspect
 its source, transport, configuration, authentication, and capabilities. Declare
@@ -701,7 +702,7 @@ The next lecture follows the same boundary from the other side: build ordinary
 dice code, expose it with official Python SDK MCPServer, inspect discovery,
 and test validation and results. You now know what a consumer will try to observe.
 
-## 15 Explained self-checks and vocabulary
+## 14 Explained self-checks and vocabulary
 
 **Does committing `.mcp.json` commit the tools' implementation?** No. It records
 connection/launch information. A remote provider stays remote; a local program

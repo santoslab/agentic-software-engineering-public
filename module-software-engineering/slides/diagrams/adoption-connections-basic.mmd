@@ -1,0 +1,14 @@
+%%{init: {'themeVariables': {'fontSize': '22px'}}}%%
+flowchart LR
+  U[User] --> A
+  subgraph H["Host: Claude Code"]
+    A[Agent loop]
+    C[MCP client]
+    A <--> C
+  end
+  A <-->|"Model API:<br/>messages, tool definitions,<br/>tool requests and results"| M[Model service]
+  C <-->|"MCP over HTTP:<br/>discover tools (tools/list),<br/>call a tool (tools/call)"| R[Learn MCP<br/>remote service]
+  C -.->|"another declared server"| X["..."]
+  style H fill:#f0eaff,stroke:#310066
+  style R fill:#beaefc,stroke:#310066
+  style X stroke-dasharray: 5 5

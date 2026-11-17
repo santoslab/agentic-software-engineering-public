@@ -44,7 +44,7 @@ The [call diagram](../../../slides/diagrams/adoption-call.mmd) follows the repor
 same-response search/fetch requests. The [discovery and loading diagram](../../../slides/diagrams/adoption-discovery.mmd)
 separates MCP discovery from host tool search. Both are schematic explanations,
 not wire traces. The full student explanation is in
-[notes sections 7–9](../../../lecture-notes/lecture-mcp-adoption.md).
+[notes sections 6–8](../../../lecture-notes/lecture-mcp-adoption.md).
 
 | Tutorial steps | Boundary and observation |
 |---|---|

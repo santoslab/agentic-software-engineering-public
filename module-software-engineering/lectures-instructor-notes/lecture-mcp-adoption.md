@@ -8,7 +8,8 @@ and optional depth. Do not compress them to match classroom time.
 
 ## Outcomes and evidence
 
-Students should explain server configuration vs discovered tool contracts,
+Students should explain, with reference to the toy agent, why a declared server
+replaces per-tool edits to the harness; explain server configuration vs discovered tool contracts,
 configure a project-scoped integration, distinguish model API/MCP/backend
 connections, inspect actual tool use, verify a source-based answer, and diagnose
 a failure by layer. In class, collect one small documentation evidence record.
@@ -28,6 +29,8 @@ independent SDK captures and illustrative protocol/API envelopes.
 - Install dependencies and rehearse the public endpoint before students arrive.
   Have working host access, project configuration, `/mcp`, discovered schemas,
   the source article, and actual protocol evidence ready.
+- Have exercise 04 Steps 5, 6 and 8 at hand; the motivation slides quote simplified
+  versions of that code and students should recognize their own loop.
 - Use a scratch repository. Do not register global servers or activate the
   example in this repository. Isolate competing integrations if needed,
   explaining the explicit session config as a rehearsal measure.
@@ -45,13 +48,14 @@ independent SDK captures and illustrative protocol/API envelopes.
 | Minutes | Slides | Actions and expected observations | Fallback or cut |
 |---|---|---|---|
 | 0–8 | 1–2 | Run the exact Get-ChildItem documentation task. Expand call, arguments, result, citation and answer. | Show saved independent capture plus source article, label LLM-free. No PowerShell execution. |
-| 8–20 | 3–5 | Open empty scratch repo. Add complete `.mcp.json`, explain each field, start fresh host session, inspect `/mcp` and tools. | Have prepared scratch repo/capture. Keep configuration explanation even if network fails. |
-| 20–33 | 6–10 | Map toy-agent artifacts, separate discovery from ToolSearch loading, trace paired search/fetch requests, and classify claims against source evidence. | Cut deep framing, retain configuration/schema/call distinction. |
-| 33–45 | 11–12 | Students ask the hidden-items question and use evidence template. Discuss what proves tool use and what supports the answer. | Pair or defer live check; use recorded analysis explicitly if service unavailable. |
-| 45–55 | 13–15 | In disposable copy break endpoint path, observe, restore. Classify failure layer. Discuss permissions and costs with concrete examples. | Use a captured failure if live diagnosis drags. Never spend remaining class changing accounts. |
-| 55–63 | 16–18 | Compare URL vs process launch, show Neo4j three-process diagram, give reusable adoption recipe. | Cut alternate-host discussion; no additional host setup required. |
-| 63–70 | 19–21 | Show prepared music schema and one bounded count query. Explain distinct counts and launch homework/checkpoint. | Use instructor live capture. No database install in class. |
-| 70–75 | 22 | Transition to dice, exit questions and slack. | Ask students to explain one field and one grounding observation. |
+| 8–18 | 3–6 | Motivation. Show the simplified toy-agent registrations and loop; ask what Step 8 made you edit. Contrast a per-tool schema with a per-server declaration. Walk the connections diagram: host client discovers, model selects, host routes. State the two benefits and the caveats. | If short, cut slide 6 to its two bold lines; the full argument is notes Section 1. |
+| 18–28 | 7–9 | Open empty scratch repo. Add complete `.mcp.json`, explain each field, start fresh host session, inspect `/mcp` and tools. | Have prepared scratch repo/capture. Keep configuration explanation even if network fails. |
+| 28–36 | 10–12 | Map toy-agent artifacts onto the host now that `/mcp` has been seen, separate provider discovery from ToolSearch loading, trace paired search/fetch requests. | Cut the ToolSearch detail to one sentence; retain configuration/schema/call distinction. |
+| 36–46 | 13–15 | Classify claims against source evidence, then students ask the hidden-items question and use the evidence template. Discuss what proves tool use and what supports the answer. | Pair or defer live check; use recorded analysis explicitly if service unavailable. |
+| 46–54 | 16–18 | In disposable copy break endpoint path, observe, restore. Classify failure layer. Discuss permissions and costs with concrete examples. | Use a captured failure if live diagnosis drags. Never spend remaining class changing accounts. |
+| 54–62 | 19–21 | Compare URL vs process launch, show Neo4j three-process diagram, give reusable adoption recipe. | Cut alternate-host discussion; no additional host setup required. |
+| 62–70 | 22–24 | Show prepared music schema and one bounded count query. Explain distinct counts and launch homework/checkpoint. | Use instructor live capture. No database install in class. |
+| 70–75 | 25 | Transition to dice, exit questions and slack. | Ask students to explain one field and one grounding observation. |
 
 ## Main walkthrough
 
@@ -66,10 +70,16 @@ a tool name. `http` and `url` tell the host how and where to connect. JSON synta
 is not executable shell syntax. Discuss project vs local vs user scope and the
 misleading local-scope name; share the repository file, not user credentials.
 
-Make the main motivation explicit: in the toy agent, adding dice means editing
-schemas and dispatch mappings in harness code. In an MCP-capable host, adding
-a compatible dice provider means declaring its server and discovering its
-catalogue. Reuse across hosts and models comes from the standard provider
+The motivation now comes right after the cold open, before any configuration
+detail. Put the simplified toy-agent code on the screen and let students name
+what Step 8 made them edit: a schema in `TOOLS_SCHEMA`, a function, and a
+dispatch entry in `TOOLS_DICTIONARY`, for every tool, in every harness. Then
+show that the server declaration contains none of those, and walk the basic
+connections diagram: the developer declares a server, the host's client
+discovers its tools with `tools/list`, the model is shown the definitions and
+requests a call, the host routes it with `tools/call`. In the toy agent, adding
+dice means editing schemas and dispatch mappings in harness code; in an
+MCP-capable host it means declaring the server and discovering its catalogue. Reuse across hosts and models comes from the standard provider
 interface plus each host's model adaptation. Both approaches can already add
 tools without retraining. Distinguish host/client protocol discovery from any
 model-guided search over tool metadata; the model does not directly connect to
@@ -139,7 +149,7 @@ results, the CSV oracle comparison, rubric guidance, and export procedure.
 Keep it out of the student bundle. A setup checkpoint comes before the due date;
 adjust the default relative dates to the course calendar.
 
-After class, review whether the 12-minute student attempt was realistic, measure
+After class, review whether the 10-minute student attempt was realistic, measure
 setup burden, and rehearse projection/pacing. The supplied record documents instructor documentation use; raw host/network
 traffic, music host use, GUI screenshots and additional OS instructions remain
 separate checks. Do not present the new record as completing those other checks.

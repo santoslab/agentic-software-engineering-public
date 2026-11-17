@@ -47,8 +47,10 @@ different tool-capable models.
 The host's MCP client performs discovery and invocation; the model requests tool
 use through the host. Model-guided tool search is a host feature layered on this
 mechanism. Neither design requires retraining the model to add tools: MCP adds
-a shared provider interface, discovery, and routing convention. This is the
-provider side of the [adoption lecture's motivation](lecture-mcp-adoption.md).
+a shared provider interface, discovery, and routing convention. The toy-agent
+code and the host, model, and server picture are presented in full in Section 1
+of the [adoption lecture](lecture-mcp-adoption.md); what follows is a recap from
+the provider side.
 
 In Steps 5–6 of the toy-agent exercise, `TOOLS_SCHEMA` told the model what was
 available, `TOOLS_DICTIONARY` associated names with functions, the harness

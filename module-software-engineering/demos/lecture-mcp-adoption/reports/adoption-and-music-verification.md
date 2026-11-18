@@ -27,6 +27,14 @@ renumbered; the instructor outline's timing moved the student attempt to ten
 minutes. The slide-layout measurement below predates this change and was not
 re-run.
 
+Later the same day the instructor captured five screenshots of the `/mcp`
+drill-down (command palette, server list, server detail, tool list, tool
+detail) from a session started in a `mktemp -d` directory. They are tracked as
+`../../../slides/images/mcp-adoption-01` through `-05` and explained in the
+notes' new Section 4.1; the demo script names them as the fallback when the
+live connection fails. The tool annotations and names visible in the
+screenshots match the 2026-11-16 SDK capture.
+
 ## Instructor session update on 2026-11-17
 
 The instructor subsequently supplied a live documentation session account and

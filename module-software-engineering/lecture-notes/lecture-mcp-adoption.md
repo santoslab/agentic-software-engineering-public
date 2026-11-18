@@ -422,8 +422,90 @@ and `microsoft_code_sample_search`. Remote tools can change, so inspect your
 actual session. If the server is absent, first check the project root, active
 filename, JSON, loading/approval, and policy rather than changing a prompt.
 
-[Claude: insert screen shots illustrating drill down into MCP server
-information along with accompanying descriptions.]
+### 4.1 Drilling down into the server from inside Claude Code
+
+The five screenshots below come from the instructor's session on 2026-11-17,
+started in a temporary directory exactly as described above. Each screen is one
+level deeper in the host's view of the server: the command, the list of servers,
+one server, its tools, and one tool. Your screens will differ in detail, because
+Claude Code's interface changes between versions and your machine has different
+servers declared, but the levels are the same.
+
+![Typing the /mcp slash command in Claude Code](../slides/images/mcp-adoption-01-slash-mcp.png)
+
+Typing `/mcp` at the prompt opens the command palette on "Manage MCP servers".
+Slash commands are handled by the host itself. The model never sees `/mcp`, and
+nothing we do in these screens sends a message to the model service. We are
+inspecting what the host's MCP client learned when it started, not asking the
+model about it. The other palette entries merely matched the typed letters and
+are unrelated.
+
+![The Manage MCP servers list, grouped by where each server was declared](../slides/images/mcp-adoption-02-server-list.png)
+
+The server list is grouped by where each declaration came from. The "Project
+MCPs" group shows the full path of the `.mcp.json` the host read, here the
+temporary directory that `mktemp -d` created. That path is the first thing to
+check when a server you expected is missing: if it is not the file you edited,
+the host is running in a different project directory. The `microsoft-learn`
+entry carries the key we chose in the configuration, a check mark meaning the
+connection succeeded, and "3 tools", the number of tool definitions the host
+received from `tools/list`. The other groups are the instructor's own user-level
+and built-in integrations and have nothing to do with the project file; a
+machine with no other integrations shows only the project group. They still
+teach something. The three entries marked "needs authentication" are declared
+servers whose tools are not yet usable. Declaring a server and having a working
+connection to it are separate facts, and the host displays them separately.
+
+![Detail view for the microsoft-learn server](../slides/images/mcp-adoption-03-server-detail.png)
+
+Selecting the server shows the connection as the host sees it. Status
+"connected" together with Auth "not signed in" confirms what Microsoft's
+documentation says: this endpoint answers without a login. URL and Config
+location are exactly the values from our file, so this screen is where a typo in
+the declaration first becomes visible. "Capabilities: tools" is a fact about the
+server, reported during the protocol's initialization handshake. An MCP server
+can offer tools, resources (data the host can read), and prompts (reusable
+prompt templates); this one offers only tools. The menu below gives the
+host-side controls. "Reconnect" repeats the connection and discovery steps
+without restarting the session, which is useful while diagnosing. "Disable"
+takes the server's tools out of the model's view without editing the file.
+
+![The three tools discovered from the microsoft-learn server](../slides/images/mcp-adoption-04-tool-list.png)
+
+"View tools" lists the three definitions the host received. The names shown here
+are display titles that the provider supplied for human readers; the
+programmatic names appear on the next screen. The "read-only" label is also from
+the provider. Each tool definition carries annotations, and all three of these
+set `readOnlyHint` to true; the independent
+[capture](../demos/lecture-mcp-adoption/evidence/remote.json) made without
+Claude Code shows the same annotations. A host may consult such hints in its
+permission policy, but a hint is a claim by the provider, not something the host
+has verified.
+
+![Detail view for the Microsoft Docs Search tool](../slides/images/mcp-adoption-05-tool-detail.png)
+
+Selecting one tool shows the parts of a tool definition that Section 6 examines
+as JSON. Two names appear. "Tool name" is what the provider declared,
+`microsoft_docs_search`. "Full name" is what the model sees,
+`mcp__microsoft-learn__microsoft_docs_search`. The host built the second from
+the first by prefixing the key we chose in `.mcp.json`, so that tools from
+different servers cannot collide and so that a call in a transcript can be
+traced to its server. Rename the key and every full name changes; the provider
+is not involved. The description is text the provider wrote for the model, not
+for us. Read it as instructions: "Always use this tool to quickly ground your
+answers" and the "Follow-up Pattern" that tells the model to call
+`microsoft_docs_fetch` afterwards are the provider steering the model's choices
+through the same channel that delivers the schema. When the definition is loaded
+into the model's context (Section 6 explains when that happens in Claude Code),
+this prose arrives with it. Finally, "Parameters" lists one string, `query`.
+This plays the role of the input schema in the toy agent's `READ_FILE_SCHEMA`:
+it tells the model what arguments to supply. The difference is that nobody on
+our side wrote it; it arrived over the network when the host connected.
+
+Everything in these five screens is the host's rendering of information that
+arrived in protocol messages, the initialization handshake and the `tools/list`
+response. Section 6 looks at the same tool definitions as raw JSON captured by an
+independent client, with nothing that depends on Claude Code.
 
 The [demo script](../demos/lecture-mcp-adoption/DEMO.md) includes a session-isolation option
 that only loads the specific MCP server in the demo -- it excludes

@@ -50,6 +50,9 @@ UI.
 
 Invoke the `/mcp` slash command and work down through the menu
 hierarchy to show the tool definitions for the Microsoft Learn server.
+Fallback if the live session cannot connect: the lecture notes' Section 4.1
+walks through the same five screens with screenshots from the 2026-11-17
+instructor session (`../../slides/images/mcp-adoption-0*.png`).
  
 If already in a session when adding the `.mcp.json` file,
 exit and start a fresh session for a reproducible load. If unrelated integrations

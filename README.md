@@ -14,7 +14,7 @@ The course is still being developed: published materials may change, and files t
   prompting, context, and verification
 - [Software engineering for agentic development](module-software-engineering/README.md)
   — classical software-engineering concepts applied to agent-based development
-  (Lectures 01–06, the Beads lecture, and two MCP lectures, with demos, exercises,
+  (Lectures 01–06, the Beads lecture, and three MCP lectures, with demos, exercises,
   and the Project 0 and Project 1 briefs)
 - [Neo4j exercises](neo4j/README.md) — the Cypher introduction and the music
   database homework reached through MCP

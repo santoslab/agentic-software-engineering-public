@@ -113,18 +113,13 @@ pair students who have working access. Do not spend the class trying unrelated
 servers or account changes. An external endpoint opening as an ordinary browser
 page is not an MCP compatibility check.
 
-## Music preview
+## Neo4j teaser
 
-Prepare the homework fixture beforehand using its setup guide. Show the music
-graph and ask:
-
-> Inspect the music schema, then show the five artist IDs and names with the
-> largest distinct-playlist counts, breaking ties by artist ID.
-
-Use actual query/call/results if the host is rehearsed. Otherwise show the
-homework's `evidence/live.json`, explicitly LLM-free, and instructor CSV oracle.
-Contrast the remote URL with a local MCP launch command and a separate running
-database. Installation belongs to the homework checkpoint, not the preview.
+Slides only: the music-graph diagram and one sentence on what changes next
+time (a local server in front of a database, a Cypher statement as the tool
+argument, writes behind the permission dialog). Do not prepare a database or
+run a query for this meeting; the live Neo4j demo and the music homework
+belong to the [Neo4j lecture's script](../lecture-mcp-neo4j/DEMO.md).
 
 ## Before marking the host rehearsal complete
 
@@ -132,5 +127,4 @@ Record host/model versions, exact prompts, discovered tool names, actual calls,
 results, final answer and source comparison. Inspect `/context` for loaded or
 deferred tools without claiming every definition always enters every prompt.
 The supplied session accounts for documentation use, but is not a raw host/API
-export and does not include the music preview. Rehearse music separately and
-record host versions/calls/results where available. Keep account data external.
+export. Keep account data external.

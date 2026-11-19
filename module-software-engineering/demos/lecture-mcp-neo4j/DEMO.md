@@ -20,8 +20,8 @@ export NEO4J_MCP_URI='neo4j://127.0.0.1:7687'
 export NEO4J_MCP_USERNAME='neo4j'
 export NEO4J_MCP_DATABASE='music'
 read -r -s 'NEO4J_MCP_PASSWORD?Password for neo4j: '; export NEO4J_MCP_PASSWORD; echo
-uv run --frozen python database.py check      # nine counts, or load first
-uvx neo4j-mcp-server@2.1.1 -v                  # warms the cache: no download in class
+uv run --frozen python database.py check    
+uvx neo4j-mcp-server@2.1.1 -v               
 ```
 
 Then the scratch repository, fresh for every rehearsal and for class (the

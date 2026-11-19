@@ -22,6 +22,9 @@ dist/
 **/slides/*.pdf
 **/slides/.marp-cache/
 
+# Printable copies of demo scripts (built from DEMO.md with pandoc)
+**/demos/*/DEMO.pdf
+
 # Local editor and knowledge-base state
 .obsidian/
 **/.obsidian/

@@ -38,7 +38,7 @@ student must read, and a write.
 | Resource | Where | State | Disposition |
 |---|---|---|---|
 | Adoption lecture (notes, slides, outline) | `module-software-engineering/{lecture-notes,slides,lectures-instructor-notes}/lecture-mcp-adoption.md` | Taught; notes promise "a subsequent lecture" on Neo4j reads and writes | Keep. Shrink its 8-minute music preview (slides 22–24, notes §12) to a 2–3 minute teaser; it no longer launches the homework. |
-| Music preview script | `demos/lecture-mcp-adoption/neo4j-preview.md` | Fallback notes for the preview | Retire; content moves into the new demo's `DEMO.md`. |
+| Music preview script | `demos/lecture-mcp-adoption/neo4j-preview.md` | Fallback notes for the preview | Retire; content moves into the new demo's `DEMO.md`. Retired 2026-11-19. |
 | Instructor key | `demos/lecture-mcp-adoption/neo4j-music-instructor-key/` | Expected answers, LLM-free `live.json` | Move to `demos/lecture-mcp-neo4j/instructor-key/` (key sits beside the launching lecture, Lecture 05 precedent). Expected answers for Question A stay valid. |
 | Music homework package | `neo4j/02-neo4j-music-mcp/` | Complete, read-only, 2–3 h, 100-point rubric, 10 submission files, custom launcher | Keep the fixture, loader, checks, primer, reference queries, tests. Rewrite `README.md` as the two-part homework. Replace `launch_server.py` with the general `.mcp.json` recipe. Shrink `SETUP.md` to fixture-specific steps and point at the general setup guide. |
 | Chapter 1 Cypher exercise | `neo4j/01-intro-to-neo4j-cypher/` | Students install Desktop and work through the book | Keep as the prerequisite that supplies Desktop, an instance, and basic Cypher. |
@@ -505,6 +505,15 @@ proposed Cypher (the review step is the lesson, not identical output); first
 5. **Reconciliation** (Section 12 "Modified"): adoption teaser, dice pointers,
    READMEs, concept index. Done when every link resolves and the three
    artifacts of each MCP lecture agree on names, versions, and prompts.
+   **Done 2026-11-19**: module README (arc MCP 1/2/3, three-column lectures
+   table, exercises row assigned at the Neo4j lecture, files and conventions),
+   root README, the instructor-notes, lecture-notes, demos and exercises
+   READMEs, `neo4j/README.md`, `technical-concepts.md` (three lectures; entries
+   for the stdio server with environment variables and for Neo4j via MCP);
+   adoption lecture reduced to a teaser (slides 22–23 of 23, notes §12, outline
+   rows 62–75 and the closing section, `DEMO.md`); `neo4j-preview.md` removed;
+   dice lecture's recap row, notes section, and recap slide point at the Neo4j
+   lecture. Relative links in the touched files checked by script.
 6. **Authenticated rehearsal** by the instructor in a scratch repository; set
    the due date and checkpoint date in the module README.
 

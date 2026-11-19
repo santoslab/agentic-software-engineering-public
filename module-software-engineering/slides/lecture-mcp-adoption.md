@@ -302,7 +302,7 @@ Tool arguments are separate from process launch arguments.
 
 ![w:1050 center](diagrams/neo4j-processes.svg)
 
-<!-- Host close does not necessarily stop Desktop DB. MCP readiness and DB readiness are different. Real authoring failures: missing APOC meta, then sandboxed meta.schema. Details in homework setup. -->
+<!-- Host close does not necessarily stop Desktop DB. MCP readiness and DB readiness are different. Real authoring failures: missing APOC meta, then sandboxed meta.schema. Details in the Neo4j lecture and the setup guide. -->
 
 ---
 
@@ -318,51 +318,25 @@ Resources and prompts exist too; this task needs tools.
 
 ---
 
-## Preview the music graph
+## Next lecture: a database behind the agent
 
 ![w:1040 center](diagrams/music-graph.svg)
 
-Fixture: 36 tracks · 8 artists · 8 playlists · fictional data
+The Neo4j lecture declares the official Neo4j server as a local process, reads this fictional music graph with reviewed Cypher, writes to it behind the permission dialog, and verifies both outside the conversation. The music homework is assigned there.
 
-<!-- 62–70, slides 22–24. Have the instance loaded beforehand. Show schema and one bounded query; use instructor live.json LLM-free fallback if host not rehearsed. No installation during class. -->
-
----
-
-## Counts need a definition
-
-P1 contains T1 and T2; P2 contains T1.
-Both tracks credit A.
-
-Three paths to A · **two distinct playlists**
-
-Repeated rows and collaboration credits need explicit rules.
-
-<!-- Constructed tiny example, not a measured fixture result. Question A uses count(DISTINCT p). For overlap B uses count(DISTINCT t), excludes source, sorts ties by ID. -->
-
----
-
-## Homework: use and verify an integration
-
-1. Setup checkpoint and actual schema
-2. Two precise music questions through MCP
-3. Direct reference query and comparison
-4. Ambiguity, diagnosis, and reflection
-
-Keep credentials external. Review queries before execution.
-
-<!-- Handout has all tasks, rubric, primer, tested backend setup and caveats. Default checkpoint in two days/full work one week unless calendar supplied. Agent allowed, student explanation required. -->
+<!-- 62–66, slide 22. Teaser only: no database, no installation, no query in this meeting. Point at the diagram's two HAS_TRACK sources as the kind of detail the next lecture's reviews turn on. Students should have Neo4j Desktop installed with one running instance before that meeting (the Neo4j exercise); the notes' Section 12 says so. -->
 
 ---
 
 <!-- _class: lead -->
 
-## Next: build the provider
+## Next: a database, then a provider
 
-You have configured, discovered, used, and checked a server.
+You have configured, discovered, used, and checked a remote server.
 
-Now expose ordinary dice functions with **MCPServer**.
+Next, the same host starts a local server in front of a database you own. After that, you expose ordinary dice functions with **MCPServer**.
 
 [Detailed notes](../lecture-notes/lecture-mcp-adoption.md) ·
-[Music homework](../../neo4j/02-neo4j-music-mcp/README.md)
+[Neo4j lecture notes](../lecture-notes/lecture-mcp-neo4j.md)
 
-<!-- 70–75 slack. Exit check: explain one config field and identify one observation proving a tool was used. Full notes include setup, failures, examples and explained questions beyond what fits class. -->
+<!-- 66–75, slide 23, with slack. Exit check: explain one config field and identify one observation proving a tool was used. Full notes include setup, failures, examples and explained questions beyond what fits class. -->

@@ -7,7 +7,7 @@ with one database per activity.
 | Folder | Activity | Assigned |
 |---|---|---|
 | [`01-intro-to-neo4j-cypher/`](01-intro-to-neo4j-cypher/ReadMe.md) | Install Neo4j Desktop and follow Chapter 1 of *Neo4j: The Definitive Guide*; turn in screenshots and impressions. | Per the course schedule |
-| [`02-neo4j-music-mcp/`](02-neo4j-music-mcp/README.md) | Connect Claude Code to a prepared, fictional music database through the official Neo4j MCP server: one reviewed read verified in Desktop's Query tool, one controlled write behind the permission dialog, verified and reverted, and a recipe for any database. Includes the fixture and its loader, a Cypher primer, reference queries, tests, and an evidence template. About one hour once Desktop is installed. | The MCP Neo4j lecture in [`module-software-engineering/`](../module-software-engineering/README.md) (in preparation; the MCP adoption lecture previews it) |
+| [`02-neo4j-music-mcp/`](02-neo4j-music-mcp/README.md) | Connect Claude Code to a prepared, fictional music database through the official Neo4j MCP server: one reviewed read verified in Desktop's Query tool, one controlled write behind the permission dialog, verified and reverted, and a recipe for any database. Includes the fixture and its loader, a Cypher primer, reference queries, tests, and an evidence template. About one hour once Desktop is installed. | The [MCP Neo4j lecture](../module-software-engineering/lecture-notes/lecture-mcp-neo4j.md) in `module-software-engineering/` (draft pending the instructor's rehearsal; the adoption lecture closes with a teaser for it) |
 
 [`neo4j-desktop-mcp-setup.md`](neo4j-desktop-mcp-setup.md) is the general
 setup guide: APOC once per instance, one database per activity, the

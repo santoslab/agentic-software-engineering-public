@@ -1,8 +1,8 @@
 # MCP: from an ordinary function to an agent tool — instructor outline
 
 75 minutes; prepared walkthrough for graduate students who have completed the
-basic agent loop, toy-agent exercise, and the preceding MCP adoption lecture.
-No successful database setup is required. Working
+basic agent loop, toy-agent exercise, and the preceding MCP adoption and Neo4j
+lectures. No database is required. Working
 lecture title, no lecture number assigned. Sources and migration decisions are
 in [source map](../demos/lecture-mcp-dice/planning/source-map.md); current evidence is in
 [verification](../demos/lecture-mcp-dice/reports/verification.md).
@@ -25,8 +25,10 @@ recitation of protocol vocabulary.
   protocol result as the opening fallback.
 - Open `dice.py`, `dice_server.py`, tests, and protocol evidence side by side.
   Have the component and sequence SVGs ready. Do not type the whole example live.
-- The Neo4j homework has real LLM-free evidence. Do not install a database in
-  this lecture; use the prepared current fixture if a recap is useful.
+- Do not install or show a database in this lecture. If the recap at 58–61
+  needs a concrete consumer-side example, point back to the Neo4j lecture's
+  slides or its captures (`../demos/lecture-mcp-neo4j/reports/`), not a live
+  instance.
 
 ## Timing and actions
 
@@ -37,15 +39,17 @@ recitation of protocol vocabulary.
 | 10–20 | 6–8 | Trace component diagram and sequence. Separate model API and local stdio. Allocate duties to host, SDK, provider; orient resources/prompts. | Ask who executes and who grants permission. Local server does not imply offline model. Cut remote-transport detail. |
 | 20–45 | 9–13 | A function → B import/constructor/decorator → C real discovery → D strict bounds/output/errors → E coins. Run protocol demo, inspect wire IDs and fields. | Show B count=0 vs D count=0 and sides=7. Confirm no initialize on captured modern path. Use saved files if process fails. Cut optional extension first. |
 | 45–58 | 14–15 | Run tests; inspect controlled outcomes, schema assertions, real subprocess, malformed call. State host grounding check separately. | Ask which test detects wrong launch environment; ask why Error text can still succeed. If tests fail in class show verification and diagnose after class. |
-| 58–61 | 16 | Brief recap of adoption and music homework; connect consumer evidence to provider responsibilities. | Use current fictional fixture capture or refer back to adoption lecture. Cut this recap if behind. |
+| 58–61 | 16 | Brief recap of the adoption and Neo4j lectures from the consumer's side (the discovered contract, the argument, the rows, the replay, the dialog); connect that evidence to provider responsibilities. | Refer back to the two lectures' slides; no capture needed. Cut this recap if behind. |
 | 61–68 | 17–18 | Pitfalls and costs: stdout, paths, coercion, descriptions, context, turns, server execution. | Ask whether every tool definition always loads; discuss host-dependent deferral. No invented prices/tokens. |
 | 68–72 | 19–20 | CLI/MCP decision and two recipes. Show development prompt's contract and evidence requirements. | Exit prompt: choose an interface for one existing command and justify. Skip optional extension if behind. |
 | 72–75 | 21 | Questions and slack. | Revisit any misunderstood boundary. |
 
-## Relation to the adoption lecture
+## Relation to the adoption and Neo4j lectures
 
 Configuration, discovery as a consumer, and the provider survey were introduced
-in the preceding meeting. Keep slides 3–5 a five-minute retrieval exercise.
+in the adoption lecture; the Neo4j lecture added a local stdio server, a tool
+whose argument is a program, and writes behind the permission dialog, all seen
+from the consumer's side. Keep slides 3–5 a five-minute retrieval exercise.
 Use the recovered time for the implementation and testing walkthrough. The
 [expanded student tutorial](../lecture-notes/lecture-mcp-dice.md) provides complete
 examples and explanations beyond what fits on slides.

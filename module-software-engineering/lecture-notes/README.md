@@ -21,8 +21,8 @@ and self-contained, is distributed per lecture, and converts to PDF with pandoc.
 
 - [Connecting an agent to existing MCP servers](lecture-mcp-adoption.md) —
   accompanies the [slide deck](../slides/lecture-mcp-adoption.md) and the
-  [adoption demo](../demos/lecture-mcp-adoption/README.md); launches the
-  [music homework](../../neo4j/02-neo4j-music-mcp/README.md).
+  [adoption demo](../demos/lecture-mcp-adoption/README.md); closes with a
+  teaser for the Neo4j lecture.
 - [Connecting an agent to a database through a local MCP server: Neo4j](lecture-mcp-neo4j.md) —
   accompanies the [slide deck](../slides/lecture-mcp-neo4j.md) and the
   [Neo4j demo](../demos/lecture-mcp-neo4j/README.md); explains what changes

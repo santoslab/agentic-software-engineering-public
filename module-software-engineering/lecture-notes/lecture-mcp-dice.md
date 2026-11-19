@@ -1,6 +1,6 @@
 # MCP: from an ordinary function to an agent tool
 
-This lecture follows the [adoption tutorial](lecture-mcp-adoption.md) and takes a bounded dice tool from a Python function through the
+This lecture follows the [adoption](lecture-mcp-adoption.md) and [Neo4j](lecture-mcp-neo4j.md) tutorials and takes a bounded dice tool from a Python function through the
 Model Context Protocol (MCP) to an agent host. You should already recognize an
 agent loop: send messages to a model, inspect its tool requests, execute selected
 tools, append results, and ask the model again. You do not need a database.
@@ -562,21 +562,25 @@ A transport crash or timeout is another failure that the host must handle; it
 is not interchangeable with a tool returning an error result. The SDK's strict
 validation also prevents booleans and numeric strings in the final adapter.
 
-## Connect this provider to the music homework
+## Connect this provider to the consumer's checks
 
-The [adoption notes](lecture-mcp-adoption.md) already introduced existing
-providers, project configuration, and result verification. The
-[music homework](../../neo4j/02-neo4j-music-mcp/README.md) uses the official Neo4j provider
-with a complete fictional fixture, not the older airport transcript. Its actual
-schema/read capture and direct query results are available for instructor fallback.
-The server exposes `get-schema` and `read-cypher` in the tested restricted launch.
+The [adoption notes](lecture-mcp-adoption.md) introduced existing providers,
+project configuration, and result verification, and the
+[Neo4j notes](lecture-mcp-neo4j.md) put a local stdio server in front of a
+database: the official Neo4j server, started by the host, with a tool whose
+argument is a Cypher statement and, when its configuration allows, a write tool
+behind the permission dialog. The
+[music homework](../../neo4j/02-neo4j-music-mcp/README.md) assigned there has
+students reproduce that sequence on their own instance.
 
-Think about the consumer's checks when designing dice. Music needs an accurate
-schema path, correct distinct counts, and rows supporting the answer. Dice needs
+Think about the consumer's checks when designing dice. The Neo4j consumer
+needed an accurate schema, a statement that counted what the question asked,
+rows that support the answer, and a route outside the model to confirm them
+(Desktop's Query tool, a fixture check, the database's query log). Dice needs
 accurate argument limits, outcomes, a matching sum, and a grounded comparison.
 In both cases a healthy protocol can coexist with wrong domain semantics or
 wrong model interpretation. Provider tests and host evidence address different
-parts of that chain. See the [current preview](../demos/lecture-mcp-adoption/neo4j-preview.md).
+parts of that chain.
 
 ## Pitfalls, context, and costs
 

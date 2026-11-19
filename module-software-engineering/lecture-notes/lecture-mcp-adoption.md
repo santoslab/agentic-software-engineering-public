@@ -76,8 +76,9 @@ server, the host discovers the server's tools, and the model selects among them.
 Our first task uses a public documentation server. You will declare its existence
 in your repository, inspect its available tools, ask for information, and verify
 the result. You do not need to implement a server, install PowerShell, or start
-a database. Later, the music database homework applies the same
-process to Neo4j. Then, after that, a lecture that uses a simple game
+a database. The next lecture applies the same process to a Neo4j database
+through a local server that the host starts, reading and writing, and assigns
+the music homework there. Then, after that, a lecture that uses a simple game
 dice example explains the provider's side of the interface
 as you set up your own MCP server.
 
@@ -188,7 +189,7 @@ available to the model, execution policy, and results. The **MCP client** is the
 part of the host that speaks MCP to one provider. An **MCP server** is a program
 that exposes capabilities such as a search or a database query. A **transport**
 is how client and server exchange messages: here HTTP to a **remote endpoint**;
-later, for the music homework, standard-input and standard-output pipes to a
+in the next lecture, for Neo4j, standard-input and standard-output pipes to a
 local child **process**. 
 
 A server need not be a separate machine or on the internet.  In fact,
@@ -800,11 +801,12 @@ exchanges protocol messages over the child's standard input/output pipes. The
 launch command and argument array are host configuration. They are different
 from the arguments to a later tool call.
 
-For example, a local process entry might have `command: "uv"` with arguments
-that select a pinned project and run a launcher. That command starts the provider;
-it does not itself ask for schema inspection. The homework supplies a complete
-version rather than a partly runnable placeholder. A package runner can also
-need network access on first installation; install dependencies before class.
+For example, the Neo4j lecture's entry has `command: "uvx"` with the argument
+`neo4j-mcp-server@2.1.1`, a pinned release of the official Neo4j server, and an
+`env` block that carries the server's own settings (database address, account,
+database name, read-only flag). That command starts the provider; it does not
+itself ask for schema inspection. A package runner can also need network access
+on first installation; install dependencies before the session that needs them.
 
 ![Remote and local connections](../slides/diagrams/adoption-connections.svg)
 
@@ -830,10 +832,11 @@ without rewriting the underlying operation.
 Three permission questions are separate: will the host allow this action, will
 the provider expose this operation, and will the downstream service authorize
 it? A host approval prompt is not a substitute for database authorization.
-The homework launcher restricts the provider to schema/read operations and enables
-its read-only setting, but does not claim a Community administrator credential
-has become an independently restricted database user. Use the supplied disposable
-data and the documented scope.
+The Neo4j server's read-only setting withholds its write tool from the host, and
+the host's permission dialog gates each call, but neither makes the administrator
+account the server logs in with a restricted database user; the next lecture
+separates these three controls. Use the supplied disposable data and the
+documented scope.
 
 Treat retrieved documentation as evidence, not an instruction source allowed
 to change host policy. A tool result can contain text that resembles commands
@@ -849,24 +852,26 @@ that every definition enters every request. Use `/context` and actual host
 observations for that session. This package supplies no invented prices or
 measured token savings.
 
-## 12 Transfer the method to music
+## 12 Next: a database behind the agent
 
-A Playlist points to Tracks; a Track points to its Artists. Artist A can have
-many tracks in one playlist, so counting paths differs from counting distinct
-playlists. In a tiny constructed example, P1 contains T1 and T2; both credit A;
-P2 contains T1. There are three paths to A but two distinct playlists. An exact
-duplicate input row should not inflate either answer.
+The next lecture keeps this host, this file, and this protocol and changes what
+is behind the server. The declared server is the official Neo4j MCP server,
+started by Claude Code as a local child process from a `"type": "stdio"` entry
+whose `env` block carries the database address, the account, the database
+name, and a read-only flag. Its read tool takes a Cypher statement as its
+argument, so the review step moves from "did the model use the tool" to "is the
+statement the model wrote the right one". Its write tool, exposed only when the
+flag allows it, runs behind the host's permission dialog. Both are verified
+outside the conversation: the same statement replayed in Desktop's Query tool,
+a count check against the fixture, and the database's own query log.
 
-The homework gives you a complete fictional fixture, loader, and
-[Cypher primer](../../neo4j/02-neo4j-music-mcp/PRIMER.md). You inspect its schema, review
-agent-proposed reads, and compare the result with direct reference queries.
-This adds domain meaning to the same integration pattern. “Most popular artist”
-is ambiguous; “greatest number of distinct playlists in this fixture” is a
-specific count the graph can support.
-
-Do not let database setup swallow the lecture. The instructor preview uses a
-prepared instance. Your homework checkpoint provides time to establish that
-the instance, plugin, provider, and host are each ready.
+The [Neo4j lecture notes](lecture-mcp-neo4j.md) cover all of this on a
+fictional music graph, and the
+[music homework](../../neo4j/02-neo4j-music-mcp/README.md) assigned there asks
+you to reproduce the sequence on your own instance. Before that meeting, have
+Neo4j Desktop installed with one running instance (the Neo4j exercise); the
+[setup guide](../../neo4j/neo4j-desktop-mcp-setup.md) covers the rest, and
+nothing needs to be installed during the lecture.
 
 ## 13 A reusable adoption recipe
 
@@ -883,9 +888,11 @@ configuration through the host's supported mechanism or remove the scratch
 repository entry and restart; do not accidentally remove an unrelated global
 server with the same display name.
 
-The next lecture follows the same boundary from the other side: build ordinary
-dice code, expose it with official Python SDK MCPServer, inspect discovery,
-and test validation and results. You now know what a consumer will try to observe.
+The Neo4j lecture applies this recipe to a local server in front of a database.
+The dice lecture then follows the same boundary from the other side: build
+ordinary dice code, expose it with the official Python SDK's MCPServer, inspect
+discovery, and test validation and results. You now know what a consumer will
+try to observe.
 
 ## 14 Explained self-checks and vocabulary
 

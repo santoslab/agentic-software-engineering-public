@@ -10,8 +10,9 @@ outline; its notes, deck, and demo server are not yet written. Lecture 05 is a
 walk-through of the Project 1 brief, step by step; its demo folder holds the
 script and the instructor key. Two MCP lectures (adopting an existing server, then
 implementing a dice server) and the Neo4j music homework were migrated from the
-planning repository on 2026-11-17; they need instructor review and host rehearsal
-before use (see [MCP lectures](#mcp-lectures)).
+planning repository on 2026-11-17, and a third MCP lecture (a Neo4j database behind
+the agent through a local server) was written on 2026-11-18 and 19; the three need
+instructor review and host rehearsal before use (see [MCP lectures](#mcp-lectures)).
 
 **Position in the course:** a three-week module that follows
 [`weeks-01-03/`](../weeks-01-03/README.md) (foundations) and precedes the
@@ -36,13 +37,14 @@ artifacts it must produce, and how its output is checked.
 | [05](lectures-instructor-notes/lecture-05-reversi-kickoff-applying-the-method.md) | Reversi Kickoff: Applying the Method | Can you run the same moves on a game you were just handed? | Project 1 |
 | [06](lecture-notes/lecture-06-agent-skills-packaging-a-method.md) | Agent Skills: Packaging a Method So an Agent Can Follow It | How do you package a method so an agent follows it, and how do you tell whether it works? | [Skills exercise](exercises/exercise-03-a-skill-for-specs-from-conops.md) |
 | [07](lectures-instructor-notes/lecture-07-mcp-the-tool-contract-as-a-specification.md) | MCP: The Tool Contract as a Specification | What changes when the reader of a contract is a machine? | — (Phase 1 continues; Stage E previewed) |
-| [MCP 1](lectures-instructor-notes/lecture-mcp-adoption.md) | Connecting an Agent to Existing MCP Servers | How do I connect my repository's agent to an existing capability, and how do I know the model used it? | [Music homework](../neo4j/02-neo4j-music-mcp/README.md) |
-| [MCP 2](lectures-instructor-notes/lecture-mcp-dice.md) | MCP: From an Ordinary Function to an Agent Tool | What do the provider and the host each do when a model calls a tool, and how is each layer tested? | — |
+| [MCP 1](lectures-instructor-notes/lecture-mcp-adoption.md) | Connecting an Agent to Existing MCP Servers | How do I connect my repository's agent to an existing capability, and how do I know the model used it? | — (closes with a teaser for MCP 2) |
+| [MCP 2](lectures-instructor-notes/lecture-mcp-neo4j.md) | Connecting an Agent to a Database through a Local MCP Server: Neo4j | How do I put a database behind my agent, and how do I keep its queries and updates honest? | [Music homework](../neo4j/02-neo4j-music-mcp/README.md) |
+| [MCP 3](lectures-instructor-notes/lecture-mcp-dice.md) | MCP: From an Ordinary Function to an Agent Tool | What do the provider and the host each do when a model calls a tool, and how is each layer tested? | — |
 
 Across the seven lectures the module introduces most of the kinds of
 specification in the course catalog (`../specification-kinds.md`); Lecture 03's
 table is the module's view of it, and Lecture 06 adds the last kind. Lecture 07
-is an outline-only draft that predates the two MCP lectures; those lectures are the
+is an outline-only draft that predates the three MCP lectures; those lectures are the
 module's taught MCP material, and the draft's game-server demo and FastMCP setup are
 superseded by them.
 
@@ -60,29 +62,33 @@ starter, checkpoints, and the self-contained
 
 ## MCP lectures
 
-Two coordinated 75-minute lectures, unnumbered like the Beads lecture. Students
-first configure and verify an existing integration, then implement a small
-provider with the official Python SDK's `MCPServer`. Both decks share the module
-style; the student notes are full tutorials whose depth is independent of slide
-count.
+Three coordinated 75-minute lectures, unnumbered like the Beads lecture. Students
+first configure and verify an existing remote integration, then put a Neo4j
+database behind the agent through a local server that the host starts, reading
+and writing under review, and then implement a small provider with the official
+Python SDK's `MCPServer`. The decks share the module style; the student notes are
+full tutorials whose depth is independent of slide count.
 
-| Material | Adoption lecture | Dice implementation lecture |
-|---|---|---|
-| Instructor outline | [Adoption outline](lectures-instructor-notes/lecture-mcp-adoption.md) | [Dice outline](lectures-instructor-notes/lecture-mcp-dice.md) |
-| Student notes | [Adoption notes](lecture-notes/lecture-mcp-adoption.md) | [Dice notes](lecture-notes/lecture-mcp-dice.md) |
-| Slides | [Adoption slides](slides/lecture-mcp-adoption.md) | [Dice slides](slides/lecture-mcp-dice.md) |
-| Demo | [Microsoft Learn documentation server](demos/lecture-mcp-adoption/README.md) | [Dice server in stages A–E, with tests](demos/lecture-mcp-dice/README.md) |
-| Demo script | [Adoption script](demos/lecture-mcp-adoption/DEMO.md) | [Dice script](demos/lecture-mcp-dice/DEMO.md) |
+| Material | Adoption lecture | Neo4j lecture | Dice implementation lecture |
+|---|---|---|---|
+| Instructor outline | [Adoption outline](lectures-instructor-notes/lecture-mcp-adoption.md) | [Neo4j outline](lectures-instructor-notes/lecture-mcp-neo4j.md) | [Dice outline](lectures-instructor-notes/lecture-mcp-dice.md) |
+| Student notes | [Adoption notes](lecture-notes/lecture-mcp-adoption.md) | [Neo4j notes](lecture-notes/lecture-mcp-neo4j.md) | [Dice notes](lecture-notes/lecture-mcp-dice.md) |
+| Slides | [Adoption slides](slides/lecture-mcp-adoption.md) | [Neo4j slides](slides/lecture-mcp-neo4j.md) | [Dice slides](slides/lecture-mcp-dice.md) |
+| Demo | [Microsoft Learn documentation server](demos/lecture-mcp-adoption/README.md) | [Neo4j Desktop through the official server, read and write](demos/lecture-mcp-neo4j/README.md) | [Dice server in stages A–E, with tests](demos/lecture-mcp-dice/README.md) |
+| Demo script | [Adoption script](demos/lecture-mcp-adoption/DEMO.md) | [Neo4j script](demos/lecture-mcp-neo4j/DEMO.md) | [Dice script](demos/lecture-mcp-dice/DEMO.md) |
 
-The adoption lecture launches the
-[music homework](../neo4j/02-neo4j-music-mcp/README.md): students connect Claude
-Code to a prepared, fictional Neo4j music database through the official Neo4j
-MCP server, answer two counting questions, and verify the answers outside the
-model conversation. Its
+The Neo4j lecture launches the
+[music homework](../neo4j/02-neo4j-music-mcp/README.md): students reproduce the
+lecture's demo on their own Desktop instance, one reviewed read replayed in
+Desktop's Query tool and one controlled write behind the permission dialog,
+verified and reverted, and record what they observed. The general
+[setup guide](../neo4j/neo4j-desktop-mcp-setup.md) covers the instance, APOC,
+and the `.mcp.json` entry. The homework's
 [instructor key](demos/lecture-mcp-neo4j/instructor-key/README.md)
 sits in the Neo4j lecture's demo folder, apart from the student package. Each demo
 folder keeps its authoring records in `planning/` (the implementation plan, the
-dice handoff brief, the source map) and its verification reports in `reports/`.
+dice handoff brief, the source map, the Neo4j plan and pilot) and its verification
+reports in `reports/`.
 
 ## The process documents
 
@@ -106,7 +112,7 @@ rules.
 | Ex. 3 (optional) | to write | L03 | before L05 | 1–2 h | Claude Code |
 | Skills | [exercise-03-a-skill-for-specs-from-conops.md](exercises/exercise-03-a-skill-for-specs-from-conops.md) | L06 | Tue Oct 13, 11:55 pm | — | Claude Code, git, jq |
 | Beads | [Render and resume](demos/lecture-beads/exercise-beads/README.md) | Beads lecture | Nov 8, 2026 | — | Claude Code, Git, Node.js/npm, uv, Python 3.12+ |
-| Music MCP | [Connect Claude Code to Neo4j: the music fixture](../neo4j/02-neo4j-music-mcp/README.md) | MCP adoption lecture | to set | about 1 h once Desktop is installed | Claude Code, uv, Python 3.12+, Neo4j Desktop (2026.10 with APOC) |
+| Music MCP | [Connect Claude Code to Neo4j: the music fixture](../neo4j/02-neo4j-music-mcp/README.md) | MCP Neo4j lecture | to set (setup checkpoint two days after release) | about 1 h once Desktop is installed | Claude Code, uv, Python 3.12+, Neo4j Desktop (2026.10 with APOC) |
 
 **Project 0** — the personal knowledge base — is assigned in this module at
 Lecture 02 by [`project-0-pkb-brief.md`](project-0-pkb-brief.md), with its
@@ -148,8 +154,9 @@ concepts. Each spec ends with a required-elements checklist, as in the other uni
   states, two scripts); `demos/lecture-03-game-demo/` the game demo Lectures 03
   and 04 run in two parts; `demos/lecture-05-reversi-audit/` the Lecture 05
   walkthrough of the brief and its instructor key;
-  `demos/lecture-mcp-adoption/` and `demos/lecture-mcp-dice/` the two MCP
-  lectures' demos, each with its `planning/` records and `reports/`
+  `demos/lecture-mcp-adoption/`, `demos/lecture-mcp-neo4j/`, and
+  `demos/lecture-mcp-dice/` the three MCP lectures' demos, each with its
+  `planning/` records and `reports/`
 - `reading-list.md` — annotated readings, tagged
   [required] / [recommended] / [gap-filler]
 - `student-materials/` — handouts (Markdown sources with checked-in PDFs), the
@@ -172,7 +179,7 @@ Each subfolder holds a README stating its purpose and file conventions.
 - **Lecture numbering.** Lecture files are numbered within the module, `lecture-01`
   through `lecture-06` (two meetings per week for three weeks). The Beads and
   MCP lectures are unnumbered: `lecture-beads`, `lecture-mcp-adoption`,
-  `lecture-mcp-dice`.
+  `lecture-mcp-neo4j`, `lecture-mcp-dice`.
 - **Three artifacts per lecture.** Every lecture has an instructor outline, a
   student lecture-notes file, and a slide deck, and edits to one usually need to be
   reflected in the other two.

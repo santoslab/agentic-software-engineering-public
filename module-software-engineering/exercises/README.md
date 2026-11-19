@@ -21,8 +21,9 @@ Students record a partial rendering task and recover it in a fresh session.
 
 The [homework handout and package](../../neo4j/02-neo4j-music-mcp/README.md) live
 in the repository's `neo4j/` folder, beside the Cypher introduction. **Due: to be
-set.** Assigned at the MCP adoption lecture; students connect Claude Code to a
-prepared fictional Neo4j music database through the official Neo4j MCP server,
-answer two counting questions, and verify the answers outside the model
-conversation. The instructor key is in
+set; setup checkpoint two days after release.** Assigned at the MCP Neo4j lecture;
+students reproduce its demo on their own instance: Claude Code connected to the
+prepared fictional music database through the official Neo4j MCP server, one
+reviewed read replayed in Desktop's Query tool, one controlled write behind the
+permission dialog, verified and reverted. The instructor key is in
 [`../demos/lecture-mcp-neo4j/instructor-key/`](../demos/lecture-mcp-neo4j/instructor-key/README.md).

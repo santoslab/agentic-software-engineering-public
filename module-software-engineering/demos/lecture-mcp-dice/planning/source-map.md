@@ -80,7 +80,7 @@ superseded by the report and current README. No public transfer was performed.
 - [Neo4j official source](https://github.com/neo4j/mcp) and
   [installation guide](https://neo4j.com/docs/mcp/current/installation/) were
   checked for the preview. Historical local sources are recorded in
-  [the preview](../../lecture-mcp-adoption/neo4j-preview.md); no old installation pin is reused.
+  the adoption demo's preview note (retired 2026-11-19, when the Neo4j lecture took over the music material; see `../../lecture-mcp-neo4j/DEMO.md`); no old installation pin is reused.
 
 Preserve the prose/media CC BY 4.0 and code/config MIT boundary when curating
 into the public repository. The public migration map remains in README.md.

@@ -1,8 +1,8 @@
 # Connecting an agent to existing MCP servers
 
-75-minute instructor outline. This meeting precedes the dice implementation
-lecture and launches the music homework. Students know the basic agent loop
-and toy-agent exercise; no database is needed for the main lecture. The
+75-minute instructor outline. This meeting precedes the Neo4j lecture, which
+launches the music homework, and the dice implementation lecture. Students know
+the basic agent loop and toy-agent exercise; no database is needed. The
 [student notes](../lecture-notes/lecture-mcp-adoption.md) provide the full tutorial
 and optional depth. Do not compress them to match classroom time.
 
@@ -13,10 +13,10 @@ replaces per-tool edits to the harness; explain server configuration vs discover
 configure a project-scoped integration, distinguish model API/MCP/backend
 connections, inspect actual tool use, verify a source-based answer, and diagnose
 a failure by layer. In class, collect one small documentation evidence record.
-Homework adds graph semantics and independent result verification.
+The Neo4j lecture adds a database behind the server, writes, and verification
+outside the conversation.
 
-Use [DEMO.md](../demos/lecture-mcp-adoption/DEMO.md) for exact prompts and scratch commands,
-[the homework](../../neo4j/02-neo4j-music-mcp/README.md) for task wording, and
+Use [DEMO.md](../demos/lecture-mcp-adoption/DEMO.md) for exact prompts and scratch commands and
 [verification](../demos/lecture-mcp-adoption/reports/adoption-and-music-verification.md) for what actually ran.
 The instructor supplied a [2026-11-17 session record](../demos/lecture-mcp-adoption/claude-session/mcp-microsoft-learn-transcript.md)
 and [walkthrough](../demos/lecture-mcp-adoption/claude-session/mcp-microsoft-learn-tutorial.md).
@@ -36,9 +36,9 @@ independent SDK captures and illustrative protocol/API envelopes.
   explaining the explicit session config as a rehearsal measure.
 - Prepare two versions of the file: correct URL and a disposable incorrect path.
   Inspect actual failure behavior instead of promising an HTTP status.
-- Load the fictional music fixture into a separate instance beforehand. Verify
-  matching APOC/meta configuration, counts, provider tools, and one read query.
-  Keep the actual direct/MCP capture and source-based explanation as fallback.
+- No database is needed. The closing teaser uses the music-graph diagram and
+  the three-process diagram only; the live Neo4j demo belongs to the next
+  lecture ([its demo script](../demos/lecture-mcp-neo4j/DEMO.md)).
 - Review the compact slides and full notes together. The notes teach JSON,
   schema, environment variables, transports, and failures more gently than can
   be covered live. Point students to the relevant section when cutting detail.
@@ -54,8 +54,8 @@ independent SDK captures and illustrative protocol/API envelopes.
 | 36–46 | 13–15 | Classify claims against source evidence, then students ask the hidden-items question and use the evidence template. Discuss what proves tool use and what supports the answer. | Pair or defer live check; use recorded analysis explicitly if service unavailable. |
 | 46–54 | 16–18 | In disposable copy break endpoint path, observe, restore. Classify failure layer. Discuss permissions and costs with concrete examples. | Use a captured failure if live diagnosis drags. Never spend remaining class changing accounts. |
 | 54–62 | 19–21 | Compare URL vs process launch, show Neo4j three-process diagram, give reusable adoption recipe. | Cut alternate-host discussion; no additional host setup required. |
-| 62–70 | 22–24 | Show prepared music schema and one bounded count query. Explain distinct counts and launch homework/checkpoint. | Use instructor live capture. No database install in class. |
-| 70–75 | 25 | Transition to dice, exit questions and slack. | Ask students to explain one field and one grounding observation. |
+| 62–66 | 22 | Teaser for the Neo4j lecture: the same host and file, a local server in front of a database, a Cypher statement as the tool argument, writes behind the dialog, verification outside the conversation. Say that the music homework is assigned there and that Desktop should be installed by then. | No database, no query, no installation in this meeting. |
+| 66–75 | 23 | Transition to the Neo4j and dice lectures, exit questions and slack. | Ask students to explain one field and one grounding observation. If the grounding block (36–46) ran short, give the recovered minutes to the live student attempt. |
 
 ## Main walkthrough
 
@@ -133,24 +133,22 @@ stopped database, and incorrect final interpretation. Keep the observed symptom
 attached to its layer. Real preparation failures included missing APOC and then
 sandboxed `apoc.meta.schema`; they are in the homework failure record.
 
-## Homework launch and instructor key
+## Teaser for the Neo4j lecture
 
-The homework fixture is original fictional music data with collaborations,
-duplicate occurrences, shared tracks, tied rankings and duplicate display names.
-It is reproducible, not a claim about a real catalogue. Setup uses a separate
-instance and external password references. The database loader refuses nonempty
-data. Provider querying exposes only schema/read tools; explain the difference
-between provider restrictions, host approvals, and database roles.
+The music homework is assigned at the Neo4j lecture, not here. This meeting
+ends with one slide that says what changes: the same host and `.mcp.json`, a
+local server started by the host in front of a database the student owns, a
+Cypher statement as the tool argument, a write tool behind the permission
+dialog, and verification outside the conversation. Do not show a database,
+run a query, or install anything. Tell students to have Neo4j Desktop installed
+with one running instance before the next meeting; the
+[setup guide](../../neo4j/neo4j-desktop-mcp-setup.md) is theirs to read, not a
+class activity. The [Neo4j outline](lecture-mcp-neo4j.md) has the demo, the
+homework launch, and the
+[instructor key](../demos/lecture-mcp-neo4j/instructor-key/README.md).
 
-The two questions require distinct-playlist counts per artist and distinct-track
-overlap with P01. Direct query replay and student explanation are required.
-The [instructor key](../demos/lecture-mcp-neo4j/instructor-key/README.md) contains actual
-results, the CSV oracle comparison, rubric guidance, and export procedure.
-Keep it out of the student bundle. A setup checkpoint comes before the due date;
-adjust the default relative dates to the course calendar.
-
-After class, review whether the 10-minute student attempt was realistic, measure
-setup burden, and rehearse projection/pacing. The supplied record documents instructor documentation use; raw host/network
-traffic, music host use, GUI screenshots and additional OS instructions remain
-separate checks. Do not present the new record as completing those other checks.
-No public migration or numbering is part of this package.
+After class, review whether the 10-minute student attempt was realistic and
+rehearse projection/pacing. The supplied record documents instructor
+documentation use; raw host/network traffic, GUI screenshots and additional OS
+instructions remain separate checks. Do not present the record as completing
+those other checks.

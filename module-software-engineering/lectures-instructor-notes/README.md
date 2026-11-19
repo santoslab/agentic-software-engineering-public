@@ -9,6 +9,7 @@ setup and fallbacks, discussion prompts, and cut-if-long notes. It plays the rol
   `**Unit:** module-software-engineering` in the header line.
 - Each outline has a matching student lecture-notes file in `../lecture-notes/` and a
   slide deck in `../slides/`.
-- The two MCP lectures are unnumbered, like the Beads lecture:
-  `lecture-mcp-adoption.md` and `lecture-mcp-dice.md`. Their demo folders under
+- The three MCP lectures are unnumbered, like the Beads lecture:
+  `lecture-mcp-adoption.md`, `lecture-mcp-neo4j.md`, and `lecture-mcp-dice.md`.
+  Their demo folders under
   `../demos/` hold the planning records that explain the authoring choices.

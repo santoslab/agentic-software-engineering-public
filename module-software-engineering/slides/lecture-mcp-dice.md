@@ -233,11 +233,11 @@ uv run --frozen pytest -q
 
 Adoption lecture: configure → discover → call → verify
 
-Music homework: schema → reviewed query → rows → answer
+Neo4j lecture: schema → reviewed statement → rows → replay outside; a write behind the dialog
 
 Dice provider: expose a contract the consumer can inspect
 
-<!-- 58–61. Brief recap of preceding adoption lecture and current fictional music homework. Actual LLM-free music schema/read results are retained; model grounding is separate. Cut if behind. -->
+<!-- 58–61. Brief recap of the adoption and Neo4j lectures from the consumer's side: what could be observed at each boundary, and what the provider is therefore responsible for. No database and no capture needed. Cut if behind. -->
 
 ---
 

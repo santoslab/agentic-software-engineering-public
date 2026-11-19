@@ -494,6 +494,14 @@ proposed Cypher (the review step is the lesson, not identical output); first
 4. **Outline and slides** (Sections 7 and 9), from the notes. Done when
    `slides/build.sh` renders the deck and diagrams and the timing table sums to
    75 with slack.
+   **Written 2026-11-18 night**, after the instructor's revision of the notes:
+   `lectures-instructor-notes/lecture-mcp-neo4j.md` (timed sequence 72 min +
+   3 slack, eight blocks), `demos/lecture-mcp-neo4j/DEMO.md` (prompts,
+   commands, fallbacks, after-class check), `demos/lecture-mcp-neo4j/README.md`,
+   and `slides/lecture-mcp-neo4j.md` (26 slides; renders to PDF and HTML with
+   the build script's flags; every slide inspected as a PNG). Two blocks were
+   added to Section 7's progression for the notes' added sections: records
+   (`query_log.py` live) and recovery. Awaiting instructor rehearsal.
 5. **Reconciliation** (Section 12 "Modified"): adoption teaser, dice pointers,
    READMEs, concept index. Done when every link resolves and the three
    artifacts of each MCP lecture agree on names, versions, and prompts.

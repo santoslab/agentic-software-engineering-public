@@ -937,7 +937,7 @@ notes and slides):
 | File | Shows |
 |---|---|
 | mcp-neo4j-01-slash-mcp.png | `/mcp` opened |
-| mcp-neo4j-02-server-list.png | Server list (shows the instructor's personal servers; crop or re-capture with `--strict-mcp-config`) |
+| mcp-neo4j-02-server-list.png | Server list, cropped 2026-11-18 to the header and the `neo4j` project server row (2 tools) |
 | mcp-neo4j-03-server-detail.png | `neo4j` server detail |
 | mcp-neo4j-04-tool-list.png | Tool list, read-only configuration (2 tools) |
 | mcp-neo4j-05-read-cypher-detail.png | `read-cypher` tool detail |

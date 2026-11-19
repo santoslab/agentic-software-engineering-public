@@ -44,7 +44,7 @@ def direct_checks(report, uri, auth, database):
             step(report, 'connect', False, f'{type(e).__name__}: {e}')
             return False
         with driver.session(database='system') as s:
-            comp = s.run('CALL dbms.components() YIELD versions, edition RETURN versions[0] AS version, edition').single().data()
+            comp = [r.data() for r in s.run('CALL dbms.components() YIELD name, versions, edition RETURN name, versions[0] AS version, edition')]
             step(report, 'server', True, comp)
             dbs = [r.data() for r in s.run('SHOW DATABASES YIELD name, currentStatus, default RETURN name, currentStatus, default')]
             step(report, 'databases', True, dbs)

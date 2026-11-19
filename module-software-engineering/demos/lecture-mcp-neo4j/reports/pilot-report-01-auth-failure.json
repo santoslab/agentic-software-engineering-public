@@ -1,0 +1,14 @@
+{
+  "captured_at": "2026-11-18T18:09:39.931976+00:00",
+  "uri": "neo4j://127.0.0.1:7687",
+  "user": "neo4j",
+  "database": "music",
+  "provider": "neo4j-mcp-server@2.1.1",
+  "steps": [
+    {
+      "step": "connect",
+      "ok": false,
+      "detail": "AuthError: {neo4j_code: Neo.ClientError.Security.Unauthorized} {message: The client is unauthorized due to authentication failure.} {gql_status: 42NFF} {gql_status_description: error: syntax error or access rule violation - permission/access denied. Access denied, see the security logs for details.}"
+    }
+  ]
+}

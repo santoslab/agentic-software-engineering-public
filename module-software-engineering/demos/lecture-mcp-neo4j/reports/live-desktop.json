@@ -1,0 +1,200 @@
+{
+  "captured_at": "2026-11-18T18:25:08.008616+00:00",
+  "kind": "LLM-free real Neo4j driver and MCP subprocess",
+  "fixture": "fictional-music-v1",
+  "database_version": {
+    "version": "2026.10.0",
+    "edition": "enterprise"
+  },
+  "protocol_version": "2026-07-28",
+  "counts": {
+    "Track": 36,
+    "Artist": 8,
+    "Album": 6,
+    "Playlist": 8,
+    "User": 4,
+    "OWNS": 8,
+    "PLAYLIST_HAS_TRACK": 89,
+    "ALBUM_HAS_TRACK": 36,
+    "ARTIST": 48
+  },
+  "direct_results": {
+    "question_a": [
+      {
+        "artist_id": "A07",
+        "artist_name": "Glass Meadow",
+        "playlist_count": 8
+      },
+      {
+        "artist_id": "A08",
+        "artist_name": "Indigo Current",
+        "playlist_count": 8
+      },
+      {
+        "artist_id": "A01",
+        "artist_name": "Amber Circuit",
+        "playlist_count": 5
+      },
+      {
+        "artist_id": "A02",
+        "artist_name": "Blue Orchard",
+        "playlist_count": 5
+      },
+      {
+        "artist_id": "A03",
+        "artist_name": "Copper Kite",
+        "playlist_count": 4
+      }
+    ],
+    "question_b": [
+      {
+        "playlist_id": "P02",
+        "playlist_name": "Mix 2",
+        "shared_tracks": 6
+      },
+      {
+        "playlist_id": "P03",
+        "playlist_name": "Evening",
+        "shared_tracks": 6
+      },
+      {
+        "playlist_id": "P07",
+        "playlist_name": "Mix 7",
+        "shared_tracks": 4
+      },
+      {
+        "playlist_id": "P08",
+        "playlist_name": "Mix 8",
+        "shared_tracks": 4
+      },
+      {
+        "playlist_id": "P04",
+        "playlist_name": "Evening",
+        "shared_tracks": 2
+      }
+    ]
+  },
+  "tools": {
+    "_meta": {
+      "io.modelcontextprotocol/serverInfo": {
+        "name": "neo4j-mcp",
+        "version": "2.1.1"
+      }
+    },
+    "ttlMs": 0,
+    "cacheScope": "public",
+    "tools": [
+      {
+        "name": "get-schema",
+        "description": "\n\t\tRetrieve the schema information from the Neo4j database, including node labels, relationship types, and property keys.\n\t\tIf the database contains no data, no schema information is returned.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "title": "Get Neo4j Schema",
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true
+        }
+      },
+      {
+        "name": "read-cypher",
+        "description": "read-cypher can run only read-only Cypher statements. For write operations (CREATE, MERGE, DELETE, SET, etc...), schema/admin commands, or PROFILE queries, use write-cypher instead.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "The Cypher query to execute"
+            },
+            "params": {
+              "type": "object",
+              "description": "Parameters to pass to the Cypher query",
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "title": "Read Cypher",
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true
+        }
+      }
+    ],
+    "resultType": "complete"
+  },
+  "calls": [
+    {
+      "name": "get-schema",
+      "arguments": {},
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "neo4j-mcp",
+            "version": "2.1.1"
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[{\"key\":\"Artist\",\"value\":{\"type\":\"node\",\"properties\":{\"id\":\"STRING\",\"name\":\"STRING\"},\"relationships\":{\"ARTIST\":{\"direction\":\"in\",\"labels\":[\"Track\"]}}}},{\"key\":\"Playlist\",\"value\":{\"type\":\"node\",\"properties\":{\"id\":\"STRING\",\"name\":\"STRING\"},\"relationships\":{\"HAS_TRACK\":{\"direction\":\"out\",\"labels\":[\"Track\"],\"properties\":{\"position\":\"INTEGER\"}},\"OWNS\":{\"direction\":\"in\",\"labels\":[\"User\"]}}}},{\"key\":\"ARTIST\",\"value\":{\"type\":\"relationship\"}},{\"key\":\"User\",\"value\":{\"type\":\"node\",\"properties\":{\"id\":\"STRING\"},\"relationships\":{\"OWNS\":{\"direction\":\"out\",\"labels\":[\"Playlist\"]}}}},{\"key\":\"HAS_TRACK\",\"value\":{\"type\":\"relationship\",\"properties\":{\"position\":\"INTEGER\"}}},{\"key\":\"OWNS\",\"value\":{\"type\":\"relationship\"}},{\"key\":\"Album\",\"value\":{\"type\":\"node\",\"properties\":{\"id\":\"STRING\",\"name\":\"STRING\"},\"relationships\":{\"HAS_TRACK\":{\"direction\":\"out\",\"labels\":[\"Track\"],\"properties\":{\"position\":\"INTEGER\"}}}}},{\"key\":\"Track\",\"value\":{\"type\":\"node\",\"properties\":{\"id\":\"STRING\",\"name\":\"STRING\"},\"relationships\":{\"ARTIST\":{\"direction\":\"out\",\"labels\":[\"Artist\"]},\"HAS_TRACK\":{\"direction\":\"in\",\"labels\":[\"Album\",\"Playlist\"],\"properties\":{\"position\":\"INTEGER\"}}}}}]"
+          }
+        ],
+        "isError": false,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "read-cypher",
+      "arguments": {
+        "query": "MATCH (p:Playlist)-[:HAS_TRACK]->(:Track)-[:ARTIST]->(a:Artist)\nRETURN a.id AS artist_id, a.name AS artist_name, count(DISTINCT p) AS playlist_count\nORDER BY playlist_count DESC, artist_id ASC\nLIMIT 5\n"
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "neo4j-mcp",
+            "version": "2.1.1"
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[\n  {\n    \"artist_id\": \"A07\",\n    \"artist_name\": \"Glass Meadow\",\n    \"playlist_count\": 8\n  },\n  {\n    \"artist_id\": \"A08\",\n    \"artist_name\": \"Indigo Current\",\n    \"playlist_count\": 8\n  },\n  {\n    \"artist_id\": \"A01\",\n    \"artist_name\": \"Amber Circuit\",\n    \"playlist_count\": 5\n  },\n  {\n    \"artist_id\": \"A02\",\n    \"artist_name\": \"Blue Orchard\",\n    \"playlist_count\": 5\n  },\n  {\n    \"artist_id\": \"A03\",\n    \"artist_name\": \"Copper Kite\",\n    \"playlist_count\": 4\n  }\n]"
+          }
+        ],
+        "isError": false,
+        "resultType": "complete"
+      }
+    },
+    {
+      "name": "read-cypher",
+      "arguments": {
+        "query": "MATCH (source:Playlist {id:'P01'})-[:HAS_TRACK]->(t:Track)<-[:HAS_TRACK]-(other:Playlist)\nWHERE other <> source\nRETURN other.id AS playlist_id, other.name AS playlist_name, count(DISTINCT t) AS shared_tracks\nORDER BY shared_tracks DESC, playlist_id ASC\nLIMIT 5\n"
+      },
+      "result": {
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "neo4j-mcp",
+            "version": "2.1.1"
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[\n  {\n    \"playlist_id\": \"P02\",\n    \"playlist_name\": \"Mix 2\",\n    \"shared_tracks\": 6\n  },\n  {\n    \"playlist_id\": \"P03\",\n    \"playlist_name\": \"Evening\",\n    \"shared_tracks\": 6\n  },\n  {\n    \"playlist_id\": \"P07\",\n    \"playlist_name\": \"Mix 7\",\n    \"shared_tracks\": 4\n  },\n  {\n    \"playlist_id\": \"P08\",\n    \"playlist_name\": \"Mix 8\",\n    \"shared_tracks\": 4\n  },\n  {\n    \"playlist_id\": \"P04\",\n    \"playlist_name\": \"Evening\",\n    \"shared_tracks\": 2\n  }\n]"
+          }
+        ],
+        "isError": false,
+        "resultType": "complete"
+      }
+    }
+  ]
+}

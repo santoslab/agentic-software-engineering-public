@@ -63,6 +63,60 @@ student must read, and a write.
   the schema is an array of `{key, value:{type, properties, relationships}}`
   entries, and query results are an array of row objects. This "JSON inside the
   JSON envelope" is a teaching point.
+- **Pilot results of 2026-11-18 (Parts A and B3).** Desktop 2.3.0 installs
+  APOC 2026.10.0-core from the plugin tab in seconds and writes
+  `dbms.security.procedures.unrestricted=apoc.*` and `allowlist=apoc.*` into
+  the instance configuration itself, so `apoc.meta.schema` runs with no
+  manual step. `CREATE DATABASE music` works on the bundled Enterprise
+  edition. The server 2.1.1 initialized against Neo4j 2026.10.0 ("initialize
+  requirements verified"), listed `get-schema`/`read-cypher` in read-only
+  mode and added `write-cypher` with the flag off, and answered `get-schema`
+  and `read-cypher`. The instance card shows the address as
+  `neo4j://127.0.0.1:7687`; that scheme works end to end, so all examples use
+  it. Without GDS the server logs an ERROR line about `gds.version` at every
+  `tools/list` and omits `list-gds-procedures`; this is expected noise, to be
+  explained in the setup guide. Decision D7 is settled: standardize on
+  Desktop's default version. Details in `../reports/desktop-pilot.md`.
+- **Pilot results of 2026-11-18 (Parts C, D, D5a, D5b; D6 skipped).** Full
+  record in `../reports/desktop-pilot.md`, with a screenshot index. What
+  changes the plan:
+  - *Permission mode.* The instructor's Claude Code defaults to **auto**
+    mode, in which no tool dialog appears and `write-cypher` ran on the word
+    "approved" alone (model courtesy, not a host control). The demo and the
+    student guide therefore launch `claude --permission-mode manual` (the
+    mode line reads `manual mode on`) and ship a project
+    `.claude/settings.json` allowing `mcp__neo4j__get-schema` and
+    `mcp__neo4j__read-cypher`; without it, manual mode prompts for every
+    read as well ("1 of 3" for batches). The write dialog's wording is
+    captured (`mcp-neo4j-24-write-permission-prompt.png`): "Tool use / neo4j —
+    Write Cypher Tool: (MCP) / query … / About the … / Do you want to proceed?
+    1. Yes 2. Yes, and don't ask again for … 3. No". Section 7's 45–60 row,
+    Section 8's §6, Section 9's diagrams and Section 11's guide must say so.
+  - *Deny rule.* `permissions.deny` withholds the tool from the model's
+    catalogue (ToolSearch no longer finds it) while `/mcp` still lists it; no
+    refusal text exists. Denied the tool, the model blamed the server
+    configuration and then proposed a route other than the MCP tool; the
+    instructor declined and the database stayed unchanged. The three-control
+    slide must state what each control does not prevent and that the
+    database account is the control that holds on every route.
+    `neo4j-write-controls.mmd` draws it that way.
+  - *Database role.* Not exercised (D6 skipped for time). The notes describe
+    the `reader` role as the third control and mark it untested on 2026.10;
+    no error text is quoted.
+  - *Demo script.* D2 and D3 in one session: with no antecedent the model
+    inferred "the four shared tracks" from a popularity query (correctly) and
+    recalled a memory file written in an earlier session of the same
+    directory. Each rehearsal uses a fresh `mktemp -d` directory. The model
+    read `.mcp.json` as an ordinary file in both write sessions; passwords
+    stay `${VAR}` references.
+  - *Evidence sources.* Claude Code's per-server log
+    (`~/Library/Caches/claude-cli-nodejs/<project-slug>/mcp-logs-neo4j/`)
+    carries the real cause behind terse `/mcp` failures, and the instance's
+    `logs/query.log` (Enterprise default) records every statement with its
+    client (`Go Driver/6.4.0`, `MCP4NEO4J/2.1.1`) and an `EXPLAIN` before
+    each read. Both go into the notes' diagnosis section.
+  - *Timing.* A ≈ 35 min, B ≈ 20, C ≈ 45, D ≈ 31, D5a ≈ 24, D5b ≈ 15 for an
+    instructor taking notes and screenshots.
 - **General launch form works.** `uvx neo4j-mcp-server@2.1.1 -v` prints
   `neo4j-mcp version: 2.1.1` on this machine in under a second after the first
   download. The wheel wraps a Go binary; students need only `uv`, which they
@@ -148,7 +202,7 @@ any later database:
       "command": "uvx",
       "args": ["neo4j-mcp-server@2.1.1"],
       "env": {
-        "NEO4J_MCP_URI": "${NEO4J_MCP_URI:-bolt://127.0.0.1:7687}",
+        "NEO4J_MCP_URI": "${NEO4J_MCP_URI:-neo4j://127.0.0.1:7687}",
         "NEO4J_MCP_USERNAME": "${NEO4J_MCP_USERNAME:-neo4j}",
         "NEO4J_MCP_PASSWORD": "${NEO4J_MCP_PASSWORD}",
         "NEO4J_MCP_DATABASE": "music",
@@ -414,6 +468,7 @@ proposed Cypher (the review step is the lesson, not identical output); first
 
 1. **Pilot** (Section 13). Done when every row of the demo table has a live
    path or a labeled capture and the version decision is recorded.
+   **Done 2026-11-18** except the optional database-role step (D6).
 2. **Setup guide and homework rewrite** (Sections 10–11), including the
    package changes and the moved key. Done when `export_students.py` produces a
    bundle that a fresh directory can follow without the instructor, and
@@ -436,6 +491,8 @@ Taken 2026-11-18: D1, D3, D4, D6, D7, and D8 as recommended. D2 and D5 were
 replaced: the homework stays on the music fixture and adds a general recipe;
 applying the recipe to a database of the student's own is the OpenFlights
 follow-on homework, not part of this one. The table is kept for the record.
+Added after the pilot (2026-11-18 evening): D9, D10 and D11 below, from the
+Part D findings.
 
 | # | Decision | Recommended default | Alternative |
 |---|---|---|---|
@@ -447,3 +504,6 @@ follow-on homework, not part of this one. The table is kept for the record.
 | D6 | Database layout | One instance, APOC once, one database per activity (`chapter01`, `music`, own) | One instance per activity (current `SETUP.md`) |
 | D7 | Neo4j version | Whatever Desktop 2 offers by default, APOC from the plugin tab, confirmed by the pilot | Require 5.26 LTS to match the current pin |
 | D8 | Instructor key location | Move beside the Neo4j lecture | Leave in the adoption demo folder and link |
+| D9 | Permission mode for demo and homework | `claude --permission-mode manual` plus a project `.claude/settings.json` that allows the two read tools; the write prompts | Auto mode (no dialog; the write gate disappears) |
+| D10 | Third control in the lecture | Describe the `reader` database role as the route-independent control, marked untested | Pilot it (D6 in PILOT.md) before the lecture if time appears |
+| D11 | Demo session hygiene | One session for the read and the write that depends on it; fresh scratch directory per rehearsal | Reuse a directory (the model recalls earlier memory files) |

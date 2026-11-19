@@ -24,6 +24,36 @@ its headings follow the steps here.
 | What does each failure look like in `/mcp`? | The lecture's diagnose-by-layer table may only quote error text that was actually observed. |
 | Do the read and write beats of the demo run as scripted, and what are the exact tool names, prompts, and rows? | The demo script and the slides quote them. |
 
+## Screenshots and paths
+
+You take every screenshot; nothing in this pilot is captured for you. A line
+such as *Screenshot: `neo4j/resources/desktop-01-instance-card.png`* means:
+take a screenshot of what that step describes and save it under that name.
+
+Paths in this document are relative to the repository root,
+`/Users/hatcliff/Dev/git-repos/agentic-software-engineering-public-git`.
+`neo4j/` is a top-level folder there, beside `module-software-engineering/`; it
+holds the Chapter 1 exercise, the music homework package, and now
+`neo4j/resources/` for the Desktop screenshots. There are two destinations:
+
+| Name pattern | Destination | Why there |
+|---|---|---|
+| `desktop-NN-<slug>.png` | `neo4j/resources/` | The student setup guide that will live in `neo4j/` embeds them |
+| `mcp-neo4j-NN-<slug>.png` | `module-software-engineering/slides/images/` | Beside the adoption lecture's `/mcp` screenshots, which the notes and slides embed |
+
+On macOS, Shift-Command-4 (drag a region) or Shift-Command-5 saves a file named
+`Screenshot <date> at <time>.png` on your Desktop. Right after taking one, from
+the repository root run
+
+```sh
+module-software-engineering/demos/lecture-mcp-neo4j/pilot_shot.sh desktop-01-instance-card
+```
+
+It moves the newest screenshot on your Desktop to the destination the name
+implies, prints the file's time so you can confirm it is the one you just took,
+and refuses to overwrite. Add `--dry-run` to see what it would do first. Saving
+by hand to the same path is equally fine.
+
 ## About the sample data
 
 The sample database is the fictional music fixture already in
@@ -51,7 +81,7 @@ shown on the card.
 from this card rather than assume defaults. The lecture standardizes on the
 version Desktop installs today.
 
-Screenshot: `neo4j/resources/desktop-01-instance-card.png`.
+Screenshot: `neo4j/resources/desktop-01-instance-card.png` (take it, then run the `pilot_shot.sh` line from the section above).
 
 ### A2 Install APOC on the instance
 
@@ -153,7 +183,7 @@ prove the fixture files are intact before anything is loaded.
 ```sh
 export NEO4J_HW_DIR="$PWD"
 export NEO4J_DEMO_DIR="$PWD/../../module-software-engineering/demos/lecture-mcp-neo4j"
-export NEO4J_MCP_URI='bolt://127.0.0.1:7687'
+export NEO4J_MCP_URI='neo4j://127.0.0.1:7687'
 export NEO4J_MCP_USERNAME='neo4j'
 export NEO4J_MCP_DATABASE='music'
 read -r -s 'NEO4J_MCP_PASSWORD?Password for neo4j: '
@@ -162,7 +192,10 @@ echo
 ```
 
 The first two lines only remember where the homework package and the demo
-folder are, so later steps can refer to them from any directory.
+folder are, so later steps can refer to them from any directory. The URI uses
+the `neo4j://` scheme exactly as the instance card shows it (Part A finding),
+so the pilot tests what students will copy; `bolt://` would also work for a
+single local instance.
 
 *Why:* these are the names the official server itself reads, so the same
 variables serve the loader, the check script, the LLM-free verifier, and the
@@ -244,8 +277,9 @@ Approve the project server when asked. Run `/mcp`, select `neo4j`, and drill
 down: server status, the tool list, then `read-cypher` and `get-schema`
 individually. Take one screenshot per screen, as the adoption lecture did:
 `module-software-engineering/slides/images/mcp-neo4j-01-slash-mcp.png`,
-`-02-server-detail.png`, `-03-tool-list.png`, `-04-read-cypher-detail.png`,
-`-05-get-schema-detail.png`. Note the model-visible tool names (expected
+`-02-server-list.png`, `-03-server-detail.png`, `-04-tool-list.png`,
+`-05-read-cypher-detail.png`, and optionally `-05b-get-schema-detail.png`
+(the same five screens as the adoption lecture's `mcp-adoption-0N-*.png`). Note the model-visible tool names (expected
 `mcp__neo4j__get-schema`, `mcp__neo4j__read-cypher`) and the tool count shown
 for the server (expected 2).
 
@@ -323,7 +357,7 @@ layer to next check. The plan forbids inventing error text. These two failures
 are the ones students are most likely to produce, and they occur in different
 layers (host expansion and authentication versus provider-to-database connection).
 
-## Part D — Claude Code rehearsal, writes (about 20 minutes)
+## Part D — Claude Code rehearsal, writes (about 30 minutes, plus 15 for D5)
 
 ### D1 Switch to the write configuration
 
@@ -360,8 +394,13 @@ P02 is "Mix 2", owned by U01; P03 is "Evening", owned by U02.
 Review the Cypher, then let it run. Claude Code should ask permission for
 `mcp__neo4j__write-cypher`. Choose the one-time allow, not "always allow", so
 the prompt remains visible for students. Screenshot the prompt:
-`mcp-neo4j-10-write-permission.png`. Record the prompt's exact wording and the
+`mcp-neo4j-24-write-permission-prompt.png`. Record the prompt's exact wording and the
 Cypher that ran.
+
+*Pilot note (2026-11-18): the dialog only appears when the session is in a
+prompting permission mode. D3 was run in auto mode, where the host approves
+tool calls itself, so no dialog appeared and the Cypher ran as soon as Claude
+received the word "approved". The dialog is captured in D5a instead.*
 
 Verify in Desktop's Query tool (database `music`):
 
@@ -399,18 +438,162 @@ once. Rerun the same `!` check line; it should pass with the original counts.
 *Why:* the demo must leave the fixture exactly as it was, and students perform
 the same create-verify-revert cycle in the homework.
 
-### D5 Optional: a host-level block
+### D5 The host's own gate: the permission prompt, then a standing deny rule (about 15 minutes)
 
-If time permits, add to the scratch repository's `.claude/settings.json`:
+**Pilot finding (2026-11-18).** Parts C and D ran in Claude Code's *auto*
+permission mode (the session transcript records `"permissionMode":"auto"`), in
+which the host approves tool calls itself. That is why D3 showed no "Do you
+want to proceed?" dialog and why "one-time allow" never came up: the only gate
+was the conversational "approved" that the prompt asked for, which is a
+courtesy of the model, not a host control. The demo's "host asks the human"
+beat therefore still has to be captured, in the mode students are most likely
+to be in. Claude Code 2.1.311 calls the prompting mode `manual`
+(`claude --help` lists `acceptEdits`, `auto`, `bypassPermissions`, `manual`,
+`dontAsk`, `plan`).
 
-```json
-{ "permissions": { "deny": ["mcp__neo4j__write-cypher"] } }
-```
+#### D5a Capture the prompt in manual mode
 
-Restart Claude Code and repeat the D3 prompt. Record what the host does.
+1. Exit Claude Code. From the scratch directory, with the variables still
+   set, start it in the prompting mode:
 
-*Why:* it is the second of the three write controls (provider flag, host rule,
-database role), shown as a JSON object like the others in this lecture.
+   ```sh
+   claude --permission-mode manual
+   ```
+
+   Look at the line under the input box. It should read
+   `⏸ manual mode on · ? for shortcuts` (observed 2026-11-18 in 2.1.311,
+   screenshot `mcp-neo4j-17-manual-mode-line.png`). This version labels the
+   prompting mode too, so a labelled line is the confirmation, not a sign
+   that the flag was ignored. Shift+Tab cycles modes if the label names a
+   different one. When you next start `claude` without the flag, note what
+   the line says in your default mode, so the setup guide can quote both.
+2. Run `/mcp`. The server should still show 3 tools; nothing in the
+   configuration changed.
+3. Repeat the D3 prompt word for word and reply `approved` when Claude shows
+   the Cypher. Before `write-cypher` executes, the host should now stop with
+   a permission dialog for the tool. Screenshot it:
+   `mcp-neo4j-24-write-permission-prompt.png`. Copy the dialog's exact wording
+   and the exact text of each option into the report. Choose the plain
+   one-time "Yes". Do not choose any "don't ask again" option: that would
+   write an allow rule into the scratch repository's
+   `.claude/settings.local.json` and hide the prompt from later runs.
+   Also note whether the read calls Claude makes before the write (schema,
+   precondition check) prompted or ran silently.
+4. Confirm the write with the `!` check line from D3; the 9 / 9 / 93
+   mismatch is enough (the Query read-back is optional this time).
+5. Repeat the D4 prompt, reply `approved`, and expect a second dialog for the
+   delete. Screenshot `mcp-neo4j-24b-revert-permission-prompt.png` only if it
+   differs from the first. Approve once. Rerun the `!` check; it must pass.
+
+*Why:* this is the per-call host control that the lecture's write sequence
+diagram draws between the model's request and the server's execution.
+Students should see it once with its real wording, and should learn that the
+mode line tells them whether it is active at all.
+
+#### D5b Standing host rules: allow the reads, deny the write
+
+D5a showed that manual mode prompts for every call, reads included (seven
+database dialogs before the write). The demo cannot spend its minutes on read
+dialogs, so the standing rule the lecture teaches has two halves: allow the
+two read tools, and leave the write tool to prompt. For this test the write is
+denied outright, so that both kinds of rule are observed in one run.
+
+1. Exit Claude Code. In the scratch directory create `.claude/settings.json`,
+   a new file beside the existing `settings.local.json`:
+
+   ```sh
+   mkdir -p .claude && cat > .claude/settings.json <<'EOF'
+   {
+     "permissions": {
+       "allow": ["mcp__neo4j__get-schema", "mcp__neo4j__read-cypher"],
+       "deny": ["mcp__neo4j__write-cypher"]
+     }
+   }
+   EOF
+   ```
+
+2. Start `claude --permission-mode manual` again. Run `/mcp` and record
+   whether the tool list still shows 3 tools or now 2.
+3. Ask the D2 question (tracks shared by P02 and P03). Expect T03–T06 with
+   **no dialog** for the schema or read calls; that is the allow rule
+   working. Record whether any dialog appeared.
+4. Ask the D3 prompt with the ids spelled out, since this is a fresh session:
+
+   > Create a new playlist with id P09 named "Class Demo", owned by user U01,
+   > containing exactly the tracks T03, T04, T05 and T06 at positions 1 to 4.
+   > Use MERGE so that nothing is duplicated. Show me the Cypher and wait for
+   > my approval before running it.
+
+   Reply as Claude asks. Expect the write to be refused by the host rule
+   rather than offered in a dialog. Screenshot what you see:
+   `mcp-neo4j-25-deny-rule.png`. Copy the exact refusal text (Claude's words
+   and any host message) into the report.
+5. Rerun the `!` check line; it must still pass, since no write happened.
+6. Remove the file so it does not leak into later parts:
+   `rm .claude/settings.json`. Leave `settings.local.json` alone; it records
+   the project-server approval.
+7. Start `claude` once more with no flag, in your usual mode, and write down
+   what the line under the input box says. Exit. (The guide will quote both
+   this text and `manual mode on`.)
+
+**Pilot finding (2026-11-18).** The allow rules removed every read dialog.
+The deny rule removed the write tool from the model's catalogue (ToolSearch no
+longer found it) while `/mcp` still listed three tools, so there was no
+refusal message, only an absent tool. The model attributed the gap to the
+server configuration and, once told "approved", proposed reaching the
+database by a route other than the MCP tool; the instructor declined the
+shell dialog and the database stayed unchanged. A host rule closes one path.
+The control that holds on every path is the database account, which D6 tests.
+
+*Why:* minus its deny line, this file is the demo repository's future
+`.claude/settings.json`: reads silent, writes prompting. It is the second of
+the three write controls the lecture names (provider flag
+`NEO4J_MCP_READ_ONLY`, host rule, database role), and a JSON object like
+everything else in this lecture. Whether a deny rule also hides the tool from
+`/mcp`, and what the host says when the model asks for a denied tool, are the
+two facts the pilot records rather than assumes.
+
+### D6 Optional: the database role (about 10 minutes)
+
+Desktop's Enterprise edition has roles, so the third control can be shown
+with real error text. Students on Community edition do not have it, and the
+notes will say so.
+
+1. In Desktop Query, select database `system` and run:
+
+   ```cypher
+   SHOW ROLES;
+   CREATE USER mcp_reader SET PASSWORD '<throwaway password>' SET PASSWORD CHANGE NOT REQUIRED;
+   GRANT ROLE reader TO mcp_reader;
+   ```
+
+   Expect `reader` among the built-in roles. Screenshot the role list:
+   `neo4j/resources/desktop-11-show-roles.png`.
+2. In the shell of B2, switch the connection to that user:
+
+   ```sh
+   export NEO4J_MCP_USERNAME=mcp_reader
+   read -r -s 'NEO4J_MCP_PASSWORD?Password for mcp_reader: '; export NEO4J_MCP_PASSWORD; echo
+   ```
+
+   Keep the write `.mcp.json`. Create `.claude/settings.json` with only the
+   two allow rules (the D5b file without its `deny` line).
+3. Start `claude --permission-mode manual`. `/mcp` should show 3 tools: the
+   provider allows writes. Ask the D2 question (no dialog, T03–T06). Ask the
+   D3 prompt with the ids spelled out, reply as asked, and accept the write
+   dialog with the one-time Yes. Expect the tool call to come back with a
+   database error naming the user and its roles. Screenshot
+   `mcp-neo4j-26-database-role-forbidden.png` and copy the error text into
+   the report. Note how Claude explains it.
+4. Rerun the `!` check line; it passes.
+5. Clean up: `export NEO4J_MCP_USERNAME=neo4j` and re-enter the `neo4j`
+   password with the B2 line; remove `.claude/settings.json`; in Query on
+   `system`, `DROP USER mcp_reader;` or keep the user and say so in the
+   report.
+
+*Why:* this is the one control among the three that does not depend on which
+tool the model picks or on the host's mode. The lecture's three-control slide
+needs its real failure text beside the other two.
 
 ## Part E — record and hand back (about 15 minutes)
 
@@ -422,6 +605,13 @@ Fill in `reports/desktop-pilot.md`. Move or confirm these files:
 
 Then exit Claude Code and leave the instance running or stop it as you prefer;
 the `music` database stays loaded for the next rehearsal.
+
+Also, from the D5 sessions: the scratch repository's `.claude/settings.json`
+has been removed; the scratch directory can be deleted
+(`rm -rf "$NEO4J_PILOT_DIR"`); and Claude Code keeps a memory folder for that
+directory under `~/.claude/projects/`, which the next rehearsal avoids by
+using a fresh `mktemp -d` directory. Record the mode line of your default
+mode (D5b step 7) if not yet done.
 
 ## If something fails
 
@@ -435,3 +625,4 @@ the `music` database stays loaded for the next rehearsal.
 | `/mcp` shows `neo4j` failed right after start | Password variable not set in the launching shell | This is Failure 1 of C4; start from the shell of B2 |
 | Server connected but Claude answered without calling a tool | Host selection | Record it; rephrase to name the server explicitly, as the prompts above do |
 | Rows right, prose wrong | Model grounding | Record it; this is a teaching example, not a setup failure |
+| No permission dialog before a write; Claude runs the Cypher as soon as you say "approved" | Host permission mode (auto) | The mode line under the input box; restart with `claude --permission-mode manual` (D5a) |

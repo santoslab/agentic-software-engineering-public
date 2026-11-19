@@ -5,7 +5,7 @@
       "command": "uvx",
       "args": ["neo4j-mcp-server@2.1.1"],
       "env": {
-        "NEO4J_MCP_URI": "${NEO4J_MCP_URI:-bolt://127.0.0.1:7687}",
+        "NEO4J_MCP_URI": "${NEO4J_MCP_URI:-neo4j://127.0.0.1:7687}",
         "NEO4J_MCP_USERNAME": "${NEO4J_MCP_USERNAME:-neo4j}",
         "NEO4J_MCP_PASSWORD": "${NEO4J_MCP_PASSWORD}",
         "NEO4J_MCP_DATABASE": "music",

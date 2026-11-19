@@ -1,0 +1,137 @@
+{
+  "captured_at": "2026-11-18T18:15:24.530099+00:00",
+  "uri": "neo4j://127.0.0.1:7687",
+  "user": "neo4j",
+  "database": "music",
+  "provider": "neo4j-mcp-server@2.1.1",
+  "steps": [
+    {
+      "step": "connect",
+      "ok": true,
+      "detail": "neo4j://127.0.0.1:7687"
+    },
+    {
+      "step": "server",
+      "ok": true,
+      "detail": {
+        "version": "2026.10.0",
+        "edition": "enterprise"
+      }
+    },
+    {
+      "step": "databases",
+      "ok": true,
+      "detail": [
+        {
+          "name": "chapter01",
+          "currentStatus": "online",
+          "default": false
+        },
+        {
+          "name": "music",
+          "currentStatus": "online",
+          "default": false
+        },
+        {
+          "name": "neo4j",
+          "currentStatus": "online",
+          "default": true
+        },
+        {
+          "name": "system",
+          "currentStatus": "online",
+          "default": false
+        }
+      ]
+    },
+    {
+      "step": "apoc.meta procedures present",
+      "ok": true,
+      "detail": [
+        "apoc.meta.data",
+        "apoc.meta.data.of",
+        "apoc.meta.graph",
+        "apoc.meta.graph.of",
+        "apoc.meta.graphSample",
+        "apoc.meta.nodeTypeProperties",
+        "apoc.meta.relTypeProperties",
+        "apoc.meta.schema",
+        "apoc.meta.stats",
+        "apoc.meta.subGraph"
+      ]
+    },
+    {
+      "step": "apoc.meta.schema executes",
+      "ok": true,
+      "detail": "0 schema entries"
+    },
+    {
+      "step": "relevant settings",
+      "ok": true,
+      "detail": [
+        {
+          "name": "dbms.security.procedures.allowlist",
+          "value": "apoc.*"
+        },
+        {
+          "name": "dbms.security.procedures.unrestricted",
+          "value": "apoc.*"
+        },
+        {
+          "name": "server.bolt.listen_address",
+          "value": "localhost:7687"
+        }
+      ]
+    },
+    {
+      "step": "provider tools/list (read_only=True)",
+      "ok": true,
+      "detail": {
+        "protocol": "2026-07-28",
+        "tools": [
+          "get-schema",
+          "read-cypher"
+        ]
+      }
+    },
+    {
+      "step": "write-cypher gating (read_only=True)",
+      "ok": true,
+      "detail": [
+        "get-schema",
+        "read-cypher"
+      ]
+    },
+    {
+      "step": "provider get-schema",
+      "ok": true,
+      "detail": "The get-schema tool executed successfully; however, since the Neo4j instance contains no data, no schema information was returned."
+    },
+    {
+      "step": "provider read-cypher RETURN 1",
+      "ok": true,
+      "detail": "[\n  {\n    \"ok\": 1\n  }\n]"
+    },
+    {
+      "step": "provider tools/list (read_only=False)",
+      "ok": true,
+      "detail": {
+        "protocol": "2026-07-28",
+        "tools": [
+          "get-schema",
+          "read-cypher",
+          "write-cypher"
+        ]
+      }
+    },
+    {
+      "step": "write-cypher gating (read_only=False)",
+      "ok": true,
+      "detail": [
+        "get-schema",
+        "read-cypher",
+        "write-cypher"
+      ]
+    }
+  ]
+}

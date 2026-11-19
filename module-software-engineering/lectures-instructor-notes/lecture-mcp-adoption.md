@@ -144,7 +144,7 @@ between provider restrictions, host approvals, and database roles.
 
 The two questions require distinct-playlist counts per artist and distinct-track
 overlap with P01. Direct query replay and student explanation are required.
-The [instructor key](../demos/lecture-mcp-adoption/neo4j-music-instructor-key/README.md) contains actual
+The [instructor key](../demos/lecture-mcp-neo4j/instructor-key/README.md) contains actual
 results, the CSV oracle comparison, rubric guidance, and export procedure.
 Keep it out of the student bundle. A setup checkpoint comes before the due date;
 adjust the default relative dates to the course calendar.

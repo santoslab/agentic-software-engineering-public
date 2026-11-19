@@ -1,0 +1,5 @@
+{
+  "permissions": {
+    "allow": ["mcp__neo4j__get-schema", "mcp__neo4j__read-cypher"]
+  }
+}

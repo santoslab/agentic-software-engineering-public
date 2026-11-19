@@ -25,4 +25,4 @@ set.** Assigned at the MCP adoption lecture; students connect Claude Code to a
 prepared fictional Neo4j music database through the official Neo4j MCP server,
 answer two counting questions, and verify the answers outside the model
 conversation. The instructor key is in
-[`../demos/lecture-mcp-adoption/neo4j-music-instructor-key/`](../demos/lecture-mcp-adoption/neo4j-music-instructor-key/README.md).
+[`../demos/lecture-mcp-neo4j/instructor-key/`](../demos/lecture-mcp-neo4j/instructor-key/README.md).

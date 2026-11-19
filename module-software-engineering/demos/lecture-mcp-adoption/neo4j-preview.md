@@ -6,8 +6,8 @@ Show the graph, inspect schema, and run one bounded artist/distinct-playlist que
 Do not install a database during the adoption or dice lecture.
 
 Actual LLM-free results are in the
-[instructor capture](neo4j-music-instructor-key/live.json); the
-[answer key](neo4j-music-instructor-key/README.md) explains interpretation.
+[instructor capture](../lecture-mcp-neo4j/instructor-key/live.json); the
+[answer key](../lecture-mcp-neo4j/instructor-key/README.md) explains interpretation.
 The capture includes official provider discovery, schema, both query calls,
 and direct reference results checked against a CSV oracle. It does not include
 model-selected calls or a final model answer. Use it as a labeled fallback.

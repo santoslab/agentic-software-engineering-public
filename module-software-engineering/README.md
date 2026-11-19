@@ -79,8 +79,8 @@ The adoption lecture launches the
 Code to a prepared, fictional Neo4j music database through the official Neo4j
 MCP server, answer two counting questions, and verify the answers outside the
 model conversation. Its
-[instructor key](demos/lecture-mcp-adoption/neo4j-music-instructor-key/README.md)
-sits in the adoption demo folder, apart from the student package. Each demo
+[instructor key](demos/lecture-mcp-neo4j/instructor-key/README.md)
+sits in the Neo4j lecture's demo folder, apart from the student package. Each demo
 folder keeps its authoring records in `planning/` (the implementation plan, the
 dice handoff brief, the source map) and its verification reports in `reports/`.
 
@@ -106,7 +106,7 @@ rules.
 | Ex. 3 (optional) | to write | L03 | before L05 | 1–2 h | Claude Code |
 | Skills | [exercise-03-a-skill-for-specs-from-conops.md](exercises/exercise-03-a-skill-for-specs-from-conops.md) | L06 | Tue Oct 13, 11:55 pm | — | Claude Code, git, jq |
 | Beads | [Render and resume](demos/lecture-beads/exercise-beads/README.md) | Beads lecture | Nov 8, 2026 | — | Claude Code, Git, Node.js/npm, uv, Python 3.12+ |
-| Music MCP | [Using MCP to explore and verify a music database](../neo4j/02-neo4j-music-mcp/README.md) | MCP adoption lecture | to set | 2–3 h after setup | Claude Code, uv, Python 3.12+, Neo4j Desktop (5.26 with APOC) |
+| Music MCP | [Connect Claude Code to Neo4j: the music fixture](../neo4j/02-neo4j-music-mcp/README.md) | MCP adoption lecture | to set | about 1 h once Desktop is installed | Claude Code, uv, Python 3.12+, Neo4j Desktop (2026.10 with APOC) |
 
 **Project 0** — the personal knowledge base — is assigned in this module at
 Lecture 02 by [`project-0-pkb-brief.md`](project-0-pkb-brief.md), with its

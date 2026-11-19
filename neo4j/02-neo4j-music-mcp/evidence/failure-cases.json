@@ -1,8 +1,23 @@
 {
-  "date": "2026-11-16",
-  "kind": "Summaries of actual rehearsal failures; no model interaction",
-  "failures": [
-    {"stage": "provider connection", "observation": "Direct reference queries succeeded; provider initialization rejected the database because APOC meta was not installed.", "resolution": "Install APOC 5.26.0 matching Neo4j 5.26.0 and restart."},
-    {"stage": "schema tool execution", "observation": "Connection and discovery succeeded after plugin installation, but get-schema returned isError=true: apoc.meta.schema was sandboxed.", "resolution": "Permit apoc.meta.* for the trusted plugin in the disposable instance and restart."}
+  "kind": "Summaries of actual rehearsal and pilot failures; no model interaction in the observations unless stated",
+  "rehearsals": [
+    {
+      "date": "2026-11-16",
+      "environment": "Command-line Neo4j 5.26.0 Community with APOC 5.26.0; the package's former launcher script. The sandboxing failure did not recur on 2026-11-18 with Neo4j Desktop's plugin installer, which writes the procedure permissions itself.",
+      "failures": [
+        {"stage": "provider connection", "layer": "instance plugin", "observation": "Direct reference queries succeeded; provider initialization rejected the database because APOC meta was not installed.", "resolution": "Install APOC matching the Neo4j version and restart."},
+        {"stage": "schema tool execution", "layer": "instance configuration", "observation": "Connection and discovery succeeded after plugin installation, but get-schema returned isError=true: apoc.meta.schema was sandboxed.", "resolution": "Permit apoc.meta.* for the trusted plugin in that instance's configuration and restart."}
+      ]
+    },
+    {
+      "date": "2026-11-18",
+      "environment": "Neo4j Desktop 2.3.0, Neo4j 2026.10.0 Enterprise, APOC 2026.10.0-core from the Plugins tab, neo4j-mcp-server 2.1.1 started by uvx, Claude Code 2.1.311 on macOS. Full record: module-software-engineering/demos/lecture-mcp-neo4j/reports/desktop-pilot.md.",
+      "failures": [
+        {"stage": "driver connection (pilot check script)", "layer": "database credentials", "observation": "AuthError: {neo4j_code: Neo.ClientError.Security.Unauthorized} {message: The client is unauthorized due to authentication failure.} The instance's logs/security.log recorded 'failed to log in: invalid principal or credentials'.", "resolution": "Retype the password for the neo4j user in the shell. APOC and configuration were not involved; the server was reached and the username accepted."},
+        {"stage": "host configuration", "layer": "shell variable unset when Claude Code started", "observation": "/mcp opened with 'MCP config diagnostics' and '[Warning] [neo4j] mcpServers.neo4j: Missing environment variables: NEO4J_MCP_PASSWORD'; the server showed as failed. Claude Code's per-server log recorded 'Connection failed (0): impossible to verify connectivity with the Neo4j instance: ... Neo.ClientError.Security.Unauthorized' because the literal ${NEO4J_MCP_PASSWORD} text was sent as the password.", "resolution": "Exit Claude Code, set the variables in the terminal, start Claude Code from that terminal."},
+        {"stage": "server to database", "layer": "database not reachable", "observation": "With the instance stopped, /mcp reconnect printed 'Failed to reconnect to neo4j: 0'; the per-server log recorded 'dial tcp 127.0.0.1:7687: connect: connection refused'. After the instance was started again, reconnect printed 'Reconnected to neo4j.'", "resolution": "Start the instance in Desktop (the card shows STOPPED), then reconnect from /mcp."},
+        {"stage": "host permission rule (model interaction observed)", "layer": "host rule, not the server", "observation": "With permissions.deny for mcp__neo4j__write-cypher in .claude/settings.json, /mcp still listed three tools but the model's catalogue lacked the write tool. The model attributed the gap to the server configuration and, once told 'approved', proposed reaching the database by a route other than the MCP tool; the instructor declined the shell dialog and the database stayed unchanged.", "resolution": "Read the rule in .claude/settings.json. A host rule closes one path; the database account's privileges are the control that holds on every path."}
+      ]
+    }
   ]
 }

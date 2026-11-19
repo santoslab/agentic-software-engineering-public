@@ -242,8 +242,9 @@ in a repository; the shell variable is not.
 **Why.** In its prompting mode, Claude Code asks you before *every* tool call,
 reads included, and a single question to the database can produce three or
 four dialogs. The two read tools cannot change anything, so the course
-pre-approves them and keeps the write tool behind a dialog. Create
-`.claude/settings.json` in the same directory:
+pre-approves them and keeps the write tool behind a dialog. The music
+homework package ships this file; for any other activity, create
+`.claude/settings.json` in the activity directory:
 
 ```json
 {

@@ -68,15 +68,24 @@ def test_fixture_rankings_and_duplicate_invariance():
 def test_missing_credentials_diagnostic():
     import os
     env={k:v for k,v in os.environ.items() if not k.startswith('NEO4J_MCP_')}
-    result=subprocess.run([sys.executable,str(ROOT/'launch_server.py')],env=env,capture_output=True,text=True,timeout=5)
+    result=subprocess.run([sys.executable,str(ROOT/'database.py'),'check'],env=env,capture_output=True,text=True,timeout=30)
     assert result.returncode!=0
     assert result.stdout==''
     assert 'NEO4J_MCP_PASSWORD' in result.stderr
 
 
-def test_config_template_has_no_literal_credentials():
-    config=json.loads((ROOT/'.mcp.json.example').read_text())
-    assert config['mcpServers']['music']['env']['NEO4J_MCP_PASSWORD']=='${MUSIC_DB_PASSWORD}'
+def test_config_template_is_the_general_stdio_entry():
+    server=json.loads((ROOT/'.mcp.json.example').read_text())['mcpServers']['neo4j']
+    assert server['type']=='stdio' and server['command']=='uvx' and server['args']==['neo4j-mcp-server@2.1.1']
+    assert server['env']['NEO4J_MCP_PASSWORD']=='${NEO4J_MCP_PASSWORD}'
+    assert server['env']['NEO4J_MCP_DATABASE']=='music'
+    assert server['env']['NEO4J_MCP_READ_ONLY']=='true'
+
+
+def test_settings_allow_only_the_read_tools():
+    permissions=json.loads((ROOT/'.claude/settings.json').read_text())['permissions']
+    assert set(permissions['allow'])=={'mcp__neo4j__get-schema','mcp__neo4j__read-cypher'}
+    assert 'deny' not in permissions
 
 
 def test_student_export_excludes_answers_and_local_state(tmp_path):
@@ -85,6 +94,8 @@ def test_student_export_excludes_answers_and_local_state(tmp_path):
     assert (target/'uv.lock').is_file()
     assert not (target/'evidence/live.json').exists()
     assert not (target/'.venv').exists()
+    assert (target/'.claude/settings.json').is_file()
+    assert not (target/'launch_server.py').exists()
     assert not list(target.rglob('expected-answers.json'))
     assert not list(target.rglob('.env'))
     with pytest.raises(ValueError,match='empty'):

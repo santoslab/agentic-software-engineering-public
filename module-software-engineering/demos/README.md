@@ -56,9 +56,13 @@ This folder holds the materials for live demonstrations run during lectures.
   lecture's demo: Claude Code configured against Microsoft Learn's public
   documentation server, with an LLM-free client (`check_remote.py`), captured
   protocol evidence, the instructor's recorded session (`claude-session/`), the
-  script `DEMO.md`, the evidence template, the Neo4j preview note, the music
-  homework's instructor key (`neo4j-music-instructor-key/`), and the authoring
-  plan and verification report (`planning/`, `reports/`).
+  script `DEMO.md`, the evidence template, the Neo4j preview note, and the
+  authoring plan and verification report (`planning/`, `reports/`).
+- [`lecture-mcp-neo4j/`](lecture-mcp-neo4j/planning/neo4j-lecture-and-homework-plan.md) — the
+  MCP Neo4j lecture's demo folder (lecture in preparation): the plan, the
+  instructor's Desktop pilot instructions and report (`PILOT.md`, `reports/`),
+  the `.mcp.json` examples, and the music homework's instructor key
+  (`instructor-key/`).
 - [`lecture-mcp-dice/`](lecture-mcp-dice/README.md) — the MCP implementation
   lecture's demo: a dice library exposed through the official Python SDK's
   `MCPServer` in stages A–E, with tests, a protocol tracer, captured wire logs

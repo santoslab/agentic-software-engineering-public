@@ -74,7 +74,7 @@ checks below remain a dated record of what ran during initial implementation.
   adoption and give implementation/testing more time.
 - [Homework](../../../../neo4j/02-neo4j-music-mcp/README.md), setup, Cypher primer, precise
   questions, evidence template, reference queries and 100-point rubric.
-- [Instructor key](../neo4j-music-instructor-key/README.md), separate from
+- [Instructor key](../../lecture-mcp-neo4j/instructor-key/README.md), separate from
   student export; expected answers, real capture and grading/diagnosis guidance.
 - Seven Mermaid/SVG pairs: three existing dice diagrams plus adoption connections,
   adoption call, Neo4j process boundaries and music graph. The homework receives
@@ -153,7 +153,7 @@ summaries are labeled summaries, not fabricated complete protocol responses.
 records the actual failed independent check. The independent client requested
 search and fetch deliberately; neither operation was selected by a model.
 
-[Music capture](../neo4j-music-instructor-key/live.json) includes actual
+[Music capture](../../lecture-mcp-neo4j/instructor-key/live.json) includes actual
 schema, tool listing, query arguments, returned rows and direct results. The
 launcher forces read-only mode and filters discovery to `get-schema` and
 `read-cypher`; no write tool appears. Benign reads succeeded. No write operation

@@ -1,4 +1,4 @@
-"""Load/check/reset only an explicitly designated disposable homework database."""
+"""Load, check, or reset the fixture database named by NEO4J_MCP_DATABASE (default: music)."""
 import argparse
 import json
 import os
@@ -11,7 +11,7 @@ def settings():
     missing = [key for key in required if not os.environ.get(key)]
     if missing:
         raise SystemExit('Missing environment variables: ' + ', '.join(missing))
-    return os.environ['NEO4J_MCP_URI'], (os.environ['NEO4J_MCP_USERNAME'], os.environ['NEO4J_MCP_PASSWORD']), os.environ.get('NEO4J_MCP_DATABASE','neo4j')
+    return os.environ['NEO4J_MCP_URI'], (os.environ['NEO4J_MCP_USERNAME'], os.environ['NEO4J_MCP_PASSWORD']), os.environ.get('NEO4J_MCP_DATABASE','music')
 
 
 def counts(session):
@@ -64,7 +64,7 @@ def execute(action, confirmation=None):
         with driver.session(database=database) as session:
             if action == 'load':
                 if session.run('MATCH (n) RETURN count(n) AS n').single()['n']:
-                    raise SystemExit('Load refused: database is not empty. Use a new disposable instance.')
+                    raise SystemExit('Load refused: database is not empty. See SETUP.md section 5.')
                 for query in (ROOT/'queries/load.cypher').read_text().split(';'):
                     if query.strip():
                         session.run(query,tracks=tracks,playlists=playlists).consume()

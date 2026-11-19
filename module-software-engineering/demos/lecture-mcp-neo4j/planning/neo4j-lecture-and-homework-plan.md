@@ -473,6 +473,13 @@ proposed Cypher (the review step is the lesson, not identical output); first
    package changes and the moved key. Done when `export_students.py` produces a
    bundle that a fresh directory can follow without the instructor, and
    `verify_live.py` passes against the piloted database.
+   **Guide done 2026-11-18 evening; homework package rewritten 2026-11-18
+   evening** (README, SETUP, PRIMER writing section, EVIDENCE, `.mcp.json.example`
+   in the Section 6 form, shipped `.claude/settings.json`, `verify_live.py` on
+   `uvx`, launcher removed, key moved to `instructor-key/`; export tested in a
+   fresh directory, 11 tests pass). Still open: run `verify_live.py` against
+   the piloted database with the password set, and regenerate the key's
+   `live.json` from it.
 3. **Lecture notes** (Section 8), written from the pilot captures. Done when
    each objective in Section 5 has an explanation, a worked example, and a
    self-check.

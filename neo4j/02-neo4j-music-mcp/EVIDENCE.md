@@ -1,42 +1,68 @@
-# Music integration evidence template
+# Music homework evidence template
 
-Replace placeholders with your observations. Never invent calls or include passwords.
+Copy this file to `evidence.md` in your submission folder and replace each
+item with what you observed. Paste exact texts (Cypher, dialog wording,
+`check` output) and small result tables. Never include a password, and never
+write down a call that did not happen.
 
-## Connection checkpoint
+## Setup (Tasks 1 to 3; the checkpoint)
 
-- Date, host/model version, OS, database version/edition, provider version:
-- Fixture identity and manifest hash:
-- Readiness counts and check command:
-- Sanitized project configuration and discovered tool names:
-- Actual status and any unresolved setup issue:
+- Date; Neo4j version and edition (instance card); APOC version (Plugins
+  tab); Claude Code version (`claude --version`); `uv --version`:
+- The two APOC checks in Query: procedure names listed; the result of
+  `apoc.meta.schema()` on the empty database:
+- `database.py check` output (fixture, database, nine counts):
+- `/mcp`: server status, tool count, the two model-visible tool names, the
+  parameters of `read-cypher`:
+- The permission mode line under the input box:
+- Your `.mcp.json` as submitted (password referenced, never written) and
+  anything you changed from the example:
+- Anything that failed on the way, with the exact text and what fixed it:
 
-## Schema
+## Question A (Task 4)
 
-Prompt, actual schema-tool name/arguments, relevant returned schema, diagram,
-and your explanation of Playlist → Track → Artist. Explain IDs vs names.
+- Schema prompt; number of calls; the model's table and whether it matches
+  the primer's diagram:
+- Proposal prompt; the proposed Cypher verbatim; did anything execute before
+  you asked?
+- Your review: labels and directions, `Playlist` not `Album`, distinct count
+  versus path count, both sort keys, `LIMIT`, no write clause; what you
+  changed or rejected:
+- Run prompt; the `query` argument of the `read-cypher` call; the returned
+  rows; the model's answer:
+- Query replay: Database selector on `music`; the rows; field-by-field
+  comparison with the agent's rows and, if they differ, with
+  `queries/question-a.cypher`; what the replay does and does not prove:
+- Any mistake and its correction, preserved:
 
-## Question A
+## The write cycle (Task 5)
 
-Exact question/prompts; proposed Cypher and review; actual tool name/arguments;
-returned rows; final answer; your explanation of DISTINCT and tie ordering.
-Preserve any mistake/correction.
+- The one field changed in `.mcp.json`; the `/mcp` tool count afterwards; the
+  third tool's name:
+- Your playlist name and track ids; the prompt:
+- The proposed Cypher verbatim and your review (`MERGE` on `id`, `MATCH` for
+  existing nodes, a position on each `HAS_TRACK`, nothing beyond P09):
+- The permission dialog: its heading, the tool title, the options, the one
+  you chose:
+- Read-back in Query: the rows (owner, playlist, position, track, title):
+- `database.py check` after the write: the mismatch, and which counts moved
+  by how much:
+- The revert prompt; the Cypher; the dialog; `check` after the revert:
+- `NEO4J_MCP_READ_ONLY` set back to `"true"`:
+- Any dialog for a shell command, and what you answered:
 
-## Question B
+## Reflection (Task 6)
 
-Same evidence, including the P01 exclusion and definition of shared track.
+One paragraph: what Claude proposed that you changed or rejected; what you
+could only know by looking outside the conversation, and at which step it
+became visible.
 
-## Independent verification
+## Optional extensions
 
-Query run directly in Query; returned rows; field-by-field comparison with the
-agent result; interpretation of agreement/disagreement; what replay cannot prove.
+Question B, the ambiguity question, or a diagnosis, if you did them.
 
-## Ambiguity and diagnosis
+## If live access failed
 
-Two meanings of popularity; precise supported choice; data missing for another
-choice. One observed or supplied failure, its layer, and next check.
-
-## Reflection
-
-Agent assistance used; what you verified yourself; remaining uncertainty.
-If analyzing instructor captures because live access failed, label that path
-explicitly and include the setup diagnostic for a later live check.
+Say so here. Include the setup evidence you have, the exact error texts, and
+the layer you believe failed. Label any analysis of instructor-supplied
+recordings as such; it is not a live connection.

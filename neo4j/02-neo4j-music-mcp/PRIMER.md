@@ -142,6 +142,9 @@ Read a proposed query with the question beside it. Check:
 - Does it count distinct playlists for A and distinct tracks for B?
 - Does it preserve collaboration credits and the requested tie rule?
 - Does it bound the returned table and avoid write clauses?
+- For a write: does it touch only the named IDs, merge new nodes on a
+  constrained `id`, match existing ones, and delete nothing wider than one
+  bound node? (See "Writing data" below.)
 
 You do not have to learn every Cypher clause to check these queries. Ask the
 agent to explain unfamiliar syntax, then verify that explanation against the
@@ -149,6 +152,82 @@ supplied references or Cypher documentation. A fluent explanation is a claim
 to inspect, not proof by itself. If a proposed pattern uses a label absent from
 the fixture, stop and inspect the actual schema rather than imagining the label
 must exist.
+
+## Writing data
+
+Task 5 of the homework asks the agent for one write, and you must read it
+before it runs. Four clauses carry the whole story.
+
+**Constraints.** `queries/load.cypher` begins with one uniqueness constraint
+per label on `id`:
+
+```cypher
+CREATE CONSTRAINT music_playlist_id IF NOT EXISTS FOR (n:Playlist) REQUIRE n.id IS UNIQUE;
+```
+
+A second node with `id: 'P09'` can never exist in this database. That is
+what makes `id` safe to merge on.
+
+**`MERGE`** means "find this pattern, or create it if it is missing": a
+`MATCH` with a fallback. On a node pattern with a unique `id`,
+`MERGE (p:Playlist {id:'P09'})` finds the playlist on a second run instead
+of creating a twin; `CREATE` would make a twin, or fail against the
+constraint. What counts as "the same" is exactly the pattern you write:
+`MERGE (p)-[r:HAS_TRACK]->(t)` treats any existing `HAS_TRACK` between those
+two nodes as a match, whatever its `position`.
+
+**`SET`** assigns properties. `SET p.name = 'Class Demo'` runs whether the
+node was found or created; `ON CREATE SET` would run only for a new node.
+
+**`DETACH DELETE`** removes a node together with its relationships. A plain
+`DELETE` of a node that still has relationships is refused by the database.
+`DETACH DELETE p` on one bound node removes that node and only the
+relationships attached to it; the tracks and the user at the other ends stay.
+
+The statement the model proposed in the instructor's rehearsal (2026-11-18;
+model output, not a reference query) does all of this:
+
+```cypher
+MATCH (u:User {id: 'U01'})
+MERGE (p:Playlist {id: 'P09'})
+  SET p.name = 'Class Demo'
+MERGE (u)-[:OWNS]->(p)
+WITH p
+UNWIND [['T03', 1], ['T04', 2], ['T05', 3], ['T06', 4]] AS row
+MATCH (t:Track {id: row[0]})
+MERGE (p)-[r:HAS_TRACK]->(t)
+  SET r.position = row[1]
+RETURN p.id AS playlist, p.name AS name, r.position AS position, t.id AS track, t.name AS trackName
+ORDER BY position
+```
+
+Read it the way you will read yours. The user and the tracks are matched,
+not merged, so a typo in an id produces zero rows rather than a phantom user
+or track. Only the playlist, its `OWNS`, and its `HAS_TRACK` relationships
+are merged. `UNWIND` turns a list of pairs into one row per track, which is
+how a single statement attaches four tracks with four positions. The
+`RETURN` reads the result back in the same statement; it is a convenience,
+not a verification, because it reports what the statement believes it did.
+The verification is the read you run yourself in Query afterwards, and
+`database.py check`, which counts nodes and relationships against the
+fixture and reports exactly what moved (here one Playlist, one OWNS, four
+HAS_TRACK).
+
+The revert from the same rehearsal:
+
+```cypher
+MATCH (p:Playlist {id: 'P09'})
+DETACH DELETE p
+RETURN count(*) AS deleted
+```
+
+**Reviewing a write.** Add these to the checklist above: the statement
+touches only the ids the question named; new nodes are merged on an id with
+a uniqueness constraint; existing nodes are matched, not merged; each
+`HAS_TRACK` gets a `position`; a delete is `DETACH DELETE` of one bound node
+and nothing wider (`MATCH (p:Playlist) DETACH DELETE p` would remove every
+playlist). The host's permission dialog shows you the full statement one
+last time before it runs; that is the moment to say no.
 
 ## Separate the stages of evidence
 

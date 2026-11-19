@@ -149,7 +149,24 @@ intended. A pass here means the database, APOC, your credentials, and the
 server all work; what remains is the host, which Task 3 of the homework
 checks with `/mcp`.
 
-## 7 Next
+## 7 The database's own record
+
+`query_log.py` prints the Cypher statements the instance executed, read from
+its `logs/query.log`. By default it shows the statements sent by the MCP
+server and hides the `EXPLAIN` the server runs before each read:
+
+```sh
+uv run --frozen python query_log.py --last 10
+uv run --frozen python query_log.py --all --since 2026-11-18T17:30
+```
+
+On macOS with one Desktop instance it finds the log itself; otherwise pass
+`--log PATH`. The directory is also the answer to
+`SHOW SETTINGS YIELD name, value WHERE name = 'server.directories.logs' RETURN value`
+in Query. The log is written by the database, not by Claude Code or the
+server, which is what makes it useful.
+
+## 8 Next
 
 Section 5 of the general guide: copy `.mcp.json.example` to `.mcp.json` in
 this folder (`.claude/settings.json` is already here), then its section 6,

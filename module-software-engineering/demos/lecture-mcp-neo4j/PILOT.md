@@ -553,6 +553,34 @@ everything else in this lecture. Whether a deny rule also hides the tool from
 `/mcp`, and what the host says when the model asks for a denied tool, are the
 two facts the pilot records rather than assumes.
 
+### D7 Optional: a copy and a restore of the `music` database (about 15 minutes)
+
+Added 2026-11-18. The lecture notes' Section 10 describes two routes to a
+file copy of a database from the Neo4j documentation and from the help text
+of the bundled `neo4j-admin`; neither was exercised. Rehearse one before a
+project relies on it, and record what you see.
+
+1. Desktop route. Stop the instance. In the instance card's menu choose the
+   export entry (observed label "Export databases"), select `music`, export
+   to a folder, and note the file name and the folder Desktop opens. Then
+   choose the load entry (observed label "Load database from file") with the
+   file renamed to `musiccopy.dump`, and confirm that a database
+   `musiccopy` appears in `SHOW DATABASES` with the fixture's counts
+   (`NEO4J_MCP_DATABASE=musiccopy uv run --frozen python database.py check`).
+   Drop it afterwards with `DROP DATABASE musiccopy` against `system`.
+2. Command-line route. With the instance running, in Query against `system`:
+   `STOP DATABASE music`. In a terminal, with `JAVA_HOME` set to Desktop's
+   runtime (`~/Library/Application Support/neo4j-desktop/Application/Cache/runtime/zulu21.*/Contents/Home`),
+   run the instance folder's `bin/neo4j-admin database dump music --to-path=/tmp/neo4j-dumps`,
+   then `START DATABASE music`. Record the file produced and any error text.
+   Optionally test the restore the same way with `database load music
+   --from-path=/tmp/neo4j-dumps --overwrite-destination=true` while the
+   database is stopped.
+
+*Why:* the notes say plainly that these routes are documented but untested;
+a rehearsal lets them say "observed" and lets students on project databases
+rely on the procedure.
+
 ### D6 Optional: the database role (about 10 minutes)
 
 Desktop's Enterprise edition has roles, so the third control can be shown

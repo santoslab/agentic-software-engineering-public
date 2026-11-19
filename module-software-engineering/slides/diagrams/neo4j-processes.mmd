@@ -1,5 +1,23 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
 flowchart LR
-  H[Claude Code<br/>host and client] <-->|stdio| P[Official Neo4j<br/>MCP process]
-  P <-->|Bolt queries| D[Neo4j instance<br/>music fixture + APOC]
-  H <-->|Model API| M[Model service]
+  M["Model service<br/>proposes the Cypher"]
+  H["Claude Code: host and MCP client<br/>shows the call, applies permission rules,<br/>routes it"]
+  P["neo4j-mcp-server<br/>child process, stdio<br/>checks and forwards the statement"]
+  D["Neo4j instance, database music<br/>executes the statement<br/>records it in query.log"]
+  M <-->|Model API| H
+  H <-->|MCP over stdio| P
+  P <-->|Bolt| D
   style P fill:#beaefc,stroke:#310066
+  style D fill:#f0eaff,stroke:#310066

@@ -199,6 +199,19 @@ Expect `Readiness mismatch` with Playlist 9, OWNS 9, and PLAYLIST_HAS_TRACK
 the output. The mismatch is the point: a check outside the conversation
 noticed the change.
 
+The database keeps its own record of every statement it executed. To see what
+the server sent on your behalf, including the write, run in a second terminal
+in this folder:
+
+```sh
+uv run --frozen python query_log.py --last 10
+```
+
+It reads the instance's `logs/query.log` (found automatically for a single
+Desktop instance on macOS; otherwise pass `--log PATH`) and prints each
+statement with its time, database, outcome, and transaction. Compare it with
+what Claude says it ran; the two should agree.
+
 Revert:
 
 > Delete playlist P09 and only its own relationships. Do not touch any other
@@ -299,6 +312,9 @@ not a live connection; label it as such.
   [`evidence/failure-cases.json`](evidence/failure-cases.json): name the
   layer (shell variables, host configuration, credentials, database, instance
   plugin, server configuration, host rule, model) and the next check.
+
+Optional at any point: `query_log.py` lists the statements the database
+received from the server, and its lecture notes section explains the record.
 
 Instructional prose follows [CC BY 4.0](LICENSE-CC-BY-4.0); code,
 configuration, and the fictional fixture follow [MIT](LICENSE-MIT), as

@@ -1,0 +1,32 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+sequenceDiagram
+  participant U as You
+  participant M as Model
+  participant H as Claude Code (host)
+  participant S as neo4j-mcp-server
+  participant D as Neo4j (music)
+  U->>M: Create playlist P09 ... show the Cypher and wait for my approval
+  M-->>U: Proposed statement (a courtesy, not a control)
+  U->>M: approved
+  M->>H: Request write-cypher {query}
+  Note over H: Manual mode: dialog shows the statement<br/>1. Yes  2. Yes, and don't ask again  3. No
+  U->>H: 1. Yes
+  H->>S: tools/call over stdio
+  S->>D: Statement, one transaction (Bolt)
+  D-->>S: Rows, and an entry in query.log as MCP4NEO4J/2.1.1
+  S-->>H: content[0].text = rows as JSON, isError=false
+  H->>M: Tool result
+  M-->>U: Report of the change
+  Note over U,D: Verify outside the conversation: Query tool read-back,<br/>database.py check, query_log.py

@@ -1,0 +1,21 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#beaefc",
+    "primaryTextColor": "#310066",
+    "primaryBorderColor": "#310066",
+    "lineColor": "#310066",
+    "edgeLabelBackground": "#ffffff",
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "18px"
+  },
+  "themeCSS": "text, span, div { font-family: Helvetica, Arial, sans-serif !important; }"
+}}%%
+flowchart LR
+  M["Model requests<br/>write-cypher"]
+  C1["<b>Control 1: the server's flag</b><br/>NEO4J_MCP_READ_ONLY decides<br/>whether the tool exists at all<br/><br/><i>Does not prevent:</i> editing .mcp.json<br/>and restarting; any route<br/>other than this server"]
+  C2["<b>Control 2: the host's rules</b><br/>the dialog in manual mode, allow and<br/>deny rules, decide whether the model<br/>may call the tool<br/><br/><i>Does not prevent:</i> the model seeking<br/>another route; auto mode removes the<br/>dialog; /mcp still lists a denied tool"]
+  C3["<b>Control 3: the database account</b><br/>the privileges of the user the server<br/>logs in as decide what any client<br/>may do with that password<br/><br/><i>Holds on every route.</i><br/>Built-in reader role;<br/>not exercised in the pilot"]
+  D["Database<br/>changed"]
+  M --> C1 --> C2 --> C3 --> D
+  style C3 fill:#beaefc,stroke:#310066,stroke-width:3px

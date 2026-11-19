@@ -23,6 +23,11 @@ and self-contained, is distributed per lecture, and converts to PDF with pandoc.
   accompanies the [slide deck](../slides/lecture-mcp-adoption.md) and the
   [adoption demo](../demos/lecture-mcp-adoption/README.md); launches the
   [music homework](../../neo4j/02-neo4j-music-mcp/README.md).
+- [Connecting an agent to a database through a local MCP server: Neo4j](lecture-mcp-neo4j.md) —
+  draft, slides and outline in preparation; explains what changes when the
+  server is a local child process in front of a database you own, follows one
+  read and one write end to end, and launches the
+  [music homework](../../neo4j/02-neo4j-music-mcp/README.md).
 - [MCP: from an ordinary function to an agent tool](lecture-mcp-dice.md) —
   accompanies the [slide deck](../slides/lecture-mcp-dice.md) and the
   [dice example](../demos/lecture-mcp-dice/README.md).

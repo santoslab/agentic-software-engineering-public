@@ -5,10 +5,10 @@ import shutil
 from music_data import ROOT
 
 FILES=['README.md','SETUP.md','LICENSE-MIT','LICENSE-CC-BY-4.0','PRIMER.md','EVIDENCE.md','.mcp.json.example','.gitignore',
-       'pyproject.toml','uv.lock','export_students.py','music_data.py','database.py','verify_live.py']
+       'pyproject.toml','uv.lock','export_students.py','music_data.py','database.py','verify_live.py','query_log.py']
 TREES={'fixture':['build_fixture.py','tracks.csv','playlists.csv','manifest.json','PROVENANCE.md'],
        'queries':['load.cypher','question-a.cypher','question-b.cypher'],
-       'tests':['test_music.py'], 'assets':['music-graph.svg'], '.claude':['settings.json']}
+       'tests':['test_music.py','test_query_log.py'], 'assets':['music-graph.svg'], '.claude':['settings.json']}
 
 
 def export(destination):

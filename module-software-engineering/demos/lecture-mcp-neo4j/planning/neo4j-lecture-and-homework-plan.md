@@ -483,6 +483,14 @@ proposed Cypher (the review step is the lesson, not identical output); first
 3. **Lecture notes** (Section 8), written from the pilot captures. Done when
    each objective in Section 5 has an explanation, a worked example, and a
    self-check.
+   **Written 2026-11-18 evening** as `lecture-notes/lecture-mcp-neo4j.md`
+   from the approved outline (`planning/lecture-notes-outline.md`), with two
+   sections added at the instructor's request: the three records of executed
+   statements (with `query_log.py` in the homework package) and containment
+   and recovery on a database that matters. New diagrams
+   `neo4j-write-sequence.mmd` and `neo4j-write-controls.mmd`;
+   `neo4j-processes.mmd` revised with responsibilities. Awaiting instructor
+   review; the dump-and-restore route is documented but untested (PILOT.md D7).
 4. **Outline and slides** (Sections 7 and 9), from the notes. Done when
    `slides/build.sh` renders the deck and diagrams and the timing table sums to
    75 with slack.

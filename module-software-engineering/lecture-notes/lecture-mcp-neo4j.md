@@ -2,36 +2,66 @@
 
 ## 0 Where this fits
 
-The [adoption lecture](lecture-mcp-adoption.md) established four things. A
-repository declares an MCP server in `.mcp.json`; the host's MCP client
-connects to it and discovers its tools with `tools/list`; the model selects a
-tool and the host routes the call with `tools/call`; and a final answer is
-only as good as the evidence that the call happened and that the answer
-follows from its result. The server in that lecture was a public documentation
-service reached over HTTP, and the calls were reads of text.
+The [adoption lecture](lecture-mcp-adoption.md) provided an
+introduction to basic MCP concepts.  You saw four key things. A
+repository declares that it wants to use an MCP server by configuring
+info about the server in `.mcp.json`; the host's (e.g., Claude Code)
+internal MCP client connects to the the declared MCP server 
+and discovers its tools via the MCP operation `tools/list`; as the model works it gets
+assistance by selecting appropriate tools from the list and sending
+requests to the host to make tool calls, the host routes the 
+call to the MCP server via the MCP operation `tools/call`.  The tool
+call response from the MCP server is added to the session conversation
+and sent back to the model.  The server in that lecture was a remote public documentation
+service reached over HTTP, and the calls were reads of documentation text.
 
-This lecture keeps every one of those objects and changes three things.
+This lecture keeps every one of those objects (the configuration of
+MCP servers for the Claude Code host via `.mcp.json`) and changes three things.
 
-1. The server is a program on your own machine that the host starts as a
-   child process and talks to over its standard input and output.
+1. The MCP server is now a local program on your own machine (not
+   remote) that the host starts as a child process and talks to 
+   over its standard input and output.
 2. That program is not itself the capability. It is an adapter in front of a
    third process, a Neo4j database that you own, that it reaches with the
    Neo4j driver protocol.
-3. The tool's argument is a program, a Cypher statement, that the database
-   executes with the privileges of the account the server logged in with. One
-   of the tools changes data.
+3. The tool's argument is a program, a Cypher statement (a Neo4j database query
+   or operation), that the database executes with the privileges of
+   the account the server logged in with. One of the MCP tools used updates
+   the database.
 
-The homework, [Connect Claude Code to Neo4j: the music fixture](../../neo4j/02-neo4j-music-mcp/README.md),
-reproduces what is shown in class on a small fictional music database. The
-[dice lecture](lecture-mcp-dice.md) then builds a server of our own and looks
-at the same boundary from the provider's side.
+The above set up will enable us to use natural language (via talking
+to Claude) to query and update the database instead of having to write
+Cypher queries.  Claude will take care of converting our natural
+language requests to Cyber and sending them to Neo4j via the MCP set
+up above.
 
-Two documents hold the procedures and are not repeated here. The
+The example database that we will use is a simple fictional music database,
+similar to what you used in your first Neo4j homework.  
+
+This lecture will lead you into a new homework.  The homework, [Connect Claude Code to Neo4j: the music fixture](../../neo4j/02-neo4j-music-mcp/README.md),
+guides you through reproducing what is shown in class on the music
+database.  The main goal of this is to give you enough information so
+that you would be able to set up a similar MCP approach for your own
+Neo4j database.
+
+In both the previous lecture and in this lecture, we use existing MCP servers.
+The upcoming [dice lecture](lecture-mcp-dice.md) then builds a server
+of our own.  That lecture will help you understand how to extend any
+of your own application with MCP capabilities so that agents can work
+with them directly.
+
+We don't want to clutter the conceptual themes of this lecture with
+too many lower level details.  So two supporting documents are
+provided to help with the details.  The
 [general setup guide](../../neo4j/neo4j-desktop-mcp-setup.md) says how to
-prepare a Neo4j Desktop instance, where the password goes, what to write in
-`.mcp.json`, and how to read `/mcp`. The homework's
+prepare a Neo4j Desktop instance for use with MCP, how to do things
+like handle the database password, what to write in
+`.mcp.json`, and how to confirm that Claude is hooked up to the Neo4j
+MCP server using the Claude `/mcp` command. The homework's
 [SETUP.md](../../neo4j/02-neo4j-music-mcp/SETUP.md) says how to load and check
-the fixture. These notes say what those steps mean and what the host, the
+the fixture (the sample database). 
+The lecture notes in this file focus on the high-level issues of the
+meaning of those detailed steps and what the host, the
 server, and the database each do when you follow them.
 
 Everything quoted below, every prompt, statement, dialog, log line, and error
@@ -43,9 +73,11 @@ in the lecture's demo folder. Where the notes describe something the pilot did
 not exercise, they say so. Text produced by the model is labeled as model
 output: it is what one session produced, not what every session will produce.
 
-In class the instructor demonstrates on a prepared instance. Each section
+In class the instructor runs the demonstration on a prepared example
+database instance. Each section
 below names the part of the demonstration it accompanies and shows the
-captured screen, so that the notes can be read without the demonstration.
+captured screenshots from the instructor's pilot run, 
+so that the notes can be read without the demonstration.
 
 ## 1 What changes architecturally
 
@@ -84,20 +116,21 @@ This lecture's declaration is:
 }
 ```
 
-The map, the key that names the connection, and the absence of any tool
-definition are the same. Every other difference between the two entries is
+The JSON map structure, the key that names the connection, and the absence of any tool
+definition (we describe the server providing tools, not the tools
+themselves) are the same. Every other difference between the two entries is
 one of the architectural changes this section explains.
 
 ### 1.1 From a remote endpoint to a child process
 
-With `type: "http"`, the host opened a network connection to a program that
-someone else runs. The host did not start it, could not stop it, and learned
+With `type: "http"`, the host (Claude Code) opened a network connection to a program that
+someone else runs remotely. The host did not start it, could not stop it, and learned
 nothing about it except what it answered over the protocol.
 
 With `type: "stdio"`, the host **starts the program**. At the beginning of a
 session Claude Code reads `.mcp.json`, runs `uvx neo4j-mcp-server@2.1.1` as a
 child process with the environment given in `env`, connects the child's
-standard input and standard output to its MCP client, and keeps the child's
+standard input and standard output to its internal MCP client, and keeps the child's
 standard error as a log. The protocol messages are the same JSON-RPC messages
 that went over HTTP in the adoption lecture; only the pipe they travel on is
 different. When the session ends the child is terminated. When you ask `/mcp`
@@ -116,7 +149,7 @@ started Claude Code, which is one reason the guide insists that Claude Code be
 started from a prepared terminal.
 
 **The server's lifetime is the session's.** Exiting Claude Code ends the
-server. It does not end the database, which Desktop keeps running until you
+server. It does not end the database, which Neo4j Desktop keeps running until you
 stop it. The adoption lecture's remote service existed before and after your
 session; this server exists only during it.
 
@@ -150,23 +183,27 @@ what" has a different answer at every step:
 | Receives the call, checks the statement, sends it to the database, returns rows as JSON | The server, `neo4j-mcp-server` | The server's own log lines on standard error |
 | Executes the statement and records it | The database, Neo4j | The instance's `query.log`, with the client identified as `MCP4NEO4J/2.1.1` |
 
-The server also talks to the database on its own account, not only when the
+The MCP server also talks to the database on its own, not only when the
 model asks. At startup it runs three statements, visible in the database's
 query log: `RETURN 1 as first` to confirm the connection,
 `SHOW PROCEDURES YIELD name WHERE name = 'apoc.meta.schema' RETURN count(name) > 0 AS apocMetaSchemaAvailable`
-to confirm that the APOC plugin is present, and `RETURN gds.version() as gdsVersion`
+to confirm that the APOC plugin used by the MCP server is present, and `RETURN gds.version() as gdsVersion`
 to probe for the optional Graph Data Science library. The third fails on an
 instance without that library and the failure is logged as an error on both
-sides. It is expected, and it is why the guide tells students not to install
-that library: with it the server offers a fourth tool, and tool counts in
+sides. It is expected to fail (its presence would disturb our simple demo
+MCP setup), and it is why the guide tells students not to install
+the GDS library: with it the server offers a fourth tool, and tool counts in
 class and at home would differ.
 
-Each process knows different things. The model sees tool definitions and tool
+Note: APOC (Awesome Procedures On Cypher) is a Java-based add-on library for Neo4j that provides hundreds of custom procedures and functions callable directly from Cypher queries. It extends standard Cypher capabilities for tasks like data integration, data conversion, graph refactoring, and graph inspection.
+
+Returning to the table above, each process in the table 
+knows different things. The model sees tool definitions and tool
 results. The host sees the configuration file, the environment, every call
-and every result. The server sees the connection details and every statement.
-The database sees a Bolt client that logged in as `neo4j`, with a client
+and every result. The server sees the connection details and every
+Cypher statement. The database sees a Bolt client that logged in as `neo4j`, with a client
 application name of `MCP4NEO4J/2.1.1`, sending statements. The database does
-not know that a language model composed them.
+not know that a language model composed the Cypher statements.
 
 ### 1.3 The configuration now carries the provider's settings
 
@@ -193,7 +230,7 @@ files in the project with ordinary tools. In the pilot, the first thing the
 model did in a fresh session was `ls -la` and `cat .mcp.json`. It saw the
 string `${NEO4J_MCP_PASSWORD}`, not a password, because that is what the file
 contains. Had the value been written into the file, the model would have had
-it in its context.
+it in its context (which is a potential security problem).
 
 The configuration also shapes discovery. `NEO4J_MCP_READ_ONLY` decides
 whether `write-cypher` appears in `tools/list` at all. Changing that one
@@ -224,16 +261,22 @@ almost as small:
    "required": ["query"], "additionalProperties": false}}
 ```
 
-A required string named `query`. But that string is a program. It has a
+The above declaration for the `read-cypher` tool says that a field
+name named `query` whose value is a string is required. 
+But that string is a program (a Cypher query). It has a
 grammar, a meaning, and an effect, and the database will execute whatever it
-says. The schema can tell the host that the argument is a string; it cannot
-tell anyone whether the string answers the question that was asked, whether
-it counts paths or distinct playlists, or whether it contains a clause that
+says (which could be wrong, or even dangerous -- i.e., an improperly
+written delete operations). 
+The schema can tell the host that the argument is a string;
+it cannot tell anyone whether the string "does the right thing", e.g.,
+whether it counts paths or distinct playlists, or whether it contains a clause that
 changes data. That is why this lecture adds a step the adoption lecture did
-not need: the statement is proposed first, read by a person against the
-schema and the question, and run only after that.
+not need: the query statement is proposed first by the model and
+displayed to the user.  The user is then given a chance to confirm
+that the query looks appropriate before it is sent through the MCP
+connection.
 
-The result is also different in kind. A documentation fetch returned prose.
+The tool call result is also different in kind. A documentation fetch returned prose.
 A `read-cypher` call returns a text content block whose text is itself JSON,
 an array of row objects:
 
@@ -242,13 +285,16 @@ an array of row objects:
  "isError": false}
 ```
 
-JSON inside the JSON envelope. The envelope is MCP's; the host handles it.
-The inner array is the server's; it is what the model reads and what you
-compare with a replay of the same statement in Desktop. The `get-schema`
+JSON (following the protocol for Neo4J programmatic interactions) inside the JSON envelope
+(following the protocol for MCP). The envelope is MCP's; the host handles it.
+The inner array is the Neo4j MCP server's; it is what the model reads.
+Interesting, you can double-check the queries that the model proposes
+to send through MCP by running them yourself in the query panel of
+Neo4j desktop.  The `get-schema`
 result has the same shape, an array of `{key, value}` entries describing
 labels, relationship types, and properties (Section 4).
 
-Two further facts about `read-cypher`. The server enforces "read-only" by
+Two further facts about `read-cypher`. The Neo4j MCP server enforces "read-only" by
 classification: before executing a statement it runs `EXPLAIN` on it and
 inspects the plan, which is why every read in the database's log is preceded
 by an `EXPLAIN` of the same text. The server's documentation adds that
@@ -259,15 +305,18 @@ The read-only flag is a property of the server, not of the account.
 
 ### 1.5 Writes are a new class of operation
 
-Nothing in the adoption lecture changed state anywhere. `write-cypher`, when
-offered, executes any Cypher with write access. Its description, shown by the
+Nothing in the adoption lecture changed state anywhere (for example,
+we didn't update the documentation on the Microsoft Learn server). 
+The `write-cypher` tool, when enabled in your MCP configuration, 
+executes any Cypher with write access. Its description, shown by the
 host in the permission dialog, is one sentence: "write-cypher executes any
 arbitrary Cypher query, with write access, against the user-configured Neo4j
 database." A write that succeeds is committed when the call returns. The
 tool offers no way to begin a transaction in one call and roll it back in
 another, so once the result is back there is nothing to undo through the
-tool.
+tool (!).
 
+There are several ways to guard against "bad things happening with `write-cypher`".
 Section 6 follows one write from prompt to verification and names the three
 places that decide whether a write can happen at all: the server's read-only
 flag, the host's permission rules, and the database account's privileges.
@@ -286,8 +335,10 @@ gives three routes to the same facts that do not involve the model at all:
 - **Desktop's Query tool.** Paste the statement the model ran, select the
   same database, run it, compare the rows.
 - **A check that knows what the data should be.** The homework's
-  `database.py check` compares nine counts against the fixture's manifest and
-  reports exactly which counts moved after a write.
+  `database.py check` is a little utility program that compares 
+  aspects of the database state (e.g., counts of entries of a certain
+  kind) against the fixture's manifest (i.e., an indication of
+  expected results) and reports exactly which counts changed after a write.
 - **The database's own log.** Neo4j records every statement it executed,
   with the client that sent it. Section 7 shows how to read it.
 
@@ -354,6 +405,9 @@ same steps as instructions; here the point is what each step causes.
 
 ### 3.1 The entry, field by field
 
+Below is a summary of all of the fields in the `.mcp.json` MCP
+configuration file for Cluade.
+
 | Field | Read by | Meaning |
 |---|---|---|
 | `"neo4j"` | Host | The name of this connection. It becomes the prefix of the model-visible tool names, `mcp__neo4j__read-cypher`, and the name `/mcp` shows. |
@@ -365,9 +419,11 @@ same steps as instructions; here the point is what each step causes.
 | `NEO4J_MCP_READ_ONLY` | Server | `"true"`: offer `get-schema` and `read-cypher`. `"false"`: offer `write-cypher` as well. |
 | `NEO4J_MCP_TELEMETRY` | Server | `"false"` stops the server from reporting usage to its vendor. |
 
-The command `claude mcp add --scope project --transport stdio -e NEO4J_MCP_URI=... neo4j -- uvx neo4j-mcp-server@2.1.1`
-writes an entry of the same shape. The course teaches the file, because the
-file is what you will read, review, and commit.
+The command `claude mcp add --scope project --transport stdio -e
+NEO4J_MCP_URI=... neo4j -- uvx neo4j-mcp-server@2.1.1` writes an entry
+of the same shape.  In our lectures, we emphasize defining the
+`.mcp.json` file because the file is what you will read, review, and
+commit. 
 
 ### 3.2 What happens when a session starts
 
@@ -380,17 +436,19 @@ file is what you will read, review, and commit.
 3. It starts `uvx neo4j-mcp-server@2.1.1` with the resulting environment.
    `uvx` fetches the release into its cache if it is not there yet, then
    runs it.
-4. The host's MCP client sends `initialize`. The server does not simply
-   acknowledge: it connects to the database and runs its requirement checks
+4. The host's MCP client sends `initialize` to the server. The server does not simply
+   acknowledge: it connects to the Neo4j database and runs its requirement checks
    (the three statements of Section 1.2). If the database is unreachable, the
    password is wrong, or APOC is missing, `initialize` fails with an error and
    the host marks the server as failed.
 5. The client sends `tools/list`. The server answers with the tools its
-   configuration allows.
+   configuration allows (in our case, tools to report database schemas and to
+   handle read and write Cypher queries).
 6. The host presents the tools to the model. In Claude Code they may be
    presented as deferred names that the model loads on demand; in the pilot
    the model announced "I'll load the read tool" before its first call. This
-   is the host facility the adoption lecture described, not an MCP method.
+   is the host facility the adoption lecture described, not a
+   standardized MCP approach.
 
 The server's own log for this sequence, captured in the pilot from standard
 error, reads:
@@ -413,7 +471,10 @@ error line is the probe from Section 1.2 failing as expected.
 
 ### 3.3 Reading `/mcp`
 
-`/mcp` is the host's view of the servers it manages. The pilot's five
+After Claude Code is started with an appropriately configured
+`.mcp.json` file, `/mcp` can be used to see information about the
+host's MCP connections. 
+`/mcp` is the host's view of the servers it connects to. The pilot's five
 screens, in the same order the adoption lecture used for its documentation
 server:
 
@@ -450,10 +511,13 @@ Section 1.4 as the host renders it.
 ### 3.4 Permission modes and the companion settings file
 
 Claude Code has several permission modes, and which one a session is in
-decides whether you will ever see a dialog. The line under the input box
-names the mode. In **auto** mode the host approves tool calls itself; no
-dialog appears for anything, database writes included. In **manual** mode the
-host asks before each tool call. The course starts sessions with
+decides whether you will ever see a dialog as you to approve an MCP
+tool call.  The line under the input box
+names the mode. In **auto** mode the host approves tool calls itself
+(based on its own heuristics about whether the tool call will be
+"safe" or not); no dialog appears for anything, database writes
+included.  In **manual** mode the
+host asks the user before each tool call. The course starts sessions with
 `claude --permission-mode manual`, and the line then reads `manual mode on`:
 
 ![The mode line in manual mode](../slides/images/mcp-neo4j-17-manual-mode-line.png)
@@ -468,7 +532,7 @@ and three read calls issued together produced three dialogs labeled 1 of 3,
 
 ![Three batched read dialogs](../slides/images/mcp-neo4j-20-read-permission-prompt-1of3.png)
 
-Seven database dialogs and two shell dialogs preceded the first write in that
+Seven database tool approval dialogs and two shell dialogs preceded the first write in that
 session. A lecture or a homework cannot spend its time this way, and the two
 read tools cannot change anything, so the course ships a project
 `.claude/settings.json` beside `.mcp.json`:
@@ -481,8 +545,10 @@ read tools cannot change anything, so the course ships a project
 }
 ```
 
-With it, reads run silently and only `write-cypher` prompts. The names are
-the model-visible names from Section 3.3. This file is a host rule, the
+With it, reads run silently (no approvals are asked)
+and only `write-cypher` triggers approval requests. The names of the
+tools in the `allow` list above are the model-visible names from
+Section 3.3.   This file is a host rule, the
 second of the three controls of Section 6.7; it is also, like everything else
 in this lecture, a JSON object you can read.
 
@@ -493,7 +559,8 @@ suggestion: "Tip: auto mode handles these prompts for you", with an option
 ![A shell dialog with the auto-mode suggestion](../slides/images/mcp-neo4j-19-bash-permission-prompt-auto-tip.png)
 
 Taking that offer removes the write dialog for the rest of the session. The
-homework asks you to decline it.
+homework asks you to decline it (we want you to experience the
+guardrails provided for the write tool call).
 
 ### 3.5 Two failures as the host shows them
 
@@ -501,7 +568,7 @@ Both were produced on purpose in the pilot and both are failures students
 produce by accident.
 
 **The password variable is unset.** Claude Code was started from a terminal
-where the variables of the guide had not been set. `/mcp` opened with a
+where the environment variables of the guide had not been set. `/mcp` opened with a
 diagnostics block:
 
 ```text
@@ -526,8 +593,10 @@ anyway with the literal text `${NEO4J_MCP_PASSWORD}` as its password, and
 its requirement check failed with
 `Neo4jError: Neo.ClientError.Security.Unauthorized (The client is unauthorized due to authentication failure.)`.
 
-**The instance is stopped.** With a connected session, the instance was
-stopped in Desktop. Asking `/mcp` to reconnect printed one line:
+**The instance is stopped.** To illustrate the effect of trying to
+make an MCP tool call to a database instance that is not active, 
+the database instance was manually stopped in the Neo4j Desktop. 
+Asking `/mcp` to reconnect printed one line:
 
 ```text
 Failed to reconnect to neo4j: 0
@@ -587,12 +656,13 @@ recorded both lists: `["get-schema", "read-cypher"]` and
 `list-gds-procedures`, appears only when the Graph Data Science library is
 installed.
 
-The annotations are worth a sentence. `readOnlyHint` and `destructiveHint`
+The annotations are worth some further explanation. `readOnlyHint` and `destructiveHint`
 are the server's own description of each tool. Claude Code displays them as
 tags. It does not, in manual mode, exempt a read-only tool from the dialog;
 that is what the allow rules of Section 3.4 are for.
 
-The `get-schema` result, from the same capture, describes the music graph as
+The result of the Neo4j MCP tool `get-schema`, 
+from the same capture, describes the music graph as
 an array of entries, one per label and one per relationship type. Two of
 them, reformatted:
 
@@ -609,7 +679,7 @@ them, reformatted:
                              "HAS_TRACK": {"direction": "in", "labels": ["Album", "Playlist"], "properties": {"position": "INTEGER"}}}}}
 ```
 
-Read against the diagram:
+Compare the JSON structure above to the following diagram:
 
 ![The music graph](../slides/diagrams/music-graph.svg)
 
@@ -645,7 +715,8 @@ follows.
 > Summarize the node labels, relationship types, and relationship directions
 > in a short table. Do not run any other query yet.
 
-One `get-schema` call and no other. The model's table (model output) listed
+To respond to the prompt above, Claude will issue `get-schema` call and no
+other.  The model's table (model output) listed
 the five labels with their properties and four relationship rows, User OWNS
 Playlist, Playlist HAS_TRACK Track with `position`, Album HAS_TRACK Track, and
 Track ARTIST Artist, and added two observations: that playlists and albums
@@ -688,7 +759,8 @@ artist's total." And on the schema: "The schema shows HAS_TRACK coming from
 both Album and Playlist. Anchoring the pattern on Playlist keeps album
 membership out of the count."
 
-A fluent explanation is a claim to check, not a check. The review, with the
+A fluent explanation is a claim to check, not a check (i.e., the claim
+gives a specific reviewable description of a property). The review, with the
 question and the schema beside the statement:
 
 | Check | In this statement |
@@ -715,7 +787,7 @@ the review, not the match.
 
 ![The read call, its argument, its rows, and the answer](../slides/images/mcp-neo4j-06-read-call.png)
 
-One `read-cypher` call. Its `query` argument is the proposed statement,
+One `read-cypher` tool call. Its `query` argument is the proposed statement,
 character for character. Its result is five rows:
 
 | artistId | artistName | playlistCount |
@@ -764,8 +836,9 @@ the model does.
 
 ## 6 A write, end to end
 
-Everything in Section 5 left the database as it was. This section changes it,
-checks the change, and undoes it, and in doing so shows where the control over
+Everything in the database interactions in Section 5 left the database
+as it was. This section gives a Cypher program that changes the
+database, checks the change, and undoes it, and in doing so shows where the control over
 writes sits.
 
 ### 6.1 One field, one restart, three tools
@@ -1207,7 +1280,8 @@ failure it prevents:
 1. **One instance, one database per activity.** `CREATE DATABASE <name> IF
    NOT EXISTS`. Damage from a wrong write is confined to that database; the
    server can reach only the database it was given.
-2. **APOC once per instance.** The server will not start without it, and
+2. **Activate the APOC plugin once per instance.** 
+   The server will not start without it, and
    `get-schema` is a call to it.
 3. **The password in the shell, never in a file.** `.mcp.json` carries
    `${NEO4J_MCP_PASSWORD}`; the model reads project files.
@@ -1216,7 +1290,8 @@ failure it prevents:
 5. **Manual mode, allow the reads, prompt the writes.**
    `claude --permission-mode manual` and the Section 3.4 settings file. Read
    the mode line.
-6. **`/mcp` before the first prompt.** Connected, the expected tool count,
+6. **Use `/mcp` before the first prompt to check the status of the
+   connection to the MCP server.** Connected, the expected tool count,
    the expected names. A failed server here costs a minute; discovered after
    ten prompts it costs the prompts.
 7. **Schema first, every session.** The model writes against the labels it
@@ -1233,7 +1308,7 @@ failure it prevents:
     be completed by running again. Count what you loaded against the source.
 
 **A described exercise.** Create an empty database `demo`, point a second
-entry at it, and give the model a description of a small world: a reading
+entry at it in your `.mcp.json` file, and give the model a description of a small world: a reading
 group of five members who have read some of three books and met at two
 meetings, each meeting discussing one book and attended by some members.
 Ask for the schema the model would use, then for the constraints, then for
@@ -1249,17 +1324,24 @@ and compare the counts with your description. The pilot did not run this
 exercise, so these notes claim nothing about what a model will produce for
 it; its purpose is to apply steps 7 to 10 on data that is not the fixture.
 
-**The follow-on homework** does this without a script and with real data:
+In a **follow-on flight database homework** you need to be able to
+carry out the actions above without a script.  You will also be
+working with real data:
 the OpenFlights airports, airlines, and routes, which you model, load through
 `write-cypher` behind the dialog, and query for a travel question. Its brief
 is released separately.
 
 ## 10 Containment and recovery on a database that matters
 
+In this lecture, we use what is called a *fixture* to check starting
+state of the database against documented expected results.
 The fixture is small and has a loader; if anything goes wrong, the whole
-database can be rebuilt in seconds. A project database is neither. This
-section says what the tool does and does not do about mistakes, and what to
-arrange before the first write session on a database you cannot afford to
+database can be rebuilt in seconds.  With a realistic database
+project, you won't be able to do this type of check.
+In this section, we give some advice about what you can do about
+possible mistakes that the model makes when manipulating your data via
+MCP.  In particular, there are some things that you probably want to 
+set up before the first write session on a database you cannot afford to
 lose.
 
 ### 10.1 What the tool gives you, and what it does not
@@ -1269,9 +1351,10 @@ in one transaction. The query log shows this: one transaction id per
 statement, a new id for the next. A statement is atomic: if it fails part
 way, none of it is committed. Once the call returns a result, the
 transaction has committed, and the tool has no operation to roll it back.
-Neo4j has no undo. Recovery after a committed mistake means one of two
-things: an inverse statement that you can write because you know exactly
-what changed, or a copy of the database from before the change.
+Neo4j has no undo. Recovery after a committed mistake means doing one of two
+things: (1) running a Cypher query that acts as an inverse (undo) 
+statement that you can write because you know exactly
+what changed, or (2) making a copy of the database from before the change.
 
 ### 10.2 Before the session: contain
 
@@ -1365,7 +1448,7 @@ session and after each session you want to keep.
 ## 11 The homework and what comes next
 
 The [homework](../../neo4j/02-neo4j-music-mcp/README.md) reproduces this
-lecture on the music fixture in about an hour. Its six tasks: make the
+lecture on a provided fictional music database in about an hour. Its six tasks: make the
 instance ready (guide, sections 1 to 3); load and check the fixture
 (SETUP.md); connect Claude Code and record the tool list, with the schema
 prompt of Section 5.1; Question A with the three prompts of Section 5 and the

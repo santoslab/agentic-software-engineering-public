@@ -520,14 +520,14 @@ Three records: the host's transcript · the server's log · the instance's `quer
 
 1. Instance ready: APOC, `CREATE DATABASE music` (guide §1–3)
 2. Load and check the fixture (SETUP.md)
-3. Connect; record `/mcp`, the tool names, the mode line — **checkpoint, two days**
+3. Connect; record `/mcp`, the tool names, the mode line — **finish 1–3 in the first two days**
 4. Question A: schema, propose, review, run, replay in Query
 5. The write cycle: a playlist of your naming, the dialog, read-back, `check` mismatch, revert
 6. Reflection: what you changed; what you could only know from outside
 
-Submit `.mcp.json` (password referenced) and `evidence.md`. 15 points. About an hour.
+Work and submit in `exercise-neo4j-mcp/` of your course repo: `.mcp.json` (password referenced) and `EVIDENCE.md`. 15 points. About an hour.
 
-<!-- Slide 28. Optional: Question B, the ambiguity question, a diagnosis. Decline the "switch to auto mode" offer; never choose the dialog's second option. query_log.py is in the package. Due date per the module README. -->
+<!-- Slide 28. Optional: Question B, the ambiguity question, a diagnosis. Decline the "switch to auto mode" offer; never choose the dialog's second option. query_log.py is in the package. No interim submission: ask them to finish setup in the first two days and to write to you with the exact error text if stuck. Due date per the module README. -->
 
 ---
 

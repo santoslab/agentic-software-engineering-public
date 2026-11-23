@@ -1,11 +1,12 @@
 # Music homework evidence template
 
-Copy this file to `evidence.md` in your submission folder and replace each
-item with what you observed. Paste exact texts (Cypher, dialog wording,
-`check` output) and small result tables. Never include a password, and never
-write down a call that did not happen.
+This is the file you fill in and submit, in place, in your
+`exercise-neo4j-mcp/` folder. Replace each item with what you observed, as
+you go: wherever a task says "record", the matching heading is here. Paste
+exact texts (Cypher, dialog wording, `check` output) and small result tables.
+Never include a password, and never write down a call that did not happen.
 
-## Setup (Tasks 1 to 3; the checkpoint)
+## Setup (Tasks 1 to 3)
 
 - Date; Neo4j version and edition (instance card); APOC version (Plugins
   tab); Claude Code version (`claude --version`); `uv --version`:

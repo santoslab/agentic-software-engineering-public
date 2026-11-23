@@ -15,11 +15,12 @@ module's other exercises. Two rules
 run through every task: **review the Cypher before it runs**, and **verify
 outside the conversation**.
 
-Submit the setup evidence (Tasks 1 to 3) within two days of release and the
-complete work within one week, unless the instructor sets other dates. If
-setup takes more than 45 minutes, stop and send the instructor your evidence
-so far, including the exact error text, rather than changing unrelated
-settings.
+The complete work is due one week after release unless the instructor sets
+another date. There is no interim submission, but do Tasks 1 to 3 (the setup)
+in the first two days: Desktop, APOC, and Claude Code trouble is easier to fix
+early. If setup takes more than 45 minutes, stop and write to the instructor
+with what you have recorded so far, including the exact error text, rather
+than changing unrelated settings.
 
 ## Before you start
 
@@ -28,7 +29,7 @@ You need the Neo4j Desktop instance from exercise 01 (any instance will do),
 homework uses (`.mcp.json`, `/mcp`, `tools/list`, grounded answers); the
 Neo4j lecture shows this exact sequence in class.
 
-Three documents go with this one:
+Four documents go with this one:
 
 - [`../neo4j-desktop-mcp-setup.md`](../neo4j-desktop-mcp-setup.md), the general
   setup guide: installing the Neo4j APOC plug-in on your instance to
@@ -42,16 +43,40 @@ Three documents go with this one:
 - [`PRIMER.md`](PRIMER.md), a graph and Cypher primer to give you some
   hints and background for the homework: this provides you with enough
   information to read every Cypher query in this homework, the write included.
+- [`EVIDENCE.md`](EVIDENCE.md), the evidence file you fill in and submit. Its
+  headings follow the tasks. Wherever a task says "record", write what you
+  observed under the matching heading of this file, starting with Task 1; it
+  is the record the grade is based on.
 
 The data is `fictional-music-v1` ([manifest](fixture/manifest.json),
 [provenance](fixture/PROVENANCE.md)): 36 tracks, 8 artists, 6 albums, 8
 playlists, 4 users, all invented. Nothing in it says anything about real
 listeners, real popularity, or any streaming catalogue.
 
-"Work in this folder". It is the project directory Claude Code starts in, and it
-ships the two configuration files the host reads: `.mcp.json.example` (you
-copy it to `.mcp.json` in Task 3) and `.claude/settings.json` (already in
-place; it pre-approves the two read tools so that only writes prompt).
+### Your working folder
+
+Work in your course repository, the one that holds your exercise solutions,
+not in your clone of the course materials. Copy this homework's folder into
+it as `exercise-neo4j-mcp/` and commit the copy:
+
+```sh
+cd <your-course-repository>
+cp -R <path-to-course-materials>/neo4j/02-neo4j-music-mcp exercise-neo4j-mcp
+git add exercise-neo4j-mcp && git commit -m "neo4j mcp exercise: start"
+cd exercise-neo4j-mcp
+```
+
+From here on, every command in this homework runs in `exercise-neo4j-mcp/`,
+and it is the directory you start Claude Code in: the host reads its
+configuration from the directory it starts in, so start it there and not at
+the repository root. The copy carries the two configuration files the host
+reads, `.mcp.json.example` (you copy it to `.mcp.json` in Task 3) and
+`.claude/settings.json` (already in place; it pre-approves the two read tools
+so that only writes prompt), and a `.gitignore` that keeps `.venv/`, caches,
+and your local Claude Code settings out of your repository. Your clone of the
+course materials is not touched again, so `git pull` there keeps working. If
+you had already run `uv` inside the course-materials copy, delete the
+`.venv/` folder from your new copy before continuing; `uv sync` recreates it.
 
 ## Tasks
 
@@ -67,9 +92,9 @@ tab.
 
 ### 2 Load the fixture (SETUP.md)
 
-Following the steps in `SETUP.md`, in a terminal in your homework
-folder: `uv sync --locked`, set the connection variables (the password
-is typed, never pasted into a file), then
+Following the steps in `SETUP.md`, in a terminal in your
+`exercise-neo4j-mcp/` folder: `uv sync --locked`, set the connection variables
+(the password is typed, never pasted into a file), then
 
 ```sh
 uv run --frozen python database.py load
@@ -109,11 +134,11 @@ Compare the table with the diagram in the primer. Expect one `get-schema`
 tool call to appear in Claude's activity. 
 Note anything the model says that the schema does not support.
 
-**Setup checkpoint.** Tasks 1 to 3 are the checkpoint: send the `check`
-output, the tool list, and your `.mcp.json` within two days of release, so
-that Desktop or APOC trouble surfaces early. If you are stuck, send what you
-have with the exact error text; section 8 of the setup guide names the layer
-for each message you are likely to see.
+**Finish setup early.** Tasks 1 to 3 are the setup, and nothing is submitted
+at this point; do them in the first two days so that Desktop or APOC trouble
+surfaces while there is time to fix it. If you are stuck, write to the
+instructor now with what you have recorded and the exact error text; section 8
+of the setup guide names the layer for each message you are likely to see.
 
 ### 4 Question A: propose, review, run, replay
 
@@ -219,7 +244,7 @@ noticed the change.
 
 The database keeps its own record in a log of every statement it executed. To see what
 the server sent on your behalf, including the write, run in a second terminal
-in this folder:
+in your `exercise-neo4j-mcp/` folder:
 
 ```sh
 uv run --frozen python query_log.py --last 10
@@ -286,21 +311,23 @@ is yours to defend. Its brief will be released separately.
 
 ## Submission
 
-One folder in your course repository:
+Commit and push the `exercise-neo4j-mcp/` folder of your course repository,
+the folder you worked in. Two files in it are graded:
 
 ```text
-neo4j-music-homework/
+exercise-neo4j-mcp/
   .mcp.json          # as submitted: ${NEO4J_MCP_PASSWORD} reference, READ_ONLY "true"
-  evidence.md        # setup, Question A, write cycle, reflection
+  EVIDENCE.md        # filled in: setup, Question A, write cycle, reflection
+  ...                # the rest of the package, as copied
 ```
 
-Copy [`EVIDENCE.md`](EVIDENCE.md) to `evidence.md` as the template; its
-headings follow the tasks. Paste small result tables and the exact texts
-(Cypher, dialog, `check` output); screenshots are welcome beside readable
-text, not instead of it. Exclude passwords, account identifiers, and
-unrelated conversation. Exact model wording and a prescribed number of tool
-calls are not requirements; a record that connects question, Cypher, call,
-rows, and answer is.
+The rest of the package comes along because it is where you worked; its
+`.gitignore` keeps `.venv/` and your local Claude Code settings out. In
+`EVIDENCE.md`, paste small result tables and the exact texts (Cypher, dialog,
+`check` output); screenshots are welcome beside readable text, not instead of
+it. Exclude passwords, account identifiers, and unrelated conversation. Exact
+model wording and a prescribed number of tool calls are not requirements; a
+record that connects question, Cypher, call, rows, and answer is.
 
 | Criterion | Points |
 |---|---:|
@@ -311,7 +338,7 @@ rows, and answer is.
 | Total | 15 |
 
 If Desktop, APOC, or Claude Code access cannot be made to work, submit the
-evidence you have at the checkpoint with the error texts. The instructor can
+setup evidence you have with the error texts. The instructor can
 supply a recorded session (schema, calls, rows, dialog) for a labeled
 evidence-analysis path and arrange a later live check. Recorded analysis is
 not a live connection; label it as such.

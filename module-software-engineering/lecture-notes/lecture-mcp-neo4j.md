@@ -1455,10 +1455,12 @@ prompt of Section 5.1; Question A with the three prompts of Section 5 and the
 replay in Query; the write cycle of Section 6 with a playlist and tracks of
 your own choosing, the dialog recorded, the check's mismatch and its pass;
 and a reflection on what you changed or rejected and what you could only know
-from outside the conversation. Tasks 1 to 3 are a checkpoint due two days
-after release, so that Desktop and APOC trouble surfaces early. The
-submission is two files, a sanitized `.mcp.json` and an `evidence.md`.
-Question B, the ambiguity question, and a diagnosis are optional extensions.
+from outside the conversation. Tasks 1 to 3 are to be done in the first two
+days, so that Desktop and APOC trouble surfaces early; there is no interim
+submission. The work is done and submitted in an `exercise-neo4j-mcp/` folder
+of the student's course repository, where the graded files are a sanitized
+`.mcp.json` and the filled-in `EVIDENCE.md`. Question B, the ambiguity
+question, and a diagnosis are optional extensions.
 
 The exit question for the lecture: name one field of the stdio entry and say
 which process reads it, and name one observation that proves a write

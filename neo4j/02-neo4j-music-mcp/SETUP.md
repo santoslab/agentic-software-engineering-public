@@ -29,7 +29,8 @@ it refuses to load into a database that already holds data.
 
 ## 2 The Python environment
 
-Open a terminal in this folder (it contains `pyproject.toml`) and run
+Open a terminal in your `exercise-neo4j-mcp/` folder (the copy the README's
+"Your working folder" step has you make; it contains `pyproject.toml`) and run
 
 ```sh
 uv sync --locked
@@ -175,8 +176,8 @@ server, which is what makes it useful.
 ## 8 Next
 
 Section 5 of the general guide: copy `.mcp.json.example` to `.mcp.json` in
-this folder (`.claude/settings.json` is already here), then its section 6,
-then the tasks in [`README.md`](README.md).
+your `exercise-neo4j-mcp/` folder (`.claude/settings.json` is already there),
+then its section 6, then the tasks in [`README.md`](README.md).
 
 ## When the loader fails
 

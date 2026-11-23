@@ -66,7 +66,7 @@ model output is labeled as such and varies between sessions.
 | 27–40 | 16–18 | Reading with review. Schema prompt; compare the model's table with the diagram. Propose prompt; say what the statement is meant to compute, then read it against the checklist on the slide, in particular the `Playlist` anchor and `count(DISTINCT p)`. Run prompt; expand the call; paste the statement into Query with `music` selected; same rows. Ask the class for two meanings of "most popular". | Image 06, Desktop image 09. If short, drop the replay to the notes; keep the review. |
 | 40–56 | 19–24 | Writing with control. Exit, flip `NEO4J_MCP_READ_ONLY`, restart, `/mcp` shows three tools. Shared-tracks read. Write prompt with the ids spelled out; the model's precondition read; the proposed MERGE read clause by clause. "approved"; the host dialog; read it aloud; option 1. Read-back in Query. The fixture as the saved baseline; the `!` check line: mismatch 9 / 9 / 93. Revert prompt; second dialog; check passes. Three-controls diagram and the deny-rule finding. | Images 09–16 and 24, Desktop image 10. If behind, show the dialog (24), the mismatch (13), and the controls slide only. |
 | 56–64 | 25–26 | Records and recovery. `query_log.py --last 10` in the second terminal: the write, the `EXPLAIN` before each read, one transaction per statement, the server's startup probes. Then the advice for a database that matters: contain, snapshot, copy, dry runs, what to do after. | Slide 25 carries the real output. Cut 26 to its four headings if behind; Section 10 of the notes has the detail. |
-| 64–70 | 27–28 | The recipe as a list; the homework's six tasks and the checkpoint; the OpenFlights follow-on in one sentence. | Keep the homework slide; the recipe is in the handout. |
+| 64–70 | 27–28 | The recipe as a list; the homework's six tasks, with setup done early; the OpenFlights follow-on in one sentence. | Keep the homework slide; the recipe is in the handout. |
 | 70–72 | 29 | Exit question and the bridge to the dice lecture. | — |
 | 72–75 | — | Slack. | — |
 
@@ -177,13 +177,16 @@ The [homework](../../neo4j/02-neo4j-music-mcp/README.md) is the lecture on the
 student's own instance: instance ready, fixture loaded and checked, Claude
 Code connected with the tool list recorded, Question A with the three prompts
 and the Query replay, the write cycle with a playlist and tracks of their own
-choosing and the dialog recorded, a reflection. Tasks 1 to 3 are a checkpoint
-two days after release. Submission is a sanitized `.mcp.json` and an
-`evidence.md`; 15 points, completion-based. Question B, the ambiguity
-question, and a diagnosis are optional. The
+choosing and the dialog recorded, a reflection. Tasks 1 to 3 are to be done
+in the first two days; there is no interim submission, and students who are
+stuck write to the instructor. Students work in an `exercise-neo4j-mcp/`
+folder of their course repository and submit that folder; the graded files
+are a sanitized `.mcp.json` and the filled-in `EVIDENCE.md`; 15 points,
+completion-based. Question B, the ambiguity question, and a diagnosis are
+optional. The
 [instructor key](../demos/lecture-mcp-neo4j/instructor-key/README.md) has the
 expected rows, the expected check mismatch for N tracks, the dialog wording,
-and the grading notes. Set the checkpoint and due dates in the module README.
+and the grading notes. Set the due date in the module README.
 
 ## Instructor notes
 

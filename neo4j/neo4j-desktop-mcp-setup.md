@@ -153,7 +153,8 @@ a terminal, start Claude Code from that same terminal, and the password never
 appears in a file, in the repository, or on screen.
 
 Open a terminal and change to the directory of the activity (for the music
-homework, its `02-neo4j-music-mcp/` folder). Then, in **zsh** (the macOS
+homework, the `exercise-neo4j-mcp/` folder of your course repository, which
+the homework's README has you create). Then, in **zsh** (the macOS
 default):
 
 ```sh

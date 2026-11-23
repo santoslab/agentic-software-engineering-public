@@ -2,13 +2,16 @@
 
 Reproduce the Neo4j lecture's demo on your own machine: put a prepared,
 fictional music database behind Claude Code through the official Neo4j MCP
-server, ask one question whose answer you can check, make one controlled
-change and undo it, and write down what you observed at each step. You use an
-existing server; you do not implement one, design a database, or learn a
-recommendation algorithm.
+server, ask one question whose answer you can check (by observation
+and by running the generated Cypher query yourself via Neo4j Desktop's
+interface), make one controlled change and undo it, and write down 
+what you observed at each step. You use an existing server (Neo4j's
+provided MCP server); you do not implement one, design a database, or 
+learn a recommendation algorithm.
 
-Budget about one hour once Neo4j Desktop is installed, setup included. The
-homework is completion-based, like the module's other exercises. Two rules
+Budget about one hour once Neo4j Desktop is installed - example database and
+exercise setup included. The homework is completion-based, like the 
+module's other exercises. Two rules
 run through every task: **review the Cypher before it runs**, and **verify
 outside the conversation**.
 
@@ -21,27 +24,31 @@ settings.
 ## Before you start
 
 You need the Neo4j Desktop instance from exercise 01 (any instance will do),
-`uv`, and Claude Code. The MCP adoption lecture explains the concepts this
+`uv`, and Claude Code. The previous MCP adoption lecture explains the concepts this
 homework uses (`.mcp.json`, `/mcp`, `tools/list`, grounded answers); the
 Neo4j lecture shows this exact sequence in class.
 
 Three documents go with this one:
 
 - [`../neo4j-desktop-mcp-setup.md`](../neo4j-desktop-mcp-setup.md), the general
-  setup guide: APOC on your instance, a database per activity, the password in
-  your shell, the `.mcp.json` entry, the permission dialog, diagnosis by layer.
+  setup guide: installing the Neo4j APOC plug-in on your instance to
+  provide the Neo4j MCP server, introducing a new database for your
+  instance to support this specific activities on this homework,
+  managing the Neo4j password for the database instance in your shell, 
+  the setting up the `.mcp.json` entry, the permission dialog, diagnosis by layer.
   Tasks 1 and 3 follow it.
 - [`SETUP.md`](SETUP.md), the fixture-specific steps: the Python environment,
   loading and checking the data. Task 2 follows it.
-- [`PRIMER.md`](PRIMER.md), the graph and Cypher primer: enough to read every
-  query in this homework, the write included.
+- [`PRIMER.md`](PRIMER.md), a graph and Cypher primer to give you some
+  hints and background for the homework: this provides you with enough
+  information to read every Cypher query in this homework, the write included.
 
 The data is `fictional-music-v1` ([manifest](fixture/manifest.json),
 [provenance](fixture/PROVENANCE.md)): 36 tracks, 8 artists, 6 albums, 8
 playlists, 4 users, all invented. Nothing in it says anything about real
 listeners, real popularity, or any streaming catalogue.
 
-Work in this folder. It is the project directory Claude Code starts in, and it
+"Work in this folder". It is the project directory Claude Code starts in, and it
 ships the two configuration files the host reads: `.mcp.json.example` (you
 copy it to `.mcp.json` in Task 3) and `.claude/settings.json` (already in
 place; it pre-approves the two read tools so that only writes prompt).
@@ -50,7 +57,8 @@ place; it pre-approves the two read tools so that only writes prompt).
 
 ### 1 Make the instance ready (setup guide, sections 1 to 3)
 
-Start your instance, install APOC from its Plugins tab, and create the
+As shown in the setup guide, start your instance, 
+install APOC from its Plugins tab, and create the
 `music` database. Finish with the guide's two checks in Desktop's Query tool:
 `SHOW PROCEDURES ... 'apoc.meta.'` lists procedure names, and
 `CALL apoc.meta.schema()` returns `{}` on the empty database. Record the
@@ -59,8 +67,9 @@ tab.
 
 ### 2 Load the fixture (SETUP.md)
 
-In a terminal in this folder: `uv sync --locked`, set the connection
-variables (the password is typed, never pasted into a file), then
+Following the steps in `SETUP.md`, in a terminal in your homework
+folder: `uv sync --locked`, set the connection variables (the password
+is typed, never pasted into a file), then
 
 ```sh
 uv run --frozen python database.py load
@@ -90,14 +99,15 @@ list, then open each tool. Record:
   `mcp__neo4j__read-cypher`, and the parameters of `read-cypher`;
 - the permission mode line.
 
-Then ask for the schema, and nothing else:
+Then ask for the schema, and nothing else via the following Claude prompt:
 
 > Use the neo4j MCP server to inspect the schema of the music database.
 > Summarize the node labels, relationship types, and relationship directions
 > in a short table. Do not run any other query yet.
 
 Compare the table with the diagram in the primer. Expect one `get-schema`
-call. Note anything the model says that the schema does not support.
+tool call to appear in Claude's activity. 
+Note anything the model says that the schema does not support.
 
 **Setup checkpoint.** Tasks 1 to 3 are the checkpoint: send the `check`
 output, the tool list, and your `.mcp.json` within two days of release, so
@@ -106,6 +116,12 @@ have with the exact error text; section 8 of the setup guide names the layer
 for each message you are likely to see.
 
 ### 4 Question A: propose, review, run, replay
+
+This question walks you through various agent-supported read / queries
+of the database.
+
+First, we state a question in natural language, and then we show how
+we want you to ask the agent to help you with it.
 
 **Question A.** Which five artists appear in the greatest number of distinct
 playlists in this fixture? Credit every artist on a collaboration. Count a
@@ -146,6 +162,8 @@ differ. The reference query is supplied on purpose: the task assesses your
 review and comparison, not whether you can hide an answer from an agent.
 
 ### 5 One controlled write, verified and reverted
+
+Now we experiment with write functionality.
 
 Exit Claude Code. In `.mcp.json`, change `NEO4J_MCP_READ_ONLY` from
 `"true"` to `"false"`; nothing else changes. Start Claude Code again with the
@@ -199,7 +217,7 @@ Expect `Readiness mismatch` with Playlist 9, OWNS 9, and PLAYLIST_HAS_TRACK
 the output. The mismatch is the point: a check outside the conversation
 noticed the change.
 
-The database keeps its own record of every statement it executed. To see what
+The database keeps its own record in a log of every statement it executed. To see what
 the server sent on your behalf, including the write, run in a second terminal
 in this folder:
 
@@ -207,6 +225,7 @@ in this folder:
 uv run --frozen python query_log.py --last 10
 ```
 
+The above command runs a utility script (written by Claude).
 It reads the instance's `logs/query.log` (found automatically for a single
 Desktop instance on macOS; otherwise pass `--log PATH`) and prints each
 statement with its time, database, outcome, and transaction. Compare it with

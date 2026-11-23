@@ -20,7 +20,9 @@ is not a Python dependency of this package: `uvx` downloads it once (about
 
 ## 1 Before this file
 
-Sections 1 to 3 of the general guide: the instance is running, APOC is
+Please make sure that you go through Sections 1 to 3 of the general
+guide to get the Neo4j MCP setup for an instance.  
+You should end up with the Neo4j instance running, APOC is
 installed and both verification queries pass, and `CREATE DATABASE music IF
 NOT EXISTS` has been run. The loader does not create the database for you, and
 it refuses to load into a database that already holds data.
@@ -151,6 +153,10 @@ checks with `/mcp`.
 
 ## 7 The database's own record
 
+You may find it useful in your projects to be able to see a log of
+everything that was passed through the MCP interface into Neo4j.  
+
+This homework provides an example script to support that.
 `query_log.py` prints the Cypher statements the instance executed, read from
 its `logs/query.log`. By default it shows the statements sent by the MCP
 server and hides the `EXPLAIN` the server runs before each read:

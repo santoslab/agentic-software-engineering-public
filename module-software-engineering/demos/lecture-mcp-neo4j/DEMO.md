@@ -35,9 +35,10 @@ printf '# Neo4j MCP demo\n' > "$NEO4J_DEMO_REPO/README.md"
 cd "$NEO4J_DEMO_REPO" && git init -q
 ```
 
-Have open: this terminal; a second terminal in `$NEO4J_HW_DIR` with the same
-variables for `query_log.py`; Desktop's Query tool with the Database selector
-on `music`; the slides. Start every session with
+Have open: this terminal; a second terminal in the homework folder for
+`query_log.py` (it reads the instance's `query.log` from disk, so it needs the
+directory and none of the variables); Desktop's Query tool with the Database
+selector on `music`; the slides. Start every session with
 
 ```sh
 claude --permission-mode manual
